@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AHA Game Center - Responsive & Offline</title>
+    <link rel="manifest" href="https://ooppgame.com/relicrunway/manifest_transsion.json">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html, body {
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+            background-color: #121212;
+            font-family: Arial, sans-serif;
+        }
+        
+        .container {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            width: 100%;
+        }
+        
+        .header {
+            padding: 10px 15px;
+            background-color: #232323;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .header h1 {
+            font-size: 1.2rem;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .home-btn, .download-btn {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 8px 12px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 0.9rem;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        .home-btn:hover, .download-btn:hover {
+            background-color: #45a049;
+        }
+        
+        .download-btn {
+            background-color: #2196F3;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .download-btn:hover {
+            background-color: #0b7dda;
+        }
+        
+        .download-btn.downloaded {
+            background-color: #607D8B;
+        }
+        
+        .download-icon {
+            width: 16px;
+            height: 16px;
+            fill: white;
+        }
+        
+        .game-container {
+            flex: 1;
+            position: relative;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+        
+        .iframe-wrapper {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+        
+        iframe {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        
+        /* Status message styling */
+        .status-message {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 4px;
+            transition: opacity 0.5s;
+            opacity: 0;
+            z-index: 100;
+        }
+        
+        .status-message.show {
+            opacity: 1;
+        }
+        
+        /* Ad overlay styling */
+        .ad-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 200;
+            flex-direction: column;
+        }
+        
+        .ad-timer {
+            position: absolute;
+            top: 50px;
+            right: 50px;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 17px;
+            font-size: 16px;
+        }
+        
+        .ad-container {
+            width: 250px;
+            background-color: white;
+            border-radius: 45px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .ad-image {
+            width: 100%;
+            height: 200px;
+            background-color: #f1f1f1;
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .ad-content {
+            padding: 15px;
+        }
+        
+        .ad-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        
+        .ad-description {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+        
+        .ad-rating {
+            display: flex;
+            margin-bottom: 10px;
+            color: #FFD700;
+        }
+        
+        .ad-button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            border: none;
+            border-radius: 20px;
+            font-size: 16px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        
+        .ad-close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 30px;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1rem;
+            }
+            
+            .home-btn, .download-btn {
+                font-size: 0.8rem;
+                padding: 6px 10px;
+            }
+            
+            .ad-timer {
+                top: 20px;
+                right: 20px;
+            }
+        }
+        
+        /* Loading indicator */
+        .loader {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #4CAF50;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            z-index: 1;
+        }
+        
+        @keyframes spin {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Multi Games</h1>
+            <div class="button-group">
+                <button class="download-btn" id="download-toggle">
+                    <svg class="download-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path fill="currentColor" d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
+                    </svg>
+                    Download Game
+                </button>
+                <button class="home-btn" id="home-btn">Exit to Home</button>
+            </div>
+        </div>
+        <div class="game-container" id="game-container">
+            <div class="loader" id="loader"></div>
+            <div class="iframe-wrapper">
+                <iframe 
+                    id="game-frame"
+                    src="https://ooppgame.com/relicrunway/game_240726/index.html" 
+                    allowfullscreen
+                    allow="autoplay; fullscreen; microphone; camera; midi; monetization; xr-spatial-tracking; gamepad"
+                    loading="lazy"
+                    scrolling="no">
+                </iframe>
+            </div>
+            <div id="status-message" class="status-message"></div>
+        </div>
+    </div>
+    
+    <!-- Ad overlay that appears automatically after loading or during gameplay -->
+    <div class="ad-overlay" id="ad-overlay">
+        <div class="ad-timer" id="ad-timer">5s</div>
+        <div class="ad-container">
+            <div class="ad-image" id="ad-image"></div>
+            <div class="ad-content">
+                <div class="ad-title">Data Topup!</div>
+                <div class="ad-description">Stay online, game nonstop—get cheap data now!,
+                  Don’t let data stop your game—get the best deals!.
+                </div>
+                <div class="ad-rating">
+                    ★★★★★ <span style="color:#666; margin-left:5px;">(4.8)</span>
+                </div>
+                <a href="#" class="ad-button" id="ad-button">INSTALL</a>
+            </div>
+        </div>
+        <button class="ad-close" id="ad-close">✕</button>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+    const gameFrame = document.getElementById('game-frame');
+    const downloadBtn = document.getElementById('download-toggle');
+    const homeBtn = document.getElementById('home-btn');
+    const gameContainer = document.getElementById('game-container');
+    const loader = document.getElementById('loader');
+    const statusMessage = document.getElementById('status-message');
+    const adOverlay = document.getElementById('ad-overlay');
+    const adClose = document.getElementById('ad-close');
+    const adImage = document.getElementById('ad-image');
+    const adTimer = document.getElementById('ad-timer');
+    const adButton = document.getElementById('ad-button');
+    
+    // Game information
+    const gameInfo = {
+        id: 'runaway',
+        url: 'https://ooppgame.com/relicrunway/game_240726/index.html',
+        cacheName: 'multi-games-run-away-cache'
+    };
+    
+    // Set a placeholder ad image - use game-related image if possible
+    adImage.style.backgroundImage = "url('https://i.postimg.cc/5NDpvNgZ/Screenshot-20250315-233834.jpg')";
+    adImage.style.cursor = "pointer"; // Make the image clickable
+    
+    // Make the image clickable too
+    adImage.addEventListener('click', function() {
+        window.open('https://apkpure.com/data-topup/com.datatopup.mobileapp', '_blank');
+        showStatus('Reward collected!');
+    });
+    
+    // Track if ad was requested from game for reward
+    window.gameRequestedReward = false;
+    
+    // Make the install button redirect to a link in a new tab
+    adButton.addEventListener('click', function(e) {
+        // Open the link in a new tab
+        window.open('https://play.google.com/store/apps/details?id=com.kiloo.subwaysurf', '_blank');
+        
+        // Show appropriate status message
+        if (window.gameRequestedReward) {
+            showStatus('Reward collected in game!');
+            window.gameRequestedReward = false;
+        } else {
+            showStatus('Reward collected!');
+        }
+        
+        // Hide the ad after a short delay to make sure user sees confirmation
+        setTimeout(() => {
+            hideAd();
+        }, 1000);
+    });
+    
+    // Function to show status messages
+    function showStatus(message, duration = 3000) {
+        statusMessage.textContent = message;
+        statusMessage.classList.add('show');
+        setTimeout(() => {
+            statusMessage.classList.remove('show');
+        }, duration);
+    }
+    
+    // Function to hide ad overlay
+    function hideAd() {
+        // Clear the timer if it exists
+        if (adOverlay.dataset.timerId) {
+            clearInterval(parseInt(adOverlay.dataset.timerId));
+            delete adOverlay.dataset.timerId;
+        }
+        
+        adOverlay.style.display = 'none';
+        
+        // Send message to game that ad was watched - try multiple message formats
+        // since different games might expect different formats
+        try {
+            // Send multiple message formats to ensure compatibility with different games
+            const messageFormats = [
+                { type: 'adCompleted', reward: true },
+                { type: 'rewardedAdComplete', success: true },
+                { action: 'adFinished', rewarded: true },
+                { command: 'rewardUser', success: true },
+                { event: 'ad_watched', reward: true }
+            ];
+            
+            // Send all message formats to maximize compatibility
+            messageFormats.forEach(msg => {
+                gameFrame.contentWindow.postMessage(msg, '*');
+            });
+            
+            console.log('Sent reward completion messages to game');
+        } catch (e) {
+            console.error('Failed to send message to game:', e);
+        }
+    }
+    
+    // Function to show ad overlay with timer
+    function showAd(autoTrigger = false) {
+        // Ensure any existing timers are cleared
+        if (adOverlay.dataset.timerId) {
+            clearInterval(parseInt(adOverlay.dataset.timerId));
+        }
+        
+        adOverlay.style.display = 'flex';
+        
+        let timeLeft = 5; // 20 second timer
+        adTimer.textContent = timeLeft + 's';
+        
+        // Update timer every second
+        const timerId = setInterval(() => {
+            timeLeft--;
+            adTimer.textContent = timeLeft + 's';
+            
+            if (timeLeft <= 0) {
+                clearInterval(timerId);
+                hideAd();
+                
+                // If this was auto-triggered after game load, notify the user
+                if (autoTrigger) {
+                    showStatus('Game ready to play!');
+                } else {
+                    showStatus('Reward collected!');
+                }
+            }
+        }, 1000);
+        
+        // Store the timer ID to clear if ad is closed manually
+        adOverlay.dataset.timerId = timerId;
+    }
+    
+    // Close ad button handler
+    adClose.addEventListener('click', function() {
+        // Only show "Reward collected" if this was a game-requested ad
+        if (window.gameRequestedReward) {
+            showStatus('Reward collected in game!');
+            window.gameRequestedReward = false;
+        } else {
+            showStatus('Ad closed');
+        }
+        
+        hideAd();
+    });
+    
+    // Listen for messages from the game iframe
+    window.addEventListener('message', function(event) {
+        // Check origin for security (using includes for broader matching)
+        if (event.origin.includes('gzxuanzhaogame.com') || event.origin === window.location.origin) {
+            // Handle "watch ad" request from game (watch for various message formats from games)
+            if (event.data && 
+                (event.data.type === 'watchAd' || 
+                 event.data.type === 'rewardedAd' || 
+                 event.data.type === 'showAd' || 
+                 event.data.action === 'showAd' ||
+                 event.data.command === 'showRewardedAd')) {
+                
+                console.log('Game requested an ad, showing custom ad overlay');
+                // Track that this was a reward request from the game
+                window.gameRequestedReward = true;
+                showAd(false);
+            }
+            
+            // Handle game loaded event
+            if (event.data && event.data.type === 'gameLoaded') {
+                loader.style.display = 'none';
+                // Show ad automatically after game loads
+                setTimeout(() => {
+                    showAd(true);
+                }, 1000);
+            }
+        }
+    });
+    
+    // Check if the game is already cached
+    async function checkCache() {
+        if (!('caches' in window)) {
+            downloadBtn.style.display = 'none';
+            return false;
+        }
+        
+        try {
+            const cache = await caches.open(gameInfo.cacheName);
+            const keys = await cache.keys();
+            
+            if (keys.length > 0) {
+                updateDownloadButton(true);
+                return true;
+            }
+        } catch (error) {
+            console.error('Cache check failed:', error);
+        }
+        
+        return false;
+    }
+    
+    // Update download button appearance
+    function updateDownloadButton(isDownloaded) {
+        if (isDownloaded) {
+            downloadBtn.innerHTML = `
+                <svg class="download-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path fill="currentColor" d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+                </svg>
+                Downloaded
+            `;
+            downloadBtn.classList.add('downloaded');
+        } else {
+            downloadBtn.innerHTML = `
+                <svg class="download-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path fill="currentColor" d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
+                </svg>
+                Download Game
+            `;
+            downloadBtn.classList.remove('downloaded');
+        }
+    }
+    
+    // Download game function
+    async function downloadGame() {
+        if (!('caches' in window) || !('serviceWorker' in navigator)) {
+            showStatus('Offline play not supported in your browser');
+            return;
+        }
+        
+        try {
+            showStatus('Downloading game...');
+            downloadBtn.disabled = true;
+            downloadBtn.innerHTML = `
+                <div class="button-loader"></div>
+                Downloading...
+            `;
+            
+            // Open the cache
+            const cache = await caches.open(gameInfo.cacheName);
+            
+            // List of resources to cache (could be expanded)
+            const baseUrl = new URL(gameInfo.url);
+            const pathSegments = baseUrl.pathname.split('/');
+            pathSegments.pop(); // Remove the last segment (game.html)
+            const basePath = baseUrl.origin + pathSegments.join('/') + '/';
+            
+            // Start with the main game file
+            const resourcesToCache = [
+                gameInfo.url,
+                // Add other essential resources - this would need to be expanded
+                // based on the specific game's requirements
+                basePath + 'data/stylesheet.css',
+                basePath + 'data/index.js', 
+                basePath + 'data/UnityLoader.js'
+            ];
+            
+            // Cache each resource
+            const cachePromises = resourcesToCache.map(url => {
+                return fetch(url, { mode: 'no-cors' })
+                    .then(response => {
+                        return cache.put(url, response);
+                    })
+                    .catch(error => {
+                        console.error(`Failed to cache ${url}:`, error);
+                    });
+            });
+            
+            // Wait for all resources to be cached
+            await Promise.all(cachePromises);
+            
+            updateDownloadButton(true);
+            showStatus('Game downloaded for offline play!');
+        } catch (error) {
+            console.error('Download failed:', error);
+            showStatus('Download failed. Please try again.');
+            updateDownloadButton(false);
+        } finally {
+            downloadBtn.disabled = false;
+        }
+    }
+    
+    // Delete cached game function
+    async function deleteCachedGame() {
+        if (!('caches' in window)) {
+            return;
+        }
+        
+        try {
+            showStatus('Removing downloaded game...');
+            downloadBtn.disabled = true;
+            
+            await caches.delete(gameInfo.cacheName);
+            
+            updateDownloadButton(false);
+            showStatus('Game removed from device');
+        } catch (error) {
+            console.error('Failed to remove game:', error);
+            showStatus('Failed to remove game');
+        } finally {
+            downloadBtn.disabled = false;
+        }
+    }
+    
+    // Toggle download/delete functionality
+    downloadBtn.addEventListener('click', async function() {
+        const isDownloaded = await checkCache();
+        
+        if (isDownloaded) {
+            deleteCachedGame();
+        } else {
+            downloadGame();
+        }
+    });
+    
+    // Home button functionality
+    homeBtn.addEventListener('click', function() {
+        // Confirm before exiting if game is in progress
+        if (gameFrame.contentWindow.document.hasFocus()) {
+            if (confirm('Are you sure you want to exit the game?')) {
+                window.location.href = 'android_asset/htmlapp/root/index.html'; // Redirect to home page
+            }
+        } else {
+            window.location.href = 'android_asset/htmlapp/root/index.html'; // Redirect to home page without confirmation
+        }
+    });
+    
+    // Handle game loading
+    function initGame() {
+        loader.style.display = 'block';
+        
+        // Listen for iframe load event
+        gameFrame.addEventListener('load', function() {
+            // Hide loader after a short delay to ensure game is fully rendered
+            setTimeout(() => {
+                loader.style.display = 'none';
+                
+                // Force show the ad after game loads, even if no 'gameLoaded' message is received
+                setTimeout(() => {
+                    showAd(true);
+                }, 1000);
+                
+                showStatus('Game ready to play!');
+            }, 2000);
+        });
+        
+        // Fallback if load event doesn't fire
+        setTimeout(() => {
+            if (loader.style.display !== 'none') {
+                loader.style.display = 'none';
+                showStatus('Game loaded');
+                
+                // Force show ad even if load event didn't fire
+                showAd(true);
+            }
+        }, 10000);
+        
+        // Schedule periodic ads every 3 minutes (adjust as needed)
+        setInterval(() => {
+            // Only show if game is active and no ad is currently displayed
+            if (document.hasFocus() && adOverlay.style.display !== 'flex') {
+                showAd(false);
+            }
+        }, 180000); // 3 minutes
+    }
+    
+    // Check if the game is already cached on page load
+    checkCache();
+    
+    // Initialize the game
+    initGame();
+    
+    // Register service worker for offline functionality if needed
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/service-worker.js')
+            .then(registration => {
+                console.log('Service Worker registered with scope:', registration.scope);
+            })
+            .catch(error => {
+                console.error('Service Worker registration failed:', error);
+            });
+    }
+});
+</script>
+</body>
+</html>

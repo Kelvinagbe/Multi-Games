@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi Games Chatbot</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #006400;  /* dark green*/
+            --secondary-color: #2E8B57;  /* sea green*/
+            --background-color: #F4F7FF;
+            --text-color: #333;
+            --border-radius: 49px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body, html {
+            height: 100%;
+            font-family: 'Inter', Arial, sans-serif;
+            background-color: var(--background-color);
+            line-height: 1.0;
+        }
+
+        .background-wrapper {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, 
+                rgba(91, 91, 255, 0.1), 
+                rgba(255, 105, 180, 0.1)
+            );
+            display: flex;
+            padding: 5px;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(10px);
+            z-index: 100;
+        }
+
+        .chatbot-container {
+            width: 420px;
+            height: 600px;
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: 0 2px 6px rgba(91, 91, 255, 0.15);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border: -10px solid rgba(91, 91, 255, 0.1);
+            transform: translateY(-20px);
+            transition: transform 0.3s ease;
+        }
+
+        .chatbot-container:hover {
+            transform: translateY(-30px);
+        }
+
+        .chat-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 16px;
+            text-align: center;
+            font-weight: 600;
+            box-shadow: 0 6px 6px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position:  relative;
+            z-index: 20;
+        }
+
+        .back-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background 0.3s ease, transform 0.2s ease;
+        }
+
+        .back-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .back-btn:active {
+            transform: scale(0.95);
+        }
+
+        .chat-messages {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 20px;
+            background-color: #f9faff;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 12px 15px;
+            border-radius: 15px;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            position: relative;
+            clear: both;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .user-message {
+            background-color: var(--primary-color);
+            color: white;
+            align-self: flex-end;
+            margin-left: auto;
+            border-bottom-right-radius: 5px;
+        }
+
+        .bot-message {
+            background-color: #e6eaf4;
+            color: var(--text-color);
+            align-self: flex-start;
+            border-bottom-left-radius: 5px;
+        }
+
+        .message:hover {
+            transform: scale(1.02);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .typing-indicator {
+            display: flex;
+            align-items: center;
+            background-color: #e6eaf4;
+            padding: 10px 15px;
+            border-radius: 15px;
+            align-self: flex-start;
+        }
+
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            background-color: var(--primary-color);
+            border-radius: 50%;
+            margin: 0 3px;
+            opacity: 0.5;
+            animation: typing 1.4s infinite;
+        }
+
+        .typing-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typing {
+            0%, 60%, 100% { 
+                transform: scale(0.8);
+                opacity: 0.5;
+            }
+            30% { 
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .chat-input {
+            display: flex;
+            padding: 15px;
+            background-color: white;
+            border-top: 1px solid #e6eaf4;
+            gap: 10px;
+        }
+
+        .message-input {
+            flex-grow: 1;
+            padding: 12px 15px;
+            border: 1px solid #e6eaf4;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .message-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(91, 91, 255, 0.1);
+        }
+
+        .send-btn {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .send-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .send-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* Quick reply buttons */
+        .quick-replies {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+            align-self: flex-start;
+        }
+
+        .quick-reply {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .quick-reply:hover {
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 480px) {
+            .chatbot-container {
+                width: 95%;
+                height: 95%;
+            }
+       }
+    </style>
+</head>
+<body>
+    <div class="background-wrapper">
+        <div class="chatbot-container">
+            <div class="chat-header">
+                <button class="back-btn" id="back-btn">← Back</button>
+                Multi Games Chatbot
+            </div>
+            <div class="chat-messages" id="chat-messages"></div>
+            <div class="chat-input">
+                <input type="text" class="message-input" id="message-input" placeholder="Type your message...">
+                <button class="send-btn" id="send-btn">
+                    Send
+                </button>
+            </div>
+          </div>
+    </div>
+
+    <!-- Add audio elements for sounds -->
+    <audio id="typing-sound" src="https://audio.jukehost.co.uk/FKEB22RFgebPinoIPVx1hIO4i9p2ddcj"></audio>
+    <audio id="sent-message-sound" src="https://audio.jukehost.co.uk/PYic6NA3HCzRHrGhOEibCMrFHrZd5aOs"></audio>
+
+    <script>
+        // Enhanced Multi Games Chatbot with conversation context
+        class MultiGamesBot {
+            constructor() {
+                this.context = {
+                    userName: null,
+                    lastIntent: null,
+                    conversationHistory: [],
+                    mentionedGames: [],
+                    preferredPlatform: null
+                };
+                
+                this.knowledgeBase = {
+                    intents: {
+                        // 1. GREETING INTENT
+                        greeting: {
+                            patterns: [
+                                'hi', 'hello', 'hey', 'greetings', 'good morning', 
+                                'good afternoon', 'good evening', 'wassup', 'start'
+                            ],
+                            responses: [
+                                "Hi there! I'm your Multi Games assistant. What can I help you with today? 🎮",
+                                "Hello, gamer! Looking for game recommendations, pricing info, or technical support?",
+                                "Hey! Great to see you. What brings you to Multi Games today?"
+                            ],
+                            followUp: "Are you looking for game recommendations, pricing information, or something else?",
+                            quickReplies: ["Game recommendations", "Pricing", "Support", "Platforms"]
+                        },
+                        
+                        // 2. GAMES INTENT
+                        games: {
+                            patterns: [
+                                'what games', 'game list', 'available games', 'game catalog', 
+                                'recommend', 'popular games', 'best games', 'new releases',
+                                'game recommendations'
+                            ],
+                            responses: [
+                                "Our top games this month include 'Stellar Odyssey', 'Battle Royale Masters', and 'Fantasy Quest VII'. What type of games do you enjoy?",
+                                "We've got everything from action to strategy! Some fan favorites are 'Mythic Legends', 'Racing Extreme', and 'Puzzle Dimensions'. What genres interest you?",
+                                "You've got to check out 'Cosmic Explorers' and 'Dragon's Keep' - they're trending right now! Would you like to know more about any specific game?"
+                            ],
+                            followUp: "What type of games do you usually play? I can give you personalized recommendations.",
+                            quickReplies: ["Action", "RPG", "Strategy", "Sports", "Multiplayer"]
+                        },
+                        
+                        // 3. SPECIFIC GAME GENRES
+                        gameGenres: {
+                            patterns: [
+                                'action', 'adventure', 'rpg', 'role playing', 'strategy', 
+                                'sports', 'racing', 'simulation', 'puzzle', 'multiplayer'
+                            ],
+                            responses: {
+                                'action': "For action games, check out 'Combat Zone 5', 'Ninja Warriors', and 'Adrenaline Rush'. These are extremely popular right now!",
+                                'rpg': "RPG fan? You'll love 'Epic Quest Saga', 'Dragon Realms', and 'Mystic Heroes'. They all have amazing storylines and character development.",
+                                'strategy': "For strategy enthusiasts, 'Empire Builder 3', 'Tactical Command', and 'Civilization Masters' offer deep gameplay and challenging scenarios.",
+                                'sports': "Our sports collection includes 'Ultimate Football 24', 'Basketball Kings', and 'Tennis Champions'. They're all updated with the latest rosters!",
+                                'multiplayer': "For multiplayer fun, try 'Battle Arena', 'Team Fortress', or 'Cosmic Racers'. They all have active communities and regular events!"
+                            },
+                            followUp: "Would you like to know more about any of these games?",
+                            quickReplies: ["Game details", "Pricing", "Platforms", "Other genres"]
+                        },
+                        
+                        // 4. SUPPORT INTENT
+                        support: {
+                            patterns: [
+                                'help', 'support', 'problem', 'issue', 'technical support',
+                                'not working', 'bug', 'error', 'crash', 'freeze'
+                            ],
+                            responses: [
+                                "I'm sorry to hear you're having trouble. Could you tell me what specific issue you're experiencing?",
+                                "Our support team is ready to help! What game are you having problems with, and what's happening exactly?",
+                                "Let's get that fixed for you. Can you describe the issue in detail? It helps our team diagnose the problem faster."
+                            ],
+                            followUp: "You can also reach our dedicated support team at multigames0000@gmail.com or WhatsApp +2349071104450. What issue are you experiencing?",
+                            quickReplies: ["Game won't start", "Account issues", "Payment problem", "Performance issues"]
+                        },
+                        
+                        // 5. PRICING INTENT
+                        pricing: {
+                            patterns: [
+                                'price', 'cost', 'premium', 'subscription', 'how much', 'pricing',
+                                'payment', 'buy', 'purchase', 'offer', 'discount'
+                            ],
+                            responses: [
+                                "We have several flexible subscription options:\n• Daily Pass: ₦100/day\n• Premium Access: ₦500/3 days\n• Weekly Gold: ₦2000/week\nWhich sounds best for your gaming needs?",
+                                "Our current pricing plans are super competitive:\n• ₦100 for 24-hour access\n• ₦500 for 3-day premium\n• ₦2000 for a full week of unlimited gaming\nWe also have special offers for first-time subscribers!",
+                                "You can choose from these plans:\n• Daily: ₦100 (basic access)\n• 3-Day Premium: ₦500 (includes bonus content)\n• Weekly Gold: ₦2000 (all games + exclusive perks)\nWhich would you like to know more about."
+                            ],
+                            followUp: "Do you have questions about any specific plan or payment methods?",
+                            quickReplies: ["Daily plan", "Weekly plan", "Special offers"]
+                        },
+                        
+                        // 6. PLATFORM INTENT
+                        platforms: {
+                            patterns: [
+                                'which platforms', 'platform support', 'devices', 'where can i play',
+                                'pc', 'mobile', 'android', 'ios', 'playstation', 'xbox', 'switch'
+                            ],
+                            responses: [
+                                "Multi Games works on nearly every gaming device! PC (Windows/Mac), PlayStation (4/5), Xbox (One/Series X|S), Nintendo Switch, and mobile (iOS/Android). Which platform do you use?",
+                                "We've got you covered on all major platforms: PC, consoles (PlayStation, Xbox, Nintendo), and mobile devices. Some games even support cross-platform play!",
+                                "You can enjoy our games on PC, PlayStation, Xbox, Switch, and mobile devices. Most titles support cross-progression so you can continue your game across different devices!"
+                            ],
+                            followUp: "Which platform do you primarily game on? I can tell you which games are optimized for it.",
+                            quickReplies: ["PC", "PlayStation", "Xbox", "Mobile", "Nintendo Switch"]
+                        },
+
+                        // 7. SPECIFIC PLATFORM DETAILS
+                        platformDetails: {
+                            patterns: [
+                                'pc games', 'playstation games', 'xbox games', 'mobile games', 'switch games',
+                                'android games', 'ios games', 'computer games', 'console games'
+                            ],
+                            responses: {
+                                'pc': "On PC, you'll get the best graphics with our titles like 'Stellar Odyssey', 'Mythic Legends', and 'Tactical Command'. We recommend a mid-tier graphics card for optimal performance.",
+                                'playstation': "PlayStation gamers love our exclusive 'Cosmic Racers DLC' and 'Battle Royale Masters'. They're optimized for DualSense controller features!",
+                                'xbox': "On Xbox, check out 'Dragon's Keep' and 'Mythic Legends' with enhanced graphics for Series X. We also fully support Xbox Game Pass integration.",
+                                'mobile': "Our mobile lineup includes lighter versions of 'Puzzle Dimensions' and 'Fantasy Quest', plus mobile-exclusive titles like 'Pocket Heroes' and 'Idle Champions'.",
+                                'switch': "Nintendo Switch players can enjoy 'Mythic Legends', 'Puzzle Dimensions', and our exclusive 'Fantasy Quest: Portable Edition' with touch controls."
+                            },
+                            followUp: "Would you like game recommendations specifically for this platform?",
+                            quickReplies: ["Game recommendations", "Technical requirements", "Exclusive titles"]
+                        },
+
+                        // 8. DATE AND TIME INTENT
+                        datetime: {
+                            patterns: [
+                                'what time', 'current time', 'what date', 'current date', 'today\'s date', 'time now'
+                            ],
+                            responses: (currentDateTime) => [
+                                `It's currently ${currentDateTime}. Perfect time for gaming, I'd say! Anything specific you'd like to know about our service?`,
+                                `My clock shows ${currentDateTime}. How can I help you with Multi Games today?`,
+                                `Right now, it's ${currentDateTime}. Our servers are active 24/7, so you can game anytime!`
+                            ],
+                            followUp: "Is there something I can help you with regarding our games or services?",
+                            quickReplies: ["Games", "Support", "Pricing", "Platforms"]
+                        },
+                        
+                        // 9. THANKS/BYE INTENT
+                        farewell: {
+                            patterns: [
+                                'thanks', 'thank you', 'bye', 'goodbye', 'see you', 'later',
+                                'that\'s all', 'exit'
+                            ],
+                            responses: [
+                                "You're welcome! Feel free to come back if you have more questions. Happy gaming! 🎮",
+                                "Anytime! I'm here 24/7 whenever you need gaming assistance. Take care!",
+                                "Thanks for chatting! Don't forget to check out our weekly game updates. Bye for now!"
+                            ],
+                            followUp: null,
+                            quickReplies: ["Start over", "Latest games", "Special offers"]
+                        },
+                        
+                        // 10. NAME INTENT
+                        name: {
+                            patterns: [
+                                'my name is', 'i am', 'call me', 'i\'m called'
+                            ],
+                            processResponse: (message) => {
+                                // Extract name from patterns like "My name is John" or "Call me Sarah"
+                                const namePatterns = [
+                                    /my name is (\w+)/i,
+                                    /call me (\w+)/i,
+                                     /i am (\w+)/i,
+                                    /i'm (\w+)/i,
+                                    /i'm called (\w+)/i
+                                ];
+                                
+                                for (const pattern of namePatterns) {
+                                    const match = message.match(pattern);
+                                    if (match && match[1]) {
+                                        return match[1];
+                                    }
+                                }
+                                return null;
+                            },
+                            responses: (name) => [
+                                `Great to meet you, ${name}! How can I help with your gaming needs today?`,
+                                `Hello ${name}! What brings you to Multi Games today?`,
+                                `Thanks, ${name}! What kind of games are you interested in?`
+                            ],
+                            followUp: "What can I help you with today?",
+                            quickReplies: ["Game recommendations", "Pricing", "Support"]
+                        }
+                    },
+                    
+                    // FALLBACK RESPONSES
+                    fallback: [
+                        "I'm not quite sure I understand. Could you rephrase that or ask about our games, pricing, or platforms?",
+                        "Hmm, I'm still learning! Could you try asking that in a different way? I'm best at helping with game information, technical support, and pricing.",
+                        "I didn't catch that. I can help with game recommendations, platform information, pricing, or technical support. What are you interested in?"
+                    ],
+                    
+                    // FOLLOW-UP QUESTIONS FOR CONTEXT BUILDING
+                    contextQuestions: {
+                        noContext: "Is there anything specific about Multi Games you'd like to know? I can help with game recommendations, pricing, or technical support.",
+                        afterGames: "Would you like to know more about any specific game or genre?",
+                        afterPricing: "Do you have any questions about our payment methods or subscription benefits?",
+                        afterSupport: "Is there a specific game or platform you're having issues with?"
+                    }
+                };
+            }
+            
+            processMessage(userMessage) {
+                const lowerMessage = userMessage.toLowerCase();
+                this.context.conversationHistory.push({role: 'user', message: userMessage});
+                
+                // Check for name in the message
+                const nameIntent = this.knowledgeBase.intents.name;
+                const extractedName = nameIntent.processResponse(userMessage);
+                if (extractedName) {
+                    this.context.userName = extractedName;
+                    this.context.lastIntent = 'name';
+                    const response = this.getRandomResponse(nameIntent.responses(extractedName));
+                    return {
+                        text: response,
+                        followUp: nameIntent.followUp,
+                        quickReplies: nameIntent.quickReplies
+                    };
+                }
+                
+                // Check datetime intent first
+                if (this.checkIntent(lowerMessage, this.knowledgeBase.intents.datetime.patterns)) {
+                    const currentDateTime = this.getCurrentDateTime();
+                    this.context.lastIntent = 'datetime';
+                    const response = this.getRandomResponse(this.knowledgeBase.intents.datetime.responses(currentDateTime));
+                    return {
+                        text: response,
+                        followUp: this.knowledgeBase.intents.datetime.followUp,
+                        quickReplies: this.knowledgeBase.intents.datetime.quickReplies
+                    };
+                }
+                
+                // Check for specific game genres
+                const genreIntent = this.knowledgeBase.intents.gameGenres;
+                for (const genre in genreIntent.responses) {
+                    if (lowerMessage.includes(genre)) {
+                        this.context.lastIntent = 'gameGenres';
+                        return {
+                            text: genreIntent.responses[genre],
+                            followUp: genreIntent.followUp,
+                            quickReplies: genreIntent.quickReplies
+                        };
+                    }
+                }
+                
+                // Check for specific platform details
+                const platformIntent = this.knowledgeBase.intents.platformDetails;
+                for (const platform in platformIntent.responses) {
+                    if (lowerMessage.includes(platform)) {
+                        this.context.preferredPlatform = platform;
+                        this.context.lastIntent = 'platformDetails';
+                        return {
+                            text: platformIntent.responses[platform],
+                            followUp: platformIntent.followUp,
+                            quickReplies: platformIntent.quickReplies
+                        };
+                    }
+                }
+                
+                // Check each intent for a match
+                for (let intentKey in this.knowledgeBase.intents) {
+                    if (['datetime', 'name', 'gameGenres', 'platformDetails'].includes(intentKey)) continue;
+                    
+                    const intent = this.knowledgeBase.intents[intentKey];
+                    
+                    if (this.checkIntent(lowerMessage, intent.patterns)) {
+                        this.context.lastIntent = intentKey;
+                        const response = this.getRandomResponse(intent.responses);
+                        return {
+                            text: response,
+                            followUp: intent.followUp,
+                            quickReplies: intent.quickReplies
+                        };
+                    }
+                }
+                
+                // Use context to provide more relevant fallback
+                let contextualResponse = this.getRandomResponse(this.knowledgeBase.fallback);
+                let followUp = this.knowledgeBase.contextQuestions.noContext;
+                let quickReplies = ["Games", "Pricing", "Support", "Platforms"];
+                
+                if (this.context.lastIntent) {
+                    const contextKey = `after${this.context.lastIntent.charAt(0).toUpperCase() + this.context.lastIntent.slice(1)}`;
+                    if (this.knowledgeBase.contextQuestions[contextKey]) {
+                        followUp = this.knowledgeBase.contextQuestions[contextKey];
+                    }
+                }
+                
+                return {
+                    text: contextualResponse,
+                    followUp: followUp,
+                    quickReplies: quickReplies
+                };
+            }
+            
+            checkIntent(message, patterns) {
+                return patterns.some(pattern => message.includes(pattern.toLowerCase()));
+            }
+            
+            getRandomResponse(responses) {
+                return responses[Math.floor(Math.random() * responses.length)];
+            }
+            
+            getCurrentDateTime() {
+                return new Date().toLocaleString();
+            }
+            
+            // Method to get personalized greeting based on context
+            getPersonalizedGreeting() {
+                const greetings = [
+                    "Welcome to Multi Games! I'm your virtual gaming assistant. How can I help you today?",
+                    "Hi there! I'm Multi, your gaming companion. Ask me anything about our games, pricing, or platforms!",
+                    "Welcome to the world of Multi Games! I'm here to make your gaming experience awesome. What are you looking for today?"
+                ];
+                return this.getRandomResponse(greetings);
+            }
+        }
+
+        // Initialize the chatbot
+        const chatbot = new MultiGamesBot();
+        const chatMessages = document.getElementById('chat-messages');
+        const messageInput = document.getElementById('message-input');
+        const sendBtn = document.getElementById('send-btn');
+        const backBtn = document.getElementById('back-btn');
+        const typingSound = document.getElementById('typing-sound');
+        const sentMessageSound = document.getElementById('sent-message-sound');
+        
+        // Track conversation for context
+        let conversationActive = false;
+
+        function addMessage(message, type) {
+            const messageElement = document.createElement('div');
+            messageElement.classList.add('message', type);
+            messageElement.textContent = message;
+            chatMessages.appendChild(messageElement);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            // Play sent message sound for bot messages
+            if (type === 'bot-message') {
+                sentMessageSound.currentTime = 0;
+                sentMessageSound.play();
+            }
+            
+            return messageElement;
+        }
+        
+        function addQuickReplies(replies) {
+            if (!replies || replies.length === 0) return;
+            
+            const quickRepliesContainer = document.createElement('div');
+            quickRepliesContainer.classList.add('quick-replies');
+            
+            replies.forEach(reply => {
+                const button = document.createElement('button');
+                button.classList.add('quick-reply');
+                button.textContent = reply;
+                button.addEventListener('click', () => {
+                    // When quick reply is clicked, send it as a user message
+                    addMessage(reply, 'user-message');
+                    processUserMessage(reply);
+                    
+                    // Remove quick replies after selection
+                    quickRepliesContainer.remove();
+                });
+                quickRepliesContainer.appendChild(button);
+            });
+            
+            chatMessages.appendChild(quickRepliesContainer);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function showTypingIndicator() {
+            const typingIndicator = document.createElement('div');
+            typingIndicator.classList.add('message', 'typing-indicator');
+            
+            for (let i = 0; i < 3; i++) {
+                const dot = document.createElement('div');
+                dot.classList.add('typing-dot');
+                typingIndicator.appendChild(dot);
+            }
+            
+            chatMessages.appendChild(typingIndicator);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            // Play typing sound
+            typingSound.loop = true;
+            typingSound.play();
+
+            return typingIndicator;
+        }
+
+        function processUserMessage(message) {
+            // Show typing indicator
+            const typingIndicator = showTypingIndicator();
+            
+            // Process message with bot and get response
+            setTimeout(() => {
+                // Stop typing sound
+                typingSound.pause();
+                typingSound.currentTime = 0;
+
+                // Remove typing indicator
+                chatMessages.removeChild(typingIndicator);
+                
+                // Get bot response with context
+                const botResponse = chatbot.processMessage(message);
+                
+                // Add main response
+                addMessage(botResponse.text, 'bot-message');
+                
+                // Add follow-up if available
+                if (botResponse.followUp) {
+                    setTimeout(() => {
+                        addMessage(botResponse.followUp, 'bot-message');
+                        
+                        // Add quick replies if available
+                        if (botResponse.quickReplies) {
+                            addQuickReplies(botResponse.quickReplies);
+                        }
+                    }, 800);
+                } else if (botResponse.quickReplies) {
+                    addQuickReplies(botResponse.quickReplies);
+                }
+                
+                conversationActive = true;
+            }, 1500 + Math.random() * 1000); // Random delay for more natural feel
+        }
+
+        function sendMessage() {
+            const message = messageInput.value.trim();
+            if (message) {
+                // Add user message
+                addMessage(message, 'user-message');
+                
+                // Process with bot
+                processUserMessage(message);
+
+                // Clear input
+                messageInput.value = '';
+            }
+        }
+
+        // Back button functionality
+        backBtn.addEventListener('click', () => {
+            // Navigate back to the root index page
+            window.location.href = 'file:///android_asset/htmlapp/root/index.html';
+        });
+
+        // Event Listeners
+        sendBtn.addEventListener('click', sendMessage);
+        messageInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        // Welcome message and initial quick replies
+        setTimeout(() => {
+            const initialGreeting = chatbot.getPersonalizedGreeting();
+            addMessage(initialGreeting, 'bot-message');
+            
+            setTimeout(() => {
+                addQuickReplies([
+                    "What games do you have?", 
+                    "Tell me about pricing", 
+                    "I need support", 
+                    "Which platforms are supported?"
+                ]);
+            }, 1000);
+        }, 1000);
+    </script>
+</body>
+</html>
+                

@@ -1,0 +1,1160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi Games App</title>
+     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5345992350931230"
+     crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', 'Arial', sans-serif;
+        }
+
+            :root {
+            --primary: #008CFF;
+            --secondary: #a29bfe;
+            --accent: #fd79a8;
+            --dark: #2d3436;
+            --light: #f5f6fa;
+            --card-radius: 30px;
+            --transition-speed: 0.3s;
+}
+
+        body {
+            transition: background-color 1s ease;
+            height: 100vh;
+            overflow-x: hidden;
+            background: linear-gradient(-45deg, #2ecc71, #27ae60, #1abc9c, #16a085);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+        }
+
+        @keyframes gradient {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 0;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(10px);
+            position: fixed;
+            z-index: 100;
+            top: 0;
+            left: 0;
+            overflow-x: hidden;
+            transition: 0.4s ease-in-out;
+            padding-top: 70px;
+            color: white;
+            box-shadow: 5px 0 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .sidebar.active {
+            width: 280px;
+        }
+
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            padding: 0 25px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .sidebar-header img {
+            width: 40px;
+            height: 40px;
+            margin-right: 15px;
+            border-radius: 10px;
+        }
+
+        .sidebar-header h3 {
+            font-size: 1.4rem;
+            font-weight: 600;
+        }
+
+        .sidebar a {
+            padding: 15px 25px;
+            text-decoration: none;
+            font-size: 16px;
+            color: #f1f1f1;
+            display: flex;
+            align-items: center;
+            transition: var(--transition-speed);
+            border-left: 3px solid transparent;
+        }
+
+        .sidebar a i {
+            margin-right: 15px;
+            font-size: 20px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .sidebar a:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-left: 3px solid var(--accent);
+        }
+
+        .sidebar .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 24px;
+            cursor: pointer;
+            color: rgba(255, 255, 255, 0.7);
+            transition: var(--transition-speed);
+        }
+
+        .sidebar .close-btn:hover {
+            color: white;
+            transform: rotate(90deg);
+        }
+
+        /* Main Content */
+        .content {
+            flex: 1;
+            padding: 20px;
+            transition: margin-left 0.5s;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Hamburger Menu Button */
+        .menu-btn {
+            width: 50px;
+            height: 50px;
+            background: rgba(0, 0, 0, 0.6);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: none;
+            color: white;
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 5;
+            font-size: 20px;
+            transition: var(--transition-speed);
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .menu-btn:hover {
+            background: var(--accent);
+            transform: scale(1.1);
+        }
+
+        /* App Header */
+        .app-header {
+            text-align: center;
+            margin: 60px 0 40px;
+            color: white;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.4);
+        }
+
+        .app-header h1 {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            font-weight: 700;
+            background: linear-gradient(45deg, var(--accent), var(--primary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .app-header p {
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto;
+            opacity: 0.8;
+        }
+
+        /* Game Cards Container */
+        .game-section {
+            margin: 20px 0 40px;
+        }
+
+        .section-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+            margin-bottom: 20px;
+            padding: 0 10px;
+        }
+
+        .section-title h2 {
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+
+        .section-title a {
+            color: var(--accent);
+            text-decoration: none;
+            font-size: 1rem;
+        }
+
+        .game-cards {
+            display: flex;
+            overflow-x: auto;
+            gap: 20px;
+            padding: 10px 5px 20px;
+            scroll-behavior: smooth;
+            position: relative;
+        }
+
+        .game-cards::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .game-cards::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 30px;
+        }
+
+        .game-cards::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 30px;
+        }
+
+        .game-card {
+            min-width: 280px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: var(--card-radius);
+            overflow: hidden;
+            transition: var(--transition-speed);
+            position: relative;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(5px);
+        }
+
+        .game-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .game-image {
+            height: 160px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .game-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+
+        .game-card:hover .game-image img {
+            transform: scale(1.1);
+        }
+
+        .game-category {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--accent);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .game-info {
+            padding: 15px;
+            color: white;
+        }
+
+        .game-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .game-desc {
+            font-size: 0.9rem;
+            opacity: 0.7;
+            margin-bottom: 15px;
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .game-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .game-rating {
+            display: flex;
+            align-items: center;
+        }
+
+        .game-rating i {
+            color: gold;
+            margin-right: 5px;
+        }
+
+        .play-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition-speed);
+            display: flex;
+            align-items: center;
+        }
+
+        .play-btn i {
+            margin-left: 5px;
+        }
+
+        .play-btn:hover {
+            background: var(--accent);
+            transform: scale(1.05);
+        }
+
+        /* Slider Controls */
+        .slider-controls {
+            display: flex;
+            justify-content: center;
+            margin-top: 15px;
+            gap: 15px;
+        }
+
+        .slider-btn {
+            width: 50px;
+            height: 50px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: none;
+            color: white;
+            font-size: 18px;
+            transition: var(--transition-speed);
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .slider-btn:hover {
+            background: var(--accent);
+            transform: scale(1.1);
+        }
+
+        /* Featured Game */
+        .featured-game {
+            position: relative;
+            height: 400px;
+            border-radius: var(--card-radius);
+            overflow: hidden;
+            margin-bottom: 40px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .featured-image {
+            width: 100%;
+            height: 100%;
+        }
+
+        .featured-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .featured-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 30px;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.9), transparent);
+            color: white;
+        }
+
+        .featured-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .featured-desc {
+            font-size: 1rem;
+            margin-bottom: 20px;
+            opacity: 0.8;
+            max-width: 600px;
+        }
+
+        .featured-meta {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .featured-rating {
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 50, 0.2);
+            padding: 5px 10px;
+            border-radius: 20px;
+        }
+
+        .featured-rating i {
+            color: gold;
+            margin-right: 5px;
+        }
+
+        .featured-category {
+            background:  rgba(212, 175, 55, 0.9);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+        }
+
+        .featured-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: var(--transition-speed);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .featured-btn:hover {
+            background: var(--accent);
+            transform: scale(1.05);
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 200;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(122, 122, 0, 0.0);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background-color: var(--model-color);
+            margin: 5% auto;
+            padding: 30px;
+            width: 90%;
+            max-width: 600px;
+            border-radius: var(--card-radius);
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+            color: var(--light);
+            animation: modalFadeIn 0.3s;
+        }
+
+        @keyframes modalFadeIn {
+            from {opacity: 0; transform: translateY(-30px);}
+            to {opacity: 1; transform: translateY(0);}
+        }
+
+        .modal-close {
+            color: var(--light);
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: var(--transition-speed);
+        }
+
+        .modal-close:hover {
+            color: var(--accent);
+            transform: rotate(90deg);
+        }
+
+        .modal h2 {
+            margin-bottom: 20px;
+            color: var(--light);
+            font-size: 1.8rem;
+            border-bottom: 2px solid var(--accent);
+            padding-bottom: 10px;
+        }
+
+        .modal p {
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        /* Footer */
+        .app-footer {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            color: rgba(255, 255, 255, 0.7);
+            text-align: center;
+            margin-top: auto;
+            backdrop-filter: blur(10px);
+        }
+
+        /* Privacy Link */
+        .privacy-link {
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.6);
+            text-decoration: underline;
+            margin-top: 5px;
+            display: block;
+            text-align: center;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .app-header h1 {
+                font-size: 2.2rem;
+            }
+            
+            .app-header p {
+                font-size: 1rem;
+            }
+            
+            .featured-game {
+                height: 300px;
+            }
+            
+            .featured-title {
+                font-size: 1.5rem;
+            }
+            
+            .featured-desc {
+                font-size: 0.9rem;
+            }
+            
+            .game-card {
+                min-width: 250px;
+            }
+        
+           /* Network Alert Styles */
+        .network-alert {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 15px;
+            background-color: rgba(220, 53, 69, 0.95);
+            color: white;
+            text-align: center;
+            z-index: 1000;
+            font-weight: 500;
+            transform: translateY(-100%);
+            transition: transform 0.3s ease-in-out;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .network-alert.active {
+            transform: translateY(0);
+        }
+        
+        .network-alert i {
+            margin-right: 10px;
+            font-size: 1.2rem;
+        }
+        
+        .network-success {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            background-color: rgba(40, 167, 69, 0.95);
+            color: white;
+            border-radius: 8px;
+            z-index: 1000;
+            font-weight: 500;
+            transform: translateX(150%);
+            transition: transform 0.3s ease-in-out;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            max-width: 300px;
+        }
+        
+        .network-success.active {
+            transform: translateX(0);
+        }
+        
+        .network-success i {
+            margin-right: 10px;
+            font-size: 1.2rem;
+            color: white;
+        }
+        
+        /* Modal overlay for network issues */
+        .network-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 999;
+            backdrop-filter: blur(3px);
+        }
+        
+        .network-overlay.active {
+            display: block;
+        }
+        
+        .disabled {
+            pointer-events: none;
+            opacity: 0.6;
+        }
+    }
+    </style>
+</head>
+<body>
+
+    <!-- Sidebar -->
+    <div id="sidebar" class="sidebar">
+        <div class="sidebar-header">
+            <img src="https://i.postimg.cc/6ppCC84g/20250227-233505-copy-330x330.jpg" alt="Logo">
+            <h3>Multi Games</h3>
+        </div>
+        <span class="close-btn" onclick="closeNav()"><i class="fas fa-times"></i></span>
+        <a href="main.html"><i class="fas fa-home"></i> Home</a>
+        <a href="earn.html"><i class="fas fa-sack-dollar"></i> Daily earn  
+        <span style="color: green; font-size: 0.8em; font-weight: bold; margin-left: 5px;">NEW</span>
+        </a>
+        <a href="profile.html"><i class="fas fa-user"></i> Profile</a>
+        <a href="model1.html">
+           <i class="fas fa-hand-holding-heart"></i> Donate/Whatsapp Group
+          <i class="fab fa-whatsapp" style="margin-left: 2px;"></i>
+        </a>
+        <a href="anonymous.html"><i class="fas fa-user-secret"></i>Report anonymously
+           </a>
+        <a href="chatbot.html"><i class="fas fa-headset"></i>Chat with us
+         <span style="color: red; font-size: 0.8em; font-weight: bold; margin-left: 5px;">NEW</span>
+         </a>
+        <a href="#" id="openModal">
+  <i class="fas fa-bullhorn"></i> Announcement 
+  <span style="color: red; font-size: 0.8em; font-weight: bold; margin-left: 5px;">NEW</span>
+</a>
+        <a href="terms.html"><i class="fas fa-file-alt"></i>Terms & Condition</a>
+        <a href="about.html"><i class="fas fa-info-circle"></i>About us</a>
+         <a href="logout.html"><i class="fas fa-sign-out-alt"></i>Log out</a>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <button class="menu-btn" onclick="openNav()"><i class="fas fa-bars"></i></button>
+        
+        <div class="content" id="content">
+            <div class="app-header">
+                <h1>Multi Games</h1>
+                <p>Discover and play the online games.</p>
+                 <h3> kindly Donate and support us</h3>
+            </div>
+
+            <!-- Featured Game -->
+<div class="featured-game">
+    <div class="featured-image">
+        <img src="https://i.postimg.cc/zfv3jnNr/truth.jpg" alt="Featured Game">
+    </div>
+    <div class="featured-overlay">
+        <div class="featured-category">👑Premium</div>
+        <h2 class="featured-title">Truth or Dare</h2>
+        <p class="featured-desc">Get ready for endless fun with this classic Truth or Dare game! Challenge your friends, reveal secrets, and take on daring tasks. Perfect for parties and game nights!</p>
+        <div class="featured-meta">
+            <div class="featured-rating">
+                <i class="fas fa-star"></i>
+                <span>4.9</span>
+            </div>
+            <div class="featured-category">FUN😎</div>
+        </div>
+        <a href="password.html">
+            <button class="featured-btn">
+                Play Now <i class="fas fa-play-circle"></i>
+            </button>
+        </a>
+    </div>
+    <a href="privacy.html" class="privacy-link">Privacy Policy</a>
+</div>
+
+            <!-- New Releases Section -->
+            <div class="game-section">
+                <div class="section-title">
+                    <h2>New Releases</h2>
+                    <a href="#">View All <i class="fas fa-chevron-right"></i></a>
+                </div>
+                <div class="game-cards" id="newReleases">
+                    <!-- Game Card 1 -->
+                    <div class="game-card">
+                        <div class="game-image">
+                            <img src="https://i.postimg.cc/hvXFjbH2/memory.jpg" alt="Game">
+                            <div class="game-category">Acrade</div>
+                        </div>
+                        <div class="game-info">
+                            <h3 class="game-title">memory card</h3>
+                            <p class="game-desc">Test your memory and sharpen your mind with this exciting card-matching game! Flip the cards, find the pairs, and challenge yourself with increasing difficulty levels.</p>
+                            <div class="game-meta">
+                                <div class="game-rating">
+                                    <i class="fas fa-star"></i>
+                                    <span>4.7</span>
+                                </div>
+                                   <a href="memory.html">
+                                          <button class="play-btn" onclick="playGame('memory')">Play <i class="fas fa-play"></i></button>
+                                  </a>
+                            </div>
+                            <a href="privacy.html" class="privacy-link">Privacy Policy</a>
+                        </div>
+                    </div>
+                    
+                    <!-- Game Card 2 -->
+                    <div class="game-card">
+                        <div class="game-image">
+                            <img src=" https://i.postimg.cc/tJtT7bVC/IMG-20250226-WA0077.jpg" alt="Game">
+                            <div class="game-category">RPG</div>
+                        </div>
+                        <div class="game-info">
+                            <h3 class="game-title">Whack Mole</h3>
+                            <p class="game-desc">whack more moles as faster as possible to high score.</p>
+                            <div class="game-meta">
+                                <div class="game-rating">
+                                    <i class="fas fa-star"></i>
+                                    <span>4.8</span>
+                                </div>
+                                    <a href="whack.html">
+                                          <button class="play-btn" onclick="playGame('whack-a-mole')">Play <i class="fas fa-play"></i></button>
+                                  </a>
+                            </div>
+                            <a href="privacy.html" class="privacy-link">Privacy Policy</a>
+                        </div>
+                    </div>
+               
+                         <!-- Game Card 3 -->
+<div class="game-card">
+    <div class="game-image">
+        <img src="https://i.postimg.cc/CL3qTdQn/images-12.jpg" alt="Game">
+        <div class="game-category" style="background-color: red;">New</div><!-- Change category as needed -->
+    </div>
+    <div class="game-info">
+        <h3 class="game-title">Tic Tac Tole</h3>
+        <p class="game-desc">Tic-Tac-Toe is a classic two-player strategy game where players take turns marking Xs and Os on a 3×3 grid. The goal is to get three marks in a row—horizontally, vertically, or diagonally—before the opponent.</p>
+        <div class="game-meta">
+            <div class="game-rating">
+                <i class="fas fa-star"></i>
+                <span>3.9</span> <!-- Set your rating -->
+            </div>
+            <a href="file:///android_asset/htmlapp/root/password(3).html">
+                <button class="play-btn" onclick="playGame('Tic-tac-tole')">Play <i class="fas fa-play"></i></button>
+            </a>
+        </div>
+        <a href="file:///android_asset/htmlapp/root/privacy.html" class="privacy-link">Privacy Policy</a>
+    </div>
+</div>
+
+       <!-- Game Card 4-->
+<div class="game-card">
+    <div class="game-image">
+        <img src="https://i.postimg.cc/MTbmT5k9/Halloween-Icon-Logo-Subway-Surfers-purple.jpg" alt="Game">
+        <div class="game-category" style="background-color: #FFD700; color: #8B7500; font-weight: bold;">Free</div><!-- Change category as needed -->
+    </div>
+    <div class="game-info">
+        <h3 class="game-title">Subway Surfers Halloween</h3>
+        <p class="game-desc">Subway Surfers is an endless runner where players dodge obstacles, collect coins, and escape the inspector while surfing subway tracks.</p>
+        <div class="game-meta">
+            <div class="game-rating">
+                <i class="fas fa-star"></i>
+                <span>3.9</span> <!-- Set your rating -->
+            </div>
+            <a href="subway.html">
+                <button class="play-btn" onclick="playGame('Tic-tac-tole')">Play <i class="fas fa-play"></i></button>
+            </a>
+        </div>
+        <a href="file:///android_asset/htmlapp/root/privacy.html" class="privacy-link">Privacy Policy</a>
+    </div>
+</div>
+
+       <!-- Game Card 5-->
+<div class="game-card">
+    <div class="game-image">
+        <img src="https://i.postimg.cc/mk6S7rmq/Screenshot-20250315-140235.jpg" alt="Game">
+        <div class="game-category" style="background-color: #FFD700; color: #8B7500; font-weight: bold;">Free</div><!-- Change category as needed -->
+    </div>
+    <div class="game-info">
+        <h3 class="game-title">Relic Run Away</h3>
+        <p class="game-desc">Relic Runway is an endless runner where you escape a giant guardian, collect treasures, and dodge traps in ancient temples.</p>
+        <div class="game-meta">
+            <div class="game-rating">
+                <i class="fas fa-star"></i>
+                <span>3.9</span> <!-- Set your rating -->
+            </div>
+            <a href="file:///android_asset/htmlapp/root/runaway.html">
+                <button class="play-btn" onclick="playGame('Tic-tac-tole')">Play <i class="fas fa-play"></i></button>
+            </a>
+        </div>
+        <a href="file:///android_asset/htmlapp/root/privacy.html" class="privacy-link">Privacy Policy</a>
+    </div>
+</div>
+</div>
+
+                <!-- Slider Controls -->
+                <div class="slider-controls">
+                    <button class="slider-btn" onclick="scrollCards('newReleases', -300)"><i class="fas fa-chevron-left"></i></button>
+                    <button class="slider-btn" onclick="scrollCards('newReleases', 300)"><i class="fas fa-chevron-right"></i></button>
+                </div>
+            </div>
+
+            <!-- Trending Games -->
+            <div class="game-section">
+                <div class="section-title">
+                    <h2>Trending Now</h2>
+                    <a href="#">View All <i class="fas fa-chevron-right"></i></a>
+                </div>
+                <div class="game-cards" id="trendingGames">               
+                    <!-- Game Card 1 -->
+                    <div class="game-card">
+                        <div class="game-image">
+                            <img src="https://i.postimg.cc/HLjWry4C/icon.webp" alt="Game">
+                            <div class="game-category">Fight</div>
+                        </div>
+                        <div class="game-info">
+                            <h3 class="game-title">Matchman Warriors</h3>
+                            <p class="game-desc">Experience high-octane Battle through dangerous demons and challenges.</p>
+                            <div class="game-meta">
+                                <div class="game-rating">
+                                    <i class="fas fa-star"></i>
+                                    <span>6.4</span>
+                                </div>
+                                  <a href="file:///android_asset/htmlapp/root/warriors.html">
+                                          <button class="play-btn" onclick="playGame('play')">play!<i class="fas fa-play"></i></button>
+                                  </a>
+                            </div>
+                            <a href="file:///android_asset/htmlapp/root/privacy.html" class="privacy-link">Privacy Policy</a>
+                        </div>
+                    </div>
+
+                         <!-- Game Card 2-->
+                    <div class="game-card">
+                        <div class="game-image">
+                            <img src="https://i.postimg.cc/G2QX6HVH/Screenshot-20250316-013311.jpg" alt="Game">
+                            <div class="game-category">Arcade</div>
+                        </div>
+                        <div class="game-info">
+                            <h3 class="game-title">Hunter Assassin</h3>
+                            <p class="game-desc">Hunter Assassin is a stealth-action game where you eliminate enemies while avoiding detection. Use shadows, strategy, and quick moves to outmaneuver guards and complete levels.</p>
+                            <div class="game-meta">
+                                <div class="game-rating">
+                                    <i class="fas fa-star"></i>
+                                    <span>6.1</span>
+                                </div>
+                                  <a href="file:///android_asset/htmlapp/root/hunter.html">
+                                          <button class="play-btn" onclick="playGame('play')">play!<i class="fas fa-play"></i></button>
+                                  </a>
+                            </div>
+                            <a href="file:///android_asset/htmlapp/root/privacy.html" class="privacy-link">Privacy Policy</a>
+                        </div>
+                      </div>
+                      
+                    <!-- Game Card 3-->
+                    <div class="game-card">
+                        <div class="game-image">
+                            <img src="https://i.postimg.cc/xC0Pd8QM/Screenshot-20250316-221515.jpg" alt="Game">
+                            <div class="game-category">Arcade</div>
+                        </div>
+                        <div class="game-info">
+                            <h3 class="game-title">Bubble Shooter</h3>
+                            <p class="game-desc">Bubble Shooter – Match and pop bubbles to clear the board before they reach the bottom!.</p>
+                            <div class="game-meta">
+                                <div class="game-rating">
+                                    <i class="fas fa-star"></i>
+                                    <span>7.6k</span>
+                                </div>
+                                  <a href="file:///android_asset/htmlapp/root/bubbleshot.html">
+                                          <button class="play-btn" onclick="playGame('coming')">Play<i class="fas fa-play"></i></button>
+                                  </a>
+                            </div>
+                            <a href="file:///android_asset/htmlapp/root/privacy.html" class="privacy-link">Privacy Policy</a>
+                        </div>
+                    </div>
+
+                    <!-- Game Card 4-->
+                    <div class="game-card">
+                        <div class="game-image">
+                            <img src="https://i.postimg.cc/jd4Yg0H0/images-11.jpg" alt="Game">
+                            <div class="game-category">Strategy</div>
+                        </div>
+                        <div class="game-info">
+                            <h3 class="game-title">Empire Builder</h3>
+                            <p class="game-desc">Build and expand your empire through strategic decisions and alliances.</p>
+                            <div class="game-meta">
+                                <div class="game-rating">
+                                    <i class="fas fa-star"></i>
+                                    <span>4.5</span>
+                                </div>
+                                  <a href="file:///android_asset/htmlapp/root/comingsoon.html">
+                                          <button class="play-btn" onclick="playGame('coming')">coming soon!<i class="fas fa-play"></i></button>
+                                  </a>
+                            </div>
+                            <a href="file:///android_asset/htmlapp/root/privacy.html" class="privacy-link">Privacy Policy</a>
+                        </div>
+                    </div>
+                    
+                    <!-- Game Card 5-->
+                    <div class="game-card">
+                        <div class="game-image">
+                            <img src="https://i.postimg.cc/5y5TRLFq/images-10.jpg" alt="Game">
+                            <div class="game-category">action</div>
+                        </div>
+                        <div class="game-info">
+                            <h3 class="game-title">War Demons</h3>
+                            <p class="game-desc">Experience high-octane Battle through dangerous demons and challenges.</p>
+                            <div class="game-meta">
+                                <div class="game-rating">
+                                    <i class="fas fa-star"></i>
+                                    <span>6.4</span>
+                                </div>
+                                  <a href="file:///android_asset/htmlapp/root/password(2).html">
+                                          <button class="play-btn" onclick="playGame('comingsoon')">coming soon!<i class="fas fa-play"></i></button>
+                                  </a>
+                            </div>
+                            <a href="file:///android_asset/htmlapp/root/privacy.html" class="privacy-link">Privacy Policy</a>
+                        </div>
+                    </div>
+                </div>
+                <!-- Slider Controls -->
+                <div class="slider-controls">
+                    <button class="slider-btn" onclick="scrollCards('trendingGames', -300)"><i class="fas fa-chevron-left"></i></button>
+                    <button class="slider-btn" onclick="scrollCards('trendingGames', 300)"><i class="fas fa-chevron-right"></i></button>
+                </div>
+            </div>
+
+            <!-- Modals -->
+            <div class="modal" id="infoModal">
+    <div class="modal-content">
+        <span class="modal-close">&times;</span>
+        <h2>📢Update📢</h2>
+        <p>🤖Chatbot added✅.</p>
+        <p>👻 Report anonymous  added.✅</p>
+        <p>🎮New Game .✅</p>
+    </div>
+</div>
+
+            <!-- Footer -->
+            <div class="app-footer">
+                <p>&copy; 2025 Multi Game . All rights reserved.</p>
+                <a href="file:///android_asset/htmlapp/root/privacy.html" class="privacy-link">Privacy Policy</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sidebar Navigation Functions
+        function openNav() {
+            document.getElementById("sidebar").classList.add("active");
+        }
+        
+        function closeNav() {
+            document.getElementById("sidebar").classList.remove("active");
+        }
+        
+        // Modal Functions
+        function openModal(modalType) {
+            document.getElementById(modalType + "Modal").style.display = "block";
+        }
+        
+        function closeModal(modalType) {
+            document.getElementById(modalType + "Modal").style.display = "none";
+        }
+        
+        // Close modal when clicking outside of it
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = "none";
+            }
+        }
+        
+        // Slider Function for Game Cards
+        function scrollCards(containerId, scrollAmount) {
+            const container = document.getElementById(containerId);
+            const currentScroll = container.scrollLeft;
+            container.scrollTo({
+                left: currentScroll + scrollAmount,
+                behavior: 'smooth'
+            });
+        }
+        
+        // Play Game Function with Privacy Policy
+        function playGame(gameId) {
+            // First check if user has agreed to privacy policy (you could use localStorage for this)
+            const hasAgreedToPrivacy = localStorage.getItem('privacyPolicyAgreed');
+            
+            if (!hasAgreedToPrivacy) {
+                // Redirect to privacy policy
+                window.location.href = "file:///android_asset/htmlapp/root/privacy.html";
+            } else {
+                // Proceed to game
+                console.log("Starting game: " + gameId);
+                // Your game starting logic here
+            }
+        }
+
+        // Your existing JavaScript
+        // Network Detection Functions
+        let isOnline = navigator.onLine;
+        let allButtons = document.querySelectorAll('button, a');
+        let buttonsState = [];
+        
+        // Store initial enabled/disabled state of all buttons
+        function storeButtonStates() {
+            buttonsState = [];
+            allButtons.forEach(button => {
+                buttonsState.push({
+                    element: button,
+                    wasDisabled: button.classList.contains('disabled')
+                });
+            });
+        }
+        
+        // Initial button state tracking
+        document.addEventListener('DOMContentLoaded', storeButtonStates);
+        
+        // Function to disable all buttons
+        function disableAllButtons() {
+            allButtons.forEach(button => {
+                button.classList.add('disabled');
+            });
+        }
+        
+        // Function to restore buttons to original state
+        function restoreButtonStates() {
+            buttonsState.forEach(buttonState => {
+                if (!buttonState.wasDisabled) {
+                    buttonState.element.classList.remove('disabled');
+                }
+            });
+        }
+        
+        // Function to check network status and update UI
+        function updateNetworkStatus() {
+            if (navigator.onLine) {
+                if (!isOnline) {
+                    // Connection was restored
+                    document.getElementById('networkAlert').classList.remove('active');
+                    document.getElementById('networkOverlay').classList.remove('active');
+                    
+                    // Show success message
+                    const successAlert = document.getElementById('networkSuccess');
+                    successAlert.classList.add('active');
+                    
+                    // Remove success message after 3 seconds
+                    setTimeout(() => {
+                        successAlert.classList.remove('active');
+                    }, 3000);
+                    
+                    // Re-enable buttons
+                    restoreButtonStates();
+                }
+                isOnline = true;
+            } else {
+                // No connection
+                document.getElementById('networkAlert').classList.add('active');
+                document.getElementById('networkOverlay').classList.add('active');
+                
+                // Disable all buttons
+                disableAllButtons();
+                isOnline = false;
+            }
+        }
+        
+        // Initial check
+        updateNetworkStatus();
+        
+        // Event listeners for network changes
+        window.addEventListener('online', updateNetworkStatus);
+        window.addEventListener('offline', updateNetworkStatus);
+        
+        // Check network status every 5 seconds
+        setInterval(updateNetworkStatus, 5000);
+        
+        // Simulate network connection (for testing purposes - remove in production)
+        function simulateNetworkLoss() {
+            // Force the offline state for testing
+            isOnline = true;
+            window.dispatchEvent(new Event('offline'));
+            updateNetworkStatus();
+        }
+        
+        function simulateNetworkRestore() {
+            // Force the online state for testing
+            isOnline = false;
+            window.dispatchEvent(new Event('online'));
+            updateNetworkStatus();
+        }
+        
+        // Debugging commands (remove in production)
+        // simulateNetworkLoss();
+        // setTimeout(simulateNetworkRestore, 3000);
+
+// Modal functionality
+document.getElementById("openModal").addEventListener("click", function(event) {
+    event.preventDefault(); // Prevent default link behavior
+    document.getElementById("infoModal").style.display = "block";
+});
+
+document.querySelector(".modal-close").addEventListener("click", function() {
+    document.getElementById("infoModal").style.display = "none";
+});
+
+// Close modal when clicking outside of it
+window.onclick = function(event) {
+    let modal = document.getElementById("infoModal");
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+};
+    </script>
+</body>
+</html>

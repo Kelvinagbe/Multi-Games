@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terms and Conditions - Multi Games</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #4a6fc5;
+            --secondary-color: #2c3e50;
+            --accent-color: #e74c3c;
+            --bg-color: #f8f9fa;
+            --card-bg: #ffffff;
+            --text-color: #333333;
+            --border-radius: 12px;
+            --box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            --section-padding: 24px;
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e5799 0%, #207cca 51%, #2989d8 75%, #7db9e8 100%);
+            background-attachment: fixed;
+            background-size: cover;
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 0;
+            margin: 0;
+        }
+
+        .header {
+            background-color: var(--primary-color);
+            color: white;
+            text-align: center;
+            padding: 40px 20px;
+            position: relative;
+            border-radius: 0 0 var(--border-radius) var(--border-radius);
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        /* Modern cool shape design for header */
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 10% 30%, rgba(73, 160, 255, 0.8) 0%, rgba(73, 160, 255, 0) 40%),
+                radial-gradient(circle at 90% 20%, rgba(103, 88, 245, 0.8) 0%, rgba(103, 88, 245, 0) 40%),
+                radial-gradient(circle at 50% 80%, rgba(0, 191, 255, 0.8) 0%, rgba(0, 191, 255, 0) 40%),
+                linear-gradient(135deg, #2183EF 0%, #4F46E5 100%);
+            z-index: 0;
+            border-radius: 0 0 var(--border-radius) var(--border-radius);
+        }
+
+        /* Additional geometric elements */
+        .header::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                linear-gradient(45deg, transparent 48%, rgba(255, 255, 255, 0.3) 49%, rgba(255, 255, 255, 0.3) 51%, transparent 52%),
+                linear-gradient(-45deg, transparent 48%, rgba(255, 255, 255, 0.1) 49%, rgba(255, 255, 255, 0.1) 51%, transparent 52%);
+            background-size: 80px 80px;
+            opacity: 0.3;
+            z-index: 0;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .logo {
+            width: 80px;
+            height: 80px;
+            background-color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .logo i {
+            font-size: 40px;
+            color: var(--primary-color);
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto 50px;
+            padding: 0 20px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            overflow: hidden;
+            margin-bottom: 30px;
+            transition: var(--transition);
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-header {
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 20px;
+            font-size: 20px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+        }
+
+        .card-header i {
+            margin-right: 10px;
+            font-size: 24px;
+        }
+
+        .card-body {
+            padding: var(--section-padding);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            color: white;
+        }
+
+        h2 {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            color: var(--secondary-color);
+        }
+
+        p {
+            margin-bottom: 20px;
+            font-size: 16px;
+        }
+
+        ul {
+            padding-left: 20px;
+            margin-bottom: 20px;
+        }
+
+        li {
+            margin-bottom: 10px;
+            position: relative;
+            padding-left: 5px;
+        }
+
+        a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        a:hover {
+            color: var(--accent-color);
+            text-decoration: underline;
+        }
+
+        .section {
+            margin-bottom: 30px;
+        }
+
+        .highlight-box {
+            background-color: rgba(74, 111, 197, 0.1);
+            border-left: 4px solid var(--primary-color);
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-weight: 600;
+            text-align: center;
+            transition: var(--transition);
+            margin-top: 10px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .cta-button:hover {
+            background-color: #3a5bb1;
+            transform: translateY(-2px);
+            text-decoration: none;
+            color: white;
+        }
+
+        .last-updated {
+            text-align: center;
+            font-style: italic;
+            color: #777;
+            margin-top: 20px;
+            font-size: 14px;
+        }
+
+        .footer {
+            background-color: var(--secondary-color);
+            color: white;
+            text-align: center;
+            padding: 30px 20px;
+            margin-top: 50px;
+        }
+
+        .footer a {
+            color: #ddd;
+        }
+        
+        /* Add cool geometric pattern to background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.15;
+            background: 
+                linear-gradient(45deg, transparent 49%, #1a4c8e 49%, #1a4c8e 51%, transparent 51%, transparent),
+                linear-gradient(-45deg, transparent 49%, #3a7bd5 49%, #3a7bd5 51%, transparent 51%, transparent);
+            background-size: 60px 60px;
+        }
+
+        .accordion {
+            margin-bottom: 15px;
+        }
+
+        .accordion-header {
+            background-color: #f1f5fe;
+            padding: 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: var(--transition);
+        }
+
+        .accordion-header:hover {
+            background-color: #e6ecfa;
+        }
+
+        .accordion-content {
+            padding: 0 15px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .accordion-content.active {
+            max-height: 500px;
+            padding: 15px;
+        }
+
+        .separator {
+            height: 3px;
+            background: linear-gradient(90deg, rgba(74,111,197,0) 0%, rgba(74,111,197,1) 50%, rgba(74,111,197,0) 100%);
+            margin: 40px 0;
+            border-radius: 50%;
+        }
+
+        /* Back Button Styles */
+        .back-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: linear-gradient(135deg, #3498db, #2980b9, #1f6eb7, #1a5fb0);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 10px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease, opacity 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+        }
+
+        .back-button i {
+            margin-right: 8px;
+        }
+
+        .back-button:hover {
+            background: linear-gradient(135deg, #2980b9, #1f6eb7, #1a5fb0, #154c8c);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .back-button.visible {
+            opacity: 1;
+        }
+
+        /* Loader Styles */
+        .loader-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            backdrop-filter: blur(5px);
+        }
+
+        .loader {
+            width: 60px;
+            height: 60px;
+            border: 5px solid rgba(74, 111, 197, 0.3);
+            border-radius: 50%;
+            border-top: 5px solid #4a6fc5;
+            animation: spin 1s linear infinite;
+        }
+
+        .loader-text {
+            position: absolute;
+            top: calc(50% + 40px);
+            font-weight: bold;
+            color: #4a6fc5;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .card-header {
+                font-size: 18px;
+            }
+            
+            .logo {
+                width: 60px;
+                height: 60px;
+            }
+            
+            .logo i {
+                font-size: 30px;
+            }
+
+            .back-button {
+                padding: 8px 16px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loader -->
+    <div class="loader-container" id="loader">
+        <div class="loader"></div>
+        <div class="loader-text">Loading...</div>
+    </div>
+
+    <!-- Back Button -->
+    <a href="file:///android_asset/htmlapp/root/index.html" class="back-button" id="backButton">
+        <i class="fas fa-arrow-left"></i> Back to Home
+    </a>
+
+    <div class="header">
+        <div class="header-content">
+            <div class="logo">
+                <i class="fas fa-gamepad"></i>
+            </div>
+            <h1>Terms and Conditions</h1>
+            <p>Last updated: February 27, 2025</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="card">
+            <div class="card-body">
+                <div class="highlight-box">
+                    <p>Welcome to Multi Games! These Terms and Conditions govern your use of our gaming platform and services. By accessing or using our games, you agree to be bound by these terms. Please read them carefully before proceeding.</p>
+                </div>
+                
+                <div class="section">
+                    <div class="card">
+                        <div class="card-header">
+                            <i class="fas fa-handshake"></i> 1. Acceptance of Terms
+                        </div>
+                        <div class="card-body">
+                            <p>By downloading, installing, accessing, or playing any Multi Games products, you acknowledge that you have read, understood, and agree to be bound by these Terms and Conditions. If you do not agree to these terms, please do not use our services.</p>
+                            <p>These terms apply to all visitors, users, and others who access or use the Multi Games platform.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="card">
+                        <div class="card-header">
+                            <i class="fas fa-user-shield"></i> 2. User Conduct
+                        </div>
+                        <div class="card-body">
+                            <p>While using Multi Games, you agree to adhere to the following conduct guidelines:</p>
+                            <ul>
+                                <li>Do not engage in cheating, hacking, or exploiting game bugs or glitches</li>
+                                <li>Refrain from using offensive, harmful, discriminatory, or inappropriate language</li>
+                                <li>Do not distribute unauthorized copies of our games or content</li>
+                                <li>Respect the rights and experience of other players</li>
+                                <li>Do not attempt to access restricted areas of the service</li>
+                                <li>Do not use the platform to transmit viruses, malware, or other harmful code</li>
+                            </ul>
+                            <p>Violation of these guidelines may result in temporary or permanent suspension of your account.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="card">
+                        <div class="card-header">
+                            <i class="fas fa-copyright"></i> 3. Intellectual Property
+                        </div>
+                        <div class="card-body">
+                            <p>All game assets, graphics, characters, storylines, code, sound effects, music, and related content are the exclusive property of Multi Games and protected by international copyright and intellectual property laws.</p>
+                            <p>You may not copy, modify, distribute, sell, lease, publicly display, or create derivative works based on our content without express written permission from Multi Games.</p>
+                            <p>The Multi Games name, logo, and all related names, logos, product and service names, designs, and slogans are trademarks of Multi Games or its affiliates.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="card">
+                        <div class="card-header">
+                            <i class="fas fa-shopping-cart"></i> 4. In-Game Purchases & Donations
+                        </div>
+                        <div class="card-body">
+                            <p>Some features or content within Multi Games may require in-app purchases or donations. All payments are processed securely through our authorized payment processors.</p>
+                            <p>Virtual currencies or items purchased within the game:</p>
+                            <ul>
+                                <li>Have no monetary value outside of the game</li>
+                                <li>Cannot be exchanged for real money or items</li>
+                                <li>Are non-transferable between accounts</li>
+                                <li>May be modified or removed at our discretion</li>
+                            </ul>
+                            <p>Refunds for in-game purchases are subject to our discretion and the policies of the platform through which the purchase was made.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="card">
+                        <div class="card-header">
+                            <i class="fas fa-user-secret"></i> 5. Privacy Policy
+                        </div>
+                        <div class="card-body">
+                            <p>We respect your privacy and are committed to protecting your personal information. Our <a href="privacy-policy.html">Privacy Policy</a> outlines how we collect, use, and safeguard your data when you use our games.</p>
+                            <p>By using Multi Games, you consent to the data practices described in our Privacy Policy.</p>
+                            <a href="file:///android_asset/htmlapp/root/privacy.html" class="cta-button">View Privacy Policy</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="card">
+                        <div class="card-header">
+                            <i class="fas fa-ban"></i> 6. Termination
+                        </div>
+                        <div class="card-body">
+                            <p>We reserve the right to terminate or suspend access to our games, without prior notice or liability, for any reason, including but not limited to a breach of these Terms and Conditions.</p>
+                            <p>Upon termination:</p>
+                            <ul>
+                                <li>Your right to use the service will immediately cease</li>
+                                <li>You may lose access to your account, profile, and all related data</li>
+                                <li>Any in-game purchases or virtual items may be forfeited</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="card">
+                        <div class="card-header">
+                            <i class="fas fa-sync-alt"></i> 7. Changes to Terms
+                        </div>
+                        <div class="card-body">
+                            <p>We may update these Terms and Conditions at any time. The updated version will be effective as soon as it is posted.</p>
+                            <p>We will make reasonable efforts to notify you of significant changes, but it is your responsibility to review these terms periodically.</p>
+                            <p>Your continued use of Multi Games after changes to the Terms and Conditions constitutes your acceptance of the revised terms.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="card">
+                        <div class="card-header">
+                            <i class="fas fa-envelope"></i> 8. Contact Us
+                        </div>
+                        <div class="card-body">
+                            <p>If you have any questions, concerns, or feedback regarding these Terms and Conditions, please contact our support team:</p>
+                            <p><i class="fas fa-envelope"></i> Email: <a href="mailto:support@multigames.com">support@multigames.com</a></p>
+                            <p><i class="fas fa-globe"></i> Website: <a href="https://www.multigames.com/contact">www.multigames.com/contact</a></p>
+                            <p><i class="fas fa-headset"></i> Support Hours: Monday-Friday, 9 AM - 5 PM (PST)</p>
+                            <div class="highlight-box">
+                                <p>Our team is dedicated to providing excellent customer service and will respond to your inquiries as soon as possible.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="separator"></div>
+
+                <h2>Frequently Asked Questions</h2>
+
+                <div class="accordion">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        <span>How do I request a refund?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="accordion-content">
+                        <p>Refund requests for in-game purchases must be submitted within 14 days of purchase. Please contact our support team with your purchase details and reason for the refund request. Note that refunds are subject to our discretion and may not be available for consumed or used items.</p>
+                    </div>
+                </div>
+
+                <div class="accordion">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        <span>Can I transfer my account to someone else?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="accordion-content">
+                        <p>No, Multi Games accounts are non-transferable. Sharing or selling accounts is prohibited and may result in account termination.</p>
+                    </div>
+                </div>
+
+                <div class="accordion">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        <span>What happens to my data if I delete the game?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="accordion-content">
+                        <p>Deleting the game from your device does not delete your account or data from our servers. To request data deletion, please contact our support team directly.</p>
+                    </div>
+                </div>
+
+                <p class="last-updated">Last Updated: February 27, 2025</p>
+
+                <div class="highlight-box">
+                    <p style="text-align: center; margin-bottom: 0;">By continuing to use Multi Games, you acknowledge that you have read and agree to these Terms and Conditions.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>&copy; 2025 Multi Games. All Rights Reserved.</p>
+        <p>
+            <a href="file:///android_asset/htmlapp/root/privacy.html">Privacy Policy</a> | 
+            <a href="terms-and-conditions.html">Terms & Conditions</a> | 
+            <a href="contact.html">Contact Us</a>
+        </p>
+    </div>
+
+    <script>
+        // Toggle accordion function
+        function toggleAccordion(element) {
+            const content = element.nextElementSibling;
+            const isActive = content.classList.contains('active');
+            
+            // Close all accordion contents
+            document.querySelectorAll('.accordion-content').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Rotate all icons back
+            document.querySelectorAll('.accordion-header i').forEach(icon => {
+                icon.style.transform = 'rotate(0deg)';
+            });
+            
+            // If the clicked one wasn't active, make it active
+            if (!isActive) {
+                content.classList.add('active');
+                element.querySelector('i').style.transform = 'rotate(180deg)';
+            }
+        }
+
+        // Back button visibility control
+        let lastScrollTop = 0;
+        const backButton = document.getElementById('backButton');
+        let backButtonTimer;
+
+        // Show back button after 5 seconds
+        setTimeout(() => {
+            backButton.classList.add('visible');
+        }, 5000);
+
+        window.addEventListener('scroll', () => {
+            const st = window.pageYOffset || document.documentElement.scrollTop;
+            
+            if (st > lastScrollTop) {
+                // Scrolling down
+                backButton.classList.remove('visible');
+            } else {
+                // Scrolling up
+                backButton.classList.add('visible');
+                
+                // Set timer to hide button after 5 seconds of no scrolling
+                clearTimeout(backButtonTimer);
+                backButtonTimer = setTimeout(() => {
+                    if (!isScrolling) {
+                        backButton.classList.add('visible');
+                    }
+                }, 5000);
+            }
+            
+            lastScrollTop = st <= 0 ? 0 : st;
+        });
+
+        // Flag to track if user is currently scrolling
+        let isScrolling = false;
+        window.addEventListener('scroll', () => {
+            isScrolling = true;
+            clearTimeout(window.scrollTimer);
+            window.scrollTimer = setTimeout(() => {
+                isScrolling = false;
+                // Show back button when scrolling stops
+                backButton.classList.add('visible');
+            }, 250);
+        });
+
+        // Loader functionality
+        window.addEventListener('load', function() {
+            // Hide loader after page is fully loaded (with a small delay for visual effect)
+            setTimeout(() => {
+                const loader = document.getElementById('loader');
+                loader.style.opacity = '0';
+                setTimeout(() => {
+                    loader.style.display = 'none';
+                }, 500);
+            }, 1500);
+        });
+
+        // Show loader immediately
+        document.getElementById('loader').style.display = 'flex';
+    </script>
+</body>
+</html>

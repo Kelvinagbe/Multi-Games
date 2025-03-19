@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi Games aynoues </title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: white;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            max-width: 800px;
+            width: 100%;
+        }
+        
+        .box-container {
+            width: 300px;
+            height: 300px;
+            perspective: 1000px;
+            opacity: 0;
+            transform: translateY(20px) translateZ(0);
+            animation: fadeIn 0.8s forwards;
+            margin-bottom: 20px;
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+        }
+        
+        /* Enhanced floating shadow effect */
+        .box-container::after {
+            content: "";
+            position: absolute;
+            bottom: -15px;
+            left: 10%;
+            width: 80%;
+            height: 20px;
+            background: radial-gradient(ellipse at center, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0) 70%);
+            border-radius: 50%;
+            z-index: -1;
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform: translateZ(-10px);
+            filter: blur(5px);
+        }
+        
+        /* Enhanced shadow effect on hover */
+        .box-container:hover::after {
+            width: 85%;
+            height: 25px;
+            bottom: -20px;
+            filter: blur(7px);
+        }
+        
+        /* Entry animation */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(40px) translateZ(0) scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) translateZ(0) scale(1);
+            }
+        }
+        
+        /* Enhanced exit animation with fragmentation effect */
+        @keyframes fragmentOut {
+            0% {
+                opacity: 1;
+                transform: translateY(0) translateZ(0) scale(1) rotate(0deg);
+                filter: blur(0);
+            }
+            25% {
+                transform: translateY(-15px) translateZ(20px) scale(1.05) rotate(-2deg);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-60px) translateZ(30px) scale(0.8) rotate(-5deg);
+                filter: blur(5px);
+            }
+        }
+        
+        /* Exit animation */
+        .box-container.fade-out {
+            animation: fragmentOut 0.8s forwards;
+            pointer-events: none;
+        }
+        
+        .box-container.fade-out::after {
+            opacity: 0;
+            width: 90%;
+            filter: blur(15px);
+            transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        .box {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transform-style: preserve-3d;
+            transition: transform 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform: translateZ(0);
+        }
+        
+        .box.flipping {
+            transform: rotateY(180deg);
+        }
+        
+        .box-front, .box-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        .box-front {
+            background: linear-gradient(135deg, #3b82f6, #ec4899, #8b5cf6);
+            color: white;
+        }
+        
+        .box-back {
+            background: linear-gradient(135deg, #8b5cf6, #3b82f6, #ec4899);
+            color: white;
+            transform: rotateY(180deg);
+        }
+        
+        /* Enhanced 3D Hover Effect */
+        .box-container:hover .box:not(.flipping) {
+            transform: translateZ(40px);
+        }
+        
+        .box-container:hover .box-front:not(.flipping) {
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25), 0 10px 15px rgba(0, 0, 0, 0.1);
+            transform: scale(1.05) translateZ(40px);
+        }
+        
+        .box-container:hover .box-back:not(.flipping) {
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25), 0 10px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
+        }
+        
+        .box-container:hover .logo {
+            transform: translateY(-5px);
+        }
+        
+        .tagline {
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 14px;
+            transition: transform 0.4s ease;
+        }
+        
+        .box-container:hover .tagline {
+            transform: translateY(-3px);
+        }
+        
+        .link-button {
+            background-color: white;
+            color: #6366f1;
+            padding: 12px 24px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+        }
+        
+        .link-button:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 15px 25px rgba(0, 0, 0, 0.2);
+        }
+        
+        .hint {
+            position: absolute;
+            bottom: 15px;
+            font-size: 12px;
+            opacity: 0.8;
+            transition: opacity 0.3s ease;
+        }
+        
+        .box-container:hover .hint {
+            opacity: 1;
+        }
+        
+        /* Loader styles */
+        .loader-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(240, 242, 245, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s;
+        }
+        
+        .loader-container.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        
+        .loader {
+            width: 48px;
+            height: 48px;
+            border: 5px solid #6366f1;
+            border-bottom-color: transparent;
+            border-radius: 50%;
+            animation: rotate 1s linear infinite;
+        }
+        
+        @keyframes rotate {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Email notification */
+        .email-notification {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #3b82f6;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            z-index: 999;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+        
+        .email-notification.visible {
+            opacity: 1;
+            pointer-events: auto;
+            animation: slideDown 0.3s forwards;
+        }
+        
+        /* Offline notification */
+        .offline-notification {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #ef4444;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 40px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            z-index: 999;
+            display: none;
+        }
+        
+        .offline-notification.visible {
+            display: block;
+            animation: slideDown 0.3s forwards;
+        }
+        
+        /* Online/Connection restored notification */
+        .online-notification {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #10b981;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 40px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            z-index: 999;
+            display: none;
+        }
+        
+        .online-notification.visible {
+            display: block;
+            animation: slideDown 0.3s forwards;
+        }
+        
+        @keyframes slideDown {
+            from { transform: translate(-50%, -20px); opacity: 0; }
+            to { transform: translate(-50%, 0); opacity: 1; }
+        }
+        
+        /* Embedded NGL iframe */
+        .iframe-container {
+            width: 100%;
+            max-width: 500px;
+            height: 400px;
+            border-radius: 40px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2), 0 15px 20px rgba(0, 0, 0, 0.1);
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            display: none;
+        }
+        
+        .iframe-container.visible {
+            opacity: 1;
+            transform: translateY(0);
+            display: block;
+            animation: iframeAppear 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        @keyframes iframeAppear {
+            0% {
+                opacity: 0;
+                transform: translateY(40px) scale(0.9);
+            }
+            50% {
+                transform: translateY(-10px) scale(1.02);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        
+        .iframe-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        
+        .close-iframe {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: rgba(255, 255, 255, 0.8);
+            color: #6366f1;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            z-index: 10;
+            transition: all 0.3s ease;
+        }
+        
+        .close-iframe:hover {
+            transform: scale(1.1);
+            background-color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .iframe-loader {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 5;
+        }
+        
+        /* Hide box when iframe is visible - explicitly removing from layout */
+        .box-container.hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Loader - Initially hidden -->
+    <div class="loader-container" id="loader-container">
+        <div class="loader"></div>
+    </div>
+    
+    <!-- Email notification -->
+    <div class="email-notification" id="email-notification">
+        <b>Remember to add your email when submitting!</b>
+    </div>
+    
+    <!-- Offline notification -->
+    <div class="offline-notification" id="offline-notification">
+        You are currently offline. Please check your internet connection.
+    </div>
+    
+    <!-- Online/Connection restored notification -->
+    <div class="online-notification" id="online-notification">
+        Connection restored! You're back online.
+    </div>
+    
+    <div class="container">
+        <div class="box-container" id="box-container">
+            <div class="box" id="box">
+                <div class="box-front">
+                    <div class="logo"><b>Multi Gmes </b> </div>
+                    <p class="tagline">Send report  Anonymously</p>
+                    <div class="link-button" id="front-link">Visit Now</div>
+                    <div class="hint">Click to flip</div>
+                </div>
+                <div class="box-back">
+                    <div class="logo">Let's Connect!</div>
+                    <p class="tagline">Discover fun games and chat anonymously with friends</p>
+                    <div class="link-button" id="back-link">Join The Fun</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Embedded NGL iframe container -->
+        <div class="iframe-container" id="iframe-container">
+            <div class="close-iframe" id="close-iframe">✕</div>
+            <div class="iframe-loader">
+                <div class="loader"></div>
+            </div>
+            <iframe id="ngl-iframe" src="about:blank" title="NGL Link"></iframe>
+        </div>
+    </div>
+
+    <script>
+        // DOM elements
+        const boxContainer = document.getElementById('box-container');
+        const box = document.getElementById('box');
+        const loader = document.getElementById('loader-container');
+        const offlineNotification = document.getElementById('offline-notification');
+        const onlineNotification = document.getElementById('online-notification');
+        const emailNotification = document.getElementById('email-notification');
+        const frontLink = document.getElementById('front-link');
+        const backLink = document.getElementById('back-link');
+        const iframeContainer = document.getElementById('iframe-container');
+        const nglIframe = document.getElementById('ngl-iframe');
+        const closeIframe = document.getElementById('close-iframe');
+        
+        // Track connection state
+        let wasOffline = false;
+        
+        // Check for user data
+        function checkUserData() {
+            // Demo implementation - in real application, this would check cookies, 
+            // localStorage, or a server request to check if user data exists
+            
+            // For demo purposes, we'll just check if localStorage has a 'userData' item
+            return localStorage.getItem('userData') !== null;
+        }
+        
+        // Handle box flipping
+        box.addEventListener('click', (e) => {
+            // Don't flip if clicking on buttons
+            if (e.target.classList.contains('link-button')) {
+                return;
+            }
+            
+            if (!box.classList.contains('flipping')) {
+                box.classList.add('flipping');
+            } else {
+                box.classList.remove('flipping');
+            }
+        });
+        
+        // Add enhanced 3D tilt effect based on mouse position
+        boxContainer.addEventListener('mousemove', (e) => {
+            if (box.classList.contains('flipping')) return;
+            
+            const rect = boxContainer.getBoundingClientRect();
+            const x = e.clientX - rect.left; // x position within the element
+            const y = e.clientY - rect.top;  // y position within the element
+            
+            // Calculate rotation values based on mouse position
+            // Limiting the rotation to a small range for subtle effect
+            const xRotation = (y - rect.height / 2) / (rect.height / 2) * 15;
+            const yRotation = (x - rect.width / 2) / (rect.width / 2) * -15;
+            
+            // Apply the transform with a slight delay for a more fluid effect
+            box.style.transform = `rotateX(${xRotation}deg) rotateY(${yRotation}deg) translateZ(30px)`;
+            
+            // Adjust shadow based on mouse position for enhanced depth effect
+            const shadowX = (x - rect.width / 2) / 20;
+            const shadowY = (y - rect.height / 2) / 20;
+            
+            // Apply dynamic shadow based on mouse position
+            const boxFront = document.querySelector('.box-front');
+            const boxBack = document.querySelector('.box-back');
+            
+            boxFront.style.boxShadow = `${-shadowX}px ${-shadowY}px 30px rgba(0, 0, 0, 0.2), 0 15px 35px rgba(0, 0, 0, 0.15)`;
+            boxBack.style.boxShadow = `${-shadowX}px ${-shadowY}px 30px rgba(0, 0, 0, 0.2), 0 15px 35px rgba(0, 0, 0, 0.15)`;
+        });
+        
+        // Reset transform when mouse leaves
+        boxContainer.addEventListener('mouseleave', () => {
+            if (!box.classList.contains('flipping')) {
+                box.style.transform = 'translateZ(0)';
+                
+                // Reset the shadows to default
+                const boxFront = document.querySelector('.box-front');
+                const boxBack = document.querySelector('.box-back');
+                
+                boxFront.style.boxShadow = '0 15px 35px rgba(0, 0, 0, 0.2)';
+                boxBack.style.boxShadow = '0 15px 35px rgba(0, 0, 0, 0.2)';
+            }
+        });
+        
+        // Handle NGL link clicks
+        function openNGLInIframe() {
+            if (!navigator.onLine) {
+                updateOnlineStatus();
+                return;
+            }
+            
+            // Check if user data exists before fading out the box
+            const hasUserData = checkUserData();
+            
+            // Show loader first
+            loader.classList.add('visible');
+            
+            // Fade out the box with the enhanced animation
+            boxContainer.classList.add('fade-out');
+            
+            // Set a timeout to simulate loading
+            setTimeout(() => {
+                // Hide loader
+                loader.classList.remove('visible');
+                
+                // Completely hide the original box when iframe is showing
+                boxContainer.classList.add('hidden');
+                
+                // Show iframe container with enhanced entrance animation
+                iframeContainer.classList.add('visible');
+                
+                // Load NGL link in iframe
+                nglIframe.src = 'https://ngl.link/multi_games';
+                
+                // Remove iframe loader when loaded
+                nglIframe.onload = function() {
+                    const iframeLoader = document.querySelector('.iframe-loader');
+                    if (iframeLoader) {
+                        iframeLoader.style.display = 'none';
+                    }
+                };
+            }, 1000);
+        }
+        
+        // Add click event to both buttons
+        frontLink.addEventListener('click', openNGLInIframe);
+        backLink.addEventListener('click', openNGLInIframe);
+        
+        // Close iframe when button clicked
+        closeIframe.addEventListener('click', () => {
+            iframeContainer.classList.remove('visible');
+            
+            // Restore the box with animation
+            setTimeout(() => {
+                // Remove hidden class first
+                boxContainer.classList.remove('hidden');
+                
+                // Wait for next frame to ensure CSS transition works
+                requestAnimationFrame(() => {
+                    // Then remove fade-out class to bring it back
+                    boxContainer.classList.remove('fade-out');
+                });
+                
+                // Reset iframe after transition
+                setTimeout(() => {
+                    nglIframe.src = 'about:blank';
+                    const iframeLoader = document.querySelector('.iframe-loader');
+                    if (iframeLoader) {
+                        iframeLoader.style.display = 'block';
+                    }
+                }, 500);
+            }, 300);
+        });
+        
+        // Network status monitoring
+        function updateOnlineStatus() {
+            if (!navigator.onLine) {
+                offlineNotification.classList.add('visible');
+                onlineNotification.classList.remove('visible');
+                
+                // Set the flag so we know to show 'connection restored' message later
+                wasOffline = true;
+                
+                // Clear iframe if offline
+                if (iframeContainer.classList.contains('visible')) {
+                    iframeContainer.classList.remove('visible');
+                }
+            } else {
+                offlineNotification.classList.remove('visible');
+                
+                // Only show the online notification if user was previously offline
+                if (wasOffline) {
+                    onlineNotification.classList.add('visible');
+                    
+                    // Hide the online notification after 3 seconds
+                    setTimeout(() => {
+                        onlineNotification.classList.remove('visible');
+                    }, 3000);
+                    
+                    // Reset the flag
+                    wasOffline = false;
+                }
+            }
+        }
+        
+        // Check network status when page loads
+        window.addEventListener('load', updateOnlineStatus);
+        
+        // Listen for online/offline events
+        window.addEventListener('online', updateOnlineStatus);
+        window.addEventListener('offline', updateOnlineStatus);
+        
+        // Show email notification after 2 seconds, hide after 5 seconds total (2+3)
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                emailNotification.classList.add('visible');
+                
+                setTimeout(() => {
+                    emailNotification.classList.remove('visible');
+                }, 3000);
+            }, 1000);
+        });
+        
+        // For demo purposes, let's create a way to set/clear userData in localStorage
+        // In a real application, you would handle this differently
+        function demoSetUserData() {
+            localStorage.setItem('userData', JSON.stringify({
+                visited: true,
+                timestamp: Date.now()
+            }));
+            console.log('User data set for demo purposes');
+        }
+        
+        function demoClearUserData() {
+            localStorage.removeItem('userData');
+            console.log('User data cleared for demo purposes');
+        }
+        
+        // Uncomment one of these lines to test different scenarios
+        // demoSetUserData();   // Uncomment to test with user data
+        // demoClearUserData(); // Uncomment to test without user data
+    </script>
+</body>
+</html>

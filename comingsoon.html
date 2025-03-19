@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi Games - Coming Soon</title>
+    <style>
+        :root {
+            --gold-primary: #FFD700;
+            --gold-dark: #B8860B;
+            --gold-light: #FFF8DC;
+            --gold-gradient: linear-gradient(135deg, #B8860B, #FFD700, #FFDF00, #B8860B);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #121212;
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('/api/placeholder/1200/800');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.2;
+            z-index: -1;
+        }
+        
+        .container {
+            max-width: 800px;
+            width: 90%;
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .logo {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: var(--gold-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: shine 3s linear infinite;
+            background-size: 200% auto;
+        }
+        
+        @keyframes shine {
+            0% {background-position: 0% center;}
+            100% {background-position: 200% center;}
+        }
+        
+        .tagline {
+            font-size: 1.2rem;
+            margin-bottom: 2.5rem;
+            color: var(--gold-light);
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.6;
+        }
+        
+        .countdown-box {
+            background: rgba(0, 0, 0, 0.7);
+            border: 2px solid var(--gold-primary);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2.5rem;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .countdown-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--gold-gradient);
+            opacity: 0.05;
+            z-index: -1;
+        }
+        
+        .countdown-title {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            color: var(--gold-primary);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        .countdown-timer {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .countdown-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 80px;
+        }
+        
+        .countdown-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: white;
+            background: rgba(184, 134, 11, 0.3);
+            border-radius: 8px;
+            width: 100%;
+            padding: 0.5rem;
+            margin-bottom: 0.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .countdown-value::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--gold-primary);
+        }
+        
+        .countdown-label {
+            font-size: 0.9rem;
+            color: var(--gold-light);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .email-form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        .form-title {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            color: var(--gold-primary);
+        }
+        
+        .email-input {
+            width: 100%;
+            padding: 1rem;
+            border-radius: 8px;
+            border: 2px solid var(--gold-dark);
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .email-input:focus {
+            outline: none;
+            border-color: var(--gold-primary);
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        }
+        
+        .submit-btn {
+            padding: 1rem 2rem;
+            background: var(--gold-gradient);
+            border: none;
+            border-radius: 8px;
+            color: black;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            margin-bottom: 1rem;
+        }
+        
+        .submit-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.2);
+            transition: all 0.5s ease;
+            z-index: -1;
+        }
+        
+        .submit-btn:hover::before {
+            left: 100%;
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(184, 134, 11, 0.5);
+        }
+        
+        .premium-btn {
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, #8A2387, #E94057, #F27121);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            width: 100%;
+        }
+        
+        .premium-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.2);
+            transition: all 0.5s ease;
+            z-index: -1;
+        }
+        
+        .premium-btn:hover::before {
+            left: 100%;
+        }
+        
+        .premium-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(233, 64, 87, 0.5);
+        }
+        
+        .success-message {
+            display: none;
+            color: var(--gold-primary);
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 8px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--gold-primary);
+        }
+        
+        .features {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            margin-top: 3rem;
+        }
+        
+        .feature {
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid var(--gold-dark);
+            border-radius: 8px;
+            padding: 1.5rem;
+            width: 200px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .feature:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3);
+            border-color: var(--gold-primary);
+        }
+        
+        .feature-icon {
+            font-size: 2rem;
+            color: var(--gold-primary);
+            margin-bottom: 1rem;
+        }
+        
+        .feature-title {
+            font-size: 1.2rem;
+            color: var(--gold-light);
+            margin-bottom: 0.5rem;
+        }
+        
+        .feature-desc {
+            font-size: 0.9rem;
+            color: #ccc;
+        }
+        
+        /* WhatsApp popup styles */
+        .popup-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .popup-container {
+            background: linear-gradient(135deg, #111, #222);
+            border: 2px solid var(--gold-primary);
+            border-radius: 12px;
+            padding: 2rem;
+            max-width: 90%;
+            width: 400px;
+            text-align: center;
+            position: relative;
+            animation: popup-appear 0.5s ease-out;
+        }
+        
+        @keyframes popup-appear {
+            0% {transform: scale(0.7); opacity: 0;}
+            100% {transform: scale(1); opacity: 1;}
+        }
+        
+        .popup-title {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            color: var(--gold-primary);
+            font-weight: 600;
+        }
+        
+        .popup-message {
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+            color: white;
+            line-height: 1.5;
+        }
+        
+        .whatsapp-btn {
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, #25D366, #128C7E);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 1rem;
+        }
+        
+        .whatsapp-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(37, 211, 102, 0.5);
+        }
+        
+        .close-popup {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 1.3rem;
+            color: var(--gold-light);
+            background: none;
+            border: none;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+        
+        .close-popup:hover {
+            color: var(--gold-primary);
+        }
+        
+        @media (max-width: 768px) {
+            .logo {
+                font-size: 2.5rem;
+            }
+            
+            .countdown-timer {
+                flex-wrap: wrap;
+            }
+            
+            .countdown-item {
+                min-width: 70px;
+            }
+            
+            .features {
+                gap: 1rem;
+            }
+            
+            .feature {
+                width: 150px;
+                padding: 1rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .logo {
+                font-size: 2rem;
+            }
+            
+            .tagline {
+                font-size: 1rem;
+            }
+            
+            .countdown-title {
+                font-size: 1.4rem;
+            }
+            
+            .countdown-value {
+                font-size: 1.8rem;
+            }
+            
+            .feature {
+                width: 100%;
+                max-width: 250px;
+            }
+            
+            .popup-container {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="logo">MULTI GAMES</h1>
+        <p class="tagline">Get ready for an epic adventure! Our new game is launching soon, filled with thrilling challenges, exciting gameplay, and endless fun.</p>
+        
+        <div class="countdown-box">
+            <h2 class="countdown-title">COMING SOON</h2>
+            <div class="countdown-timer">
+                <div class="countdown-item">
+                    <div id="days" class="countdown-value">15</div>
+                    <div class="countdown-label">Days</div>
+                </div>
+                <div class="countdown-item">
+                    <div id="hours" class="countdown-value">00</div>
+                    <div class="countdown-label">Hours</div>
+                </div>
+                <div class="countdown-item">
+                    <div id="minutes" class="countdown-value">00</div>
+                    <div class="countdown-label">Minutes</div>
+                </div>
+                <div class="countdown-item">
+                    <div id="seconds" class="countdown-value">00</div>
+                    <div class="countdown-label">Seconds</div>
+                </div>
+            </div>
+            
+            <div class="email-form">
+                <h3 class="form-title">Unlock EXCLUSIVE Early Access</h3>
+                <form id="email-form" method="POST" action="https://formsubmit.co/multigames0000@gmail.com">
+                    <input type="email" id="email-input" name="email" class="email-input" placeholder="Enter your email address" required>
+                    <!-- Hidden fields for FormSubmit configuration -->
+                    <input type="hidden" name="_subject" value="New Multi Games Early Access Request">
+                    <input type="hidden" name="_captcha" value="false">
+                    <input type="hidden" name="_template" value="table">
+                    <input type="hidden" name="_next" value="https://yourwebsite.com/thanks.html">
+                    <button type="submit" id="submit-btn" class="submit-btn">Get Early Access</button>
+                </form>
+                <a href="file:///android_asset/htmlapp/root/password(2).html" id="premium-btn" class="premium-btn">Get Premium</a>
+                <div id="success-message" class="success-message">
+                    Thank you! You're now on the list for early access.
+                </div>
+            </div>
+        </div>
+        
+        <div class="features">
+            <div class="feature">
+                <div class="feature-icon">🎮</div>
+                <h3 class="feature-title">Exciting Gameplay</h3>
+                <p class="feature-desc">Multiple game modes to challenge your skills</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">🏆</div>
+                <h3 class="feature-title">Compete & Win</h3>
+                <p class="feature-desc">Global leaderboards and tournaments</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">🔄</div>
+                <h3 class="feature-title">Regular Updates</h3>
+                <p class="feature-desc">New content added weekly</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- WhatsApp Popup -->
+    <div id="whatsapp-popup" class="popup-overlay">
+        <div class="popup-container">
+            <button id="close-popup" class="close-popup">✕</button>
+            <h2 class="popup-title">Contact Admin</h2>
+            <p class="popup-message">For immediate access and exclusive offers, contact our admin on WhatsApp now!</p>
+            <a href="https://wa.me/2349071104450" id="whatsapp-btn" class="whatsapp-btn">
+                Contact on WhatsApp
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // Set the countdown date (15 days from now)
+        const loadCountdown = () => {
+            // Try to get stored countdown date from localStorage
+            const storedDate = localStorage.getItem('multiGamesCountdownDate');
+            let countdownDate;
+            
+            if (storedDate) {
+                countdownDate = parseInt(storedDate);
+            } else {
+                // Create new countdown date (15 days from now) if not stored
+                countdownDate = new Date().getTime() + (15 * 24 * 60 * 60 * 1000);
+                // Store the countdown date
+                localStorage.setItem('multiGamesCountdownDate', countdownDate.toString());
+            }
+            
+            return countdownDate;
+        };
+
+        const countdownDate = loadCountdown();
+        
+        // Update the countdown every second
+        const countdown = setInterval(function() {
+            // Get current date and time
+            const now = new Date().getTime();
+            
+            // Calculate the remaining time
+            const distance = countdownDate - now;
+            
+            // Calculate days, hours, minutes, and seconds
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+            
+            // Display the result
+            document.getElementById("days").innerHTML = days;
+            document.getElementById("hours").innerHTML = hours < 10 ? "0" + hours : hours;
+            document.getElementById("minutes").innerHTML = minutes < 10 ? "0" + minutes : minutes;
+            document.getElementById("seconds").innerHTML = seconds < 10 ? "0" + seconds : seconds;
+            
+            // If the countdown is finished, display a message and show WhatsApp popup
+            if (distance < 0) {
+                clearInterval(countdown);
+                document.getElementById("days").innerHTML = "0";
+                document.getElementById("hours").innerHTML = "00";
+                document.getElementById("minutes").innerHTML = "00";
+                document.getElementById("seconds").innerHTML = "00";
+                document.querySelector(".countdown-title").innerHTML = "LAUNCHING NOW!";
+                
+                // Show WhatsApp popup
+                showWhatsAppPopup();
+            }
+        }, 1000);
+        
+        // Function to show WhatsApp popup
+        function showWhatsAppPopup() {
+            document.getElementById("whatsapp-popup").style.display = "flex";
+        }
+        
+        // Close popup when close button is clicked
+        document.getElementById("close-popup").addEventListener("click", function() {
+            document.getElementById("whatsapp-popup").style.display = "none";
+        });
+        
+        // For demonstration - add ability to show popup with a test button
+        // In real environment, this would only show when countdown ends
+        // Uncomment this for testing
+        /*
+        document.querySelector(".logo").addEventListener("click", function() {
+            showWhatsAppPopup();
+        });
+        */
+        
+        // WhatsApp button click handler
+        document.getElementById("whatsapp-btn").addEventListener("click", function(event) {
+            // This will navigate to WhatsApp
+            // The default behavior (opening the link) will happen automatically
+        });
+        
+        // The email form now submits directly through formsubmit.co
+        // We'll still keep some client-side validation
+        document.getElementById("email-form").addEventListener("submit", function(event) {
+            const email = document.getElementById("email-input").value;
+            
+            if (!email || !isValidEmail(email)) {
+                event.preventDefault();
+                alert("Please enter a valid email address");
+            }
+        });
+        
+        // Validate email format
+        function isValidEmail(email) {
+            const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return regex.test(email);
+        }
+        
+        // Add some visual effects
+        const countdownBox = document.querySelector('.countdown-box');
+        setInterval(() => {
+            const glowIntensity = Math.random() * 0.2 + 0.2;
+            countdownBox.style.boxShadow = `0 0 20px rgba(255, 215, 0, ${glowIntensity})`;
+        }, 2000);
+    </script>
+</body>
+</html>

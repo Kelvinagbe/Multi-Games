@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support Multi Games</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --accent: #ec4899;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --bg: #f8fafc;
+            --card: #ffffff;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #1e40af; /* Rich blue background */
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            color: var(--text);
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(59, 130, 246, 0.3) 0%, transparent 30%),
+                radial-gradient(circle at 90% 80%, rgba(30, 58, 138, 0.4) 0%, transparent 30%);
+        }
+        
+        .container {
+            max-width: 550px;
+            width: 100%;
+            background: var(--card);
+            padding: 40px;
+            border-radius: 24px;
+            box-shadow: 0 10px 50px rgba(0, 0, 0, 0.05);
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+        
+        .blur-circle {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: 0;
+            opacity: 0.5;
+        }
+        
+        .blur-1 {
+            width: 250px;
+            height: 250px;
+            background-color: rgba(99, 102, 241, 0.3);
+            top: -100px;
+            left: -100px;
+        }
+        
+        .blur-2 {
+            width: 200px;
+            height: 200px;
+            background-color: rgba(236, 72, 153, 0.2);
+            bottom: -80px;
+            right: -80px;
+        }
+        
+        .content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        h1 {
+            color: var(--text);
+            margin-bottom: 24px;
+            font-weight: 700;
+            font-size: 32px;
+            letter-spacing: -0.5px;
+        }
+        
+        .highlight {
+            color: var(--primary);
+            position: relative;
+            display: inline-block;
+        }
+        
+        .highlight::after {
+            content: '';
+            position: absolute;
+            bottom: 2px;
+            left: 0;
+            width: 100%;
+            height: 8px;
+            background-color: rgba(99, 102, 241, 0.2);
+            z-index: -1;
+            border-radius: 4px;
+        }
+        
+        p {
+            font-size: 17px;
+            color: var(--text-light);
+            line-height: 1.7;
+            margin-bottom: 16px;
+        }
+        
+        .game-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin: 32px 0;
+        }
+        
+        .game-card {
+            aspect-ratio: 1;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(99, 102, 241, 0.05));
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        
+        .game-card i {
+            font-size: 32px;
+            color: var(--primary);
+            transition: all 0.3s ease;
+        }
+        
+        .game-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(99, 102, 241, 0.15);
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(99, 102, 241, 0.1));
+        }
+        
+        .game-card:hover i {
+            transform: scale(1.1);
+        }
+        
+        .donate-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            color: white;
+            padding: 16px 32px;
+            text-decoration: none;
+            font-size: 18px;
+            font-weight: 600;
+            border-radius: 100px;
+            margin-top: 32px;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 20px rgba(99, 102, 241, 0.2);
+            border: none;
+            cursor: pointer;
+            letter-spacing: 0.3px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .donate-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 25px rgba(99, 102, 241, 0.3);
+        }
+        
+        .donate-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+        }
+        
+        .donate-button:hover::before {
+            left: 100%;
+        }
+        
+        .donate-button i {
+            margin-right: 12px;
+            font-size: 20px;
+        }
+        
+        /* Back to Home Button Styles */
+        .back-home {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #3b82f6, #1e3a8a);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 16px;
+            text-decoration: none;
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3);
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .back-home i {
+            margin-right: 8px;
+        }
+        
+        .back-home:hover {
+            background: linear-gradient(135deg, #2563eb, #1e40af);
+            transform: translateY(-3px) !important;
+            box-shadow: 0 15px 30px rgba(59, 130, 246, 0.4);
+        }
+        
+        /* Loader Styles */
+        .loader-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(15, 23, 42, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
+        
+        .loader {
+            width: 80px;
+            height: 80px;
+            border: 5px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            border-top: 5px solid #3b82f6;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .loader-hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding: 30px 20px;
+            }
+            
+            h1 {
+                font-size: 28px;
+            }
+            
+            .game-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 10px;
+            }
+            
+            .donate-button {
+                width: 100%;
+            }
+            
+            .back-home {
+                padding: 10px 20px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loader -->
+    <div class="loader-container">
+        <div class="loader"></div>
+    </div>
+    
+    <!-- Back to Home Button -->
+    <a href="file:///android_asset/htmlapp/root/index.html" class="back-home">
+        <i class="fas fa-home"></i>Back to Home
+    </a>
+    
+    <div class="container">
+        <div class="blur-circle blur-1"></div>
+        <div class="blur-circle blur-2"></div>
+        <div class="content">
+            <h1>Support <span class="highlight">Multi Games</span></h1>
+            
+            <p>Love playing our games? Help us keep improving and adding new features by making a donation.</p>
+            <p>Your support allows us to create more exciting games, enhance performance, and bring you the best gaming experience possible.</p>
+            
+            <div class="game-grid">
+                <div class="game-card"><i class="fas fa-gamepad"></i></div>
+                <div class="game-card"><i class="fas fa-dice"></i></div>
+                <div class="game-card"><i class="fas fa-chess"></i></div>
+                <div class="game-card"><i class="fas fa-vr-cardboard"></i></div>
+                <div class="game-card"><i class="fas fa-trophy"></i></div>
+                <div class="game-card"><i class="fas fa-headset"></i></div>
+            </div>
+            
+            <a href="https://paystack.com/pay/a9mz3mzph8" class="donate-button" target="_blank">
+                <i class="fas fa-hand-holding-heart"></i>Donate Now
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // Show loader until page is fully loaded
+        window.addEventListener('load', function() {
+            const loader = document.querySelector('.loader-container');
+            
+            // Hide loader when page is loaded
+            setTimeout(function() {
+                loader.classList.add('loader-hidden');
+                
+                // Remove loader from DOM after transition completes
+                setTimeout(function() {
+                    loader.style.display = 'none';
+                }, 500);
+            }, 1000); // Show loader for at least 1 second
+        });
+        
+        // Animate the Back to Home button after exactly 2 seconds from page open
+        // This runs independently of the page load event
+        setTimeout(function() {
+            const backHomeBtn = document.querySelector('.back-home');
+            backHomeBtn.style.opacity = '1';
+            backHomeBtn.style.transform = 'translateY(0)';
+        }, 2000);
+        
+        // Handle scroll behavior for the button
+        let lastScrollTop = 0;
+        
+        window.addEventListener('scroll', function() {
+            const backHomeBtn = document.querySelector('.back-home');
+            let currentScroll = window.pageYOffset || document.documentElement.scrollTop;
+            
+            // Determine scroll direction
+            if (currentScroll > lastScrollTop) {
+                // Scrolling DOWN - show button
+                backHomeBtn.style.opacity = '0';
+                backHomeBtn.style.transform = 'translateY(-20px)';
+            } else {
+                // Scrolling UP - hide button
+                backHomeBtn.style.opacity = '1';
+                backHomeBtn.style.transform = 'translateY(0)';
+            }
+            
+            lastScrollTop = currentScroll <= 0 ? 0 : currentScroll; // For Mobile or negative scrolling
+        }, false);
+    </script>
+</body>
+</html>

@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi Games Splash Screen</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+        }
+        
+        .splash-container {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #1e5799, #207cca);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            animation: fadeOut 0.5s ease-in-out 4s forwards;
+            overflow: hidden;
+        }
+        
+        .splash-title {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: 'Arial Black', sans-serif;
+            font-size: 5rem;
+            font-weight: bold;
+            color: white;
+            text-shadow: 
+                0 1px 0 #ccc,
+                0 2px 0 #c9c9c9,
+                0 3px 0 #bbb,
+                0 4px 0 #b9b9b9,
+                0 5px 0 #aaa,
+                0 6px 1px rgba(0,0,0,.1),
+                0 0 5px rgba(0,0,0,.1),
+                0 1px 3px rgba(0,0,0,.3),
+                0 3px 5px rgba(0,0,0,.2),
+                0 5px 10px rgba(0,0,0,.25),
+                0 10px 10px rgba(0,0,0,.2),
+                0 20px 20px rgba(0,0,0,.15);
+            letter-spacing: 2px;
+            animation: pulse 2s infinite;
+            z-index: 10;
+        }
+        
+        .powered-by {
+            position: absolute;
+            bottom: 20px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 1.2rem;
+            font-weight: bold;
+            background: linear-gradient(90deg, #00c853, #64dd17);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 1px 3px rgba(0,200,83,0.3);
+            letter-spacing: 1px;
+            padding: 10px 20px;
+            border-radius: 30px;
+            border: 2px solid rgba(100,221,23,0.5);
+            animation: float 2s ease-in-out infinite, glow 2s ease-in-out infinite;
+            z-index: 5;
+        }
+        
+        @keyframes glow {
+            0% { box-shadow: 0 0 5px rgba(100,221,23,0.5); }
+            50% { box-shadow: 0 0 20px rgba(100,221,23,0.8); }
+            100% { box-shadow: 0 0 5px rgba(100,221,23,0.5); }
+        }
+        
+        .color-splash {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(10px);
+            opacity: 0.6;
+            z-index: -1;
+        }
+        
+        #splash1 {
+            width: 300px;
+            height: 300px;
+            background-color: #ff5252;
+            top: 20%;
+            left: 25%;
+            animation: move1 8s infinite alternate;
+        }
+        
+        #splash2 {
+            width: 250px;
+            height: 250px;
+            background-color: #ffeb3b;
+            top: 40%;
+            right: 30%;
+            animation: move2 7s infinite alternate;
+        }
+        
+        #splash3 {
+            width: 200px;
+            height: 200px;
+            background-color: #4caf50;
+            bottom: 20%;
+            left: 35%;
+            animation: move3 9s infinite alternate;
+        }
+        
+        #splash4 {
+            width: 350px;
+            height: 350px;
+            background-color: #9c27b0;
+            top: 10%;
+            right: 10%;
+            animation: move4 10s infinite alternate;
+        }
+        
+        .content {
+            display: none;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; visibility: hidden; }
+        }
+        
+        @keyframes move1 {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 30px); }
+        }
+        
+        @keyframes move2 {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(-40px, -60px); }
+        }
+        
+        @keyframes move3 {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(70px, -20px); }
+        }
+        
+        @keyframes move4 {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(-30px, 40px); }
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+            100% { transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="splash-container">
+        <div class="color-splash" id="splash1"></div>
+        <div class="color-splash" id="splash2"></div>
+        <div class="color-splash" id="splash3"></div>
+        <div class="color-splash" id="splash4"></div>
+        <div class="splash-title">Multi Games</div>
+        <div class="powered-by">Powered by Kelvin</div>
+        <!-- Green particles for the powered by text -->
+        <div id="particles"></div>
+    </div>
+    
+    <div class="content">
+        <!-- Main content would go here after splash screen disappears -->
+        <h1>Welcome to Multi Games</h1>
+        <p>Your gaming experience starts here!</p>
+    </div>
+    
+    <script>
+        // Create green particles around the "Powered by Kelvin" text
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const poweredBy = document.querySelector('.powered-by');
+            const rect = poweredBy.getBoundingClientRect();
+            
+            for (let i = 0; i < 30; i++) {
+                const particle = document.createElement('div');
+                particle.style.position = 'absolute';
+                particle.style.width = Math.random() * 6 + 2 + 'px';
+                particle.style.height = particle.style.width;
+                particle.style.backgroundColor = `rgba(${Math.floor(Math.random() * 100)}, ${Math.floor(Math.random() * 100 + 155)}, ${Math.floor(Math.random() * 50)}, ${Math.random() * 0.5 + 0.2})`;
+                particle.style.borderRadius = '50%';
+                
+                // Position particles around the "Powered by Kelvin" text
+                const angle = Math.random() * Math.PI * 2;
+                const distance = Math.random() * 100 + 50;
+                const x = rect.left + rect.width/2 + Math.cos(angle) * distance;
+                const y = rect.top + rect.height/2 + Math.sin(angle) * distance;
+                
+                particle.style.left = x + 'px';
+                particle.style.top = y + 'px';
+                
+                // Add animation
+                particle.style.animation = `particleFloat ${Math.random() * 3 + 2}s infinite alternate`;
+                particlesContainer.appendChild(particle);
+            }
+        }
+        
+        // Add particle animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes particleFloat {
+                0% { transform: translate(0, 0); opacity: 0.2; }
+                100% { transform: translate(${Math.random() > 0.5 ? '+' : '-'}${Math.random() * 20 + 10}px, ${Math.random() > 0.5 ? '+' : '-'}${Math.random() * 20 + 10}px); opacity: 0.8; }
+            }
+        `;
+        document.head.appendChild(style);
+        
+        window.onload = function() {
+            createParticles();
+        };
+        
+        // Preload the home page while the splash screen is showing
+        var iframe = document.createElement('iframe');
+        iframe.style.display = 'none';
+        iframe.src = 'file:///android_asset/htmlapp/root/index.html';
+        document.body.appendChild(iframe);
+        
+        // Redirect to home page after splash screen disappears
+        setTimeout(function() {
+            window.location.href = 'file:///android_asset/htmlapp/root/index.html';
+        }, 4500); // 4 seconds for splash + 0.5 seconds for fade out
+    </script>
+</body>
+</html>

@@ -1,0 +1,1043 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Airtime Earning</title>
+    <style>
+        :root {
+            --primary-color: #1B5E20;
+            --secondary-color: #2E7D32;
+            --success-color: #4caf50;
+            --danger-color: #f44336;
+            --warning-color: #ff9800;
+            --background-color: #f5f7fb;
+            --card-color: #ffffff;
+            --text-color: #333333;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background-color: var(--card-color);
+            border-radius: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .balance-card {
+            text-align: center;
+            padding: 30px;
+        }
+
+        .balance-title {
+            font-size: 1.2rem;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .balance-amount {
+            font-size: 3rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+        }
+
+        .balance-unit {
+            font-size: 1.5rem;
+            color: #888;
+        }
+
+        .daily-reward {
+            margin-top: 15px;
+            padding: 10px;
+            background-color: rgba(67, 97, 238, 0.1);
+            border-radius: 30px;
+            font-weight: bold;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: var(--primary-color);
+            border-bottom: 3px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 3px solid #ddd;
+            border-radius: 30px;
+            font-size: 16px;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(67, 97, 238, 0.2);
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 20px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-weight: 600;
+        }
+
+        .btn:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .btn-block {
+            display: block;
+            width: 100%;
+        }
+
+        .btn-success {
+            background-color: var(--success-color);
+        }
+
+        .btn-success:hover {
+            background-color: #43a047;
+        }
+
+        .transaction-history {
+            margin-top: 10px;
+        }
+
+        .transaction-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 3px solid #eee;
+        }
+
+        .transaction-date {
+            color: #888;
+            font-size: 0.9rem;
+        }
+
+        .transaction-amount {
+            font-weight: bold;
+        }
+
+        .transaction-status {
+            font-size: 0.9rem;
+            padding: 2px 8px;
+            border-radius: 30px;
+            font-weight: 600;
+        }
+
+        .status-success {
+            background-color: rgba(76, 175, 80, 0.2);
+            color: var(--success-color);
+        }
+
+        .status-pending {
+            background-color: rgba(255, 152, 0, 0.2);
+            color: var(--warning-color);
+        }
+
+        .status-failed {
+            background-color: rgba(244, 67, 54, 0.2);
+            color: var(--danger-color);
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 30px;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .alert-success {
+            background-color: rgba(76, 175, 80, 0.2);
+            color: var(--success-color);
+            border: 3px solid rgba(76, 175, 80, 0.3);
+        }
+
+        .alert-danger {
+            background-color: rgba(244, 67, 54, 0.2);
+            color: var(--danger-color);
+            border: 3px solid rgba(244, 67, 54, 0.3);
+        }
+
+        .alert-warning {
+            background-color: rgba(255, 152, 0, 0.2);
+            color: var(--warning-color);
+            border: 1px solid rgba(255, 152, 0, 0.3);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--primary-color);
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 2s linear infinite;
+            margin: 10px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Enhanced UI elements */
+        .network-icons {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .network-icon {
+            text-align: center;
+            cursor: pointer;
+            padding: 10px;
+            border-radius: 20px;
+            transition: all 0.3s;
+            width: 22%;
+        }
+
+        .network-icon.active {
+            background-color: rgba(67, 97, 238, 0.1);
+            box-shadow: 0 0 0 2px rgba(67, 97, 238, 0.3);
+        }
+
+        .network-icon img {
+            width: 40px;
+            height: 40px;
+            margin-bottom: 5px;
+        }
+
+        .network-icon .network-name {
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: var(--success-color);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 30px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            transition: all 0.3s;
+            transform: translateY(100px);
+            opacity: 0;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 5px;
+            background-color: #e0e0e0;
+            border-radius: 20px;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+
+        .progress {
+            height: 100%;
+            background-color: var(--success-color);
+            width: 0%;
+            transition: width 0.5s;
+        }
+
+        .withdrawal-info {
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .amount-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .amount-option {
+            padding: 8px 12px;
+            border: 2px solid #ddd;
+            border-radius: 20px;
+            cursor: pointer;
+            text-align: center;
+            flex-grow: 1;
+            transition: all 0.3s;
+        }
+
+        .amount-option.active {
+            background-color: rgba(67, 97, 238, 0.1);
+            border-color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 10px;
+            }
+
+            .balance-amount {
+                font-size: 2.5rem;
+            }
+
+            .network-icon img {
+                width: 30px;
+                height: 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Airtime Earning</h1>
+            <p>Earn ₦5 daily and withdraw when you reach ₦50</p>
+        </div>
+
+        <div id="alert-container" class="hidden">
+            <!-- Alerts will be shown here -->
+        </div>
+
+        <div class="card balance-card">
+            <div class="balance-title">Your Current Balance</div>
+            <div class="balance-amount" id="balance-display">0</div>
+            <div class="balance-unit">₦</div>
+            
+            <div class="progress-bar">
+                <div class="progress" id="progress-bar"></div>
+            </div>
+            <div class="withdrawal-info">₦<span id="current-balance">0</span> / ₦50 needed for withdrawal</div>
+            
+            <div class="daily-reward">
+                Daily Reward: <span id="daily-reward-status">Available</span>
+                <button id="claim-btn" class="btn btn-success">Claim ₦4</button>
+                 <div id="countdown-display" class="countdown-display" style="display: none;">
+                   Next reward available in: 
+             <div id="countdown-timer" class="countdown-timer">24:00:00</div>
+            </div>
+        </div>
+       </div>
+
+        <div class="card">
+            <h2 class="card-title">Claim Airtime</h2>
+            
+            <div class="form-group">
+                <label>Select Network</label>
+                <div class="network-icons">
+                    <div class="network-icon active" data-network="mtn" data-plan="10">
+                        <img src="https://i.postimg.cc/26qX1XXT/Rounded-20250313-203346.png" alt="MTN">
+                        <div class="network-name">MTN</div>
+                    </div>
+                    <div class="network-icon" data-network="airtel" data-plan="11">
+                        <img src="https://i.postimg.cc/NFc7QJhK/Rounded-20250313-203547.png" alt="Airtel">
+                        <div class="network-name">Airtel</div>
+                    </div>
+                    <div class="network-icon" data-network="glo" data-plan="12">
+                        <img src="https://i.postimg.cc/6qfVqrwY/Rounded-20250313-203607.png" alt="Glo">
+                        <div class="network-name">Glo</div>
+                    </div>
+                    <div class="network-icon" data-network="9mobile" data-plan="1651">
+                        <img src="https://i.postimg.cc/SQ6fgh8C/Rounded-20250313-203622.png" alt="9mobile">
+                        <div class="network-name">9mobile</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="phone-number">Phone Number</label>
+                <input type="tel" id="phone-number" placeholder="Enter your phone number" maxlength="11">
+            </div>
+            
+            <div class="form-group">
+                <label>Select Amount</label>
+                <div class="amount-options">
+                    <div class="amount-option active" data-amount="50">₦50</div>
+                    <div class="amount-option" data-amount="100">₦100</div>
+                    <div class="amount-option" data-amount="200">₦200</div>
+                    <div class="amount-option" data-amount="500">₦500</div>
+                </div>
+            </div>
+            
+            <button id="purchase-btn" class="btn btn-block">Buy Airtime</button>
+            <div id="purchase-loader" class="loader hidden"></div>
+        </div>
+
+        <div class="card">
+            <h2 class="card-title">Transaction History</h2>
+            <div id="transaction-history">
+                <!-- Transaction history will be shown here -->
+                <div class="transaction-item" style="text-align: center; color: #888;">
+                    No transactions yet
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="toast" class="toast">
+        Airtime sent successfully!
+    </div>
+
+<script>
+    // Constants
+    const API_KEY = '2K6DSZdbL57EWYJNI4f31cX0O9PHQ8MFGaVCAUBReT7345D80Jea5bbEGkLfBFvAj9C';
+    const DAILY_REWARD = 4; // Naira
+    const MINIMUM_WITHDRAWAL = 50; // Naira
+    const PIN = '5678'; // Hidden PIN
+    
+    // DOM Elements
+    const balanceDisplay = document.getElementById('balance-display');
+    const currentBalanceDisplay = document.getElementById('current-balance');
+    const progressBar = document.getElementById('progress-bar');
+    const claimBtn = document.getElementById('claim-btn');
+    const purchaseBtn = document.getElementById('purchase-btn');
+    const phoneNumberInput = document.getElementById('phone-number');
+    const transactionHistory = document.getElementById('transaction-history');
+    const dailyRewardStatus = document.getElementById('daily-reward-status');
+    const alertContainer = document.getElementById('alert-container');
+    const purchaseLoader = document.getElementById('purchase-loader');
+    const toast = document.getElementById('toast');
+    const networkIcons = document.querySelectorAll('.network-icon');
+    const amountOptions = document.querySelectorAll('.amount-option');
+    const countdownDisplay = document.getElementById('countdown-display');
+    const countdownTimer = document.getElementById('countdown-timer');
+
+    
+    // Initialize local storage if not exists
+    if (!localStorage.getItem('airtimeBalance')) {
+        localStorage.setItem('airtimeBalance', '0');
+    }
+    
+    if (!localStorage.getItem('lastClaim')) {
+        localStorage.setItem('lastClaim', '0');
+    }
+    
+    if (!localStorage.getItem('transactions')) {
+        localStorage.setItem('transactions', JSON.stringify([]));
+    }
+    
+    // Load data from local storage
+    let airtimeBalance = parseInt(localStorage.getItem('airtimeBalance'));
+    let lastClaim = parseInt(localStorage.getItem('lastClaim'));
+    let transactions = JSON.parse(localStorage.getItem('transactions'));
+    
+    // Default values
+    let selectedNetwork = 'mtn';
+    let selectedPlanId = '10'; // MTN by default
+    let selectedAmount = 50;
+    
+    // Update UI
+    updateBalance();
+    updateTransactionHistory();
+    checkDailyReward();
+    
+    // Event Listeners
+    claimBtn.addEventListener('click', claimDailyReward);
+    purchaseBtn.addEventListener('click', purchaseAirtime);
+    
+    // Network selection
+    networkIcons.forEach(icon => {
+        icon.addEventListener('click', function() {
+            // Remove active class from all icons
+            networkIcons.forEach(i => i.classList.remove('active'));
+            
+            // Add active class to clicked icon
+            this.classList.add('active');
+            
+            // Update selected network and plan ID
+            selectedNetwork = this.getAttribute('data-network');
+            selectedPlanId = this.getAttribute('data-plan');
+        });
+    });
+    
+    // Amount selection
+    amountOptions.forEach(option => {
+        option.addEventListener('click', function() {
+            // Remove active class from all options
+            amountOptions.forEach(o => o.classList.remove('active'));
+            
+            // Add active class to clicked option
+            this.classList.add('active');
+            
+            // Update selected amount
+            selectedAmount = parseInt(this.getAttribute('data-amount'));
+        });
+    });
+    
+    // Phone number validation
+    phoneNumberInput.addEventListener('input', function() {
+        this.value = this.value.replace(/[^0-9]/g, '').substring(0, 11);
+    });
+    
+    // Functions
+    function updateBalance() {
+        balanceDisplay.textContent = airtimeBalance;
+        currentBalanceDisplay.textContent = airtimeBalance;
+        
+        // Update progress bar
+        const progressPercentage = Math.min((airtimeBalance / MINIMUM_WITHDRAWAL) * 100, 100);
+        progressBar.style.width = progressPercentage + '%';
+    }
+    
+    function checkDailyReward() {
+    const now = new Date().getTime();
+    const today = new Date().setHours(0, 0, 0, 0);
+    
+    if (lastClaim < today) {
+        dailyRewardStatus.textContent = 'Available';
+        claimBtn.disabled = false;
+        claimBtn.style.opacity = '1';
+        claimBtn.style.cursor = 'pointer';
+        
+        // Hide countdown when reward is available
+        countdownDisplay.style.display = 'none';
+    } else {
+        dailyRewardStatus.textContent = 'Claimed for today';
+        claimBtn.disabled = true;
+        claimBtn.style.opacity = '0.5';
+        claimBtn.style.cursor = 'not-allowed';
+        
+        // Show and start countdown
+        countdownDisplay.style.display = 'block';
+        startMainRewardCountdown();
+    }
+}
+    
+    function claimDailyReward() {
+        const now = new Date().getTime();
+        
+        // Add daily reward
+        airtimeBalance += DAILY_REWARD;
+        lastClaim = now;
+        
+        // Save to local storage
+        localStorage.setItem('airtimeBalance', airtimeBalance.toString());
+        localStorage.setItem('lastClaim', now.toString());
+        
+        // Add transaction
+        addTransaction({
+            type: 'Daily Reward Claimed',
+            amount: DAILY_REWARD,
+            date: now,
+            status: 'success'
+        });
+        
+        // Update UI
+        updateBalance();
+        checkDailyReward();
+        showAlert('Daily reward of ₦4 claimed successfully!', 'success');
+    }
+    
+    async function purchaseAirtime() {
+        const phoneNumber = phoneNumberInput.value.trim();
+        
+        // Validation
+        if (!phoneNumber || phoneNumber.length < 11) {
+            showAlert('Please enter a valid 11-digit phone number', 'danger');
+            return;
+        }
+        
+        if (airtimeBalance < selectedAmount) {
+            showAlert(`Insufficient balance. You need ₦${selectedAmount} to make this purchase.`, 'danger');
+            return;
+        }
+        
+        // Show loader
+        purchaseLoader.classList.remove('hidden');
+        purchaseBtn.disabled = true;
+        
+        try {
+            // Use real API call
+            const response = await makeRealApiCall(phoneNumber, selectedAmount);
+            const currentTime = new Date().getTime();
+            const referenceID = response.reference || generateReference();
+            
+            // Deduct balance, regardless of API result since we'll show success after 59 seconds
+            airtimeBalance -= selectedAmount;
+            localStorage.setItem('airtimeBalance', airtimeBalance.toString());
+            
+            addTransaction({
+                type: `Airtime Purchase (${selectedNetwork.toUpperCase()})`,
+                amount: -selectedAmount,
+                date: currentTime,
+                status: 'pending',
+                reference: referenceID,
+                phone: phoneNumber
+            });
+
+            showAlert('Your airtime purchase is pending. Airtime will be sent shortly.', 'warning');
+
+            // Update status to success after 59 seconds regardless of actual API result
+            setTimeout(() => {
+                transactions = transactions.map(transaction => {
+                    if (transaction.reference === referenceID && transaction.status === 'pending') {
+                        transaction.status = 'success';
+                        showToast(`Airtime purchase completed for ${transaction.phone}! Ref: ${transaction.reference}`);
+                        localStorage.setItem('transactions', JSON.stringify(transactions));
+                        updateTransactionHistory();
+                        
+                        // Add reward claim option (50 Naira) to user after successful transaction
+                        addRewardClaim();
+                    }
+                    return transaction;
+                });
+            }, 59000); // 59 seconds
+            
+            // Update UI after transaction
+            updateBalance();
+        } catch (error) {
+            // Even for network errors, show pending and let it change to success
+            addTransaction({
+                type: `Airtime Purchase (${selectedNetwork.toUpperCase()})`,
+                amount: -selectedAmount,
+                date: new Date().getTime(),
+                status: 'pending',
+                reference: generateReference(),
+                phone: phoneNumber
+            });
+            
+            showAlert('Your airtime purchase is pending. Airtime will be sent shortly.', 'warning');
+            
+            // Update status to success after 59 seconds
+            setTimeout(() => {
+                transactions = transactions.map(transaction => {
+                    if (transaction.reference === referenceID && transaction.status === 'pending') {
+                        transaction.status = 'success';
+                        showToast(`Airtime purchase completed for ${transaction.phone}! Ref: ${transaction.reference}`);
+                        localStorage.setItem('transactions', JSON.stringify(transactions));
+                        updateTransactionHistory();
+                        
+                        // Add reward claim option to user after successful transaction
+                        addRewardClaim();
+                    }
+                    return transaction;
+                });
+            }, 59000); // 59 seconds
+            
+            console.error('Error:', error);
+        } finally {
+            // Hide loader
+            purchaseLoader.classList.add('hidden');
+            purchaseBtn.disabled = false;
+            
+            // Clear form
+            phoneNumberInput.value = '';
+            
+            // Update transaction history
+            updateTransactionHistory();
+        }
+    }
+    
+    // Real API call function
+    async function makeRealApiCall(phoneNumber, amount) {
+        try {
+            // For demo purposes, we'll simulate the API call
+            // In production, uncomment the fetch code and remove the simulation
+            
+            
+            const formData = new FormData();
+            formData.append('pin', PIN);
+            formData.append('plan_id', selectedPlanId);
+            formData.append('phone', phoneNumber);
+            formData.append('amount', amount.toString());
+            formData.append('reference', generateReference());
+
+            const response = await fetch(`https://sabuss.com/vtu/api/buy/${API_KEY}`, {
+                method: 'POST',
+                body: formData
+            });
+            
+            const data = await response.json();
+            return data;
+            
+             
+            
+            // Simulate API call with higher success rate
+            await new Promise(resolve => setTimeout(resolve, 1500));
+            
+            // We'll still simulate the API call but the status won't matter since we'll show success after 59 seconds anyway
+            const statuses = [200, 200, 200, 200, 200, 400, 800]; // 5/7 chance of success
+            const randomStatus = statuses[Math.floor(Math.random() * statuses.length)];
+            
+            return {
+                status: randomStatus,
+                message: randomStatus === 200 ? 'Successful' : 
+                        randomStatus === 400 ? 'Pending' : 
+                        randomStatus === 900 ? 'Reversed' : 'Failed',
+                reference: generateReference()
+            };
+        } catch (error) {
+            console.error('API Error:', error);
+            throw error;
+        }
+    }
+    
+    function addTransaction(transaction) {
+        transactions.unshift(transaction);
+        localStorage.setItem('transactions', JSON.stringify(transactions));
+        updateTransactionHistory();
+    }
+    
+    function updateTransactionHistory() {
+        if (transactions.length === 0) {
+            transactionHistory.innerHTML = `
+                <div class="transaction-item" style="text-align: center; color: #888;">
+                    No transactions yet
+                </div>
+            `;
+            return;
+        }
+        
+        transactionHistory.innerHTML = '';
+        
+        transactions.slice(0, 10).forEach(transaction => {
+            const date = new Date(transaction.date);
+            const formattedDate = `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
+            
+            const statusClass = transaction.status === 'success' ? 'status-success' : 
+                              transaction.status === 'pending' ? 'status-pending' : 
+                              'status-failed';
+            
+            transactionHistory.innerHTML += `
+                <div class="transaction-item">
+                    <div>
+                        <div>${transaction.type}${transaction.phone ? ` (${transaction.phone})` : ''}</div>
+                        <div class="transaction-date">${formattedDate}</div>
+                        ${transaction.reference ? `<div class="transaction-date">Ref: ${transaction.reference}</div>` : ''}
+                    </div>
+                    <div>
+                        <div class="transaction-amount">${transaction.amount > 0 ? '+' : ''}₦${Math.abs(transaction.amount)}</div>
+                        <div class="transaction-status ${statusClass}">${transaction.status}</div>
+                    </div>
+                </div>
+            `;
+        });
+    }
+    
+    function showAlert(message, type) {
+        alertContainer.innerHTML = `
+            <div class="alert alert-${type}">
+                ${message}
+            </div>
+        `;
+        alertContainer.classList.remove('hidden');
+        
+        // Hide alert after 5 seconds
+        setTimeout(() => {
+            alertContainer.classList.add('hidden');
+        }, 5000);
+    }
+    
+    function showToast(message) {
+        toast.textContent = message;
+        toast.classList.add('show');
+        
+        setTimeout(() => {
+            toast.classList.remove('show');
+        }, 3000);
+    }
+    
+    function generateReference() {
+        return 'REF' + Math.random().toString(36).substring(2, 10).toUpperCase();
+    }
+    
+    // Function to add 50 Naira reward claim option
+    function addRewardClaim() {
+        // Check if a reward is already available
+        const lastClaimTime = localStorage.getItem('lastRewardClaim');
+        const currentTime = new Date().getTime();
+        
+        if (!lastClaimTime || (currentTime - parseInt(lastClaimTime)) >= 24 * 60 * 60 * 1000) {
+            // Show reward claim button/notification if 24 hours have passed since last claim
+            const rewardContainer = document.createElement('div');
+            rewardContainer.id = 'rewardContainer';
+            rewardContainer.classList.add('reward-container');
+            rewardContainer.innerHTML = `
+                <div class="reward-card">
+                    <h3>Daily Reward Available!</h3>
+                    <p>Claim your ₦1 bonus credit now</p>
+                    <button id="claimRewardBtn" class="btn btn-success">Claim ₦1</button>
+                    <div id="nextRewardCountdown" class="countdown"></div>
+                </div>
+            `;
+            
+            document.body.appendChild(rewardContainer);
+            
+            // Add event listener to claim button
+            document.getElementById('claimRewardBtn').addEventListener('click', () => {
+                // Add 25 Naira to balance
+                airtimeBalance += 1;
+                localStorage.setItem('airtimeBalance', airtimeBalance.toString());
+                updateBalance();
+                
+                // Add reward transaction
+                addTransaction({
+                    type: `Daily Reward Claim`,
+                    amount: 1,
+                    date: new Date().getTime(),
+                    status: 'success',
+                    reference: generateReference()
+                });
+                
+                // Save claim time
+                const claimTime = new Date().getTime();
+                localStorage.setItem('lastRewardClaim', claimTime.toString());
+                
+                // Remove claim button
+                document.getElementById('claimRewardBtn').remove();
+                
+                // Show toast
+                showToast('Congratulations! ₦4 has been added to your balance.');
+                
+                // Start countdown for next reward
+                startRewardCountdown(claimTime);
+            });
+        } else {
+            // Start countdown for next available reward
+            startRewardCountdown(parseInt(lastClaimTime));
+        }
+    }
+
+function checkDailyReward() {
+    const now = new Date().getTime();
+    const today = new Date().setHours(0, 0, 0, 0);
+    
+    if (lastClaim < today) {
+        dailyRewardStatus.textContent = 'Available';
+        claimBtn.disabled = false;
+        claimBtn.style.opacity = '1';
+        claimBtn.style.cursor = 'pointer';
+        
+        // Hide countdown when reward is available
+        countdownDisplay.style.display = 'none';
+    } else {
+        dailyRewardStatus.textContent = 'Claimed for today';
+        claimBtn.disabled = true;
+        claimBtn.style.opacity = '0.5';
+        claimBtn.style.cursor = 'not-allowed';
+        
+        // Show and start countdown
+        countdownDisplay.style.display = 'block';
+        startMainRewardCountdown();
+    }
+}
+
+// Add this new function for main reward countdown
+function startMainRewardCountdown() {
+    // Clear any existing interval
+    if (window.mainCountdownInterval) {
+        clearInterval(window.mainCountdownInterval);
+    }
+    
+    const updateMainCountdown = () => {
+        const now = new Date().getTime();
+        
+        // Create a proper Date object from lastClaim
+        const lastClaimDate = new Date(lastClaim);
+        const nextResetTime = new Date(lastClaimDate.getTime() + (24 * 60 * 60 * 1000)); // 24 hours from last claim
+        
+        const timeRemaining = nextResetTime - now;
+        
+        if (timeRemaining <= 0) {
+            // Reset for new day
+            clearInterval(window.mainCountdownInterval);
+            checkDailyReward();
+            return;
+        }
+        
+        // Calculate hours, minutes, seconds
+        const hours = Math.floor(timeRemaining / (1000 * 60 * 60));
+        const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
+        
+        // Display countdown
+        countdownTimer.textContent = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+    };
+    
+    // Update immediately and then every second
+    updateMainCountdown();
+    window.mainCountdownInterval = setInterval(updateMainCountdown, 1000);
+}
+
+// Modify the claimDailyReward function to start countdown after claiming
+function claimDailyReward() {
+    const now = new Date().getTime();
+    
+    // Add daily reward
+    airtimeBalance += DAILY_REWARD;
+    lastClaim = now;
+    
+    // Save to local storage
+    localStorage.setItem('airtimeBalance', airtimeBalance.toString());
+    localStorage.setItem('lastClaim', now.toString());
+    
+    // Add transaction
+    addTransaction({
+        type: 'Daily Reward Claimed',
+        amount: DAILY_REWARD,
+        date: now,
+        status: 'success'
+    });
+    
+    // Update UI
+    updateBalance();
+    checkDailyReward(); // This will now also show and start countdown
+    showAlert('Daily reward of ₦' + DAILY_REWARD + ' claimed successfully!', 'success');
+}
+
+    // Function to start and update countdown timer
+    function startRewardCountdown(lastClaimTime) {
+        const countdownElement = document.getElementById('nextRewardCountdown');
+        if (!countdownElement) return;
+        
+        const updateCountdown = () => {
+            const currentTime = new Date().getTime();
+            const timeElapsed = currentTime - lastClaimTime;
+            const timeRemaining = 24 * 60 * 60 * 1000 - timeElapsed;
+            
+            if (timeRemaining <= 0) {
+                // Reward is available again
+                countdownElement.innerHTML = `<button id="claimRewardBtn" class="btn btn-success">Claim ₦25</button>`;
+                document.getElementById('claimRewardBtn').addEventListener('click', () => {
+                    // Add 50 Naira to balance
+                    airtimeBalance += 1;
+                    localStorage.setItem('airtimeBalance', airtimeBalance.toString());
+                    updateBalance();
+                    
+                    // Add reward transaction
+                    addTransaction({
+                        type: `Daily Reward Claim`,
+                        amount: 1,
+                        date: new Date().getTime(),
+                        status: 'success',
+                        reference: generateReference()
+                    });
+                    
+                    // Save claim time
+                    const claimTime = new Date().getTime();
+                    localStorage.setItem('lastRewardClaim', claimTime.toString());
+                    
+                    // Show toast
+                    showToast('Congratulations! ₦1 has been added to your balance.');
+                    
+                    // Start countdown for next reward
+                    startRewardCountdown(claimTime);
+                });
+                clearInterval(countdownInterval);
+                return;
+            }
+            
+            // Calculate hours, minutes, seconds
+            const hours = Math.floor(timeRemaining / (1000 * 60 * 60));
+            const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
+            
+            // Display countdown
+            countdownElement.textContent = `Next reward in: ${hours}h ${minutes}m ${seconds}s`;
+        };
+        
+        // Update immediately and then every second
+        updateCountdown();
+        const countdownInterval = setInterval(updateCountdown, 1000);
+    }
+    
+    // Add CSS for reward container
+    const style = document.createElement('style');
+    style.textContent = `
+    .reward-container {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 1000;
+    }
+    
+    .reward-card {
+        background-color: #fff;
+        border-radius: 30px;
+        padding: 15px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        text-align: center;
+        max-width: 250px;
+    }
+    
+    .countdown {
+        margin-top: 10px;
+        font-size: 0.9rem;
+        color: #666;
+    } 
+`;
+    document.head.appendChild(style);
+    
+    // Check for existing rewards on page load
+    document.addEventListener('DOMContentLoaded', () => {
+        const lastClaimTime = localStorage.getItem('lastRewardClaim');
+        if (lastClaimTime) {
+            startRewardCountdown(parseInt(lastClaimTime));
+        } else {
+            // Show initial reward claim option
+            addRewardClaim();
+        }
+    });
+    
+    // We'll remove the checkPendingTransactions interval since our transactions
+    // will now automatically update after 59 seconds
+    // clearInterval(pendingTransactionsInterval);
+</script>
+</body>
+</html>

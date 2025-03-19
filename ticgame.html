@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Modern Game Boxes</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    :root {
+      --primary-color: #6200EA;
+      --secondary-color: #03DAC6;
+      --accent-color: #FF4081;
+      --text-color: #E1E1E1;
+      --text-secondary: #B0B0B0;
+      --card-background: rgba(30, 30, 30, 0.85);
+      --card-background-hover: rgba(45, 45, 45, 0.9);
+      --shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+      --radius: 40px;
+      --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    [data-theme="light"] {
+      --primary-color: #6200EA;
+      --secondary-color: #03DAC6;
+      --accent-color: #FF4081;
+      --text-color: #333333;
+      --text-secondary: #666666;
+      --card-background: rgba(255, 255, 255, 0.85);
+      --card-background-hover: rgba(248, 248, 248, 0.9);
+      --shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Inter', 'Segoe UI', Roboto, -apple-system, BlinkMacSystemFont, sans-serif;
+      color: var(--text-color);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      padding: 2rem;
+      transition: background-color 0.3s ease;
+      background: linear-gradient(135deg, #ff69b4, #6a5acd, #1e90ff, #00c853, #ff9500, #ff69b4);
+      background-size: 600% 600%;
+      animation: gradientBackground 20s ease infinite;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    @keyframes gradientBackground {
+      0% {
+        background-position: 0% 50%;
+      }
+      25% {
+        background-position: 50% 100%;
+      }
+      50% {
+        background-position: 100% 50%;
+      }
+      75% {
+        background-position: 50% 0%;
+      }
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+
+    header {
+      width: 100%;
+      max-width: 1200px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 3rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background-color: rgba(18, 18, 18, 0.7);
+      backdrop-filter: blur(10px);
+      padding: 1rem;
+      border-radius: var(--radius);
+    }
+
+    [data-theme="light"] header {
+      background-color: rgba(242, 245, 249, 0.7);
+    }
+
+    .logo {
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: var(--primary-color);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .controls {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    .theme-toggle {
+      background: none;
+      border: none;
+      color: var(--text-color);
+      font-size: 1.25rem;
+      cursor: pointer;
+      padding: 0.5rem;
+      border-radius: 50%;
+      transition: var(--transition);
+    }
+
+    .theme-toggle:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .search-bar {
+      position: relative;
+      width: 240px;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 0.75rem 1rem 0.75rem 2.5rem;
+      border-radius: calc(var(--radius) / 2);
+      border: none;
+      background-color: var(--card-background);
+      color: var(--text-color);
+      font-size: 0.9rem;
+      transition: var(--transition);
+    }
+
+    .search-input:focus {
+      outline: none;
+      box-shadow: 0 0 0 2px var(--primary-color);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 0.75rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+    }
+    
+    .container {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 2rem;
+      width: 100%;
+      max-width: 1200px;
+    }
+    
+    .game-card {
+      background-color: var(--card-background);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      transition: var(--transition);
+      position: relative;
+      aspect-ratio: 1/1;
+      display: flex;
+      flex-direction: column;
+      backdrop-filter: blur(5px);
+    }
+    
+    .game-card:hover {
+      transform: translateY(-10px) scale(1.02);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+      background-color: var(--card-background-hover);
+    }
+
+    .game-badge {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background-color: var(--accent-color);
+      color: white;
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 0.3rem 0.6rem;
+      border-radius: 20px;
+      z-index: 1;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+    
+    .game-image-container {
+      position: relative;
+      width: 100%;
+      height: 50%;
+      overflow: hidden;
+    }
+    
+    .game-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+    
+    .game-card:hover .game-image {
+      transform: scale(1.05);
+    }
+    
+    .game-content {
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+      justify-content: space-between;
+    }
+
+    .game-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.75rem;
+    }
+
+    .game-category {
+      font-size: 0.8rem;
+      color: var(--secondary-color);
+      font-weight: 500;
+    }
+
+    .game-rating {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    .star-icon {
+      color: #FFD700;
+    }
+    
+    .game-title {
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+      color: var(--text-color);
+    }
+    
+    .game-description {
+      font-size: 0.95rem;
+      line-height: 1.5;
+      color: var(--text-secondary);
+      margin-bottom: 1.5rem;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    
+    .game-stats {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.75rem 0;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      margin-bottom: 1.25rem;
+      font-size: 0.85rem;
+    }
+
+    .stat {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .stat-value {
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+
+    .stat-label {
+      color: var(--text-secondary);
+      font-size: 0.75rem;
+    }
+    
+    .button-row {
+      display: flex;
+      gap: 0.75rem;
+      margin-top: auto;
+    }
+    
+    .play-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background-color: var(--primary-color);
+      color: white;
+      padding: 0.75rem 1.25rem;
+      border-radius: calc(var(--radius) / 2);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+      border: none;
+      cursor: pointer;
+      flex: 1;
+    }
+    
+    .play-button:hover {
+      background-color: #7028FF;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(98, 0, 234, 0.3);
+    }
+
+    .info-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background-color: transparent;
+      color: var(--text-color);
+      padding: 0.75rem;
+      border-radius: calc(var(--radius) / 2);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      cursor: pointer;
+    }
+    
+    .info-button:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+    
+    .button-icon {
+      margin-right: 0.5rem;
+    }
+    
+    /* Animation for cards when page loads */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .game-card {
+      opacity: 0;
+      animation: fadeInUp 0.6s ease forwards;
+    }
+    
+    .game-card:nth-child(1) {
+      animation-delay: 0.1s;
+    }
+    
+    .game-card:nth-child(2) {
+      animation-delay: 0.3s;
+    }
+
+    footer {
+      margin-top: 4rem;
+      text-align: center;
+      color: var(--text-color);
+      font-size: 0.85rem;
+      width: 100%;
+      max-width: 1200px;
+      padding: 2rem 0;
+      background-color: rgba(18, 18, 18, 0.7);
+      backdrop-filter: blur(10px);
+      border-radius: var(--radius);
+    }
+
+    [data-theme="light"] footer {
+      background-color: rgba(242, 245, 249, 0.7);
+    }
+
+    /* Custom cursor */
+    body {
+      cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' style='fill:none;stroke:%23ffffff;stroke-width:2'><circle cx='12' cy='12' r='6' /></svg>") 12 12, auto;
+    }
+
+    a, button {
+      cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' style='fill:none;stroke:%23ffffff;stroke-width:2'><circle cx='12' cy='12' r='6' fill='%23ffffff' /></svg>") 12 12, pointer;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        grid-template-columns: 1fr;
+      }
+      
+      header {
+        flex-direction: column;
+        gap: 1.5rem;
+      }
+      
+      .search-bar {
+        width: 100%;
+      }
+      
+      .controls {
+        width: 100%;
+        justify-content: space-between;
+      }
+    }
+
+    @media (prefers-reduced-motion) {
+      .game-card {
+        animation: none;
+        opacity: 1;
+      }
+      
+      .game-card:hover {
+        transform: none;
+      }
+
+      body {
+        animation: none;
+      }
+
+      #game-container {
+        animation: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">
+      <i class="fas fa-gamepad"></i>
+      Multi-Games_tic-Games
+    </div>
+    <div class="controls">
+      <div class="search-bar">
+        <i class="fas fa-search search-icon"></i>
+        <input type="text" class="search-input" placeholder="Search games...">
+      </div>
+      <button id="theme-toggle" class="theme-toggle">
+        <i class="fas fa-moon"></i>
+      </button>
+    </div>
+  </header>
+
+  <div class="container" id="game-container">
+    <!-- Only two game cards -->
+    <div class="game-card">
+      <div class="game-badge">New</div>
+      <div class="game-image-container">
+        <img src="https://i.postimg.cc/CL3qTdQn/images-12.jpg" alt="tic" class="game-image">
+      </div>
+      <div class="game-content">
+        <div>
+          <div class="game-meta">
+            <span class="game-category">RPG</span>
+            <div class="game-rating">
+              <i class="fas fa-star star-icon"></i>
+              4.8
+            </div>
+          </div>
+          <h2 class="game-title">tic-tac-tole</h2>
+          <p class="game-description">
+           Tic-Tac-Toe is a classic two-player strategy game where players take turns marking Xs and Os on a 3×3 grid. The goal is to get three marks in a row—horizontally, vertically, or diagonally—before the opponent.
+          </p>
+        </div>
+        <div>
+          <div class="game-stats">
+            <div class="stat">
+              <div class="stat-value">15K+</div>
+              <div class="stat-label">Players</div>
+            </div>
+            <div class="stat">
+              <div class="stat-value">60+</div>
+              <div class="stat-label">Levels</div>
+            </div>
+            <div class="stat">
+              <div class="stat-value">3.2kb</div>
+              <div class="stat-label">Size</div>
+            </div>
+          </div>
+          <div class="button-row">
+            <a href="file:///android_asset/htmlapp/root/tic.html" class="play-button">
+              <i class="fas fa-play button-icon"></i> Play Now
+            </a>
+            <a href="#" class="info-button">
+              <i class="fas fa-info-circle"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="game-card">
+      <div class="game-badge">new</div>
+      <div class="game-image-container">
+        <img src="/api/placeholder/400/400" alt="Cyber Racer" class="game-image">
+      </div>
+      <div class="game-content">
+        <div>
+          <div class="game-meta">
+            <span class="game-category">Puzzle</span>
+            <div class="game-rating">
+              <i class="fas fa-star star-icon"></i>
+              4.9
+            </div>
+          </div>
+          <h2 class="game-title">Neon tic-tac-tole</h2>
+          <p class="game-description">
+            Tic-Tac-Toe NEON is a classic two-player strategy game where players take turns marking Xs and Os on a 3×3 grid, This one is a colorful one.
+          </p>
+        </div>
+        <div>
+          <div class="game-stats">
+            <div class="stat">
+              <div class="stat-value">25K+</div>
+              <div class="stat-label">Players</div>
+            </div>
+            <div class="stat">
+              <div class="stat-value">24</div>
+              <div class="stat-label">Tracks</div>
+            </div>
+            <div class="stat">
+              <div class="stat-value">4.5kb</div>
+              <div class="stat-label">Size</div>
+            </div>
+          </div>
+          <div class="button-row">
+            <a href="file:///android_asset/htmlapp/root/ticneon.html" class="play-button">
+              <i class="fas fa-play button-icon"></i> Play Now
+            </a>
+            <a href="#" class="info-button">
+              <i class="fas fa-info-circle"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <footer>
+    <p>© 2025 Multi Games. All games are property of their respective owners.</p>
+  </footer>
+
+  <script>
+    // Theme Toggle Functionality
+    const themeToggle = document.getElementById('theme-toggle');
+    const themeIcon = themeToggle.querySelector('i');
+    
+    // Check for saved theme preference or use preferred color scheme
+    const savedTheme = localStorage.getItem('theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    
+    if (savedTheme === 'light' || (!savedTheme && !prefersDark)) {
+      document.documentElement.setAttribute('data-theme', 'light');
+      themeIcon.classList.replace('fa-moon', 'fa-sun');
+    }
+    
+    themeToggle.addEventListener('click', () => {
+      const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      
+      document.documentElement.setAttribute('data-theme', newTheme);
+      localStorage.setItem('theme', newTheme);
+      
+      // Update icon
+      if (newTheme === 'light') {
+        themeIcon.classList.replace('fa-moon', 'fa-sun');
+      } else {
+        themeIcon.classList.replace('fa-sun', 'fa-moon');
+      }
+    });
+    
+    // Search functionality
+    const searchInput = document.querySelector('.search-input');
+    
+    searchInput.addEventListener('input', (e) => {
+      const searchTerm = e.target.value.toLowerCase().trim();
+      const gameCards = document.querySelectorAll('.game-card');
+      
+      gameCards.forEach(card => {
+        const title = card.querySelector('.game-title').textContent.toLowerCase();
+        const description = card.querySelector('.game-description').textContent.toLowerCase();
+        const category = card.querySelector('.game-category').textContent.toLowerCase();
+        
+        if (title.includes(searchTerm) || description.includes(searchTerm) || category.includes(searchTerm)) {
+          card.style.display = '';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    });
+
+    // Automatic slow scrolling effect
+    function autoScroll() {
+      const scrollSpeed = 0.5; // pixels per interval
+      let currentPosition = window.scrollY;
+      
+      setInterval(() => {
+        // Only auto-scroll if user isn't actively scrolling
+        if (window.scrollY === currentPosition) {
+          // Calculate max scroll position
+          const maxScroll = document.body.scrollHeight - window.innerHeight;
+          
+          // Increment position
+          currentPosition += scrollSpeed;
+          
+          // If we reach bottom, go back to top
+          if (currentPosition >= maxScroll) {
+            currentPosition = 0;
+            window.scrollTo({
+              top: 0,
+              behavior: 'smooth'
+            });
+          } else {
+            window.scrollTo(0, currentPosition);
+          }
+        } else {
+          // Update current position if user has manually scrolled
+          currentPosition = window.scrollY;
+        }
+      }, 30); // Check every 30ms
+    }
+    
+    // Start auto-scrolling after page loads
+    window.addEventListener('load', () => {
+      setTimeout(autoScroll, 2000);
+    });
+
+    // Add some dynamic stars/particles to the background
+    function createStars() {
+      const starContainer = document.createElement('div');
+      starContainer.style.position = 'fixed';
+      starContainer.style.top = '0';
+      starContainer.style.left = '0';
+      starContainer.style.width = '100%';
+      starContainer.style.height = '100%';
+      starContainer.style.overflow = 'hidden';
+      starContainer.style.pointerEvents = 'none';
+      starContainer.style.zIndex = '-1';
+      document.body.appendChild(starContainer);
+      
+      for (let i = 0; i < 50; i++) {
+        const star = document.createElement('div');
+        const size = Math.random() * 3 + 1;
+        
+        star.style.position = 'absolute';
+        star.style.width = `${size}px`;
+        star.style.height = `${size}px`;
+        star.style.borderRadius = '50%';
+        star.style.backgroundColor = `rgba(255, 255, 255, ${Math.random() * 0.5 + 0.5})`;
+        star.style.top = `${Math.random() * 100}%`;
+        star.style.left = `${Math.random() * 100}%`;
+        star.style.animation = `twinkle ${Math.random() * 5 + 2}s infinite alternate`;
+        
+        starContainer.appendChild(star);
+      }
+      
+      const styleSheet = document.createElement('style');
+      styleSheet.textContent = `
+        @keyframes twinkle {
+          0% { transform: scale(1); opacity: 0.7; }
+          100% { transform: scale(1.5); opacity: 1; }
+        }
+      `;
+      document.head.appendChild(styleSheet);
+    }
+    
+    createStars();
+  </script>
+</body>
+</html>

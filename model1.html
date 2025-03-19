@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi Games model</title>
+    <script src="https://js.paystack.co/v1/inline.js"></script>
+    <style>
+        /* Variables */
+        :root {
+            --dark: #121212;
+            --light: #f5f5f5;
+            --accent: #25D366; /* WhatsApp green as accent */
+            --secondary-accent: #6c5ce7; /* Purple for donate */
+            --card-radius: 12px;
+            --transition-speed: 0.3s ease;
+            --font-main: 'Poppins', sans-serif;
+        }
+
+        /* General styling */
+        body {
+            font-family: var(--font-main);
+            background-color: #1e1e1e;
+            margin: 0;
+            padding: 0;
+            color: var(--light);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+        
+        /* Header with buttons */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: var(--dark);
+            padding: 15px 30px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo svg {
+            margin-right: 12px;
+        }
+        
+        .brand-name {
+            font-size: 22px;
+            font-weight: bold;
+            background: linear-gradient(45deg, var(--accent), var(--secondary-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+        }
+        
+        /* Button styling */
+        .btn {
+            padding: 12px 24px;
+            border-radius: 50px;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.9rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .btn-whatsapp {
+            background-color: var(--accent);
+            color: white;
+        }
+        
+        .btn-whatsapp:hover {
+            background-color: #128C7E;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(37, 211, 102, 0.3);
+        }
+        
+        .btn-donate {
+            background-color: var(--secondary-accent);
+            color: white;
+        }
+        
+        .btn-donate:hover {
+            background-color: #5348c7;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(108, 92, 231, 0.3);
+        }
+        
+        /* Content area */
+        .content {
+            flex: 1;
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .demo-section {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 50px;
+        }
+        
+        /* Modal Styles - Responsive sizing */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 200;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            overflow-y: auto; /* Allow scrolling if modal is taller than viewport */
+        }
+
+        .modal-content {
+            background-color: var(--dark);
+            margin: 2vh auto; /* Reduced vertical margin */
+            padding: 25px;
+            width: 90%;
+            max-width: 400px;
+            border-radius: var(--card-radius);
+            max-height: 90vh; /* Increased max-height */
+            overflow-y: auto;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+            color: var(--light);
+            position: relative;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .modal-fadeIn {
+            animation: modalFadeIn 0.5s ease-out forwards;
+        }
+
+        @keyframes modalFadeIn {
+            from {opacity: 0; transform: translateY(-50px) scale(0.9);}
+            to {opacity: 1; transform: translateY(0px) scale(1);}
+        }
+
+        .modal-close {
+            color: var(--light);
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: var(--transition-speed);
+            position: absolute;
+            top: 15px;
+            right: 20px;
+        }
+
+        .modal-close:hover {
+            color: var(--accent);
+            transform: rotate(90deg);
+        }
+
+        .modal h2 {
+            margin-top: 0;
+            margin-bottom: 20px;
+            color: var(--light);
+            font-size: 1.8rem;
+            border-bottom: 2px solid var(--accent);
+            padding-bottom: 10px;
+        }
+
+        .modal p {
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        
+        /* Modal content specific styling */
+        .modal-actions {
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+        }
+        
+        /* Specific modal styling */
+        #donateModal .modal-content h2 {
+            border-bottom-color: var(--secondary-accent);
+        }
+        
+        #donateModal .modal-close:hover {
+            color: var(--secondary-accent);
+        }
+        
+        .donation-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        
+        .donation-option {
+            background-color: #1e1e1e;
+            padding: 15px 25px;
+            border-radius: var(--card-radius);
+            border: 1px solid #333;
+            cursor: pointer;
+            transition: var(--transition-speed);
+        }
+        
+        .donation-option:hover {
+            border-color: var(--secondary-accent);
+            transform: scale(1.05);
+        }
+        
+        .donation-option.selected {
+            border-color: var(--secondary-accent);
+            background-color: rgba(108, 92, 231, 0.2);
+        }
+        
+        .donate-input {
+            background-color: #1e1e1e;
+            border: 1px solid #333;
+            color: var(--light);
+            padding: 12px;
+            border-radius: var(--card-radius);
+            width: 100%;
+            margin-top: 20px;
+            transition: var(--transition-speed);
+        }
+        
+        .donate-input:focus {
+            border-color: var(--secondary-accent);
+            outline: none;
+        }
+        
+        /* Email input */
+        .email-container {
+            margin-top: 25px;
+            margin-bottom: 10px;
+        }
+        
+        .email-input {
+            background-color: #1e1e1e;
+            border: 1px solid #333;
+            color: var(--light);
+            padding: 12px;
+            border-radius: var(--card-radius);
+            width: 100%;
+            transition: var(--transition-speed);
+        }
+        
+        .email-input:focus {
+            border-color: var(--secondary-accent);
+            outline: none;
+        }
+        
+        .email-label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+        
+        /* WhatsApp QR code section */
+        .qr-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+            background-color: white;
+            padding: 20px;
+            border-radius: var(--card-radius);
+            max-width: 250px;
+            margin: 0 auto;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .qr-code {
+            width: 180px;
+            height: 180px;
+            background-color: #f5f5f5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .qr-text {
+            color: #333;
+            font-size: 0.8rem;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* Loader Styling */
+        .loader-overlay {
+            display: none;
+            position: fixed;
+            z-index: 300;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(3px);
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .loader {
+            width: 60px;
+            height: 60px;
+            border: 5px solid rgba(108, 92, 231, 0.3);
+            border-radius: 50%;
+            border-top: 5px solid var(--secondary-accent);
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                padding: 15px;
+            }
+            
+            .action-buttons {
+                margin-top: 15px;
+            }
+            
+            .demo-section {
+                flex-direction: column;
+            }
+            
+            .modal-content {
+                width: 95%;
+                padding: 20px 15px;
+                margin: 5% auto;
+                max-height: 85vh;
+            }
+            
+            .donation-options {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .modal h2 {
+                font-size: 1.5rem;
+            }
+        }
+        
+        /* Handle very small screens */
+        @media (max-height: 600px) {
+            .modal-content {
+                margin: 1vh auto;
+                padding: 15px;
+                max-height: 95vh;
+            }
+            
+            .modal h2 {
+                font-size: 1.3rem;
+                margin-bottom: 10px;
+                padding-bottom: 5px;
+            }
+            
+            .modal p {
+                margin-bottom: 10px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loader overlay -->
+    <div class="loader-overlay" id="loaderOverlay">
+        <div class="loader"></div>
+    </div>
+
+    <!-- Header with WhatsApp icon and buttons -->
+    <header class="header">
+        <div class="logo">
+            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="#25D366">
+                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+            </svg>
+            <span class="brand-name">Multi Games</span>
+        </div>
+        
+        <div class="action-buttons">
+            <button class="btn btn-donate" onclick="openModal('donate')">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                </svg>
+                Donate
+            </button>
+            <button class="btn btn-whatsapp" onclick="openModal('whatsapp')">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+                </svg>
+                Join Community
+            </button>
+        </div>
+    </header>
+    
+    <main class="content">
+        <h1>Welcome to Multi Games</h1>
+        <p>Your ultimate destination for gaming communities </p>
+        
+        <div class="demo-section">
+            <button class="btn btn-donate" onclick="openModal('donate')">Open Donate Modal</button>
+            <button class="btn btn-whatsapp" onclick="openModal('whatsapp')">Open WhatsApp Modal</button>
+        </div>
+    </main>
+    
+    <!-- Modals -->
+    <div id="donateModal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal('donate')">&times;</span>
+            <h2>Support Multi Games</h2>
+            <p>Your donations help us maintain and improve our platform. Choose an amount or enter a custom donation.</p>
+            
+            <div class="donation-options">
+                <div class="donation-option" onclick="selectDonation(this, 100)">₦100</div>
+                <div class="donation-option" onclick="selectDonation(this, 200)">₦200</div>
+                <div class="donation-option" onclick="selectDonation(this, 500)">₦500</div>
+                <div class="donation-option" onclick="selectDonation(this, 1500)">₦1500</div>
+                <div class="donation-option" onclick="selectDonation(this, 'custom')">Custom</div>
+            </div>
+            
+            <input type="text" class="donate-input" id="customAmount" placeholder="Enter custom amount in Naira" style="display: none;">
+            
+            <div class="email-container">
+                <label for="donorEmail" class="email-label">Your Email Address <span style="color: #ff6b6b;">*</span></label>
+                <input type="email" id="donorEmail" class="email-input" placeholder="Enter your email" required>
+            </div>
+            
+            <div class="modal-actions">
+                <button class="btn btn-donate" onclick="processDonation()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                    </svg>
+                    Donate Now
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="whatsappModal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal('whatsapp')">&times;</span>
+            <h2>Join Our WhatsApp Channel</h2>
+            <p>Stay updated with the latest games and tournaments! Scan the QR code or tap the button below to join our community.</p>
+            
+            <div class="qr-container">
+                <div class="qr-code">
+                    <!-- Placeholder for QR code -->
+                    <img src="https://i.postimg.cc/j2pYFs1b/IMG-20250302-WA0096-copy-288x267.jpg" alt="WhatsApp QR Code">
+                </div>
+                <div class="qr-text">Scan with your phone camera</div>
+            </div>
+            
+            <div class="modal-actions">
+                <a href="https://whatsapp.com/channel/0029Vb2DzFZA2pLDgDZTAD06" class="btn btn-whatsapp" target="_blank">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+                    </svg>
+                    Join on WhatsApp
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Selected donation amount
+        let selectedAmount = null;
+        
+        // Function to show loader
+        function showLoader() {
+            document.getElementById('loaderOverlay').style.display = "flex";
+        }
+        
+        // Function to hide loader
+        function hideLoader() {
+            document.getElementById('loaderOverlay').style.display = "none";
+        }
+        
+        // Function to open modal
+        function openModal(modalId) {
+            const modal = document.getElementById(modalId + 'Modal');
+            modal.style.display = "block";
+            document.body.style.overflow = "hidden"; // Prevent scrolling when modal is open
+            
+            // Add the fade-in class to trigger animation
+            setTimeout(() => {
+                modal.querySelector('.modal-content').classList.add('modal-fadeIn');
+            }, 10);
+        }
+        
+        // Function to close modal
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId+ 'Modal');
+            const modalContent = modal.querySelector('.modal-content');
+            
+            // Remove animation class
+            modalContent.classList.remove('modal-fadeIn');
+            
+            // Add fade out animation
+            modalContent.style.animation = 'modalFadeOut 0.3s forwards';
+            
+            // After animation completes, hide the modal
+            setTimeout(() => {
+                modal.style.display = "none";
+                document.body.style.overflow = "auto"; // Re-enable scrolling
+                modalContent.style.animation = ''; // Reset animation
+            }, 300);
+        }
+        
+        // Close modal when clicking outside of it
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                const modalId = event.target.id.replace('Modal', '');
+                closeModal(modalId);
+            }
+        }
+        
+        // Function to select donation amount
+        function selectDonation(element, amount) {
+            // Remove selected class from all options
+            document.querySelectorAll('.donation-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            
+            // Add selected class to clicked option
+            element.classList.add('selected');
+            selectedAmount = amount;
+            
+            // Show/hide custom input field
+            const customInput = document.getElementById('customAmount');
+            if (amount === 'custom') {
+                customInput.style.display = 'block';
+                customInput.focus();
+            } else {
+                customInput.style.display = 'none';
+            }
+        }
+        
+        // Function to process donation with Paystack
+        function processDonation() {
+            let donationAmount = selectedAmount;
+            const email = document.getElementById('donorEmail').value;
+            
+            if (selectedAmount === 'custom') {
+                donationAmount = document.getElementById('customAmount').value;
+            }
+            
+            if (!donationAmount || donationAmount <= 0) {
+                alert('Please select or enter a valid donation amount');
+                return;
+            }
+            
+            if (!email || !isValidEmail(email)) {
+                alert('Please enter a valid email address');
+                document.getElementById('donorEmail').focus();
+                return;
+            }
+            
+            // Show loader while processing payment
+            showLoader();
+            
+            // Generate a random reference
+            const reference = '' + Math.floor((Math.random() * 1000000000) + 1);
+            
+            // Configure Paystack payment
+            var handler = PaystackPop.setup({
+                key: 'pk_live_11399ceb74b1fa794595e4334c143a64de020095',
+                email: email,
+                amount: donationAmount * 100, // Paystack amount is in kobo (100 kobo = 1 Naira)
+                currency: 'NGN',
+                ref: reference,
+                callback: function(response) {
+                    // Hide loader when payment is complete
+                    hideLoader();
+                    
+                    // This is called only after successful payment
+                    alert('Thank you for your donation of ₦' + donationAmount + '! Your transaction reference is: ' + response.reference);
+                    closeModal('donate');
+                    
+                    // Reset form
+                    document.getElementById('donorEmail').value = '';
+                    document.querySelectorAll('.donation-option').forEach(option => {
+                        option.classList.remove('selected');
+                    });
+                    document.getElementById('customAmount').style.display = 'none';
+                    selectedAmount = null;
+                },
+                onClose: function() {
+                    // Hide loader if payment window is closed
+                    hideLoader();
+                    alert('Transaction was cancelled');
+                }
+            });
+            
+            // Open Paystack payment window
+            handler.openIframe();
+        }
+        
+        // Function to validate email
+        function isValidEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+
+        // Add keyframes for modal fade out animation to the stylesheet
+        const style = document.createElement('style');
+        style.innerHTML = `
+            @keyframes modalFadeOut {
+                from {opacity: 1; transform: translateY(0) scale(1);}
+                to {opacity: 0; transform: translateY(20px) scale(0.95);}
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

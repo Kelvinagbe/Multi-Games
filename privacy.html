@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy - Game Name</title>
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2c3e50;
+            --accent-color: #e74c3c;
+            --light-bg: #f8f9fa;
+            --dark-bg: #2c3e50;
+            --text-color: #333;
+            --light-text: #f8f9fa;
+            --border-radius: 8px;
+            --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: #f5f7fa;
+            visibility: hidden; /* Hide content until loaded */
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background-color: var(--dark-bg);
+            color: var(--light-text);
+            padding: 30px 0;
+            text-align: center;
+            border-radius: var(--border-radius);
+            margin-bottom: 30px;
+            box-shadow: var(--box-shadow);
+        }
+        
+        h1 {
+            margin: 0;
+            font-size: 2.5rem;
+            color: white;
+        }
+        
+        .last-updated {
+            font-style: italic;
+            margin-top: 10px;
+            color: #ccc;
+        }
+        
+        .section {
+            background-color: white;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            border-left: 5px solid var(--primary-color);
+            transition: transform 0.3s ease;
+        }
+        
+        .section:hover {
+            transform: translateY(-5px);
+        }
+        
+        h2 {
+            color: var(--primary-color);
+            margin-top: 0;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+        
+        h2 .icon {
+            margin-right: 10px;
+            font-size: 1.5rem;
+        }
+        
+        ul {
+            padding-left: 20px;
+        }
+        
+        li {
+            margin-bottom: 10px;
+            position: relative;
+            padding-left: 5px;
+        }
+        
+        .highlight {
+            background-color: rgba(52, 152, 219, 0.1);
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        
+        .important-note {
+            background-color: #fef9e7;
+            border-left: 4px solid #f1c40f;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: var(--border-radius);
+        }
+        
+        .children-section {
+            border-left-color: var(--accent-color);
+        }
+        
+        .security-section {
+            border-left-color: #27ae60;
+        }
+        
+        .contact-section {
+            background-color: var(--dark-bg);
+            color: var(--light-text);
+            text-align: center;
+            padding: 30px;
+        }
+        
+        .contact-btn {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 12px 25px;
+            text-decoration: none;
+            border-radius: 30px;
+            font-weight: bold;
+            margin-top: 15px;
+            transition: all 0.3s ease;
+        }
+        
+        .contact-btn:hover {
+            background-color: #2980b9;
+            transform: scale(1.05);
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            header {
+                padding: 20px 0;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .section {
+                padding: 20px;
+            }
+        }
+        
+        /* Toggle for dark mode */
+        .dark-mode-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: var(--dark-bg);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            cursor: pointer;
+            box-shadow: var(--box-shadow);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+        
+        /* Back to Home Button */
+        .back-to-home {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            border-radius: 30px;
+            background: linear-gradient(135deg, #3498db, #8e44ad);
+            color: white;
+            font-weight: bold;
+            text-decoration: none;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            border: none;
+            cursor: pointer;
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            z-index: 1000;
+        }
+        
+        /* Add class for hiding the button */
+        .back-to-home.hidden {
+            opacity: 0;
+            transform: translateY(-20px);
+            pointer-events: none;
+        }
+        
+        /* Loader Styles */
+        .loader-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+        
+        .loader {
+            width: 80px;
+            height: 80px;
+            border: 8px solid #f3f3f3;
+            border-top: 8px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loader -->
+    <div class="loader-container">
+        <div class="loader"></div>
+    </div>
+    
+    <!-- Back to Home Button -->
+    <a href="file:///android_asset/htmlapp/root/index.html" class="back-to-home">Back to Home</a>
+    
+    <div class="container">
+        <header>
+            <h1>Privacy Policy</h1>
+            <p class="last-updated">Last Updated: February 27, 2025</p>
+        </header>
+
+        <div class="section">
+            <h2><span class="icon">📝</span> Introduction</h2>
+            <p>Welcome to <span class="highlight">Game Name</span>! We've created this Privacy Policy to explain how we collect, use, and protect your data while you enjoy our game. We believe in transparency and want you to feel confident about your privacy while playing.</p>
+            <p>This document outlines our commitment to respecting your privacy and describes how we handle your information.</p>
+        </div>
+
+        <div class="section">
+            <h2><span class="icon">📊</span> Information We Collect</h2>
+            <p>When you play <span class="highlight">Game Name</span>, we may collect the following information:</p>
+            <ul>
+                <li><strong>Game Data:</strong> Your high scores, achievements, game progress, and in-game purchases to enhance your gaming experience.</li>
+                <li><strong>Device Information:</strong> Your device model, operating system version, and unique device identifiers to optimize performance.</li>
+                <li><strong>Usage Data:</strong> Information about gameplay behavior, crash reports, and analytics to improve our game.</li>
+                <li><strong>Personal Data (if applicable):</strong> If you choose to sign in with Google Play, Apple Game Center, or Facebook, we may collect your profile name and avatar to personalize your experience.</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2><span class="icon">🔍</span> How We Use Your Information</h2>
+            <p>We use your data to provide you with the best gaming experience possible:</p>
+            <ul>
+                <li>Save your game progress and settings so you never lose your achievements.</li>
+                <li>Improve game performance and user experience through continuous updates.</li>
+                <li>Identify and fix bugs while preventing cheating to maintain fair gameplay.</li>
+                <li>Show relevant in-game advertisements (if applicable) to support our free-to-play model.</li>
+                <li>Provide multiplayer and leaderboard features (if applicable) to enhance social gaming.</li>
+            </ul>
+            <div class="important-note">
+                <p><strong>Note:</strong> We only collect the data necessary to provide you with a smooth and enjoyable gaming experience.</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2><span class="icon">📱</span> Advertising & Third-Party Services</h2>
+            <p>To keep our game free or affordable, we may use third-party services such as Google AdMob, Unity Ads, or Facebook Ads to display in-game advertisements. These services may collect data such as:</p>
+            <ul>
+                <li>Ad interactions and impressions to measure effectiveness.</li>
+                <li>Device identifiers for personalized ads that are more relevant to your interests.</li>
+                <li>Game engagement analytics to improve ad placement and timing.</li>
+            </ul>
+            <p>You can opt out of personalized ads in your device settings at any time without affecting your gameplay experience.</p>
+        </div>
+
+        <div class="section security-section">
+            <h2><span class="icon">🔒</span> Data Security</h2>
+            <p>We implement reasonable security measures to protect your data from unauthorized access or disclosure. These include:</p>
+            <ul>
+                <li>Encryption of sensitive information during transmission.</li>
+                <li>Regular security assessments and updates.</li>
+                <li>Limited access to personal data by our team members.</li>
+            </ul>
+            <p>While we take these precautions, no online service can guarantee 100% security. We encourage you to play responsibly and keep your device secured.</p>
+        </div>
+
+        <div class="section children-section">
+            <h2><span class="icon">👶</span> Children's Privacy</h2>
+            <p>Our game is intended for a general audience [or specify: Ages 13+ / Ages 18+]. We do not knowingly collect personal information from children under 13 years of age.</p>
+            <p>If we discover that we have collected personal data from a child under 13 without parental consent, we will delete it immediately. If you are a parent or guardian and believe your child has provided us with personal information, please contact us using the details below.</p>
+        </div>
+
+        <div class="section">
+            <h2><span class="icon">⚖️</span> Your Rights & Choices</h2>
+            <p>We respect your control over your data. You have the right to:</p>
+            <ul>
+                <li>Request access to the personal data we have about you.</li>
+                <li>Request correction or deletion of your personal data.</li>
+                <li>Opt out of targeted advertisements through your device settings.</li>
+                <li>Disable certain data collection via game settings (where available).</li>
+            </ul>
+            <p>To exercise these rights, please contact us using the email address provided in the Contact section.</p>
+        </div>
+
+        <div class="section">
+            <h2><span class="icon">🔄</span> Changes to This Policy</h2>
+            <p>We may update this Privacy Policy from time to time to reflect changes in our practices or for other operational, legal, or regulatory reasons.</p>
+            <p>We will notify you of any material changes through an in-game notice or update notification. We encourage you to review this policy regularly to stay informed about how we are protecting your information.</p>
+        </div>
+
+        <div class="section contact-section">
+            <h2><span class="icon">📞</span> Contact Us</h2>
+            <p>If you have questions, concerns, or requests regarding this Privacy Policy or our data practices, please don't hesitate to reach out to us.</p>
+            <p>We're committed to addressing your inquiries and resolving any issues in a timely manner.</p>
+            <a href="mailto:agbekelvin667@gmail.com" class="contact-btn">Email Us</a>
+        </div>
+
+        <footer>
+            <p>© 2025 Game Name. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <button class="dark-mode-toggle" title="Toggle dark mode">🌓</button>
+
+    <script>
+        // Loader functionality
+        window.addEventListener('load', function() {
+            // Hide loader and show content
+            setTimeout(function() {
+                document.querySelector('.loader-container').style.display = 'none';
+                document.body.style.visibility = 'visible';
+                
+                // Show back to home button after 2 seconds
+                setTimeout(function() {
+                    const backButton = document.querySelector('.back-to-home');
+                    backButton.style.opacity = '1';
+                    backButton.style.transform = 'translateY(0)';
+                }, 2000);
+            }, 800); // Small delay to ensure everything is loaded
+        });
+        
+        // Variables for scroll detection
+        let lastScrollPosition = 0;
+        const backButton = document.querySelector('.back-to-home');
+        
+        // Scroll event listener for showing/hiding button
+        window.addEventListener('scroll', function() {
+            const currentScrollPosition = window.pageYOffset || document.documentElement.scrollTop;
+            
+            // If scrolling down, hide the button
+            if (currentScrollPosition > lastScrollPosition) {
+                backButton.classList.add('hidden');
+            } 
+            // If scrolling up, show the button
+            else {
+                backButton.classList.remove('hidden');
+            }
+            
+            // Update the scroll position
+            lastScrollPosition = currentScrollPosition;
+        });
+        
+        // Simple dark mode toggle functionality
+        document.querySelector('.dark-mode-toggle').addEventListener('click', function() {
+            document.body.classList.toggle('dark-mode');
+            
+            // Add dark mode styles if needed
+            if (document.body.classList.contains('dark-mode')) {
+                document.documentElement.style.setProperty('--text-color', '#f8f9fa');
+                document.documentElement.style.setProperty('--light-bg', '#2c3e50');
+                document.body.style.backgroundColor = '#1a1a2e';
+                
+                const sections = document.querySelectorAll('.section:not(.contact-section)');
+                sections.forEach(section => {
+                    section.style.backgroundColor = '#222831';
+                    section.style.color = '#f8f9fa';
+                });
+            } else {
+                document.documentElement.style.setProperty('--text-color', '#333');
+                document.documentElement.style.setProperty('--light-bg', '#f8f9fa');
+                document.body.style.backgroundColor = '#f5f7fa';
+                
+                const sections = document.querySelectorAll('.section:not(.contact-section)');
+                sections.forEach(section => {
+                    section.style.backgroundColor = 'white';
+                    section.style.color = '#333';
+                });
+            }
+        });
+    </script>
+</body>
+</html>

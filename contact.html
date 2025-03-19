@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - Multi Games</title>
+    <style>
+        :root {
+            --primary-color: #7158e2;
+            --secondary-color: #3ae374;
+            --dark-color: #2c3e50;
+            --light-color: #f9f9f9;
+            --accent-color: #ff6b6b;
+            --card-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--light-color);
+            color: var(--dark-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        
+        body.loaded {
+            opacity: 1;
+        }
+        
+        .hero {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            padding: 70px 20px;
+            color: white;
+            text-align: center;
+            clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
+            position: relative;
+        }
+        
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            line-height: 1.8;
+        }
+        
+        .floating-circles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            overflow: hidden;
+            z-index: 1;
+        }
+        
+        .circle {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: -80px auto 0;
+            padding: 0 20px 40px;
+            position: relative;
+            z-index: 3;
+        }
+        
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .contact-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: var(--card-shadow);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .contact-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+        
+        .icon-container {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            color: white;
+            font-size: 1.8rem;
+        }
+        
+        .contact-card h2 {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            color: var(--primary-color);
+        }
+        
+        .contact-card p {
+            margin-bottom: 20px;
+            color: #666;
+            line-height: 1.6;
+        }
+        
+        .contact-card a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+            display: inline-block;
+        }
+        
+        .contact-card a:hover {
+            color: var(--secondary-color);
+        }
+        
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .social-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--light-color);
+            color: var(--dark-color);
+            font-size: 1.3rem;
+            transition: all 0.3s ease;
+        }
+        
+        .social-btn:hover {
+            background: var(--primary-color);
+            color: white;
+            transform: scale(1.1);
+        }
+        
+        .form-container {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: var(--card-shadow);
+            max-width: 800px;
+            margin: 0 auto 40px;
+        }
+        
+        .form-container h2 {
+            color: var(--primary-color);
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2rem;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+        
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+            font-family: inherit;
+        }
+        
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            border-color: var(--primary-color);
+            outline: none;
+        }
+        
+        .form-group textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+        
+        .submit-btn {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 30px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: block;
+            margin: 0 auto;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(113, 88, 226, 0.4);
+        }
+        
+        .footer {
+            background-color: var(--dark-color);
+            color: white;
+            text-align: center;
+            padding: 30px 20px;
+            margin-top: auto;
+        }
+        
+        .footer p {
+            margin-bottom: 15px;
+        }
+        
+        .footer a {
+            color: var(--secondary-color);
+            text-decoration: none;
+        }
+        
+        .footer a:hover {
+            text-decoration: underline;
+        }
+        
+        .animation-float {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        /* Back button styles */
+        .back-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #2980b9, #3498db);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .back-btn.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .back-btn:hover {
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+            transform: translateY(-5px);
+        }
+        
+        .back-btn.hidden {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        
+        /* Loader styles */
+        .loader-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            transition: opacity 0.5s ease;
+        }
+        
+        .loader {
+            width: 80px;
+            height: 80px;
+            position: relative;
+        }
+        
+        .loader:before,
+        .loader:after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            animation: pulse 2s linear infinite;
+        }
+        
+        .loader:after {
+            animation-delay: -1s;
+        }
+        
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(0);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1);
+                opacity: 0;
+            }
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .contact-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-container {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Loader Container -->
+    <div class="loader-container" id="loaderContainer">
+        <div class="loader"></div>
+    </div>
+
+    <!-- Back Button -->
+    <a href="file:///android_asset/htmlapp/root/index.html" class="back-btn" id="backBtn">
+        <i class="fas fa-arrow-left"></i>
+    </a>
+
+    <div class="hero">
+        <div class="floating-circles">
+            <div class="circle" style="width: 30px; height: 30px; top: 20%; left: 10%;"></div>
+            <div class="circle" style="width: 50px; height: 50px; top: 40%; left: 25%;"></div>
+            <div class="circle" style="width: 20px; height: 20px; top: 15%; left: 60%;"></div>
+            <div class="circle" style="width: 40px; height: 40px; top: 60%; left: 80%;"></div>
+            <div class="circle" style="width: 25px; height: 25px; top: 70%; left: 40%;"></div>
+        </div>
+        <div class="hero-content">
+            <h1>Get In Touch</h1>
+            <p>We'd love to hear from you! Reach out with your questions, feedback, or just to say hello. The Multi Games team is always here to help enhance your gaming experience.</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="contact-grid">
+            <div class="contact-card animation-float">
+                <div class="icon-container">
+                    <i class="fas fa-envelope"></i>
+                </div>
+                <h2>Email Us</h2>
+                <p>Have a question or feedback? Send us an email and we'll get back to you as soon as possible.</p>
+                <a href="mailto:agbekelvin667@gmail.com">agbekelvin667@gmail.com</a>
+            </div>
+            
+            <div class="contact-card animation-float" style="animation-delay: 1s;">
+                <div class="icon-container">
+                    <i class="fas fa-headset"></i>
+                </div>
+                <h2>Support</h2>
+                <p>Need technical assistance or having issues with our games? Our support team is ready to help.</p>
+                <a href="https://yourwebsite.com/support" target="_blank">Visit Support Center</a>
+            </div>
+            
+            <div class="contact-card animation-float" style="animation-delay: 2s;">
+                <div class="icon-container">
+                    <i class="fas fa-share-alt"></i>
+                </div>
+                <h2>Connect</h2>
+                <p>Follow us on social media for the latest updates, game releases, and community events.</p>
+                <div class="social-links">
+                    <a href="https://facebook.com/multigames" target="_blank" class="social-btn">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <a href="https://twitter.com/multigames" target="_blank" class="social-btn">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a href="https://instagram.com/multigames" target="_blank" class="social-btn">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="https://discord.gg/multigames" target="_blank" class="social-btn">
+                        <i class="fab fa-discord"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-container">
+            <h2>Send Us a Message</h2>
+            <form id="contactForm" method="POST" action="https://formsubmit.co/agbekelvin667@gmail.com">
+                <!-- FormSubmit configuration -->
+                <input type="hidden" name="_subject" value="New Message from Multi Games Contact Form">
+                <input type="hidden" name="_template" value="table">
+                <input type="hidden" name="_next" value="https://yourdomain.com/thank-you.html">
+                
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" id="name" name="name" placeholder="Your name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" placeholder="Your email address" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="subject">Subject</label>
+                    <select id="subject" name="subject" required>
+                        <option value="" disabled selected>Please select a subject</option>
+                        <option value="general">General Inquiry</option>
+                        <option value="support">Technical Support</option>
+                        <option value="feedback">Game Feedback</option>
+                        <option value="bug">Report a Bug</option>
+                        <option value="suggestion">Feature Suggestion</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="message">Message</label>
+                    <textarea id="message" name="message" placeholder="What would you like to tell us?" required></textarea>
+                </div>
+                
+                <button type="submit" class="submit-btn">Send Message</button>
+            </form>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>Thank you for playing <strong>Multi Games</strong>!</p>
+        <p>&copy; 2025 Multi Games. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Loader functionality
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                // Hide loader
+                const loaderContainer = document.getElementById('loaderContainer');
+                loaderContainer.style.opacity = '0';
+                
+                setTimeout(function() {
+                    loaderContainer.style.display = 'none';
+                    document.body.classList.add('loaded');
+                }, 500);
+            }, 1500); // Show loader for 1.5 seconds
+        });
+        
+        // Back button functionality
+        const backBtn = document.getElementById('backBtn');
+        
+        // Show back button after 2 seconds
+        setTimeout(function() {
+            backBtn.classList.add('visible');
+        }, 2000);
+        
+        // Show/hide back button on scroll
+        let lastScrollTop = 0;
+        
+        window.addEventListener('scroll', function() {
+            const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
+            
+            if (currentScroll > lastScrollTop) {
+                // Scrolling down
+                backBtn.classList.add('hidden');
+                backBtn.classList.remove('visible');
+            } else {
+                // Scrolling up
+                backBtn.classList.remove('hidden');
+                backBtn.classList.add('visible');
+            }
+            
+            lastScrollTop = currentScroll <= 0 ? 0 : currentScroll;
+        }, false);
+        
+        // Float animation for circles
+        document.querySelectorAll('.circle').forEach(circle => {
+            circle.style.animationDelay = Math.random() * 5 + 's';
+            circle.style.animation = 'float ' + (Math.random() * 6 + 3) + 's ease-in-out infinite';
+        });
+    </script>
+</body>
+</html>
