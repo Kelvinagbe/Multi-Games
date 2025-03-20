@@ -300,7 +300,7 @@ button:hover {
 
     <!-- Firebase SDK imports -->
 <script type="module">
-    // Firebase SDK imports
+    // Import the functions you need from the SDKs you need
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-analytics.js";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, GoogleAuthProvider, signInWithPopup, updateProfile, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
@@ -324,7 +324,7 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 const googleProvider = new GoogleAuthProvider();
 
-// Alert message function - Improved to ensure messages are displayed properly
+// Alert message function - Improved to be more visible
 function showAlert(message, type) {
     const alertElement = document.getElementById("alertMessage");
     if (!alertElement) {
@@ -335,46 +335,12 @@ function showAlert(message, type) {
     alertElement.textContent = message;
     alertElement.className = "alert";
     alertElement.classList.add(type === "success" ? "alert-success" : "alert-info");
-    
-    // Make sure it's visible by explicitly setting display style
     alertElement.style.display = "block";
     
-    // Auto hide after 5 seconds
+    // Auto hide after 3 seconds
     setTimeout(() => {
         alertElement.style.display = "none";
-    }, 5000);
-}
-
-// Functions to explicitly show and hide error/success messages
-function showError(elementId, message) {
-    const element = document.getElementById(elementId);
-    if (element) {
-        element.textContent = message;
-        element.style.display = "block";
-    }
-}
-
-function showSuccess(elementId, message) {
-    const element = document.getElementById(elementId);
-    if (element) {
-        element.textContent = message;
-        element.style.display = "block";
-    }
-}
-
-function clearMessages() {
-    // Hide all error and success messages
-    const messageElements = document.querySelectorAll('.error, .success');
-    messageElements.forEach(element => {
-        element.textContent = "";
-        element.style.display = "none";
-    });
-    
-    // Hide alert message
-    const alertElement = document.getElementById("alertMessage");
-    if (alertElement) {
-        alertElement.style.display = "none";
-    }
+    }, 3000);
 }
 
 // Function to show loading screen
@@ -396,7 +362,9 @@ function showLoginAfterRegistration(message) {
     hideLoading();
     
     // Display success message
-    showSuccess("registerSuccess", message);
+    const registerSuccessElement = document.getElementById("registerSuccess");
+    registerSuccessElement.textContent = message;
+    registerSuccessElement.style.display = "block";
     
     // Show global alert
     showAlert(message, "success");
@@ -408,7 +376,9 @@ function showLoginAfterRegistration(message) {
         document.getElementById("loginForm").classList.add("active");
         
         // Display success message in login form
-        showSuccess("loginSuccess", "Registration successful! Please log in with your new account.");
+        const loginSuccessElement = document.getElementById("loginSuccess");
+        loginSuccessElement.textContent = "Registration successful! Please log in with your new account.";
+        loginSuccessElement.style.display = "block";
     }, 1500);
 }
 
@@ -428,32 +398,42 @@ document.getElementById("showRegister").addEventListener("click", () => {
     document.getElementById("loginForm").classList.remove("active");
     document.getElementById("registerForm").classList.add("active");
     
-    // Clear any previous messages
-    clearMessages();
+    // Clear any previous error messages
+    document.getElementById("loginError").textContent = "";
+    document.getElementById("loginSuccess").textContent = "";
+    document.getElementById("registerError").textContent = "";
+    document.getElementById("registerSuccess").textContent = "";
 });
 
 document.getElementById("showLogin").addEventListener("click", () => {
     document.getElementById("registerForm").classList.remove("active");
     document.getElementById("loginForm").classList.add("active");
     
-    // Clear any previous messages
-    clearMessages();
+    // Clear any previous error messages
+    document.getElementById("loginError").textContent = "";
+    document.getElementById("loginSuccess").textContent = "";
+    document.getElementById("registerError").textContent = "";
+    document.getElementById("registerSuccess").textContent = "";
 });
 
 document.getElementById("showForgotPassword").addEventListener("click", () => {
     document.getElementById("loginForm").classList.remove("active");
     document.getElementById("forgotPasswordForm").classList.add("active");
     
-    // Clear any previous messages
-    clearMessages();
+    // Clear any previous error messages
+    document.getElementById("resetError").textContent = "";
+    document.getElementById("resetSuccess").textContent = "";
 });
 
 document.getElementById("backToLogin").addEventListener("click", () => {
     document.getElementById("forgotPasswordForm").classList.remove("active");
     document.getElementById("loginForm").classList.add("active");
     
-    // Clear any previous messages
-    clearMessages();
+    // Clear any previous error messages
+    document.getElementById("resetError").textContent = "";
+    document.getElementById("resetSuccess").textContent = "";
+    document.getElementById("loginError").textContent = "";
+    document.getElementById("loginSuccess").textContent = "";
 });
 
 // Save user data to Firestore
@@ -488,23 +468,31 @@ document.getElementById("registerButton").addEventListener("click", async () => 
     const email = document.getElementById("registerEmail").value;
     const password = document.getElementById("registerPassword").value;
     const confirmPassword = document.getElementById("confirmPassword").value;
+    const errorElement = document.getElementById("registerError");
+    const successElement = document.getElementById("registerSuccess");
     
     // Clear previous messages
-    clearMessages();
+    errorElement.textContent = "";
+    errorElement.style.display = "none";
+    successElement.textContent = "";
+    successElement.style.display = "none";
 
     // Validate inputs
     if (!fullName || !email || !password || !confirmPassword) {
-        showError("registerError", "All fields are required");
+        errorElement.textContent = "All fields are required";
+        errorElement.style.display = "block";
         return;
     }
     
     if (password !== confirmPassword) {
-        showError("registerError", "Passwords do not match");
+        errorElement.textContent = "Passwords do not match";
+        errorElement.style.display = "block";
         return;
     }
 
     if (password.length < 6) {
-        showError("registerError", "Password must be at least 6 characters");
+        errorElement.textContent = "Password must be at least 6 characters";
+        errorElement.style.display = "block";
         return;
     }
 
@@ -535,23 +523,21 @@ document.getElementById("registerButton").addEventListener("click", async () => 
         console.error("Registration error:", error);
         
         // Handle errors
-        let errorMessage = "An unexpected error occurred. Please try again.";
-        
         switch (error.code) {
             case "auth/email-already-in-use":
-                errorMessage = "Email already in use. Please use a different email address.";
+                errorElement.textContent = "Email already in use. Please use a different email address.";
                 break;
             case "auth/invalid-email":
-                errorMessage = "Invalid email address. Please check and try again.";
+                errorElement.textContent = "Invalid email address. Please check and try again.";
                 break;
             case "auth/weak-password":
-                errorMessage = "Password is too weak. Please use a stronger password.";
+                errorElement.textContent = "Password is too weak. Please use a stronger password.";
                 break;
             default:
-                errorMessage = error.message || "An unexpected error occurred. Please try again.";
+                errorElement.textContent = error.message || "An unexpected error occurred. Please try again.";
         }
         
-        showError("registerError", errorMessage);
+        errorElement.style.display = "block";
     }
 });
 
@@ -559,13 +545,19 @@ document.getElementById("registerButton").addEventListener("click", async () => 
 document.getElementById("loginButton").addEventListener("click", async () => {
     const email = document.getElementById("loginEmail").value;
     const password = document.getElementById("loginPassword").value;
+    const errorElement = document.getElementById("loginError");
+    const successElement = document.getElementById("loginSuccess");
     
     // Clear previous messages
-    clearMessages();
+    errorElement.textContent = "";
+    errorElement.style.display = "none";
+    successElement.textContent = "";
+    successElement.style.display = "none";
 
     // Validate inputs
     if (!email || !password) {
-        showError("loginError", "Email and password are required");
+        errorElement.textContent = "Email and password are required";
+        errorElement.style.display = "block";
         return;
     }
 
@@ -587,7 +579,8 @@ document.getElementById("loginButton").addEventListener("click", async () => {
         // Show success message with alert
         const welcomeMessage = "Welcome back! Login successful!";
         showAlert(welcomeMessage, "success");
-        showSuccess("loginSuccess", welcomeMessage);
+        successElement.textContent = welcomeMessage;
+        successElement.style.display = "block";
         
         // Redirect after short delay
         setTimeout(() => {
@@ -601,33 +594,36 @@ document.getElementById("loginButton").addEventListener("click", async () => {
         console.error("Login error:", error);
         
         // Handle errors
-        let errorMessage = "An unexpected error occurred. Please try again.";
-        
         switch (error.code) {
             case "auth/invalid-credential":
             case "auth/invalid-email":
             case "auth/user-not-found":
             case "auth/wrong-password":
-                errorMessage = "Invalid email or password. Please try again.";
+                errorElement.textContent = "Invalid email or password. Please try again.";
                 break;
             case "auth/too-many-requests":
-                errorMessage = "Too many failed login attempts. Please try again later.";
+                errorElement.textContent = "Too many failed login attempts. Please try again later.";
                 break;
             case "auth/user-disabled":
-                errorMessage = "This account has been disabled. Please contact support.";
+                errorElement.textContent = "This account has been disabled. Please contact support.";
                 break;
             default:
-                errorMessage = error.message || "An unexpected error occurred. Please try again.";
+                errorElement.textContent = error.message || "An unexpected error occurred. Please try again.";
         }
         
-        showError("loginError", errorMessage);
+        errorElement.style.display = "block";
     }
 });
 
 // Google Sign In - Login
 document.getElementById("googleLoginButton").addEventListener("click", async () => {
-    // Clear previous messages
-    clearMessages();
+    const errorElement = document.getElementById("loginError");
+    const successElement = document.getElementById("loginSuccess");
+    
+    errorElement.textContent = "";
+    errorElement.style.display = "none";
+    successElement.textContent = "";
+    successElement.style.display = "none";
     
     // Show loading screen
     showLoading("Logging in with Google...");
@@ -657,7 +653,8 @@ document.getElementById("googleLoginButton").addEventListener("click", async () 
         // Show success message with alert
         const welcomeMessage = "Welcome back! Google login successful!";
         showAlert(welcomeMessage, "success");
-        showSuccess("loginSuccess", welcomeMessage);
+        successElement.textContent = welcomeMessage;
+        successElement.style.display = "block";
         
         // Redirect after short delay
         setTimeout(() => {
@@ -671,28 +668,31 @@ document.getElementById("googleLoginButton").addEventListener("click", async () 
         console.error("Google login error:", error);
         
         // Handle specific errors
-        let errorMessage = "Error signing in with Google. Please try again.";
-        
         if (error.code === 'auth/popup-closed-by-user') {
-            errorMessage = "Sign-in popup was closed before completing. Please try again.";
+            errorElement.textContent = "Sign-in popup was closed before completing. Please try again.";
         } else if (error.code === 'auth/popup-blocked') {
-            errorMessage = "Popup was blocked. Please allow popups for this site.";
+            errorElement.textContent = "Popup was blocked. Please allow popups for this site.";
         } else if (error.code === 'auth/cancelled-popup-request') {
-            errorMessage = "Multiple popups were opened. Please try again.";
+            errorElement.textContent = "Multiple popups were opened. Please try again.";
         } else if (error.code === 'auth/account-exists-with-different-credential') {
-            errorMessage = "An account already exists with the same email but different sign-in method.";
+            errorElement.textContent = "An account already exists with the same email but different sign-in method.";
         } else {
-            errorMessage = error.message || "Error signing in with Google. Please try again.";
+            errorElement.textContent = error.message || "Error signing in with Google. Please try again.";
         }
         
-        showError("loginError", errorMessage);
+        errorElement.style.display = "block";
     }
 });
 
 // Google Sign In - Register
 document.getElementById("googleRegisterButton").addEventListener("click", async () => {
-    // Clear previous messages
-    clearMessages();
+    const errorElement = document.getElementById("registerError");
+    const successElement = document.getElementById("registerSuccess");
+    
+    errorElement.textContent = "";
+    errorElement.style.display = "none";
+    successElement.textContent = "";
+    successElement.style.display = "none";
     
     // Show loading screen
     showLoading("Signing up with Google...");
@@ -720,11 +720,12 @@ document.getElementById("googleRegisterButton").addEventListener("click", async 
         // Show success message with alert
         const welcomeMessage = "Google sign-up successful! Welcome!";
         showAlert(welcomeMessage, "success");
-        showSuccess("registerSuccess", welcomeMessage);
+        successElement.textContent = welcomeMessage;
+        successElement.style.display = "block";
         
         // Redirect after short delay
         setTimeout(() => {
-            window.location.href = "index.html";
+            window.location.href = "main.html";
         }, 1500);
         
     } catch (error) {
@@ -734,32 +735,36 @@ document.getElementById("googleRegisterButton").addEventListener("click", async 
         console.error("Google signup error:", error);
         
         // Handle specific errors
-        let errorMessage = "Error signing up with Google. Please try again.";
-        
         if (error.code === 'auth/popup-closed-by-user') {
-            errorMessage = "Sign-up popup was closed before completing. Please try again.";
+            errorElement.textContent = "Sign-up popup was closed before completing. Please try again.";
         } else if (error.code === 'auth/popup-blocked') {
-            errorMessage = "Popup was blocked. Please allow popups for this site.";
+            errorElement.textContent = "Popup was blocked. Please allow popups for this site.";
         } else if (error.code === 'auth/account-exists-with-different-credential') {
-            errorMessage = "An account already exists with the same email but different sign-in method.";
+            errorElement.textContent = "An account already exists with the same email but different sign-in method.";
         } else {
-            errorMessage = error.message || "Error signing up with Google. Please try again.";
+            errorElement.textContent = error.message || "Error signing up with Google. Please try again.";
         }
         
-        showError("registerError", errorMessage);
+        errorElement.style.display = "block";
     }
 });
 
 // Password Reset functionality
 document.getElementById("resetPasswordButton").addEventListener("click", async () => {
     const email = document.getElementById("resetEmail").value;
+    const errorElement = document.getElementById("resetError");
+    const successElement = document.getElementById("resetSuccess");
     
     // Clear previous messages
-    clearMessages();
+    errorElement.textContent = "";
+    errorElement.style.display = "none";
+    successElement.textContent = "";
+    successElement.style.display = "none";
 
     // Validate input
     if (!email) {
-        showError("resetError", "Email is required");
+        errorElement.textContent = "Email is required";
+        errorElement.style.display = "block";
         return;
     }
 
@@ -775,7 +780,8 @@ document.getElementById("resetPasswordButton").addEventListener("click", async (
         // Show success message
         const resetMessage = "Password reset email sent! Please check your inbox.";
         showAlert(resetMessage, "info");
-        showSuccess("resetSuccess", resetMessage);
+        successElement.textContent = resetMessage;
+        successElement.style.display = "block";
         
         // Clear the input field
         document.getElementById("resetEmail").value = "";
@@ -786,7 +792,8 @@ document.getElementById("resetPasswordButton").addEventListener("click", async (
             document.getElementById("loginForm").classList.add("active");
             
             // Clear the success message
-            clearMessages();
+            successElement.textContent = "";
+            successElement.style.display = "none";
         }, 3000);
     } catch (error) {
         // Hide loading
@@ -795,23 +802,21 @@ document.getElementById("resetPasswordButton").addEventListener("click", async (
         console.error("Password reset error:", error);
         
         // Handle errors
-        let errorMessage = "Error sending reset email. Please try again.";
-        
         switch (error.code) {
             case "auth/user-not-found":
-                errorMessage = "No account found with this email address.";
+                errorElement.textContent = "No account found with this email address.";
                 break;
             case "auth/invalid-email":
-                errorMessage = "Invalid email address. Please check and try again.";
+                errorElement.textContent = "Invalid email address. Please check and try again.";
                 break;
             case "auth/too-many-requests":
-                errorMessage = "Too many password reset attempts. Please try again later.";
+                errorElement.textContent = "Too many password reset attempts. Please try again later.";
                 break;
             default:
-                errorMessage = error.message || "Error sending reset email. Please try again.";
+                errorElement.textContent = error.message || "Error sending reset email. Please try again.";
         }
         
-        showError("resetError", errorMessage);
+        errorElement.style.display = "block";
     }
 });
 </script>
