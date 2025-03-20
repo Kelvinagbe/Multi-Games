@@ -308,7 +308,7 @@ import {
     signInWithPopup, 
     updateProfile, 
     sendPasswordResetEmail,
-    sendEmailVerification  // Added email verification
+    sendEmailVerification  // Added email verification import
 } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
 import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
 
@@ -329,11 +329,6 @@ const analytics = getAnalytics(app);
 const auth = getAuth(app);
 const db = getFirestore(app);
 const googleProvider = new GoogleAuthProvider();
-
-// Set persistence to local to allow users to stay logged in
-// Add scopes for Google sign-in
-googleProvider.addScope('profile');
-googleProvider.addScope('email');
 
 // Alert message function
 function showAlert(message, type) {
@@ -364,31 +359,29 @@ function hideLoading() {
 }
 
 // Function to show success message and redirect
-function showSuccessAndRedirect(message, delay = 1500, redirectUrl = "index.html") {
+function showSuccessAndRedirect(message, delay = 1500) {
     // Show success message with alert
     showAlert(message, "success");
     
     // Redirect after delay
     setTimeout(() => {
-        window.location.href = redirectUrl;
+        window.location.href = "index.html";
     }, delay);
 }
 
-// Check if user is already logged in and email is verified
+// Check if user is already logged in
 onAuthStateChanged(auth, (user) => {
-    // Hide loading on initial check
-    hideLoading();
-    
     if (user) {
+        // Check if email is verified before redirecting
         if (user.emailVerified || user.providerData[0].providerId === 'google.com') {
-            // User is signed in and verified, redirect directly to main page
+            // User is signed in and verified (or is a Google user), redirect directly to main page
             window.location.href = "index.html";
         } else {
-            // User is signed in but email not verified
-            showAlert("Please verify your email before logging in", "info");
-            // Sign out the unverified user
-            auth.signOut();
-            document.getElementById("loginForm").classList.add("active");
+            // Email not verified, sign out and show login with message
+            auth.signOut().then(() => {
+                document.getElementById("loginForm").classList.add("active");
+                showAlert("Please verify your email before logging in. Check your inbox.", "info");
+            });
         }
     } else {
         // No user is signed in, show login form by default
@@ -434,14 +427,10 @@ async function saveUserData(user, fullName = null) {
             displayName: fullName || user.displayName || '',
             createdAt: new Date().toISOString(),
             lastLogin: new Date().toISOString(),
-            emailVerified: user.emailVerified,
-            provider: user.providerData[0].providerId
-        }, { merge: true });
-        
-        return true;
+            emailVerified: user.emailVerified
+        });
     } catch (error) {
         console.error("Error saving user data:", error);
-        return false;
     }
 }
 
@@ -481,12 +470,7 @@ document.getElementById("registerButton").addEventListener("click", async () => 
     try {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         
-        // Update profile with full name
-        await updateProfile(userCredential.user, {
-            displayName: fullName
-        });
-        
-        // Send email verification
+        // Send verification email
         await sendEmailVerification(userCredential.user);
         
         // Save user data to Firestore
@@ -495,14 +479,14 @@ document.getElementById("registerButton").addEventListener("click", async () => 
         // Hide loading
         hideLoading();
         
-        // Show success message
-        successElement.textContent = "Registration successful! Please check your email to verify your account.";
-        showAlert("Verification email sent! Please check your inbox and spam folder.", "success");
+        // Show success message and alert
+        successElement.textContent = "Registration successful!";
+        showAlert("Verification email sent! Please check your inbox and verify your email before logging in.", "success");
         
-        // Sign out user until they verify email
+        // Sign out the user since they need to verify first
         await auth.signOut();
         
-        // Redirect to login page after short delay
+        // Redirect to login after short delay
         setTimeout(() => {
             document.getElementById("registerForm").classList.remove("active");
             document.getElementById("loginForm").classList.add("active");
@@ -555,20 +539,31 @@ document.getElementById("loginButton").addEventListener("click", async () => {
         
         // Check if email is verified
         if (!userCredential.user.emailVerified) {
-            // Hide loading
-            hideLoading();
-            
-            // Show error message
-            errorElement.textContent = "Please verify your email before logging in";
-            
-            // Sign out user
+            // Email not verified, sign out and show error
             await auth.signOut();
+            hideLoading();
+            errorElement.textContent = "Email not verified. Please check your inbox for verification link.";
+            
+            // Add resend verification button
+            errorElement.innerHTML += ' <button id="resendVerification" class="btn-link">Resend verification</button>';
+            document.getElementById("resendVerification").addEventListener("click", async () => {
+                try {
+                    // Re-login to get fresh user credential
+                    const tempUserCred = await signInWithEmailAndPassword(auth, email, password);
+                    await sendEmailVerification(tempUserCred.user);
+                    showAlert("Verification email resent. Please check your inbox.", "info");
+                    await auth.signOut();
+                } catch (error) {
+                    errorElement.textContent = "Error sending verification email: " + error.message;
+                }
+            });
             return;
         }
         
         // Update last login timestamp
         await setDoc(doc(db, "users", userCredential.user.uid), {
-            lastLogin: new Date().toISOString()
+            lastLogin: new Date().toISOString(),
+            emailVerified: true
         }, { merge: true });
         
         // Hide loading
@@ -579,7 +574,7 @@ document.getElementById("loginButton").addEventListener("click", async () => {
         
         // Redirect after short delay
         setTimeout(() => {
-            window.location.href = "index.html";
+            window.location.href = "main.html";
         }, 1500);
         
     } catch (error) {
@@ -593,11 +588,11 @@ document.getElementById("loginButton").addEventListener("click", async () => {
             case "auth/wrong-password":
                 errorElement.textContent = "Invalid email or password";
                 break;
-            case "auth/user-disabled":
-                errorElement.textContent = "This account has been disabled";
-                break;
             case "auth/too-many-requests":
-                errorElement.textContent = "Too many failed login attempts. Please try again later";
+                errorElement.textContent = "Too many failed login attempts. Try again later or reset your password.";
+                break;
+            case "auth/user-disabled":
+                errorElement.textContent = "This account has been disabled. Contact support for assistance.";
                 break;
             default:
                 errorElement.textContent = "Error: " + error.message;
@@ -617,19 +612,18 @@ document.getElementById("googleLoginButton").addEventListener("click", async () 
     showLoading("Logging in with Google...");
     
     try {
-        // Set custom parameters for Google sign-in
-        googleProvider.setCustomParameters({
-            prompt: 'select_account'
-        });
-        
         const result = await signInWithPopup(auth, googleProvider);
         
-        // Update user data in Firestore
-        const success = await saveUserData(result.user);
-        
-        if (!success) {
-            throw new Error("Failed to save user data");
-        }
+        // Update last login timestamp
+        await setDoc(doc(db, "users", result.user.uid), {
+            uid: result.user.uid,
+            email: result.user.email,
+            displayName: result.user.displayName || '',
+            createdAt: new Date().toISOString(),
+            lastLogin: new Date().toISOString(),
+            emailVerified: true,
+            provider: 'google.com'
+        }, { merge: true });
         
         // Hide loading
         hideLoading();
@@ -639,7 +633,7 @@ document.getElementById("googleLoginButton").addEventListener("click", async () 
         
         // Redirect after short delay
         setTimeout(() => {
-            window.location.href = "index.html";
+            window.location.href = "main.html";
         }, 1500);
         
     } catch (error) {
@@ -649,11 +643,11 @@ document.getElementById("googleLoginButton").addEventListener("click", async () 
         console.error("Google login error:", error);
         
         if (error.code === 'auth/popup-closed-by-user') {
-            errorElement.textContent = "Sign-in popup was closed before finishing. Please try again.";
+            errorElement.textContent = "Sign-in popup was closed. Please try again.";
         } else if (error.code === 'auth/cancelled-popup-request') {
-            errorElement.textContent = "Another sign-in popup is already open.";
+            errorElement.textContent = "Multiple popups detected. Please try again.";
         } else if (error.code === 'auth/popup-blocked') {
-            errorElement.textContent = "Sign-in popup was blocked by your browser. Please allow popups for this site.";
+            errorElement.textContent = "Popup was blocked by your browser. Please allow popups for this site.";
         } else {
             errorElement.textContent = "Error signing in with Google. Please try again.";
         }
@@ -672,19 +666,18 @@ document.getElementById("googleRegisterButton").addEventListener("click", async 
     showLoading("Signing up with Google...");
     
     try {
-        // Set custom parameters for Google sign-in
-        googleProvider.setCustomParameters({
-            prompt: 'select_account'
-        });
-        
         const result = await signInWithPopup(auth, googleProvider);
         
         // Save user data to Firestore
-        const success = await saveUserData(result.user);
-        
-        if (!success) {
-            throw new Error("Failed to save user data");
-        }
+        await setDoc(doc(db, "users", result.user.uid), {
+            uid: result.user.uid,
+            email: result.user.email,
+            displayName: result.user.displayName || '',
+            createdAt: new Date().toISOString(),
+            lastLogin: new Date().toISOString(),
+            emailVerified: true,
+            provider: 'google.com'
+        }, { merge: true });
         
         // Hide loading
         hideLoading();
@@ -694,7 +687,7 @@ document.getElementById("googleRegisterButton").addEventListener("click", async 
         
         // Redirect after short delay
         setTimeout(() => {
-            window.location.href = "index.html";
+            window.location.href = "main.html";
         }, 1500);
         
     } catch (error) {
@@ -704,11 +697,11 @@ document.getElementById("googleRegisterButton").addEventListener("click", async 
         console.error("Google signup error:", error);
         
         if (error.code === 'auth/popup-closed-by-user') {
-            errorElement.textContent = "Sign-up popup was closed before finishing. Please try again.";
+            errorElement.textContent = "Sign-up popup was closed. Please try again.";
         } else if (error.code === 'auth/cancelled-popup-request') {
-            errorElement.textContent = "Another sign-up popup is already open.";
+            errorElement.textContent = "Multiple popups detected. Please try again.";
         } else if (error.code === 'auth/popup-blocked') {
-            errorElement.textContent = "Sign-up popup was blocked by your browser. Please allow popups for this site.";
+            errorElement.textContent = "Popup was blocked by your browser. Please allow popups for this site.";
         } else {
             errorElement.textContent = "Error signing up with Google. Please try again.";
         }
