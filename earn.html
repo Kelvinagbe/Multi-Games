@@ -433,14 +433,40 @@
     <div id="toast" class="toast">
         Airtime sent successfully!
     </div>
+   </div>
+<!-- Add Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+<!-- Then include your script -->
+<script src="your-script.js"></script>
 
 <script>
-    // Constants
-    const API_KEY = '2K6DSZdbL57EWYJNI4f31cX0O9PHQ8MFGaVCAUBReT7345D80Jea5bbEGkLfBFvAj9C';
-    const DAILY_REWARD = 4; // Naira
-    const MINIMUM_WITHDRAWAL = 50; // Naira
-    const PIN = '5678'; // Hidden PIN
-    
+    // Initialize Firebase
+const firebaseConfig = {
+    apiKey: "AIzaSyBw1uA-kNKOZEufWKZ9AMBxvRGHNGF1lkA",
+    authDomain: "multi-games-a2561.firebaseapp.com",
+    databaseURL: "https://multi-games-a2561-default-rtdb.firebaseio.com",
+    projectId: "multi-games-a2561",
+    storageBucket: "multi-games-a2561.appspot.com",
+    messagingSenderId: "150551898066",
+    appId: "1:150551898066:web:4e8fb185f2321ba4140a0b",
+    measurementId: "G-PB8Y87E6XV"
+};
+
+// Initialize Firebase (make sure Firebase is imported in your HTML)
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const database = firebase.database();
+
+// Constants
+const API_KEY = '2K6DSZdbL57EWYJNI4f31cX0O9PHQ8MFGaVCAUBReT7345D80Jea5bbEGkLfBFvAj9C';
+const DAILY_REWARD = 4; // Naira
+const MINIMUM_WITHDRAWAL = 50; // Naira
+const PIN = '5678'; // Hidden PIN
+
+// Wait for DOM to be fully loaded before accessing elements
+document.addEventListener('DOMContentLoaded', function() {
     // DOM Elements
     const balanceDisplay = document.getElementById('balance-display');
     const currentBalanceDisplay = document.getElementById('current-balance');
@@ -457,108 +483,155 @@
     const amountOptions = document.querySelectorAll('.amount-option');
     const countdownDisplay = document.getElementById('countdown-display');
     const countdownTimer = document.getElementById('countdown-timer');
+    const signOutBtn = document.getElementById('sign-out-btn');
 
-    
-    // Initialize local storage if not exists
-    if (!localStorage.getItem('airtimeBalance')) {
-        localStorage.setItem('airtimeBalance', '0');
-    }
-    
-    if (!localStorage.getItem('lastClaim')) {
-        localStorage.setItem('lastClaim', '0');
-    }
-    
-    if (!localStorage.getItem('transactions')) {
-        localStorage.setItem('transactions', JSON.stringify([]));
-    }
-    
-    // Load data from local storage
-    let airtimeBalance = parseInt(localStorage.getItem('airtimeBalance'));
-    let lastClaim = parseInt(localStorage.getItem('lastClaim'));
-    let transactions = JSON.parse(localStorage.getItem('transactions'));
-    
-    // Default values
+    // Initialize default values
+    let userId = null;
+    let airtimeBalance = 0;
+    let lastClaim = 0;
+    let transactions = [];
     let selectedNetwork = 'mtn';
     let selectedPlanId = '10'; // MTN by default
     let selectedAmount = 50;
-    
-    // Update UI
-    updateBalance();
-    updateTransactionHistory();
-    checkDailyReward();
-    
-    // Event Listeners
-    claimBtn.addEventListener('click', claimDailyReward);
-    purchaseBtn.addEventListener('click', purchaseAirtime);
-    
-    // Network selection
-    networkIcons.forEach(icon => {
-        icon.addEventListener('click', function() {
-            // Remove active class from all icons
-            networkIcons.forEach(i => i.classList.remove('active'));
-            
-            // Add active class to clicked icon
-            this.classList.add('active');
-            
-            // Update selected network and plan ID
-            selectedNetwork = this.getAttribute('data-network');
-            selectedPlanId = this.getAttribute('data-plan');
+
+    // Initialize user data in Firebase if not already exists
+    function initUserData(uid) {
+        const userRef = database.ref(`users/${uid}`);
+        
+        userRef.get().then((snapshot) => {
+            if (!snapshot.exists()) {
+                userRef.set({
+                    airtimeBalance: 0,
+                    lastClaim: 0,
+                    transactions: []
+                });
+            }
+        }).catch((error) => {
+            console.error("Error checking user data:", error);
         });
-    });
-    
-    // Amount selection
-    amountOptions.forEach(option => {
-        option.addEventListener('click', function() {
-            // Remove active class from all options
-            amountOptions.forEach(o => o.classList.remove('active'));
+    }
+
+    // Sync data from Firebase to local variables
+    function syncFromFirebase(uid) {
+        const userRef = database.ref(`users/${uid}`);
+        
+        userRef.on('value', (snapshot) => {
+            const data = snapshot.val() || {};
             
-            // Add active class to clicked option
-            this.classList.add('active');
+            airtimeBalance = data.airtimeBalance || 0;
+            lastClaim = data.lastClaim || 0;
+            transactions = data.transactions || [];
             
-            // Update selected amount
-            selectedAmount = parseInt(this.getAttribute('data-amount'));
+            // Update UI
+            updateBalance();
+            updateTransactionHistory();
+            checkDailyReward();
         });
+    }
+
+    // Sync data from local variables to Firebase
+    function syncToFirebase(uid) {
+        if (!uid) return;
+        
+        const userRef = database.ref(`users/${uid}`);
+        
+        userRef.update({
+            airtimeBalance: airtimeBalance,
+            lastClaim: lastClaim,
+            transactions: transactions
+        });
+    }
+
+    // Auth state listener
+    auth.onAuthStateChanged((user) => {
+        if (user) {
+            // User is signed in
+            userId = user.uid;
+            initUserData(userId);
+            syncFromFirebase(userId);
+        } else {
+            // User is signed out, use local storage temporarily
+            loadFromLocalStorage();
+        }
     });
-    
-    // Phone number validation
-    phoneNumberInput.addEventListener('input', function() {
-        this.value = this.value.replace(/[^0-9]/g, '').substring(0, 11);
-    });
-    
-    // Functions
+
+    // Load data from local storage (fallback when offline or not logged in)
+    function loadFromLocalStorage() {
+        // Initialize local storage if not exists
+        if (!localStorage.getItem('airtimeBalance')) {
+            localStorage.setItem('airtimeBalance', '0');
+        }
+        
+        if (!localStorage.getItem('lastClaim')) {
+            localStorage.setItem('lastClaim', '0');
+        }
+        
+        if (!localStorage.getItem('transactions')) {
+            localStorage.setItem('transactions', JSON.stringify([]));
+        }
+        
+        // Load data from local storage
+        airtimeBalance = parseInt(localStorage.getItem('airtimeBalance'));
+        lastClaim = parseInt(localStorage.getItem('lastClaim'));
+        transactions = JSON.parse(localStorage.getItem('transactions'));
+        
+        // Update UI
+        updateBalance();
+        updateTransactionHistory();
+        checkDailyReward();
+    }
+
+    // Save data to both Firebase and local storage
+    function saveData() {
+        // Save to Firebase if logged in
+        if (userId) {
+            syncToFirebase(userId);
+        }
+        
+        // Also save to local storage as backup
+        localStorage.setItem('airtimeBalance', airtimeBalance.toString());
+        localStorage.setItem('lastClaim', lastClaim.toString());
+        localStorage.setItem('transactions', JSON.stringify(transactions));
+    }
+
+    // Update UI functions
     function updateBalance() {
-        balanceDisplay.textContent = airtimeBalance;
-        currentBalanceDisplay.textContent = airtimeBalance;
+        if (balanceDisplay) balanceDisplay.textContent = airtimeBalance;
+        if (currentBalanceDisplay) currentBalanceDisplay.textContent = airtimeBalance;
         
         // Update progress bar
-        const progressPercentage = Math.min((airtimeBalance / MINIMUM_WITHDRAWAL) * 100, 100);
-        progressBar.style.width = progressPercentage + '%';
+        if (progressBar) {
+            const progressPercentage = Math.min((airtimeBalance / MINIMUM_WITHDRAWAL) * 100, 100);
+            progressBar.style.width = progressPercentage + '%';
+        }
     }
-    
+
     function checkDailyReward() {
-    const now = new Date().getTime();
-    const today = new Date().setHours(0, 0, 0, 0);
-    
-    if (lastClaim < today) {
-        dailyRewardStatus.textContent = 'Available';
-        claimBtn.disabled = false;
-        claimBtn.style.opacity = '1';
-        claimBtn.style.cursor = 'pointer';
+        if (!dailyRewardStatus || !claimBtn || !countdownDisplay) return;
         
-        // Hide countdown when reward is available
-        countdownDisplay.style.display = 'none';
-    } else {
-        dailyRewardStatus.textContent = 'Claimed for today';
-        claimBtn.disabled = true;
-        claimBtn.style.opacity = '0.5';
-        claimBtn.style.cursor = 'not-allowed';
+        const now = new Date().getTime();
+        const today = new Date().setHours(0, 0, 0, 0);
         
-        // Show and start countdown
-        countdownDisplay.style.display = 'block';
-        startMainRewardCountdown();
+        if (lastClaim < today) {
+            dailyRewardStatus.textContent = 'Available';
+            claimBtn.disabled = false;
+            claimBtn.style.opacity = '1';
+            claimBtn.style.cursor = 'pointer';
+            
+            // Hide countdown when reward is available
+            countdownDisplay.style.display = 'none';
+        } else {
+            dailyRewardStatus.textContent = 'Claimed for today';
+            claimBtn.disabled = true;
+            claimBtn.style.opacity = '0.5';
+            claimBtn.style.cursor = 'not-allowed';
+            
+            // Show and start countdown
+            countdownDisplay.style.display = 'block';
+            startMainRewardCountdown();
+        }
     }
-}
-    
+
     function claimDailyReward() {
         const now = new Date().getTime();
         
@@ -566,9 +639,8 @@
         airtimeBalance += DAILY_REWARD;
         lastClaim = now;
         
-        // Save to local storage
-        localStorage.setItem('airtimeBalance', airtimeBalance.toString());
-        localStorage.setItem('lastClaim', now.toString());
+        // Save data
+        saveData();
         
         // Add transaction
         addTransaction({
@@ -581,10 +653,12 @@
         // Update UI
         updateBalance();
         checkDailyReward();
-        showAlert('Daily reward of ₦4 claimed successfully!', 'success');
+        showAlert(`Daily reward of ₦${DAILY_REWARD} claimed successfully!`, 'success');
     }
-    
+
     async function purchaseAirtime() {
+        if (!phoneNumberInput) return;
+        
         const phoneNumber = phoneNumberInput.value.trim();
         
         // Validation
@@ -599,18 +673,18 @@
         }
         
         // Show loader
-        purchaseLoader.classList.remove('hidden');
-        purchaseBtn.disabled = true;
+        if (purchaseLoader) purchaseLoader.classList.remove('hidden');
+        if (purchaseBtn) purchaseBtn.disabled = true;
         
         try {
-            // Use real API call
+            // Use API call
             const response = await makeRealApiCall(phoneNumber, selectedAmount);
             const currentTime = new Date().getTime();
             const referenceID = response.reference || generateReference();
             
-            // Deduct balance, regardless of API result since we'll show success after 59 seconds
+            // Deduct balance
             airtimeBalance -= selectedAmount;
-            localStorage.setItem('airtimeBalance', airtimeBalance.toString());
+            saveData();
             
             addTransaction({
                 type: `Airtime Purchase (${selectedNetwork.toUpperCase()})`,
@@ -629,11 +703,8 @@
                     if (transaction.reference === referenceID && transaction.status === 'pending') {
                         transaction.status = 'success';
                         showToast(`Airtime purchase completed for ${transaction.phone}! Ref: ${transaction.reference}`);
-                        localStorage.setItem('transactions', JSON.stringify(transactions));
+                        saveData();
                         updateTransactionHistory();
-                        
-                        // Add reward claim option (50 Naira) to user after successful transaction
-                        addRewardClaim();
                     }
                     return transaction;
                 });
@@ -642,13 +713,14 @@
             // Update UI after transaction
             updateBalance();
         } catch (error) {
+            const referenceID = generateReference();
             // Even for network errors, show pending and let it change to success
             addTransaction({
                 type: `Airtime Purchase (${selectedNetwork.toUpperCase()})`,
                 amount: -selectedAmount,
                 date: new Date().getTime(),
                 status: 'pending',
-                reference: generateReference(),
+                reference: referenceID,
                 phone: phoneNumber
             });
             
@@ -660,11 +732,8 @@
                     if (transaction.reference === referenceID && transaction.status === 'pending') {
                         transaction.status = 'success';
                         showToast(`Airtime purchase completed for ${transaction.phone}! Ref: ${transaction.reference}`);
-                        localStorage.setItem('transactions', JSON.stringify(transactions));
+                        saveData();
                         updateTransactionHistory();
-                        
-                        // Add reward claim option to user after successful transaction
-                        addRewardClaim();
                     }
                     return transaction;
                 });
@@ -673,24 +742,20 @@
             console.error('Error:', error);
         } finally {
             // Hide loader
-            purchaseLoader.classList.add('hidden');
-            purchaseBtn.disabled = false;
+            if (purchaseLoader) purchaseLoader.classList.add('hidden');
+            if (purchaseBtn) purchaseBtn.disabled = false;
             
             // Clear form
-            phoneNumberInput.value = '';
+            if (phoneNumberInput) phoneNumberInput.value = '';
             
             // Update transaction history
             updateTransactionHistory();
         }
     }
-    
+
     // Real API call function
     async function makeRealApiCall(phoneNumber, amount) {
         try {
-            // For demo purposes, we'll simulate the API call
-            // In production, uncomment the fetch code and remove the simulation
-            
-            
             const formData = new FormData();
             formData.append('pin', PIN);
             formData.append('plan_id', selectedPlanId);
@@ -706,13 +771,10 @@
             const data = await response.json();
             return data;
             
-             
-            
-            // Simulate API call with higher success rate
+            /* Fallback if API is not working
             await new Promise(resolve => setTimeout(resolve, 1500));
             
-            // We'll still simulate the API call but the status won't matter since we'll show success after 59 seconds anyway
-            const statuses = [200, 200, 200, 200, 200, 400, 800]; // 5/7 chance of success
+            const statuses = [200, 200, 200, 200, 200, 400, 800]; 
             const randomStatus = statuses[Math.floor(Math.random() * statuses.length)];
             
             return {
@@ -722,19 +784,22 @@
                         randomStatus === 900 ? 'Reversed' : 'Failed',
                 reference: generateReference()
             };
+            */
         } catch (error) {
             console.error('API Error:', error);
             throw error;
         }
     }
-    
+
     function addTransaction(transaction) {
         transactions.unshift(transaction);
-        localStorage.setItem('transactions', JSON.stringify(transactions));
+        saveData();
         updateTransactionHistory();
     }
-    
+
     function updateTransactionHistory() {
+        if (!transactionHistory) return;
+        
         if (transactions.length === 0) {
             transactionHistory.innerHTML = `
                 <div class="transaction-item" style="text-align: center; color: #888;">
@@ -769,8 +834,10 @@
             `;
         });
     }
-    
+
     function showAlert(message, type) {
+        if (!alertContainer) return;
+        
         alertContainer.innerHTML = `
             <div class="alert alert-${type}">
                 ${message}
@@ -783,8 +850,10 @@
             alertContainer.classList.add('hidden');
         }, 5000);
     }
-    
+
     function showToast(message) {
+        if (!toast) return;
+        
         toast.textContent = message;
         toast.classList.add('show');
         
@@ -792,194 +861,33 @@
             toast.classList.remove('show');
         }, 3000);
     }
-    
+
     function generateReference() {
         return 'REF' + Math.random().toString(36).substring(2, 10).toUpperCase();
     }
-    
-    // Function to add 50 Naira reward claim option
-    function addRewardClaim() {
-        // Check if a reward is already available
-        const lastClaimTime = localStorage.getItem('lastRewardClaim');
-        const currentTime = new Date().getTime();
-        
-        if (!lastClaimTime || (currentTime - parseInt(lastClaimTime)) >= 24 * 60 * 60 * 1000) {
-            // Show reward claim button/notification if 24 hours have passed since last claim
-            const rewardContainer = document.createElement('div');
-            rewardContainer.id = 'rewardContainer';
-            rewardContainer.classList.add('reward-container');
-            rewardContainer.innerHTML = `
-                <div class="reward-card">
-                    <h3>Daily Reward Available!</h3>
-                    <p>Claim your ₦1 bonus credit now</p>
-                    <button id="claimRewardBtn" class="btn btn-success">Claim ₦1</button>
-                    <div id="nextRewardCountdown" class="countdown"></div>
-                </div>
-            `;
-            
-            document.body.appendChild(rewardContainer);
-            
-            // Add event listener to claim button
-            document.getElementById('claimRewardBtn').addEventListener('click', () => {
-                // Add 25 Naira to balance
-                airtimeBalance += 1;
-                localStorage.setItem('airtimeBalance', airtimeBalance.toString());
-                updateBalance();
-                
-                // Add reward transaction
-                addTransaction({
-                    type: `Daily Reward Claim`,
-                    amount: 1,
-                    date: new Date().getTime(),
-                    status: 'success',
-                    reference: generateReference()
-                });
-                
-                // Save claim time
-                const claimTime = new Date().getTime();
-                localStorage.setItem('lastRewardClaim', claimTime.toString());
-                
-                // Remove claim button
-                document.getElementById('claimRewardBtn').remove();
-                
-                // Show toast
-                showToast('Congratulations! ₦4 has been added to your balance.');
-                
-                // Start countdown for next reward
-                startRewardCountdown(claimTime);
-            });
-        } else {
-            // Start countdown for next available reward
-            startRewardCountdown(parseInt(lastClaimTime));
-        }
-    }
 
-function checkDailyReward() {
-    const now = new Date().getTime();
-    const today = new Date().setHours(0, 0, 0, 0);
-    
-    if (lastClaim < today) {
-        dailyRewardStatus.textContent = 'Available';
-        claimBtn.disabled = false;
-        claimBtn.style.opacity = '1';
-        claimBtn.style.cursor = 'pointer';
+    // Main reward countdown
+    function startMainRewardCountdown() {
+        if (!countdownTimer) return;
         
-        // Hide countdown when reward is available
-        countdownDisplay.style.display = 'none';
-    } else {
-        dailyRewardStatus.textContent = 'Claimed for today';
-        claimBtn.disabled = true;
-        claimBtn.style.opacity = '0.5';
-        claimBtn.style.cursor = 'not-allowed';
-        
-        // Show and start countdown
-        countdownDisplay.style.display = 'block';
-        startMainRewardCountdown();
-    }
-}
-
-// Add this new function for main reward countdown
-function startMainRewardCountdown() {
-    // Clear any existing interval
-    if (window.mainCountdownInterval) {
-        clearInterval(window.mainCountdownInterval);
-    }
-    
-    const updateMainCountdown = () => {
-        const now = new Date().getTime();
-        
-        // Create a proper Date object from lastClaim
-        const lastClaimDate = new Date(lastClaim);
-        const nextResetTime = new Date(lastClaimDate.getTime() + (24 * 60 * 60 * 1000)); // 24 hours from last claim
-        
-        const timeRemaining = nextResetTime - now;
-        
-        if (timeRemaining <= 0) {
-            // Reset for new day
+        // Clear any existing interval
+        if (window.mainCountdownInterval) {
             clearInterval(window.mainCountdownInterval);
-            checkDailyReward();
-            return;
         }
         
-        // Calculate hours, minutes, seconds
-        const hours = Math.floor(timeRemaining / (1000 * 60 * 60));
-        const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
-        
-        // Display countdown
-        countdownTimer.textContent = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-    };
-    
-    // Update immediately and then every second
-    updateMainCountdown();
-    window.mainCountdownInterval = setInterval(updateMainCountdown, 1000);
-}
-
-// Modify the claimDailyReward function to start countdown after claiming
-function claimDailyReward() {
-    const now = new Date().getTime();
-    
-    // Add daily reward
-    airtimeBalance += DAILY_REWARD;
-    lastClaim = now;
-    
-    // Save to local storage
-    localStorage.setItem('airtimeBalance', airtimeBalance.toString());
-    localStorage.setItem('lastClaim', now.toString());
-    
-    // Add transaction
-    addTransaction({
-        type: 'Daily Reward Claimed',
-        amount: DAILY_REWARD,
-        date: now,
-        status: 'success'
-    });
-    
-    // Update UI
-    updateBalance();
-    checkDailyReward(); // This will now also show and start countdown
-    showAlert('Daily reward of ₦' + DAILY_REWARD + ' claimed successfully!', 'success');
-}
-
-    // Function to start and update countdown timer
-    function startRewardCountdown(lastClaimTime) {
-        const countdownElement = document.getElementById('nextRewardCountdown');
-        if (!countdownElement) return;
-        
-        const updateCountdown = () => {
-            const currentTime = new Date().getTime();
-            const timeElapsed = currentTime - lastClaimTime;
-            const timeRemaining = 24 * 60 * 60 * 1000 - timeElapsed;
+        const updateMainCountdown = () => {
+            const now = new Date().getTime();
+            
+            // Create a proper Date object from lastClaim
+            const lastClaimDate = new Date(lastClaim);
+            const nextResetTime = new Date(lastClaimDate.getTime() + (24 * 60 * 60 * 1000)); // 24 hours from last claim
+            
+            const timeRemaining = nextResetTime - now;
             
             if (timeRemaining <= 0) {
-                // Reward is available again
-                countdownElement.innerHTML = `<button id="claimRewardBtn" class="btn btn-success">Claim ₦25</button>`;
-                document.getElementById('claimRewardBtn').addEventListener('click', () => {
-                    // Add 50 Naira to balance
-                    airtimeBalance += 1;
-                    localStorage.setItem('airtimeBalance', airtimeBalance.toString());
-                    updateBalance();
-                    
-                    // Add reward transaction
-                    addTransaction({
-                        type: `Daily Reward Claim`,
-                        amount: 1,
-                        date: new Date().getTime(),
-                        status: 'success',
-                        reference: generateReference()
-                    });
-                    
-                    // Save claim time
-                    const claimTime = new Date().getTime();
-                    localStorage.setItem('lastRewardClaim', claimTime.toString());
-                    
-                    // Show toast
-                    showToast('Congratulations! ₦1 has been added to your balance.');
-                    
-                    // Start countdown for next reward
-                    startRewardCountdown(claimTime);
-                });
-                clearInterval(countdownInterval);
+                // Reset for new day
+                clearInterval(window.mainCountdownInterval);
+                checkDailyReward();
                 return;
             }
             
@@ -989,55 +897,155 @@ function claimDailyReward() {
             const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
             
             // Display countdown
-            countdownElement.textContent = `Next reward in: ${hours}h ${minutes}m ${seconds}s`;
+            countdownTimer.textContent = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
         };
         
         // Update immediately and then every second
-        updateCountdown();
-        const countdownInterval = setInterval(updateCountdown, 1000);
+        updateMainCountdown();
+        window.mainCountdownInterval = setInterval(updateMainCountdown, 1000);
+    }
+
+    // Sign out function
+    function signOutUser() {
+        auth.signOut().then(() => {
+            // Sign-out successful, redirect to login page or show login UI
+            showAlert('You have been signed out', 'info');
+        }).catch((error) => {
+            // An error happened
+            console.error('Sign out error:', error);
+            showAlert('Error signing out', 'danger');
+        });
+    }
+
+    // Add sync indicator
+    const syncIndicator = document.createElement('div');
+    syncIndicator.id = 'sync-indicator';
+    syncIndicator.className = 'sync-indicator';
+    document.body.appendChild(syncIndicator);
+
+    // Show sync status
+    function showSyncStatus(status) {
+        syncIndicator.textContent = status;
+        syncIndicator.classList.add('show');
+        
+        setTimeout(() => {
+            syncIndicator.classList.remove('show');
+        }, 2000);
+    }
+
+    // Add sync indicator styles
+    const syncStyle = document.createElement('style');
+    syncStyle.textContent = `
+        .sync-indicator {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 1001;
+        }
+        
+        .sync-indicator.show {
+            opacity: 1;
+        }
+    `;
+    document.head.appendChild(syncStyle);
+
+    // Add data migration for first-time Firebase users
+    function migrateLocalToFirebase(uid) {
+        // Only migrate if we have local data and are logged in
+        if (localStorage.getItem('airtimeBalance') && uid) {
+            const localBalance = parseInt(localStorage.getItem('airtimeBalance') || '0');
+            const localLastClaim = parseInt(localStorage.getItem('lastClaim') || '0');
+            const localTransactions = JSON.parse(localStorage.getItem('transactions') || '[]');
+            
+            const userRef = database.ref(`users/${uid}`);
+            
+            // Check if Firebase data exists
+            userRef.get().then((snapshot) => {
+                if (!snapshot.exists() || (snapshot.val().transactions && snapshot.val().transactions.length === 0)) {
+                    // No data in Firebase yet, migrate local data
+                    userRef.set({
+                        airtimeBalance: localBalance,
+                        lastClaim: localLastClaim,
+                        transactions: localTransactions
+                    });
+                    showSyncStatus('Data migrated to cloud');
+                }
+            });
+        }
+    }
+
+    // Event Listeners
+    if (claimBtn) {
+        claimBtn.addEventListener('click', claimDailyReward);
     }
     
-    // Add CSS for reward container
-    const style = document.createElement('style');
-    style.textContent = `
-    .reward-container {
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        z-index: 1000;
+    if (purchaseBtn) {
+        purchaseBtn.addEventListener('click', purchaseAirtime);
     }
-    
-    .reward-card {
-        background-color: #fff;
-        border-radius: 30px;
-        padding: 15px;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-        text-align: center;
-        max-width: 250px;
+
+    // Network selection
+    networkIcons.forEach(icon => {
+        icon.addEventListener('click', function() {
+            // Remove active class from all icons
+            networkIcons.forEach(i => i.classList.remove('active'));
+            
+            // Add active class to clicked icon
+            this.classList.add('active');
+            
+            // Update selected network and plan ID
+            selectedNetwork = this.getAttribute('data-network');
+            selectedPlanId = this.getAttribute('data-plan');
+        });
+    });
+
+    // Amount selection
+    amountOptions.forEach(option => {
+        option.addEventListener('click', function() {
+            // Remove active class from all options
+            amountOptions.forEach(o => o.classList.remove('active'));
+            
+            // Add active class to clicked option
+            this.classList.add('active');
+            
+            // Update selected amount
+            selectedAmount = parseInt(this.getAttribute('data-amount'));
+        });
+    });
+
+    // Phone number validation
+    if (phoneNumberInput) {
+        phoneNumberInput.addEventListener('input', function() {
+            this.value = this.value.replace(/[^0-9]/g, '').substring(0, 11);
+        });
     }
-    
-    .countdown {
-        margin-top: 10px;
-        font-size: 0.9rem;
-        color: #666;
-    } 
-`;
-    document.head.appendChild(style);
-    
-    // Check for existing rewards on page load
-    document.addEventListener('DOMContentLoaded', () => {
-        const lastClaimTime = localStorage.getItem('lastRewardClaim');
-        if (lastClaimTime) {
-            startRewardCountdown(parseInt(lastClaimTime));
-        } else {
-            // Show initial reward claim option
-            addRewardClaim();
+
+    // Handle online/offline status
+    window.addEventListener('online', () => {
+        showSyncStatus('Online - Syncing data');
+        if (userId) {
+            syncToFirebase(userId);
         }
     });
-    
-    // We'll remove the checkPendingTransactions interval since our transactions
-    // will now automatically update after 59 seconds
-    // clearInterval(pendingTransactionsInterval);
+
+    window.addEventListener('offline', () => {
+        showSyncStatus('Offline - Using local data');
+    });
+
+    // Add sign out button event listener if it exists
+    if (signOutBtn) {
+        signOutBtn.addEventListener('click', signOutUser);
+    }
+
+    // Initial UI update
+    loadFromLocalStorage(); // As fallback
+});
 </script>
 </body>
 </html>
