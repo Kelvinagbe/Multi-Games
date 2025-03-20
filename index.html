@@ -9,190 +9,186 @@
      crossorigin="anonymous"></script>
     <style>
         body {
-    font-family: Arial, sans-serif;
-    background-color: #f0f7f0;
-    margin: 20;
-    padding: 12;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-}
-.container {
-    background-color: white;
-    border-radius: 30px;
-    box-shadow: 0 9px 15px rgba(0, 1, 0.8, 0.7);
-    width: 100%;
-    max-width: 260px;
-    padding: 25px;
-}
-h2 {
-    text-align: center;
-    color: #2e7d32;
-    margin-bottom: 20px;
-}
-.form-group {
-    margin-bottom: 15px;
-}
-label {
-    display: block;
-    margin-bottom: 5px;
-    color: #4c8c4a;
-}
-input {
-    width: 100%;
-    padding: 10px;
-    box-sizing: border-box;
-    border: 3px solid #c8e6c9;
-    border-radius: 20px;
-    font-size: 16px;
-}
-input:focus {
-    outline: none;
-    border-color: #4caf50;
-    box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
-}
-button {
-    background-color: #4caf50;
-    color: white;
-    border: none;
-    padding: 12px 0;
-    width: 100%;
-    border-radius: 30px;
-    cursor: pointer;
-    font-size: 16px;
-    margin-top: 10px;
-    transition: background-color 0.2s;
-}
-button:hover {
-    background-color: #388e3c;
-}
-.google-button {
-    background-color: white;
-    color: #757575;
-    border: 3px solid #c8e6c9;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-}
-.google-button:hover {
-    background-color: #f5f5f5;
-}
-.google-icon {
-    width: 18px;
-    height: 18px;
-}
-.toggle {
-    text-align: center;
-    margin-top: 15px;
-    color: #666;
-}
-.toggle a {
-    color: #4caf50;
-    text-decoration: none;
-    cursor: pointer;
-    font-weight: bold;
-}
-.toggle a:hover {
-    text-decoration: underline;
-}
-.error {
-    color: #f44336;
-    text-align: center;
-    margin-top: 10px;
-    display: none;
-    font-size: 14px;
-}
-.success {
-    color: #4caf50;
-    text-align: center;
-    margin-top: 10px;
-    font-weight: bold;
-    display: none;
-    font-size: 14px;
-}
-#loginForm, #registerForm, #forgotPasswordForm, #loadingScreen {
-    display: none;
-}
-.active {
-    display: block !important;
-}
-.divider {
-    display: flex;
-    align-items: center;
-    text-align: center;
-    margin: 20px 0;
-}
-.divider::before, .divider::after {
-    content: '';
-    flex: 1;
-    border-bottom: 1px solid #c8e6c9;
-}
-.divider span {
-    padding: 0 10px;
-    color: #4c8c4a;
-}
-.loader {
-    border: 5px solid #e8f5e9;
-    border-top: 5px solid #4caf50;
-    border-radius: 50%;
-    width: 50px;
-    height: 50px;
-    animation: spin 1s linear infinite;
-    margin: 50px auto;
-}
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-#loadingScreen {
-    text-align: center;
-}
-#loadingMessage {
-    margin-top: 20px;
-    color: #4c8c4a;
-}
-.forgot-password {
-    text-align: right;
-    margin-top: 5px;
-}
-.forgot-password a {
-    color: #4caf50;
-    text-decoration: none;
-    font-size: 14px;
-}
-.forgot-password a:hover {
-    text-decoration: underline;
-}
-.back-button {
-    display: inline-block;
-    margin-top: 15px;
-    color: #666;
-    text-decoration: none;
-    font-size: 14px;
-}
-.back-button:hover {
-    text-decoration: underline;
-}
-.alert {
-    padding: 15px;
-    margin-top: 20px;
-    border-radius: 30px;
-    display: none;
-    text-align: center;
-    font-weight: 500;
-}
-.alert-success {
-    background-color: #d4edda;
-    color: #155724;
-    border: 3px solid #c3e6cb;
-}
-.alert-info {
-    background-color: #d1ecf1;
-    color: #0c5460;
-    border: 3px solid #bee5eb;
-}
+            font-family: Arial, sans-serif;
+            background-color: #f0f7f0;
+            margin: 20;
+            padding: 12;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background-color: white;
+            border-radius: 30px;
+            box-shadow: 0 9px 15px rgba(0, 1, 0.8, 0.7);
+            width: 100%;
+            max-width: 260px;
+            padding: 25px;
+        }
+        h2 {
+            text-align: center;
+            color: #2e7d32;
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #4c8c4a;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+            border: 3px solid #c8e6c9;
+            border-radius: 20px;
+            font-size: 16px;
+        }
+        input:focus {
+            outline: none;
+            border-color: #4caf50;
+            box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+        }
+        button {
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            padding: 12px 0;
+            width: 100%;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+            transition: background-color 0.2s;
+        }
+        button:hover {
+            background-color: #388e3c;
+        }
+        .google-button {
+            background-color: white;
+            color: #757575;
+            border: 3px solid #c8e6c9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .google-button:hover {
+            background-color: #f5f5f5;
+        }
+        .google-icon {
+            width: 18px;
+            height: 18px;
+        }
+        .toggle {
+            text-align: center;
+            margin-top: 15px;
+            color: #666;
+        }
+        .toggle a {
+            color: #4caf50;
+            text-decoration: none;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .toggle a:hover {
+            text-decoration: underline;
+        }
+        .error {
+            color: #f44336;
+            text-align: center;
+            margin-top: 10px;
+        }
+        .success {
+            color: #4caf50;
+            text-align: center;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        #loginForm, #registerForm, #forgotPasswordForm, #loadingScreen {
+            display: none;
+        }
+        .active {
+            display: block !important;
+        }
+        .divider {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .divider::before, .divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid #c8e6c9;
+        }
+        .divider span {
+            padding: 0 10px;
+            color: #4c8c4a;
+        }
+        .loader {
+            border: 5px solid #e8f5e9;
+            border-top: 5px solid #4caf50;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 50px auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        #loadingScreen {
+            text-align: center;
+        }
+        #loadingMessage {
+            margin-top: 20px;
+            color: #4c8c4a;
+        }
+        .forgot-password {
+            text-align: right;
+            margin-top: 5px;
+        }
+        .forgot-password a {
+            color: #4caf50;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        .forgot-password a:hover {
+            text-decoration: underline;
+        }
+        .back-button {
+            display: inline-block;
+            margin-top: 15px;
+            color: #666;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        .back-button:hover {
+            text-decoration: underline;
+        }
+        .alert {
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 30px;
+            display: none;
+            text-align: center;
+            font-weight: 500;
+        }
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 3px solid #c3e6cb;
+        }
+        .alert-info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 3px solid #bee5eb;
+        }
     </style>
 </head>
 <body>
@@ -299,526 +295,385 @@ button:hover {
     </div>
 
     <!-- Firebase SDK imports -->
-<script type="module">
-    // Import the functions you need from the SDKs you need
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
-import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-analytics.js";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, GoogleAuthProvider, signInWithPopup, updateProfile, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
-import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-analytics.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, GoogleAuthProvider, signInWithPopup, updateProfile, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
+        import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
 
-// Your web app's Firebase configuration
-const firebaseConfig = {
-    apiKey: "AIzaSyBw1uA-kNKOZEufWKZ9AMBxvRGHNGF1lkA",
-    authDomain: "multi-games-a2561.firebaseapp.com",
-    projectId: "multi-games-a2561",
-    storageBucket: "multi-games-a2561.appspot.com",
-    messagingSenderId: "150551898066",
-    appId: "1:150551898066:web:4e8fb185f2321ba4140a0b",
-    measurementId: "G-PB8Y87E6XV"
-};
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBw1uA-kNKOZEufWKZ9AMBxvRGHNGF1lkA",
+            authDomain: "multi-games-a2561.firebaseapp.com",
+            projectId: "multi-games-a2561",
+            storageBucket: "multi-games-a2561.appspot.com",
+            messagingSenderId: "150551898066",
+            appId: "1:150551898066:web:4e8fb185f2321ba4140a0b",
+            measurementId: "G-PB8Y87E6XV"
+        };
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
-const auth = getAuth(app);
-const db = getFirestore(app);
-const googleProvider = new GoogleAuthProvider();
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const googleProvider = new GoogleAuthProvider();
 
-// Alert message function - Improved to be more visible
-function showAlert(message, type) {
-    const alertElement = document.getElementById("alertMessage");
-    if (!alertElement) {
-        console.error("Alert element not found!");
-        return;
-    }
-    
-    alertElement.textContent = message;
-    alertElement.className = "alert";
-    alertElement.classList.add(type === "success" ? "alert-success" : "alert-info");
-    alertElement.style.display = "block";
-    
-    // Auto hide after 3 seconds
-    setTimeout(() => {
-        alertElement.style.display = "none";
-    }, 3000);
-}
-
-// Function to show loading screen
-function showLoading(message = "Processing...") {
-    document.getElementById("loginForm").classList.remove("active");
-    document.getElementById("registerForm").classList.remove("active");
-    document.getElementById("forgotPasswordForm").classList.remove("active");
-    document.getElementById("loadingScreen").classList.add("active");
-    document.getElementById("loadingMessage").textContent = message;
-}
-
-// Function to hide loading screen
-function hideLoading() {
-    document.getElementById("loadingScreen").classList.remove("active");
-}
-
-// Function to show login form after registration with a success message
-function showLoginAfterRegistration(message) {
-    hideLoading();
-    
-    // Display success message
-    const registerSuccessElement = document.getElementById("registerSuccess");
-    registerSuccessElement.textContent = message;
-    registerSuccessElement.style.display = "block";
-    
-    // Show global alert
-    showAlert(message, "success");
-    
-    // Delay before switching to login form
-    setTimeout(() => {
-        // Hide register form and show login form
-        document.getElementById("registerForm").classList.remove("active");
-        document.getElementById("loginForm").classList.add("active");
-        
-        // Display success message in login form
-        const loginSuccessElement = document.getElementById("loginSuccess");
-        loginSuccessElement.textContent = "Registration successful! Please log in with your new account.";
-        loginSuccessElement.style.display = "block";
-    }, 1500);
-}
-
-// Check if user is already logged in
-onAuthStateChanged(auth, (user) => {
-    if (user) {
-        // User is signed in, redirect directly to main page
-        window.location.href = "index.html";
-    } else {
-        // No user is signed in, show login form by default
-        document.getElementById("loginForm").classList.add("active");
-    }
-});
-
-// Form toggle functionality
-document.getElementById("showRegister").addEventListener("click", () => {
-    document.getElementById("loginForm").classList.remove("active");
-    document.getElementById("registerForm").classList.add("active");
-    
-    // Clear any previous error messages
-    document.getElementById("loginError").textContent = "";
-    document.getElementById("loginSuccess").textContent = "";
-    document.getElementById("registerError").textContent = "";
-    document.getElementById("registerSuccess").textContent = "";
-});
-
-document.getElementById("showLogin").addEventListener("click", () => {
-    document.getElementById("registerForm").classList.remove("active");
-    document.getElementById("loginForm").classList.add("active");
-    
-    // Clear any previous error messages
-    document.getElementById("loginError").textContent = "";
-    document.getElementById("loginSuccess").textContent = "";
-    document.getElementById("registerError").textContent = "";
-    document.getElementById("registerSuccess").textContent = "";
-});
-
-document.getElementById("showForgotPassword").addEventListener("click", () => {
-    document.getElementById("loginForm").classList.remove("active");
-    document.getElementById("forgotPasswordForm").classList.add("active");
-    
-    // Clear any previous error messages
-    document.getElementById("resetError").textContent = "";
-    document.getElementById("resetSuccess").textContent = "";
-});
-
-document.getElementById("backToLogin").addEventListener("click", () => {
-    document.getElementById("forgotPasswordForm").classList.remove("active");
-    document.getElementById("loginForm").classList.add("active");
-    
-    // Clear any previous error messages
-    document.getElementById("resetError").textContent = "";
-    document.getElementById("resetSuccess").textContent = "";
-    document.getElementById("loginError").textContent = "";
-    document.getElementById("loginSuccess").textContent = "";
-});
-
-// Save user data to Firestore
-async function saveUserData(user, fullName = null) {
-    try {
-        // If full name is provided, update the user profile
-        if (fullName) {
-            await updateProfile(user, {
-                displayName: fullName
-            });
+        // Alert message function
+        function showAlert(message, type) {
+            const alertElement = document.getElementById("alertMessage");
+            alertElement.textContent = message;
+            alertElement.className = "alert";
+            alertElement.classList.add(type === "success" ? "alert-success" : "alert-info");
+            alertElement.style.display = "block";
+            
+            // Auto hide after 3 seconds
+            setTimeout(() => {
+                alertElement.style.display = "none";
+            }, 3000);
         }
-        
-        // Save user data to Firestore
-        await setDoc(doc(db, "users", user.uid), {
-            uid: user.uid,
-            email: user.email,
-            displayName: fullName || user.displayName || '',
-            createdAt: new Date().toISOString(),
-            lastLogin: new Date().toISOString()
-        }, { merge: true });
-        
-        return true;
-    } catch (error) {
-        console.error("Error saving user data:", error);
-        return false;
-    }
-}
 
-// Register functionality
-document.getElementById("registerButton").addEventListener("click", async () => {
-    const fullName = document.getElementById("registerFullName").value;
-    const email = document.getElementById("registerEmail").value;
-    const password = document.getElementById("registerPassword").value;
-    const confirmPassword = document.getElementById("confirmPassword").value;
-    const errorElement = document.getElementById("registerError");
-    const successElement = document.getElementById("registerSuccess");
-    
-    // Clear previous messages
-    errorElement.textContent = "";
-    errorElement.style.display = "none";
-    successElement.textContent = "";
-    successElement.style.display = "none";
-
-    // Validate inputs
-    if (!fullName || !email || !password || !confirmPassword) {
-        errorElement.textContent = "All fields are required";
-        errorElement.style.display = "block";
-        return;
-    }
-    
-    if (password !== confirmPassword) {
-        errorElement.textContent = "Passwords do not match";
-        errorElement.style.display = "block";
-        return;
-    }
-
-    if (password.length < 6) {
-        errorElement.textContent = "Password must be at least 6 characters";
-        errorElement.style.display = "block";
-        return;
-    }
-
-    // Show loading screen
-    showLoading("Creating your account...");
-
-    // Create user with Firebase
-    try {
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        
-        // Save user data to Firestore
-        const saveResult = await saveUserData(userCredential.user, fullName);
-        
-        if (!saveResult) {
-            throw new Error("Failed to save user data");
+        // Function to show loading screen
+        function showLoading(message = "Processing...") {
+            document.getElementById("loginForm").classList.remove("active");
+            document.getElementById("registerForm").classList.remove("active");
+            document.getElementById("forgotPasswordForm").classList.remove("active");
+            document.getElementById("loadingScreen").classList.add("active");
+            document.getElementById("loadingMessage").textContent = message;
         }
-        
-        // Sign out user after registration so they can log in manually
-        await auth.signOut();
-        
-        // Show success message and redirect to login form
-        showLoginAfterRegistration("Registration successful! Please log in with your new account.");
-        
-    } catch (error) {
-        // Hide loading
-        hideLoading();
-        
-        console.error("Registration error:", error);
-        
-        // Handle errors
-        switch (error.code) {
-            case "auth/email-already-in-use":
-                errorElement.textContent = "Email already in use. Please use a different email address.";
-                break;
-            case "auth/invalid-email":
-                errorElement.textContent = "Invalid email address. Please check and try again.";
-                break;
-            case "auth/weak-password":
-                errorElement.textContent = "Password is too weak. Please use a stronger password.";
-                break;
-            default:
-                errorElement.textContent = error.message || "An unexpected error occurred. Please try again.";
+
+        // Function to hide loading screen
+        function hideLoading() {
+            document.getElementById("loadingScreen").classList.remove("active");
         }
-        
-        errorElement.style.display = "block";
-    }
-});
 
-// Login functionality
-document.getElementById("loginButton").addEventListener("click", async () => {
-    const email = document.getElementById("loginEmail").value;
-    const password = document.getElementById("loginPassword").value;
-    const errorElement = document.getElementById("loginError");
-    const successElement = document.getElementById("loginSuccess");
-    
-    // Clear previous messages
-    errorElement.textContent = "";
-    errorElement.style.display = "none";
-    successElement.textContent = "";
-    successElement.style.display = "none";
-
-    // Validate inputs
-    if (!email || !password) {
-        errorElement.textContent = "Email and password are required";
-        errorElement.style.display = "block";
-        return;
-    }
-
-    // Show loading screen
-    showLoading("Logging you in...");
-
-    // Sign in user with Firebase
-    try {
-        const userCredential = await signInWithEmailAndPassword(auth, email, password);
-        
-        // Update last login timestamp
-        await setDoc(doc(db, "users", userCredential.user.uid), {
-            lastLogin: new Date().toISOString()
-        }, { merge: true });
-        
-        // Hide loading
-        hideLoading();
-        
-        // Show success message with alert
-        const welcomeMessage = "Welcome back! Login successful!";
-        showAlert(welcomeMessage, "success");
-        successElement.textContent = welcomeMessage;
-        successElement.style.display = "block";
-        
-        // Redirect after short delay
-        setTimeout(() => {
-            window.location.href = "main.html";
-        }, 1500);
-        
-    } catch (error) {
-        // Hide loading
-        hideLoading();
-        
-        console.error("Login error:", error);
-        
-        // Handle errors
-        switch (error.code) {
-            case "auth/invalid-credential":
-            case "auth/invalid-email":
-            case "auth/user-not-found":
-            case "auth/wrong-password":
-                errorElement.textContent = "Invalid email or password. Please try again.";
-                break;
-            case "auth/too-many-requests":
-                errorElement.textContent = "Too many failed login attempts. Please try again later.";
-                break;
-            case "auth/user-disabled":
-                errorElement.textContent = "This account has been disabled. Please contact support.";
-                break;
-            default:
-                errorElement.textContent = error.message || "An unexpected error occurred. Please try again.";
+        // Function to show success message and redirect
+        function showSuccessAndRedirect(message, delay = 1500) {
+            // Show success message with alert
+            showAlert(message, "success");
+            
+            // Redirect after delay
+            setTimeout(() => {
+                window.location.href = "main.html";
+            }, delay);
         }
-        
-        errorElement.style.display = "block";
-    }
-});
 
-// Google Sign In - Login
-document.getElementById("googleLoginButton").addEventListener("click", async () => {
-    const errorElement = document.getElementById("loginError");
-    const successElement = document.getElementById("loginSuccess");
-    
-    errorElement.textContent = "";
-    errorElement.style.display = "none";
-    successElement.textContent = "";
-    successElement.style.display = "none";
-    
-    // Show loading screen
-    showLoading("Logging in with Google...");
-    
-    try {
-        // Add scopes to Google provider
-        googleProvider.addScope('profile');
-        googleProvider.addScope('email');
-        googleProvider.setCustomParameters({
-            prompt: 'select_account'
+        // Check if user is already logged in
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                // User is signed in, redirect directly to main page
+                window.location.href = "main.html";
+            } else {
+                // No user is signed in, show login form by default
+                document.getElementById("loginForm").classList.add("active");
+            }
         });
-        
-        const result = await signInWithPopup(auth, googleProvider);
-        
-        // Update last login timestamp
-        await setDoc(doc(db, "users", result.user.uid), {
-            uid: result.user.uid,
-            email: result.user.email,
-            displayName: result.user.displayName || '',
-            createdAt: new Date().toISOString(),
-            lastLogin: new Date().toISOString()
-        }, { merge: true });
-        
-        // Hide loading
-        hideLoading();
-        
-        // Show success message with alert
-        const welcomeMessage = "Welcome back! Google login successful!";
-        showAlert(welcomeMessage, "success");
-        successElement.textContent = welcomeMessage;
-        successElement.style.display = "block";
-        
-        // Redirect after short delay
-        setTimeout(() => {
-            window.location.href = "main.html";
-        }, 1500);
-        
-    } catch (error) {
-        // Hide loading
-        hideLoading();
-        
-        console.error("Google login error:", error);
-        
-        // Handle specific errors
-        if (error.code === 'auth/popup-closed-by-user') {
-            errorElement.textContent = "Sign-in popup was closed before completing. Please try again.";
-        } else if (error.code === 'auth/popup-blocked') {
-            errorElement.textContent = "Popup was blocked. Please allow popups for this site.";
-        } else if (error.code === 'auth/cancelled-popup-request') {
-            errorElement.textContent = "Multiple popups were opened. Please try again.";
-        } else if (error.code === 'auth/account-exists-with-different-credential') {
-            errorElement.textContent = "An account already exists with the same email but different sign-in method.";
-        } else {
-            errorElement.textContent = error.message || "Error signing in with Google. Please try again.";
-        }
-        
-        errorElement.style.display = "block";
-    }
-});
 
-// Google Sign In - Register
-document.getElementById("googleRegisterButton").addEventListener("click", async () => {
-    const errorElement = document.getElementById("registerError");
-    const successElement = document.getElementById("registerSuccess");
-    
-    errorElement.textContent = "";
-    errorElement.style.display = "none";
-    successElement.textContent = "";
-    successElement.style.display = "none";
-    
-    // Show loading screen
-    showLoading("Signing up with Google...");
-    
-    try {
-        // Add scopes to Google provider
-        googleProvider.addScope('profile');
-        googleProvider.addScope('email');
-        googleProvider.setCustomParameters({
-            prompt: 'select_account'
+        // Form toggle functionality
+        document.getElementById("showRegister").addEventListener("click", () => {
+            document.getElementById("loginForm").classList.remove("active");
+            document.getElementById("registerForm").classList.add("active");
         });
-        
-        const result = await signInWithPopup(auth, googleProvider);
-        
-        // Save user data to Firestore
-        const saveResult = await saveUserData(result.user);
-        
-        if (!saveResult) {
-            throw new Error("Failed to save user data");
-        }
-        
-        // Hide loading
-        hideLoading();
-        
-        // Show success message with alert
-        const welcomeMessage = "Google sign-up successful! Welcome!";
-        showAlert(welcomeMessage, "success");
-        successElement.textContent = welcomeMessage;
-        successElement.style.display = "block";
-        
-        // Redirect after short delay
-        setTimeout(() => {
-            window.location.href = "main.html";
-        }, 1500);
-        
-    } catch (error) {
-        // Hide loading
-        hideLoading();
-        
-        console.error("Google signup error:", error);
-        
-        // Handle specific errors
-        if (error.code === 'auth/popup-closed-by-user') {
-            errorElement.textContent = "Sign-up popup was closed before completing. Please try again.";
-        } else if (error.code === 'auth/popup-blocked') {
-            errorElement.textContent = "Popup was blocked. Please allow popups for this site.";
-        } else if (error.code === 'auth/account-exists-with-different-credential') {
-            errorElement.textContent = "An account already exists with the same email but different sign-in method.";
-        } else {
-            errorElement.textContent = error.message || "Error signing up with Google. Please try again.";
-        }
-        
-        errorElement.style.display = "block";
-    }
-});
 
-// Password Reset functionality
-document.getElementById("resetPasswordButton").addEventListener("click", async () => {
-    const email = document.getElementById("resetEmail").value;
-    const errorElement = document.getElementById("resetError");
-    const successElement = document.getElementById("resetSuccess");
-    
-    // Clear previous messages
-    errorElement.textContent = "";
-    errorElement.style.display = "none";
-    successElement.textContent = "";
-    successElement.style.display = "none";
+        document.getElementById("showLogin").addEventListener("click", () => {
+            document.getElementById("registerForm").classList.remove("active");
+            document.getElementById("loginForm").classList.add("active");
+        });
 
-    // Validate input
-    if (!email) {
-        errorElement.textContent = "Email is required";
-        errorElement.style.display = "block";
-        return;
-    }
+        document.getElementById("showForgotPassword").addEventListener("click", () => {
+            document.getElementById("loginForm").classList.remove("active");
+            document.getElementById("forgotPasswordForm").classList.add("active");
+        });
 
-    // Show loading screen
-    showLoading("Sending password reset email...");
-
-    try {
-        await sendPasswordResetEmail(auth, email);
-        
-        // Hide loading
-        hideLoading();
-        
-        // Show success message
-        const resetMessage = "Password reset email sent! Please check your inbox.";
-        showAlert(resetMessage, "info");
-        successElement.textContent = resetMessage;
-        successElement.style.display = "block";
-        
-        // Clear the input field
-        document.getElementById("resetEmail").value = "";
-        
-        // After 3 seconds, return to login
-        setTimeout(() => {
+        document.getElementById("backToLogin").addEventListener("click", () => {
             document.getElementById("forgotPasswordForm").classList.remove("active");
             document.getElementById("loginForm").classList.add("active");
-            
-            // Clear the success message
-            successElement.textContent = "";
-            successElement.style.display = "none";
-        }, 3000);
-    } catch (error) {
-        // Hide loading
-        hideLoading();
-        
-        console.error("Password reset error:", error);
-        
-        // Handle errors
-        switch (error.code) {
-            case "auth/user-not-found":
-                errorElement.textContent = "No account found with this email address.";
-                break;
-            case "auth/invalid-email":
-                errorElement.textContent = "Invalid email address. Please check and try again.";
-                break;
-            case "auth/too-many-requests":
-                errorElement.textContent = "Too many password reset attempts. Please try again later.";
-                break;
-            default:
-                errorElement.textContent = error.message || "Error sending reset email. Please try again.";
+        });
+
+        // Save user data to Firestore
+        async function saveUserData(user, fullName = null) {
+            try {
+                // If full name is provided, update the user profile
+                if (fullName) {
+                    await updateProfile(user, {
+                        displayName: fullName
+                    });
+                }
+                
+                // Save user data to Firestore
+                await setDoc(doc(db, "users", user.uid), {
+                    uid: user.uid,
+                    email: user.email,
+                    displayName: fullName || user.displayName || '',
+                    createdAt: new Date().toISOString(),
+                    lastLogin: new Date().toISOString()
+                });
+            } catch (error) {
+                console.error("Error saving user data:", error);
+            }
         }
-        
-        errorElement.style.display = "block";
-    }
-});
-</script>
+
+        // Register functionality
+        document.getElementById("registerButton").addEventListener("click", async () => {
+            const fullName = document.getElementById("registerFullName").value;
+            const email = document.getElementById("registerEmail").value;
+            const password = document.getElementById("registerPassword").value;
+            const confirmPassword = document.getElementById("confirmPassword").value;
+            const errorElement = document.getElementById("registerError");
+            const successElement = document.getElementById("registerSuccess");
+            
+            // Clear previous messages
+            errorElement.textContent = "";
+            successElement.textContent = "";
+
+            // Validate inputs
+            if (!fullName || !email || !password || !confirmPassword) {
+                errorElement.textContent = "All fields are required";
+                return;
+            }
+            
+            if (password !== confirmPassword) {
+                errorElement.textContent = "Passwords do not match";
+                return;
+            }
+
+            if (password.length < 6) {
+                errorElement.textContent = "Password must be at least 6 characters";
+                return;
+            }
+
+            // Show loading screen
+            showLoading("Creating your account...");
+
+            // Create user with Firebase
+            try {
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                
+                // Save user data to Firestore
+                await saveUserData(userCredential.user, fullName);
+                
+                // Hide loading
+                hideLoading();
+                
+                // Show success message and alert
+                successElement.textContent = "Registration successful!";
+                showAlert("Registration successful! Redirecting...", "success");
+                
+                // Redirect after short delay
+                setTimeout(() => {
+                    window.location.href = "main.html";
+                }, 1500);
+                
+            } catch (error) {
+                // Hide loading
+                hideLoading();
+                
+                // Handle errors
+                switch (error.code) {
+                    case "auth/email-already-in-use":
+                        errorElement.textContent = "Email already in use";
+                        break;
+                    case "auth/invalid-email":
+                        errorElement.textContent = "Invalid email address";
+                        break;
+                    default:
+                        errorElement.textContent = "Error: " + error.message;
+                }
+            }
+        });
+
+        // Login functionality
+        document.getElementById("loginButton").addEventListener("click", async () => {
+            const email = document.getElementById("loginEmail").value;
+            const password = document.getElementById("loginPassword").value;
+            const errorElement = document.getElementById("loginError");
+            const successElement = document.getElementById("loginSuccess");
+            
+            // Clear previous messages
+            errorElement.textContent = "";
+            successElement.textContent = "";
+
+            // Validate inputs
+            if (!email || !password) {
+                errorElement.textContent = "Email and password are required";
+                return;
+            }
+
+            // Show loading screen
+            showLoading("Logging you in...");
+
+            // Sign in user with Firebase
+            try {
+                const userCredential = await signInWithEmailAndPassword(auth, email, password);
+                
+                // Update last login timestamp
+                await setDoc(doc(db, "users", userCrential.user.uid), {
+                    lastLogin: new Date().toISOString()
+                }, { merge: true });
+                
+                // Hide loading
+                hideLoading();
+                
+                // Show success message with alert
+                showAlert("Login successful! Welcome back.", "success");
+                
+                // Redirect after short delay
+                setTimeout(() => {
+                    window.location.href = "index.html";
+                }, 1500);
+                
+            } catch (error) {
+                // Hide loading
+                hideLoading();
+                
+                // Handle errors
+                switch (error.code) {
+                    case "auth/invalid-credential":
+                    case "auth/user-not-found":
+                    case "auth/wrong-password":
+                        errorElement.textContent = "Invalid email or password";
+                        break;
+                    default:
+                        errorElement.textContent = "Error: " + error.message;
+                }
+            }
+        });
+
+        // Google Sign In - Login
+        document.getElementById("googleLoginButton").addEventListener("click", async () => {
+            const errorElement = document.getElementById("loginError");
+            const successElement = document.getElementById("loginSuccess");
+            
+            errorElement.textContent = "";
+            successElement.textContent = "";
+            
+            // Show loading screen
+            showLoading("Logging in with Google...");
+            
+            try {
+                const result = await signInWithPopup(auth, googleProvider);
+                
+                // Update last login timestamp
+                await setDoc(doc(db, "users", result.user.uid), {
+                    uid: result.user.uid,
+                    email: result.user.email,
+                    displayName: result.user.displayName || '',
+                    createdAt: new Date().toISOString(),
+                    lastLogin: new Date().toISOString()
+                }, { merge: true });
+                
+                // Hide loading
+                hideLoading();
+                
+                // Show success message with alert
+                showAlert("Google login successful! Welcome back.", "success");
+                
+                // Redirect after short delay
+                setTimeout(() => {
+                    window.location.href = "main.html";
+                }, 1500);
+                
+            } catch (error) {
+                // Hide loading
+                hideLoading();
+                
+                console.error("Google login error:", error);
+                errorElement.textContent = "Error signing in with Google. Please try again.";
+            }
+        });
+
+        // Google Sign In - Register
+        document.getElementById("googleRegisterButton").addEventListener("click", async () => {
+            const errorElement = document.getElementById("registerError");
+            const successElement = document.getElementById("registerSuccess");
+            
+            errorElement.textContent = "";
+            successElement.textContent = "";
+            
+            // Show loading screen
+            showLoading("Signing up with Google...");
+            
+            try {
+                const result = await signInWithPopup(auth, googleProvider);
+                
+                // Save user data to Firestore
+                await saveUserData(result.user);
+                
+                // Hide loading
+                hideLoading();
+                
+                // Show success message with alert
+                showAlert("Google registration successful! Welcome!", "success");
+                
+                // Redirect after short delay
+                setTimeout(() => {
+                    window.location.href = "main.html";
+                }, 1500);
+                
+            } catch (error) {
+                // Hide loading
+                hideLoading();
+                
+                console.error("Google signup error:", error);
+                errorElement.textContent = "Error signing up with Google. Please try again.";
+            }
+        });
+
+        // Password Reset functionality
+        document.getElementById("resetPasswordButton").addEventListener("click", async () => {
+            const email = document.getElementById("resetEmail").value;
+            const errorElement = document.getElementById("resetError");
+            const successElement = document.getElementById("resetSuccess");
+            
+            // Clear previous messages
+            errorElement.textContent = "";
+            successElement.textContent = "";
+
+            // Validate input
+            if (!email) {
+                errorElement.textContent = "Email is required";
+                return;
+            }
+
+            // Show loading screen
+            showLoading("Sending password reset email...");
+
+            try {
+                await sendPasswordResetEmail(auth, email);
+                
+                // Hide loading
+                hideLoading();
+                
+                // Show success message with alert
+                showAlert("Reset link sent to your email!", "info");
+                successElement.textContent = "Password reset email sent!";
+                
+                // Clear the input field
+                document.getElementById("resetEmail").value = "";
+                
+                // After 3 seconds, return to login
+                setTimeout(() => {
+                    document.getElementById("forgotPasswordForm").classList.remove("active");
+                    document.getElementById("loginForm").classList.add("active");
+                }, 3000);
+            } catch (error) {
+                // Hide loading
+                hideLoading();
+                
+                // Handle errors
+                switch (error.code) {
+                    case "auth/user-not-found":
+                        errorElement.textContent = "No account found with this email";
+                        break;
+                    case "auth/invalid-email":
+                        errorElement.textContent = "Invalid email address";
+                        break;
+                    default:
+                        errorElement.textContent = "Error: " + error.message;
+                }
+            }
+        });
+    </script>
 </body>
 </html>
