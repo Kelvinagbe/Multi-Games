@@ -1,986 +1,902 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Leaderboard | Multi Games</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <title>Profile | Multi Games</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root {
-            --primary-color: #2ecc71;
-            --secondary-color: #27ae60;
-            --bg-color: #f5f5f5;
-            --text-color: #333;
-            --card-bg: #fff;
-            --shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            --gold: #FFD700;
-            --silver: #C0C0C0;
-            --bronze: #CD7F32;
-        }
-        
         * {
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Roboto', sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
             margin: 0;
             padding: 0;
-            width: 100%;
-            min-height: 100vh;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
         }
-        
-        .container {
-            width: 100%;
-            max-width: 90%;
-            margin: 0 auto;
-            padding: 15px;
+        body {
+            background-color: #f0f2f5;
+            color: #333;
+            padding-bottom: 70px; /* Space for bottom nav */
         }
-        
-        header {
-            background-color: var(--primary-color);
-            padding: 15px 0;
-            box-shadow: var(--shadow);
-            width: 100%;
-        }
-        
-        nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 15px;
-            max-width: 1200px;
-            margin: 0 auto;
-            flex-wrap: wrap;
-        }
-        
-        .logo {
-            color: white;
-            font-size: 20px;
-            font-weight: 700;
-            text-decoration: none;
-            margin-bottom: 5px;
-        }
-        
-        .nav-links {
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-        
-        .nav-links a {
-            color: white;
-            text-decoration: none;
-            font-weight: 600;
-            transition: opacity 0.3s;
-            font-size: 14px;
-            padding: 5px;
-        }
-        
-        .nav-links a:hover {
-            opacity: 0.8;
-        }
-        
-        .card {
-            background-color: var(--card-bg);
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: var(--shadow);
-        }
-        
-        .card-title {
-            font-size: 24px;
-            margin-bottom: 20px;
-            color: var(--primary-color);
-            font-weight: 700;
+        .profile-header {
+            background: linear-gradient(to right, #2E7D32, #1B5E20);
+            padding: 40px;
             text-align: center;
-        }
-        
-        .leaderboard-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        
-        .leaderboard-table th,
-        .leaderboard-table td {
-            padding: 12px 15px;
-            text-align: left;
-            border-bottom: 1px solid #eee;
-        }
-        
-        .leaderboard-table th {
-            background-color: var(--primary-color);
             color: white;
-            font-weight: 600;
-            position: sticky;
-            top: 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
-        
-        .leaderboard-table tbody tr:hover {
-            background-color: rgba(46, 204, 113, 0.1);
-        }
-        
-        .rank {
-            text-align: center;
-            font-weight: 700;
-            width: 80px;
-        }
-        
-        .rank-1 {
-            color: var(--gold);
-        }
-        
-        .rank-2 {
-            color: var(--silver);
-        }
-        
-        .rank-3 {
-            color: var(--bronze);
-        }
-        
-        .player {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .player-avatar {
-            width: 40px;
-            height: 40px;
+        .profile-header img {
+            width: 100px;
+            height: 100px;
             border-radius: 50%;
+            border: 3px solid white;
             object-fit: cover;
         }
-        
-        .player-name {
-            font-weight: 500;
-        }
-        
-        .score {
-            font-weight: 700;
-            text-align: right;
-            color: var(--primary-color);
-        }
-        
-        .tabs {
-            display: flex;
-            margin-bottom: 15px;
-            border-bottom: 1px solid #ddd;
-            overflow-x: auto;
-            white-space: nowrap;
-            -webkit-overflow-scrolling: touch;
-            scrollbar-width: none;
-        }
-        
-        .tabs::-webkit-scrollbar {
-            display: none;
-        }
-        
-        .tab {
-            padding: 10px 20px;
-            cursor: pointer;
-            font-weight: 500;
-            font-size: 16px;
-        }
-        
-        .tab.active {
-            border-bottom: 3px solid var(--primary-color);
-            color: var(--primary-color);
-        }
-        
-        .tab-content {
-            display: none;
-        }
-        
-        .tab-content.active {
-            display: block;
-        }
-        
-        .trophy-icon {
+        .profile-name {
             font-size: 24px;
-            margin-right: 5px;
+            font-weight: bold;
+            margin-top: 10px;
         }
-        
-        .loading {
-            text-align: center;
-            padding: 30px;
-            font-size: 18px;
-            color: #666;
+        .profile-email {
+            font-size: 14px;
+            opacity: 0.9;
         }
-        
-        .error-message {
-            text-align: center;
+        .stats-container {
+            display: flex;
+            justify-content: space-around;
             padding: 20px;
-            color: #e74c3c;
-            font-size: 16px;
+            background: white;
+            margin: -20px auto 20px auto;
+            border-radius: 16px;
+            width: 90%;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
         }
-        
-        .refresh-btn {
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
+        .stat-item {
+            text-align: center;
+            padding: 10px;
+        }
+        .stat-value {
+            font-size: 22px;
+            font-weight: bold;
+            color: #2E7D32;
+        }
+        .stat-label {
+            font-size: 13px;
+            opacity: 0.8;
+            margin-top: 4px;
+        }
+        .tab-container {
+            display: flex;
+            justify-content: space-around;
+            background: white;
+            padding: 0;
+            border-top: 1px solid #eee;
+            border-bottom: 1px solid #eee;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+        .tab {
+            font-size: 15px;
+            font-weight: 600;
             cursor: pointer;
-            font-weight: 500;
-            transition: background-color 0.3s;
+            padding: 15px 0;
+            flex: 1;
+            text-align: center;
+            transition: all 0.3s;
+        }
+        .tab.active {
+            color: #2E7D32;
+            border-bottom: 3px solid #2E7D32;
+            background-color: rgba(46, 125, 50, 0.05);
+        }
+        .tab:hover {
+            background-color: rgba(46, 125, 50, 0.05);
+        }
+        .content {
+            padding: 25px;
+            background: white;
+            margin: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+        .content h3 {
+            margin-bottom: 15px;
+            color: #444;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+        .hidden {
+            display: none;
+        }
+        .edit-profile-btn {
+            background: #2E7D32;
+            color: white;
+            padding: 10px 18px;
+            text-align: center;
+            border-radius: 25px;
+            cursor: pointer;
+            margin: 15px auto;
+            display: inline-block;
+            font-weight: 600;
+            border: none;
+            box-shadow: 0 4px 8px rgba(46, 125, 50, 0.3);
+            transition: all 0.3s;
+        }
+        .edit-profile-btn:hover {
+            background: #1B5E20;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(46, 125, 50, 0.4);
+        }
+        .logout-btn {
+            background: #1B5E20;
+            color: white;
+            padding: 10px 18px;
+            text-align: center;
+            border-radius: 25px;
+            cursor: pointer;
+            margin: 15px 10px;
+            display: inline-block;
+            font-weight: 600;
+            border: none;
+            box-shadow: 0 4px 8px rgba(27, 94, 32, 0.3);
+            transition: all 0.3s;
+        }
+        .logout-btn:hover {
+            background: #0D3010;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(27, 94, 32, 0.4);
+        }
+        .button-container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
             display: block;
-            margin: 0 auto 20px;
+            margin-bottom: 8px;
+            font-weight: 500;
         }
-        
-        .refresh-btn:hover {
-            background-color: var(--secondary-color);
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
         }
-        
-        .filter-controls {
+        .form-group textarea {
+            height: 100px;
+            resize: vertical;
+        }
+        .success-message {
+            color: #28a745;
+            margin: 10px 0;
+            padding: 10px;
+            background-color: rgba(40, 167, 69, 0.1);
+            border-radius: 5px;
+        }
+        .error-message {
+            color: #dc3545;
+            margin: 10px 0;
+            padding: 10px;
+            background-color: rgba(220, 53, 69, 0.1);
+            border-radius: 5px;
+        }
+        .danger-btn {
+            background-color: #dc3545;
+            color: white;
+            padding: 10px 18px;
+            border-radius: 25px;
+            cursor: pointer;
+            border: none;
+            margin: 5px;
+            font-weight: 600;
+            box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3);
+        }
+        .danger-btn:hover {
+            background-color: #c82333;
+        }
+        .badge {
+            display: inline-block;
+            padding: 8px 12px;
+            margin: 5px;
+            background: linear-gradient(to right, #2E7D32, #1B5E20);
+            color: white;
+            border-radius: 20px;
+            font-size: 13px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .game-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+            align-items: center;
+        }
+        .game-result {
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+        .result-win {
+            background-color: rgba(40, 167, 69, 0.2);
+            color: #28a745;
+        }
+        .result-loss {
+            background-color: rgba(220, 53, 69, 0.2);
+            color: #dc3545;
+        }
+        #loading {
+            text-align: center;
+            padding: 40px;
+        }
+        #error-container {
+            text-align: center;
+            padding: 40px;
+            display: none;
+        }
+        .profile-stat-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .profile-stat-item {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 15px;
-            flex-wrap: wrap;
-            gap: 10px;
         }
-        
-        .search-box {
-            flex: 1;
-            max-width: 300px;
-            position: relative;
+        .profile-stat-item span:first-child {
+            font-weight: 600;
+            color: #666;
         }
-        
-        .search-box input {
+        .profile-stat-item span:last-child {
+            font-weight: 700;
+            color: #2E7D32;
+        }
+        ul {
+            list-style: none;
+        }
+        /* Login form styles */
+        .login-container {
+            max-width: 400px;
+            margin: 40px auto;
+            padding: 25px;
+            background: white;
+            border-radius: 30px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+        }
+        .login-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .login-header h2 {
+            color: #2E7D32;
+            margin-bottom: 10px;
+        }
+        .login-header p {
+            color: #777;
+            font-size: 14px;
+        }
+        .login-form input {
             width: 100%;
-            padding: 8px 12px;
-            border: 1px solid #ddd;
-            border-radius: 20px;
-            font-family: inherit;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 3px solid #ddd;
+            border-radius: 25px;
             font-size: 14px;
         }
-        
-        .limit-selector select {
-            padding: 8px 12px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-family: inherit;
+        .login-form input:focus {
+            border-color: #2E7D32;
+            outline: none;
+        }
+        .login-btn {
+            width: 100%;
+            background: #2E7D32;
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 28px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            margin-top: 10px;
+            box-shadow: 0 4px 8px rgba(46, 125, 50, 0.3);
+            transition: all 0.3s;
+        }
+        .login-btn:hover {
+            background: #1B5E20;
+            box-shadow: 0 6px 12px rgba(46, 125, 50, 0.4);
+        }
+        .login-options {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
             font-size: 14px;
         }
-        
-        @media (min-width: 768px) {
-            .container {
-                max-width: 95%;
-            }
-            
-            .logo {
-                font-size: 24px;
-            }
-            
-            .nav-links a {
-                font-size: 16px;
-            }
+        .login-options a {
+            color: #2E7D32;
+            text-decoration: none;
         }
-        
-        @media (min-width: 1024px) {
-            .container {
-                max-width: 90%;
-            }
+        .login-options a:hover {
+            text-decoration: underline;
         }
-        
-        @media (max-width: 767px) {
-            .leaderboard-table th,
-            .leaderboard-table td {
-                padding: 10px;
-            }
-            
-            .rank {
-                width: 50px;
-            }
-            
-            .player-avatar {
-                width: 30px;
-                height: 30px;
-            }
+        .social-login {
+            display: flex;
+            margin-top: 25px;
+            justify-content: center;
+            gap: 15px;
+        }
+        .social-btn {
+            flex: 1;
+            text-align: center;
+            padding: 10px;
+            border-radius: 28px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            border: 3px solid #ddd;
+            transition: all 0.3s;
+        }
+        .social-btn:hover {
+            background-color: #f7f7f7;
+        }
+        .social-btn i {
+            font-size: 18px;
+        }
+        .or-divider {
+            display: flex;
+            align-items: center;
+            margin: 25px 0;
+            color: #777;
+        }
+        .or-divider:before, .or-divider:after {
+            content: "";
+            flex: 1;
+            border-bottom: 1px solid #ddd;
+        }
+        .or-divider:before {
+            margin-right: 10px;
+        }
+        .or-divider:after {
+            margin-left: 10px;
+        }
+        .register-prompt {
+            text-align: center;
+            margin-top: 20px;
+            color: #777;
+            font-size: 14px;
+        }
+        .register-prompt a {
+            color: #2E7D32;
+            font-weight: 600;
+            text-decoration: none;
+        }
+        .register-prompt a:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
 <body>
-    <header>
-        <nav>
-            <a href="index.html" class="logo">Multi Games</a>
-            <div class="nav-links">
-                <a href="index.html">Home</a>
-                <a href="memory.html">Games</a>
-                <a href="#leaderboard" class="active">Leaderboard</a>
-                <a href="profile.html">Profile</a>
+
+    <div id="loading">
+        <h3>Loading profile...</h3>
+    </div>
+
+    <div id="error-container">
+        <div class="login-container">
+            <div class="login-header">
+                <h2>Welcome to Multi Games</h2>
+                <p>Log in to access your profile and game history</p>
             </div>
-        </nav>
-    </header>
-    
-    <div class="container">
-        <div class="card">
-            <h2 class="card-title">Airtime Leaderboard</h2>
             
-            <div class="filter-controls">
-                <div class="search-box">
-                    <input type="text" id="search-input" placeholder="Search players...">
+            <form class="login-form" id="login-form">
+                <input type="email" id="login-email" placeholder="Email address" required>
+                <input type="password" id="login-password" placeholder="Password" required>
+                
+                <button type="submit" class="login-btn">Log In</button>
+                
+                <div class="login-options">
+                    <label><input type="checkbox" id="remember-me"> Remember me</label>
+                    <a href="#" id="forgot-password">Forgot password?</a>
                 </div>
-                <div class="limit-selector">
-                    <select id="limit-selector">
-                        <option value="10">Top 10</option>
-                        <option value="25" selected>Top 25</option>
-                        <option value="50">Top 50</option>
-                        <option value="100">Top 100</option>
-                    </select>
+                
+                <div class="or-divider">or</div>
+                
+                <div class="social-login">
+                    <div class="social-btn" id="google-login">
+                        <i class="fab fa-google"></i>
+                        <span>Google</span>
+                    </div>
                 </div>
-                <button id="refresh-btn" class="refresh-btn">Refresh</button>
+                
+                <div class="register-prompt">
+                    Don't have an account? <a href="#" id="register-link">Register now</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="profile-content" style="display: none;">
+        <div class="profile-header">
+            <img id="profile-picture" src="https://via.placeholder.com/100" alt="Profile Picture">
+            <div class="profile-name" id="profile-name">Loading...</div>
+            <div class="profile-email" id="profile-email">Loading...</div>
+        </div>
+
+        <div class="stats-container">
+            <div class="stat-item">
+                <div class="stat-value" id="games-played">0</div>
+                <div class="stat-label">Games Played</div>
             </div>
-            
-            <div class="tabs">
-                <div class="tab active" data-tab="all-time">All Time</div>
-                <div class="tab" data-tab="monthly">Monthly</div>
-                <div class="tab" data-tab="weekly">Weekly</div>
+            <div class="stat-item">
+                <div class="stat-value" id="wins">0</div>
+                <div class="stat-label">Wins</div>
             </div>
-            
-            <div id="all-time" class="tab-content active">
-                <div id="all-time-loading" class="loading">Loading leaderboard data...</div>
-                <div id="all-time-error" class="error-message" style="display: none;">Error loading leaderboard data.</div>
-                <table id="all-time-table" class="leaderboard-table" style="display: none;">
-                    <thead>
-                        <tr>
-                            <th class="rank">Rank</th>
-                            <th>Player</th>
-                            <th class="score">Airtime</th>
-                        </tr>
-                    </thead>
-                    <tbody id="all-time-tbody">
-                        <!-- Leaderboard data will be loaded here -->
-                    </tbody>
-                </table>
+            <div class="stat-item">
+                <div class="stat-value" id="win-rate">0</div>
+                <div class="stat-label">Win Rate %</div>
             </div>
-            
-            <div id="monthly" class="tab-content">
-                <div id="monthly-loading" class="loading">Loading monthly leaderboard data...</div>
-                <div id="monthly-error" class="error-message" style="display: none;">Error loading monthly leaderboard data.</div>
-                <table id="monthly-table" class="leaderboard-table" style="display: none;">
-                    <thead>
-                        <tr>
-                            <th class="rank">Rank</th>
-                            <th>Player</th>
-                            <th class="score">Airtime</th>
-                        </tr>
-                    </thead>
-                    <tbody id="monthly-tbody">
-                        <!-- Monthly leaderboard data will be loaded here -->
-                    </tbody>
-                </table>
+            <div class="stat-item">
+                <div class="stat-value" id="rank">-</div>
+                <div class="stat-label">Rank</div>
             </div>
-            
-            <div id="weekly" class="tab-content">
-                <div id="weekly-loading" class="loading">Loading weekly leaderboard data...</div>
-                <div id="weekly-error" class="error-message" style="display: none;">Error loading weekly leaderboard data.</div>
-                <table id="weekly-table" class="leaderboard-table" style="display: none;">
-                    <thead>
-                        <tr>
-                            <th class="rank">Rank</th>
-                            <th>Player</th>
-                            <th class="score">Airtime</th>
-                        </tr>
-                    </thead>
-                    <tbody id="weekly-tbody">
-                        <!-- Weekly leaderboard data will be loaded here -->
-                    </tbody>
-                </table>
+        </div>
+
+        <div class="tab-container">
+            <div class="tab active" data-tab="overview">Overview</div>
+            <div class="tab" data-tab="history">Game History</div>
+            <div class="tab" data-tab="achievements">Achievements</div>
+            <div class="tab" data-tab="settings">Settings</div>
+        </div>
+
+        <div class="tab-content active" id="overview">
+            <div class="content">
+                <h3>About Me</h3>
+                <p id="user-bio">Loading bio...</p>
+                
+                <h3 style="margin-top: 25px;">Player Stats</h3>
+                <div class="profile-stat-grid">
+                    <div class="profile-stat-item">
+                        <span>Time Played</span>
+                        <span id="time-played">0</span>
+                    </div>
+                    <div class="profile-stat-item">
+                        <span>Favorite Game</span>
+                        <span id="favorite-game">None</span>
+                    </div>
+                </div>
+                
+                <div class="button-container">
+                    <button class="edit-profile-btn" id="edit-profile-btn">Edit Profile</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-content" id="history">
+            <div class="content">
+                <h3>Recent Games</h3>
+                <ul id="recent-games">
+                    <li>Loading game history...</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="tab-content" id="achievements">
+            <div class="content">
+                <h3>My Achievements</h3>
+                <div id="achievements-container">
+                    <p>Loading achievements...</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-content" id="settings">
+            <div class="content">
+                <h3>Profile Settings</h3>
+                <form id="edit-profile-form">
+                    <div class="form-group">
+                        <label for="display-name">Display Name</label>
+                        <input type="text" id="display-name" placeholder="Enter your display name">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="bio">Bio</label>
+                        <textarea id="bio" placeholder="Tell us about yourself"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="profile-pic-url">Profile Picture URL</label>
+                        <input type="text" id="profile-pic-url" placeholder="Enter profile picture URL">
+                    </div>
+                    
+                    <div id="profile-update-message"></div>
+                    
+                    <div class="button-container">
+                        <button type="submit" class="edit-profile-btn">Save Changes</button>
+                    </div>
+                </form>
+                
+                <h3 style="margin-top: 30px;">Account Settings</h3>
+                <div class="button-container">
+                    <button id="change-password-btn" class="edit-profile-btn">Change Password</button>
+                    <button id="delete-account-btn" class="danger-btn">Delete Account</button>
+                    <button id="logout-btn" class="logout-btn">Log Out</button>
+                </div>
             </div>
         </div>
     </div>
-    
+
     <script type="module">
-         // Import the functions you need from the SDKs
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
-import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
-import { 
-    getDatabase, 
-    ref, 
-    query, 
-    orderByChild, 
-    limitToLast, 
-    onValue, 
-    get, 
-    runTransaction, 
-    set 
-} from "https://www.gstatic.com/firebasejs/11.4.0/firebase-database.js";
+// Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
+        import { getAuth, signOut, onAuthStateChanged, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, FacebookAuthProvider } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
+        import { getDatabase, ref, onValue, update, set } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-database.js";
 
-// Your web app's Firebase configuration
-const firebaseConfig = {
-    apiKey: "AIzaSyBw1uA-kNKOZEufWKZ9AMBxvRGHNGF1lkA",
-    authDomain: "multi-games-a2561.firebaseapp.com",
-    projectId: "multi-games-a2561",
-    storageBucket: "multi-games-a2561.appspot.com",
-    messagingSenderId: "150551898066",
-    appId: "1:150551898066:web:4e8fb185f2321ba4140a0b",
-    measurementId: "G-PB8Y87E6XV",
-    databaseURL: "https://multi-games-a2561-default-rtdb.firebaseio.com"
-};
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBw1uA-kNKOZEufWKZ9AMBxvRGHNGF1lkA",
+            authDomain: "multi-games-a2561.firebaseapp.com",
+            projectId: "multi-games-a2561",
+            storageBucket: "multi-games-a2561.appspot.com",
+            messagingSenderId: "150551898066",
+            appId: "1:150551898066:web:4e8fb185f2321ba4140a0b",
+            measurementId: "G-PB8Y87E6XV",
+            databaseURL: "https://multi-games-a2561-default-rtdb.firebaseio.com"
+        };
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const auth = getAuth();
-const database = getDatabase();
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth();
+        const database = getDatabase();
+        
+        // DOM Elements
+        const loadingElement = document.getElementById('loading');
+        const errorContainer = document.getElementById('error-container');
+        const profileContent = document.getElementById('profile-content');
+        const logoutBtn = document.getElementById('logout-btn');
+        const tabs = document.querySelectorAll('.tab');
+        const tabContents = document.querySelectorAll('.tab-content');
+        const editProfileForm = document.getElementById('edit-profile-form');
+        const profileUpdateMessage = document.getElementById('profile-update-message');
+        const changePasswordBtn = document.getElementById('change-password-btn');
+        const deleteAccountBtn = document.getElementById('delete-account-btn');
+        const editProfileBtn = document.getElementById('edit-profile-btn');
+        const loginForm = document.getElementById('login-form');
+        const googleLoginBtn = document.getElementById('google-login');
+        const facebookLoginBtn = document.getElementById('facebook-login');
+        const registerLink = document.getElementById('register-link');
+        const forgotPasswordLink = document.getElementById('forgot-password');
+        
+        // Check if user is logged in
+        onAuthStateChanged(auth, (user) => {
+            loadingElement.style.display = 'none';
+            
+            if (user) {
+                // User is signed in
+                errorContainer.style.display = 'none';
+                profileContent.style.display = 'block';
+                loadUserProfile(user);
+            } else {
+                // User is signed out
+                profileContent.style.display = 'none';
+                errorContainer.style.display = 'block';
+            }
+        });
+        
+        // Load user profile data
+        function loadUserProfile(user) {
+            const userRef = ref(database, 'users/' + user.uid);
+            
+            onValue(userRef, (snapshot) => {
+                const userData = snapshot.val() || {};
+                
+                // Update profile sidebar
+                document.getElementById('profile-name').textContent = userData.displayName || user.displayName || 'User';
+                document.getElementById('profile-email').textContent = user.email;
+                
+                if (userData.profilePicUrl) {
+                    document.getElementById('profile-picture').src = userData.profilePicUrl;
+                }
+                
+                // Update stats
+                document.getElementById('games-played').textContent = userData.gamesPlayed || 0;
+                document.getElementById('wins').textContent = userData.wins || 0;
+                document.getElementById('rank').textContent = userData.rank || '-';
+                
+                // Update overview
+                document.getElementById('user-bio').textContent = userData.bio || 'No bio provided yet.';
+                document.getElementById('time-played').textContent = userData.timePlayed || 0;
+                document.getElementById('favorite-game').textContent = userData.favoriteGame || 'None';
+                
+                const winRate = userData.gamesPlayed ? Math.round((userData.wins / userData.gamesPlayed) * 100) : 0;
+                document.getElementById('win-rate').textContent = winRate;
+                
+                // Update game history
+                const gameHistoryEl = document.getElementById('recent-games');
+                gameHistoryEl.innerHTML = '';
+                
+                if (userData.gameHistory && Array.isArray(userData.gameHistory)) {
+                    userData.gameHistory.slice(0, 10).forEach(game => {
+                        const gameItem = document.createElement('li');
+                        gameItem.className = 'game-item';
+                        
+                        const gameInfo = document.createElement('div');
+                        gameInfo.textContent = `${game.game} - ${new Date(game.timestamp).toLocaleDateString()}`;
+                        
+                        const gameResult = document.createElement('div');
+                        gameResult.className = 'game-result ' + (game.won ? 'result-win' : 'result-loss');
+                        gameResult.textContent = game.won ? 'Win' : 'Loss';
+                        
+                        gameItem.appendChild(gameInfo);
+                        gameItem.appendChild(gameResult);
+                        gameHistoryEl.appendChild(gameItem);
+                    });
+                } else {
+                    gameHistoryEl.innerHTML = '<li>No game history available.</li>';
+                }
+                
+                // Update achievements
+                const achievementsContainer = document.getElementById('achievements-container');
+                achievementsContainer.innerHTML = '';
+                
+                if (userData.achievements && Array.isArray(userData.achievements)) {
+                    userData.achievements.forEach(achievement => {
+                        const badge = document.createElement('span');
+                        badge.className = 'badge';
+                        badge.textContent = achievement;
+                        achievementsContainer.appendChild(badge);
+                    });
+                } else {
+                    achievementsContainer.innerHTML = '<p>No achievements unlocked yet.</p>';
+                }
+                
+                // Set form values
+                document.getElementById('display-name').value = userData.displayName || '';
+                document.getElementById('bio').value = userData.bio || '';
+                document.getElementById('profile-pic-url').value = userData.profilePicUrl || '';
+            });
+        }
+        
+        // Tab switching
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                // Remove active class from all tabs and contents
+                tabs.forEach(t => t.classList.remove('active'));
+                tabContents.forEach(c => c.classList.remove('active'));
+                
+                // Add active class to clicked tab and corresponding content
+                tab.classList.add('active');
+                const tabId = tab.getAttribute('data-tab');
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+        
+        // Edit profile shortcut
+        editProfileBtn.addEventListener('click', () => {
+            // Switch to settings tab
+            tabs.forEach(t => t.classList.remove('active'));
+            tabContents.forEach(c => c.classList.remove('active'));
+            
+            document.querySelector('[data-tab="settings"]').classList.add('active');
+            document.getElementById('settings').classList.add('active');
+        });
+        
+        // Update profile
+        editProfileForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const user = auth.currentUser;
+            if (!user) return;
+            
+            const displayName = document.getElementById('display-name').value;
+            const bio = document.getElementById('bio').value;
+            const profilePicUrl = document.getElementById('profile-pic-url').value;
+            
+            const updates = {};
+            if (displayName) updates.displayName = displayName;
+            if (bio) updates.bio = bio;
+            if (profilePicUrl) updates.profilePicUrl = profilePicUrl;
+            
+            update(ref(database, 'users/' + user.uid), updates)
+                .then(() => {
+                    profileUpdateMessage.textContent = 'Profile updated successfully!';
+                    profileUpdateMessage.className = 'success-message';
+                    
+                    // Clear message after 3 seconds
+                    setTimeout(() => {
+                        profileUpdateMessage.textContent = '';
+                    }, 3000);
+                })
+                .catch((error) => {
+                    profileUpdateMessage.textContent = 'Error updating profile: ' + error.message;
+                    profileUpdateMessage.className = 'error-message';
+                });
+        });
+        
+        // Change password
+        changePasswordBtn.addEventListener('click', () => {
+            // Redirect to change password page or show a modal
+            alert('Change password functionality will be implemented soon.');
+        });
+        
+        // Delete account
+        deleteAccountBtn.addEventListener('click', () => {
+            const confirmDelete = confirm('Are you sure you want to delete your account? This action cannot be undone.');
+            
+            if (confirmDelete) {
+                const user = auth.currentUser;
+                
+                if (user) {
+                    // Delete user data from the database
+                    set(ref(database, 'users/' + user.uid), null)
+                        .then(() => {
+                            // Delete user account
+                            user.delete()
+                                .then(() => {
+                                    window.location.href = 'index.html';
+                                })
+                                .catch((error) => {
+                                    alert('Error deleting account: ' + error.message);
+                                });
+                        })
+                        .catch((error) => {
+                            alert('Error deleting user data: ' + error.message);
+                        });
+                }
+            }
+        });
+        
+        // Logout
+        logoutBtn.addEventListener('click', () => {
+            signOut(auth)
+                .then(() => {
+                    window.location.href = 'index.html';
+                })
+                .catch((error) => {
+                    alert('Error signing out: ' + error.message);
+                });
+        });
+        
+        // Login form functionality
+        if (loginForm) {
+            loginForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                
+                const email = document.getElementById('login-email').value;
+                const password = document.getElementById('login-password').value;
+                const errorMessageContainer = document.createElement('div');
+                errorMessageContainer.className = 'error-message';
+                errorMessageContainer.style.marginTop = '10px';
+                
+                // Clear any existing error messages
+                const existingError = loginForm.querySelector('.error-message');
+                if (existingError) existingError.remove();
+                
+                signInWithEmailAndPassword(auth, email, password)
+                    .then((userCredential) => {
+                        // Signed in successfully
+                        errorContainer.style.display = 'none';
+                        profileContent.style.display = 'block';
+                        loadUserProfile(userCredential.user);
+                    })
+                    .catch((error) => {
+                        // Handle errors
+                        errorMessageContainer.textContent = getAuthErrorMessage(error.code);
+                        loginForm.appendChild(errorMessageContainer);
+                    });
+            });
+        }
+        
+        // Google login
+if (googleLoginBtn) {
+    googleLoginBtn.addEventListener('click', () => {
+        const provider = new GoogleAuthProvider();
+        signInWithPopup(auth, provider)
+            .then((result) => {
+                // The signed-in user info
+                const user = result.user;
+                
+                // Create user profile in database if it doesn't exist
+                createUserProfileIfNeeded(user);
+            })
+            .catch((error) => {
+                console.error("Google login error:", error);
+                alert('Error signing in with Google: ' + error.message);
+            });
+    });
+}
 
-// DOM Elements
-const tabs = document.querySelectorAll('.tab');
-const tabContents = document.querySelectorAll('.tab-content');
-const refreshBtn = document.getElementById('refresh-btn');
-const searchInput = document.getElementById('search-input');
-const limitSelector = document.getElementById('limit-selector');
+// Helper function to create user profile if it doesn't exist
+function createUserProfileIfNeeded(user) {
+    const userRef = ref(database, 'users/' + user.uid);
+    
+    onValue(userRef, (snapshot) => {
+        // If user doesn't exist in database yet
+        if (!snapshot.exists()) {
+            // Set initial user data
+            set(userRef, {
+                displayName: user.displayName || '',
+                email: user.email,
+                profilePicUrl: user.photoURL || '',
+                gamesPlayed: 0,
+                wins: 0,
+                rank: 'Beginner',
+                bio: '',
+                timePlayed: 0,
+                favoriteGame: '',
+                gameHistory: [],
+                achievements: []
+            });
+        }
+    }, { onlyOnce: true });
+}
 
-// Variables to store leaderboard data
-let allTimeData = [];
-let monthlyData = [];
-let weeklyData = [];
+// Register link
+if (registerLink) {
+    registerLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        window.location.href = 'register.html';
+    });
+}
 
-// Current limit of players to show
-let currentLimit = parseInt(limitSelector.value);
+// Forgot password link
+if (forgotPasswordLink) {
+    forgotPasswordLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        window.location.href = 'forgot-password.html';
+    });
+}
 
-// Initialize
+// Helper function to get user-friendly error messages
+function getAuthErrorMessage(errorCode) {
+    switch (errorCode) {
+        case 'auth/invalid-email':
+            return 'Invalid email address format.';
+        case 'auth/user-disabled':
+            return 'This account has been disabled.';
+        case 'auth/user-not-found':
+            return 'No account with this email exists.';
+        case 'auth/wrong-password':
+            return 'Incorrect password.';
+        case 'auth/email-already-in-use':
+            return 'An account with this email already exists.';
+        case 'auth/weak-password':
+            return 'Password should be at least 6 characters.';
+        case 'auth/operation-not-allowed':
+            return 'This login method is not enabled.';
+        case 'auth/popup-closed-by-user':
+            return 'Login popup was closed before completion.';
+        default:
+            return 'An error occurred during authentication. Please try again.';
+    }
+}
+
+// On page load, check which UI elements to show
 document.addEventListener('DOMContentLoaded', () => {
-    loadLeaderboards();
+    // Check if on login page
+    if (document.getElementById('login-form')) {
+        // Set login as default active tab if on appropriate page
+        document.querySelector('[data-tab="overview"]')?.classList.add('active');
+        document.getElementById('overview')?.classList.add('active');
+    }
+    
+    // Show loading indicator until auth state is determined
+    if (loadingElement) {
+        loadingElement.style.display = 'block';
+    }
 });
-
-// Tab switching
-tabs.forEach(tab => {
-    tab.addEventListener('click', () => {
-        // Remove active class from all tabs and contents
-        tabs.forEach(t => t.classList.remove('active'));
-        tabContents.forEach(c => c.classList.remove('active'));
-        
-        // Add active class to clicked tab and corresponding content
-        tab.classList.add('active');
-        const tabId = tab.getAttribute('data-tab');
-        document.getElementById(tabId).classList.add('active');
-    });
-});
-
-// Refresh button
-refreshBtn.addEventListener('click', () => {
-    loadLeaderboards();
-});
-
-// Search functionality
-searchInput.addEventListener('input', () => {
-    filterLeaderboards();
-});
-
-// Limit change
-limitSelector.addEventListener('change', () => {
-    currentLimit = parseInt(limitSelector.value);
-    filterLeaderboards();
-});
-
-// Load leaderboards
-function loadLeaderboards() {
-    loadAllTimeLeaderboard();
-    loadMonthlyLeaderboard();
-    loadWeeklyLeaderboard();
-}
-
-// Load all-time leaderboard
-function loadAllTimeLeaderboard() {
-    const allTimeLoading = document.getElementById('all-time-loading');
-    const allTimeError = document.getElementById('all-time-error');
-    const allTimeTable = document.getElementById('all-time-table');
-    
-    allTimeLoading.style.display = 'block';
-    allTimeError.style.display = 'none';
-    allTimeTable.style.display = 'none';
-    
-    const usersRef = ref(database, 'users');
-    
-    // Query users by Airtime amount in descending order
-    const leaderboardQuery = query(usersRef, orderByChild('airtime'));
-    
-    onValue(leaderboardQuery, (snapshot) => {
-        allTimeLoading.style.display = 'none';
-        
-        if (snapshot.exists()) {
-            // Get all users and sort by Airtime (high to low)
-            const users = [];
-            snapshot.forEach((userSnapshot) => {
-                const userData = userSnapshot.val();
-                userData.uid = userSnapshot.key;
-                
-                // Only include users with Airtime amount
-                if (userData.airtime !== undefined) {
-                    users.push(userData);
-                }
-            });
-            
-            // Sort users by Airtime (high to low)
-            users.sort((a, b) => (b.airtime || 0) - (a.airtime || 0));
-            
-            // Store data for filtering
-            allTimeData = users;
-            
-            // Display the leaderboard
-            displayLeaderboard('all-time', users.slice(0, currentLimit));
-            allTimeTable.style.display = 'table';
-        } else {
-            allTimeError.textContent = 'No leaderboard data available.';
-            allTimeError.style.display = 'block';
-        }
-    }, (error) => {
-        console.error('Error loading leaderboard:', error);
-        allTimeLoading.style.display = 'none';
-        allTimeError.textContent = 'Error loading leaderboard: ' + error.message;
-        allTimeError.style.display = 'block';
-    });
-}
-
-// Load monthly leaderboard
-function loadMonthlyLeaderboard() {
-    const monthlyLoading = document.getElementById('monthly-loading');
-    const monthlyError = document.getElementById('monthly-error');
-    const monthlyTable = document.getElementById('monthly-table');
-    
-    monthlyLoading.style.display = 'block';
-    monthlyError.style.display = 'none';
-    monthlyTable.style.display = 'none';
-    
-    // Get current month data
-    const now = new Date();
-    const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).getTime();
-    
-    const usersRef = ref(database, 'users');
-    
-    onValue(usersRef, (snapshot) => {
-        monthlyLoading.style.display = 'none';
-        
-        if (snapshot.exists()) {
-            // Get all users and filter for monthly data
-            const users = [];
-            snapshot.forEach((userSnapshot) => {
-                const userData = userSnapshot.val();
-                userData.uid = userSnapshot.key;
-                
-                // Only include users with monthly Airtime amount
-                if (userData.monthlyAirtime !== undefined) {
-                    users.push(userData);
-                } else if (userData.airtimeHistory) {
-                    // Calculate monthly Airtime from history if available
-                    let monthlyAirtime = 0;
-                    
-                    for (const timestamp in userData.airtimeHistory) {
-                        if (parseInt(timestamp) >= monthStart) {
-                            monthlyAirtime += userData.airtimeHistory[timestamp].amount || 0;
-                        }
-                    }
-                    
-                    if (monthlyAirtime > 0) {
-                        userData.monthlyAirtime = monthlyAirtime;
-                        users.push(userData);
-                    }
-                }
-            });
-            
-            // Sort users by monthly Airtime (high to low)
-            users.sort((a, b) => (b.monthlyAirtime || 0) - (a.monthlyAirtime || 0));
-            
-            // Store data for filtering
-            monthlyData = users;
-            
-            // Display the monthly leaderboard
-            displayMonthlyLeaderboard('monthly', users.slice(0, currentLimit));
-            monthlyTable.style.display = 'table';
-        } else {
-            monthlyError.textContent = 'No monthly leaderboard data available.';
-            monthlyError.style.display = 'block';
-        }
-    }, (error) => {
-        console.error('Error loading monthly leaderboard:', error);
-        monthlyLoading.style.display = 'none';
-        monthlyError.textContent = 'Error loading monthly leaderboard: ' + error.message;
-        monthlyError.style.display = 'block';
-    });
-}
-
-// Load weekly leaderboard
-function loadWeeklyLeaderboard() {
-    const weeklyLoading = document.getElementById('weekly-loading');
-    const weeklyError = document.getElementById('weekly-error');
-    const weeklyTable = document.getElementById('weekly-table');
-    
-    weeklyLoading.style.display = 'block';
-    weeklyError.style.display = 'none';
-    weeklyTable.style.display = 'none';
-    
-    // Get current week data
-    const now = new Date();
-    const day = now.getDay() || 7; // Get day of week (0-6), convert Sunday from 0 to 7
-    const weekStart = new Date(now.getFullYear(), now.getMonth(), now.getDate() - day + 1).getTime(); // Monday
-    
-    const usersRef = ref(database, 'users');
-    
-    onValue(usersRef, (snapshot) => {
-        weeklyLoading.style.display = 'none';
-        
-        if (snapshot.exists()) {
-            // Get all users and filter for weekly data
-            const users = [];
-            snapshot.forEach((userSnapshot) => {
-                const userData = userSnapshot.val();
-                userData.uid = userSnapshot.key;
-                
-                // Only include users with weekly Airtime amount
-                if (userData.weeklyAirtime !== undefined) {
-                    users.push(userData);
-                } else if (userData.airtimeHistory) {
-                    // Calculate weekly Airtime from history if available
-                    let weeklyAirtime = 0;
-                    
-                    for (const timestamp in userData.airtimeHistory) {
-                        if (parseInt(timestamp) >= weekStart) {
-                            weeklyAirtime += userData.airtimeHistory[timestamp].amount || 0;
-                        }
-                    }
-                    
-                    if (weeklyAirtime > 0) {
-                        userData.weeklyAirtime = weeklyAirtime;
-                        users.push(userData);
-                    }
-                }
-            });
-            
-            // Sort users by weekly Airtime (high to low)
-            users.sort((a, b) => (b.weeklyAirtime || 0) - (a.weeklyAirtime || 0));
-            
-            // Store data for filtering
-            weeklyData = users;
-            
-            // Display the weekly leaderboard
-            displayWeeklyLeaderboard('weekly', users.slice(0, currentLimit));
-            weeklyTable.style.display = 'table';
-        } else {
-            weeklyError.textContent = 'No weekly leaderboard data available.';
-            weeklyError.style.display = 'block';
-        }
-    }, (error) => {
-        console.error('Error loading weekly leaderboard:', error);
-        weeklyLoading.style.display = 'none';
-        weeklyError.textContent = 'Error loading weekly leaderboard: ' + error.message;
-        weeklyError.style.display = 'block';
-    });
-}
-
-// Display leaderboard
-function displayLeaderboard(elementId, users) {
-    const tbody = document.getElementById(`${elementId}-tbody`);
-    tbody.innerHTML = '';
-    
-    if (users.length === 0) {
-        const noDataRow = document.createElement('tr');
-        noDataRow.innerHTML = `
-            <td colspan="3" style="text-align: center;">No data available</td>
-        `;
-        tbody.appendChild(noDataRow);
-        return;
-    }
-    
-    users.forEach((user, index) => {
-        const rank = index + 1;
-        const row = document.createElement('tr');
-        
-        // Add class for top 3 ranks
-        let rankClass = '';
-        if (rank === 1) rankClass = 'rank-1';
-        else if (rank === 2) rankClass = 'rank-2';
-        else if (rank === 3) rankClass = 'rank-3';
-        
-        // Trophy icons for top 3
-        let trophyIcon = '';
-        if (rank === 1) trophyIcon = '🏆';
-        else if (rank === 2) trophyIcon = '🥈';
-        else if (rank === 3) trophyIcon = '🥉';
-        
-        // Format the Airtime amount
-        const airtime = user.airtime || 0;
-        let formattedAirtime = airtime.toLocaleString();
-        
-        // User profile picture
-        const profilePic = user.profilePicUrl || 'https://via.placeholder.com/40';
-        
-        row.innerHTML = `
-            <td class="rank ${rankClass}">${trophyIcon} ${rank}</td>
-            <td class="player">
-                <img src="${profilePic}" alt="Avatar" class="player-avatar">
-                <span class="player-name">${user.displayName || 'User'}</span>
-            </td>
-            <td class="score">${formattedAirtime}</td>
-        `;
-        
-        tbody.appendChild(row);
-    });
-}
-
-// Display monthly leaderboard
-function displayMonthlyLeaderboard(elementId, users) {
-    const tbody = document.getElementById(`${elementId}-tbody`);
-    tbody.innerHTML = '';
-    
-    if (users.length === 0) {
-        const noDataRow = document.createElement('tr');
-        noDataRow.innerHTML = `
-            <td colspan="3" style="text-align: center;">No data available</td>
-        `;
-        tbody.appendChild(noDataRow);
-        return;
-    }
-    
-    users.forEach((user, index) => {
-        const rank = index + 1;
-        const row = document.createElement('tr');
-        
-        // Add class for top 3 ranks
-        let rankClass = '';
-        if (rank === 1) rankClass = 'rank-1';
-        else if (rank === 2) rankClass = 'rank-2';
-        else if (rank === 3) rankClass = 'rank-3';
-        
-        // Trophy icons for top 3
-        let trophyIcon = '';
-        if (rank === 1) trophyIcon = '🏆';
-        else if (rank === 2) trophyIcon = '🥈';
-        else if (rank === 3) trophyIcon = '🥉';
-        
-        // Format the Airtime amount
-        const airtime = user.monthlyAirtime || 0;
-        let formattedAirtime = airtime.toLocaleString();
-        
-        // User profile picture
-        const profilePic = user.profilePicUrl || 'https://via.placeholder.com/40';
-        
-        row.innerHTML = `
-            <td class="rank ${rankClass}">${trophyIcon} ${rank}</td>
-            <td class="player">
-                <img src="${profilePic}" alt="Avatar" class="player-avatar">
-                <span class="player-name">${user.displayName || 'User'}</span>
-            </td>
-            <td class="score">${formattedAirtime}</td>
-        `;
-        
-        tbody.appendChild(row);
-    });
-}
-
-// Display weekly leaderboard
-function displayWeeklyLeaderboard(elementId, users) {
-    const tbody = document.getElementById(`${elementId}-tbody`);
-    tbody.innerHTML = '';
-    
-    if (users.length === 0) {
-        const noDataRow = document.createElement('tr');
-        noDataRow.innerHTML = `
-            <td colspan="3" style="text-align: center;">No data available</td>
-        `;
-        tbody.appendChild(noDataRow);
-        return;
-    }
-    
-    users.forEach((user, index) => {
-        const rank = index + 1;
-        const row = document.createElement('tr');
-        
-        // Add class for top 3 ranks
-        let rankClass = '';
-        if (rank === 1) rankClass = 'rank-1';
-        else if (rank === 2) rankClass = 'rank-2';
-        else if (rank === 3) rankClass = 'rank-3';
-        
-        // Trophy icons for top 3
-        let trophyIcon = '';
-        if (rank === 1) trophyIcon = '🏆';
-        else if (rank === 2) trophyIcon = '🥈';
-        else if (rank === 3) trophyIcon = '🥉';
-        
-        // Format the Airtime amount
-        const airtime = user.weeklyAirtime || 0;
-        let formattedAirtime = airtime.toLocaleString();
-        
-        // User profile picture
-        const profilePic = user.profilePicUrl || 'https://via.placeholder.com/40';
-        
-        row.innerHTML = `
-            <td class="rank ${rankClass}">${trophyIcon} ${rank}</td>
-            <td class="player">
-                <img src="${profilePic}" alt="Avatar" class="player-avatar">
-                <span class="player-name">${user.displayName || 'User'}</span>
-            </td>
-            <td class="score">${formattedAirtime}</td>
-        `;
-        
-        tbody.appendChild(row);
-    });
-}
-
-// Filter leaderboards
-function filterLeaderboards() {
-    const searchTerm = searchInput.value.toLowerCase();
-    
-    // Filter all-time data
-    const filteredAllTime = allTimeData.filter(user => 
-        (user.displayName && user.displayName.toLowerCase().includes(searchTerm)) || 
-        (user.email && user.email.toLowerCase().includes(searchTerm))
-    );
-    
-    // Filter monthly data
-    const filteredMonthly = monthlyData.filter(user => 
-        (user.displayName && user.displayName.toLowerCase().includes(searchTerm)) || 
-        (user.email && user.email.toLowerCase().includes(searchTerm))
-    );
-    
-    // Filter weekly data
-    const filteredWeekly = weeklyData.filter(user => 
-        (user.displayName && user.displayName.toLowerCase().includes(searchTerm)) || 
-        (user.email && user.email.toLowerCase().includes(searchTerm))
-    );
-    
-    // Display filtered data
-    displayLeaderboard('all-time', filteredAllTime.slice(0, currentLimit));
-    displayMonthlyLeaderboard('monthly', filteredMonthly.slice(0, currentLimit));
-    displayWeeklyLeaderboard('weekly', filteredWeekly.slice(0, currentLimit));
-}
-
-// Functions from the first code snippet for airtime manipulation
-function addAirtime(amount) {
-    if (!auth.currentUser) return;
-
-    const user = auth.currentUser;
-    const userRef = ref(database, `users/${user.uid}/airtime`);
-
-    runTransaction(userRef, (currentAirtime) => {
-        return (currentAirtime || 0) + amount;
-    }).then(() => {
-        console.log("Airtime updated!");
-        
-        // Also update history
-        const now = new Date().getTime();
-        const historyRef = ref(database, `users/${user.uid}/airtimeHistory/${now}`);
-        set(historyRef, {
-            amount: amount,
-            timestamp: now
-        });
-        
-        // Update weekly and monthly airtime
-        updatePeriodAirtime(user.uid, amount);
-        
-    }).catch((error) => {
-        console.error("Transaction failed:", error);
-    });
-}
-
-// Function to update weekly and monthly airtime
-function updatePeriodAirtime(userId, amount) {
-    const weeklyRef = ref(database, `users/${userId}/weeklyAirtime`);
-    const monthlyRef = ref(database, `users/${userId}/monthlyAirtime`);
-    
-    // Update weekly airtime
-    runTransaction(weeklyRef, (currentWeekly) => {
-        return (currentWeekly || 0) + amount;
-    });
-    
-    // Update monthly airtime
-    runTransaction(monthlyRef, (currentMonthly) => {
-        return (currentMonthly || 0) + amount;
-    });
-}
-
-// Function to submit score
-function submitScore(airtime) {
-    if (!auth.currentUser) {
-        console.error("User is not authenticated.");
-        return;
-    }
-
-    const user = auth.currentUser;
-    const userRef = ref(database, `users/${user.uid}`);
-
-    // Get current user data
-    get(userRef).then((snapshot) => {
-        let userData = {};
-        
-        if (snapshot.exists()) {
-            userData = snapshot.val();
-        }
-        
-        // Update or set the airtime
-        userData.airtime = airtime;
-        userData.displayName = user.displayName || "Anonymous";
-        
-        // If user has a profile picture, use it
-        if (user.photoURL) {
-            userData.profilePicUrl = user.photoURL;
-        }
-        
-        // Update the user record
-        set(userRef, userData).then(() => {
-            console.log("Score updated successfully!");
-        }).catch((error) => {
-            console.error("Error updating score:", error);
-        });
-    }).catch((error) => {
-        console.error("Error getting user data:", error);
-    });
-}
-
-// Reset weekly and monthly airtime at appropriate intervals
-function resetPeriodicalAirtime() {
-    const now = new Date();
-    
-    // Reset weekly airtime on Monday
-    if (now.getDay() === 1) { // Monday is 1
-        resetWeeklyAirtime();
-    }
-    
-    // Reset monthly airtime on the first day of the month
-    if (now.getDate() === 1) {
-        resetMonthlyAirtime();
-    }
-}
-
-// Reset weekly airtime for all users
-function resetWeeklyAirtime() {
-    const usersRef = ref(database, 'users');
-    
-    onValue(usersRef, (snapshot) => {
-        if (snapshot.exists()) {
-            snapshot.forEach((userSnapshot) => {
-                const userRef = ref(database, `users/${userSnapshot.key}/weeklyAirtime`);
-                set(userRef, 0);
-            });
-        }
-    }, { onlyOnce: true });
-}
-
-// Reset monthly airtime for all users
-function resetMonthlyAirtime() {
-    const usersRef = ref(database, 'users');
-    
-    onValue(usersRef, (snapshot) => {
-        if (snapshot.exists()) {
-            snapshot.forEach((userSnapshot) => {
-                const userRef = ref(database, `users/${userSnapshot.key}/monthlyAirtime`);
-                  set(userRef, 0);
-            });
-        }
-    }, { onlyOnce: true });
-}
-
-// Check for periodic resets
-resetPeriodicalAirtime();
-
-// Example usage
-// addAirtime(50);  // Adds 50 to the user's existing score
-// submitScore(1000);  // Updates user's score to 1000
-    </script>
+</script>
 </body>
 </html>

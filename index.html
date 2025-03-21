@@ -1,679 +1,1037 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login / Register</title>
-     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5345992350931230"
-     crossorigin="anonymous"></script>
+    <title>Multi Games</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', 'Arial', sans-serif;
+        }
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f0f7f0;
-            margin: 20;
-            padding: 12;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
+            background-color: #f8f9fa;
+            color: #333;
+            overflow-x: hidden;
+            padding-bottom: 70px; /* Space for bottom nav */
         }
         .container {
-            background-color: white;
-            border-radius: 30px;
-            box-shadow: 0 9px 15px rgba(0, 1, 0.8, 0.7);
-            width: 100%;
-            max-width: 260px;
-            padding: 25px;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
         }
-        h2 {
-            text-align: center;
-            color: #2e7d32;
-            margin-bottom: 20px;
+        
+        /* Header Styles */
+        header {
+            background-color: #ffffff;
+            padding: 15px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
-        .form-group {
-            margin-bottom: 15px;
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
         }
-        label {
-            display: block;
-            margin-bottom: 5px;
-            color: #4c8c4a;
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #007BFF;
+            text-decoration: none;
         }
-        input {
-            width: 100%;
-            padding: 10px;
-            box-sizing: border-box;
-            border: 3px solid #c8e6c9;
+        .search-bar {
+            display: flex;
+            align-items: center;
+            background: #f1f3f4;
             border-radius: 20px;
-            font-size: 16px;
+            padding: 8px 15px;
+            width: 50%;
+            max-width: 400px;
         }
-        input:focus {
-            outline: none;
-            border-color: #4caf50;
-            box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
-        }
-        button {
-            background-color: #4caf50;
-            color: white;
+        .search-bar input {
             border: none;
-            padding: 12px 0;
+            background: transparent;
             width: 100%;
-            border-radius: 30px;
-            cursor: pointer;
-            font-size: 16px;
-            margin-top: 10px;
-            transition: background-color 0.2s;
+            padding: 5px;
+            outline: none;
         }
-        button:hover {
-            background-color: #388e3c;
+        .search-bar i {
+            color: #555;
+            margin-right: 10px;
         }
-        .google-button {
-            background-color: white;
-            color: #757575;
-            border: 3px solid #c8e6c9;
+        
+        /* Notification Icon Styles */
+        .header-icons {
             display: flex;
             align-items: center;
-            justify-content: center;
-            gap: 10px;
+            gap: 20px;
         }
-        .google-button:hover {
-            background-color: #f5f5f5;
-        }
-        .google-icon {
-            width: 18px;
-            height: 18px;
-        }
-        .toggle {
-            text-align: center;
-            margin-top: 15px;
-            color: #666;
-        }
-        .toggle a {
-            color: #4caf50;
-            text-decoration: none;
+        .notification-icon {
+            position: relative;
             cursor: pointer;
-            font-weight: bold;
         }
-        .toggle a:hover {
-            text-decoration: underline;
+        .notification-icon i {
+            font-size: 22px;
+            color: #555;
         }
-        .error {
-            color: #f44336;
-            text-align: center;
-            margin-top: 10px;
-        }
-        .success {
-            color: #4caf50;
-            text-align: center;
-            margin-top: 10px;
-            font-weight: bold;
-        }
-        #loginForm, #registerForm, #forgotPasswordForm, #loadingScreen {
-            display: none;
-        }
-        .active {
-            display: block !important;
-        }
-        .divider {
-            display: flex;
-            align-items: center;
-            text-align: center;
-            margin: 20px 0;
-        }
-        .divider::before, .divider::after {
-            content: '';
-            flex: 1;
-            border-bottom: 1px solid #c8e6c9;
-        }
-        .divider span {
-            padding: 0 10px;
-            color: #4c8c4a;
-        }
-        .loader {
-            border: 5px solid #e8f5e9;
-            border-top: 5px solid #4caf50;
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            width: 12px;
+            height: 12px;
+            background-color: #FF5722;
             border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            animation: spin 1s linear infinite;
-            margin: 50px auto;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        #loadingScreen {
-            text-align: center;
-        }
-        #loadingMessage {
-            margin-top: 20px;
-            color: #4c8c4a;
-        }
-        .forgot-password {
-            text-align: right;
-            margin-top: 5px;
-        }
-        .forgot-password a {
-            color: #4caf50;
-            text-decoration: none;
-            font-size: 14px;
-        }
-        .forgot-password a:hover {
-            text-decoration: underline;
-        }
-        .back-button {
-            display: inline-block;
-            margin-top: 15px;
-            color: #666;
-            text-decoration: none;
-            font-size: 14px;
-        }
-        .back-button:hover {
-            text-decoration: underline;
-        }
-        .alert {
-            padding: 15px;
-            margin-top: 20px;
-            border-radius: 30px;
             display: none;
+        }
+        .notification-badge.active {
+            display: block;
+        }
+        
+        /* Navigation Bar */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: #ffffff;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 12px 0;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+        }
+        .bottom-nav a {
+            text-decoration: none;
+            color: #555;
+            font-size: 14px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: color 0.3s;
+        }
+        .bottom-nav a.active {
+            color: #007BFF;
+        }
+        .bottom-nav i {
+            font-size: 22px;
+            margin-bottom: 4px;
+            width: 40px;
+            height: 40px;
+            background-color: #f1f3f4;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: background-color 0.3s;
+        }
+        .bottom-nav a.active i {
+            background-color: #e6f2ff;
+        }
+        
+        /* Featured Games Carousel */
+        .featured {
+            width: 100%;
+            overflow: hidden;
+            position: relative;
+            margin: 20px 0;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        .featured img {
+            width: 100%;
+            border-radius: 15px;
+            display: block;
+        }
+        .featured-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: linear-gradient(transparent, rgba(0,0,0,0.7));
+            padding: 20px;
+            color: white;
+            border-radius: 0 0 15px 15px;
+        }
+        .featured-overlay h3 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        .featured-btn {
+            display: inline-block;
+            background: #007BFF;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        
+        /* Section Headers */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 30px 0 15px 0;
+        }
+        .section-header h2 {
+            font-size: 22px;
+            color: #333;
+        }
+        .view-all {
+            color: #007BFF;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        
+        /* Game Grid - Updated for square boxes */
+        .game-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+        }
+        .game-card {
+            background: #fff;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+            display: flex;
+            flex-direction: column;
+        }
+        .game-card:hover {
+            transform: translateY(-5px);
+        }
+        .game-card img {
+            width: 100%;
+            aspect-ratio: 1/1;
+            object-fit: cover;
+        }
+        .game-info {
+            padding: 12px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .game-info p {
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        .game-meta {
+            display: flex;
+            align-items: center;
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+        .game-meta i {
+            margin-right: 5px;
+            color: #FFC107;
+        }
+        .play-btn {
+            display: block;
+            background: #007BFF;
+            color: white;
+            padding: 8px 0;
+            border-radius: 20px;
+            text-decoration: none;
+            font-size: 14px;
             text-align: center;
             font-weight: 500;
+            transition: background 0.3s;
+            margin-top: auto;
         }
-        .alert-success {
-            background-color: #d4edda;
-            color: #155724;
-            border: 3px solid #c3e6cb;
+        .play-btn:hover {
+            background: #0056b3;
         }
-        .alert-info {
-            background-color: #d1ecf1;
-            color: #0c5460;
-            border: 3px solid #bee5eb;
+        
+        /* Categories Section */
+        .categories {
+            display: flex;
+            gap: 15px;
+            overflow-x: auto;
+            padding: 10px 0;
+            margin: 20px 0;
+            scrollbar-width: none; /* Firefox */
+        }
+        .categories::-webkit-scrollbar {
+            display: none; /* Chrome, Safari, Opera */
+        }
+        .category {
+            min-width: 100px;
+            text-align: center;
+            background: #fff;
+            border-radius: 10px;
+            padding: 15px 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .category i {
+            font-size: 28px;
+            margin-bottom: 10px;
+            color: #007BFF;
+        }
+        .category p {
+            font-size: 14px;
+        }
+        
+        /* New Game Ribbon */
+        .new-ribbon {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #FF5722;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        /* UPDATED: Loader Styles with Circle */
+        .loader-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.3s;
+        }
+        
+        /* M Loader styles with circle */
+        .m-loader {
+            font-family: 'Arial', sans-serif;
+            font-size: 60px; /* Reduced size */
+            font-weight: bold;
+            color: #007BFF;
+            position: relative;
+            animation: m-hover 2s infinite ease-in-out;
+            width: 100px;
+            height: 100px;
+            background-color: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 4px 20px rgba(0, 123, 255, 0.3);
+        }
+        
+        @keyframes m-hover {
+            0% {
+                transform: translateY(0) scale(1);
+                box-shadow: 0 4px 20px rgba(0, 123, 255, 0.3);
+            }
+            50% {
+                transform: translateY(-15px) scale(1.05);
+                box-shadow: 0 15px 30px rgba(0, 123, 255, 0.4);
+            }
+            100% {
+                transform: translateY(0) scale(1);
+                box-shadow: 0 4px 20px rgba(0, 123, 255, 0.3);
+            }
+        }
+        
+        /* Updated: Page Content Container for full iframes */
+        .page-content {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            display: none; /* Hidden by default */
+            z-index: 99;
+        }
+        
+        .page-iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: white;
+        }
+        
+        /* Show active content */
+        .page-content.active {
+            display: block;
+        }
+        
+        /* Hide main content when iframe is active */
+        .main-content {
+            transition: opacity 0.3s;
+        }
+        
+        .main-content.hidden {
+            display: none;
+        }
+        
+        /* Hide header in profile view or when showing iframes */
+        .page-content.active ~ header {
+            display: none;
+        }
+
+        /* NEW: Custom header for profile view */
+        .profile-header {
+            display: none;
+            background-color: #ffffff;
+            padding: 15px 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 101;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .profile-header.visible {
+            display: flex;
+        }
+        
+        .profile-header .title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .back-button {
+            background: none;
+            border: none;
+            font-size: 20px;
+            color: #555;
+            cursor: pointer;
+        }
+        
+        /* NEW: Notification Popup */
+        .notification-popup {
+            position: fixed;
+            top: 70px;
+            right: 20px;
+            width: 320px;
+            max-height: 400px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            z-index: 101;
+            overflow-y: auto;
+            display: none;
+        }
+        
+        .notification-popup.visible {
+            display: block;
+        }
+        
+        .notification-header {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .notification-header h3 {
+            font-size: 16px;
+            margin: 0;
+        }
+        
+        .notification-header .clear-all {
+            color: #007BFF;
+            font-size: 14px;
+            cursor: pointer;
+            background: none;
+            border: none;
+        }
+        
+        .notification-list {
+            padding: 0;
+            margin: 0;
+            list-style: none;
+        }
+        
+        .notification-item {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: background-color 0.3s;
+        }
+        
+        .notification-item:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .notification-item.unread {
+            background-color: #f0f7ff;
+        }
+        
+        .notification-item .notification-icon {
+            width: 40px;
+            height: 40px;
+            background-color: #e6f2ff;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .notification-item .notification-icon i {
+            color: #007BFF;
+            font-size: 18px;
+        }
+        
+        .notification-item .notification-content {
+            flex-grow: 1;
+        }
+        
+        .notification-item .notification-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 3px;
+        }
+        
+        .notification-item .notification-meta {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .notification-item .mark-read {
+            color: #007BFF;
+            font-size: 20px;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .empty-notification {
+            padding: 30px 15px;
+            text-align: center;
+            color: #666;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .search-bar {
+                width: 60%;
+            }
+            .featured-overlay h3 {
+                font-size: 20px;
+            }
+            .game-grid {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+                gap: 15px;
+            }
+            .notification-popup {
+                width: calc(100% - 40px);
+                top: 60px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .header-container {
+                flex-direction: row;
+                justify-content: space-between;
+                gap: 10px;
+            }
+            .search-bar {
+                width: 60%;
+                max-width: none;
+            }
+            .game-grid {
+                grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+                gap: 12px;
+            }
+            .section-header h2 {
+                font-size: 18px;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div id="alertMessage" class="alert"></div>
-        
-        <div id="loginForm">
-            <h2>Login to Multi Games</h2>
-            <div class="form-group">
-                <label for="loginEmail">Email</label>
-                <input type="email" id="loginEmail" placeholder="Enter your email" required>
+    <!-- UPDATED: Loader with Circle -->
+    <div class="loader-container" id="loader">
+        <div class="m-loader">M</div>
+    </div>
+
+    <!-- Header with Search and Notification -->
+    <header id="main-header">
+        <div class="header-container">
+            <a href="#" class="logo" id="home-link">Multi Games</a>
+            <div class="search-bar">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Search games...">
             </div>
-            <div class="form-group">
-                <label for="loginPassword">Password</label>
-                <input type="password" id="loginPassword" placeholder="Enter your password" required>
-                <div class="forgot-password">
-                    <a id="showForgotPassword">Forgot Password?</a>
+            <div class="header-icons">
+                <div class="notification-icon" id="notification-icon">
+                    <i class="fas fa-bell"></i>
+                    <div class="notification-badge" id="notification-badge"></div>
                 </div>
             </div>
-            <button id="loginButton">Login</button>
-            <div class="success" id="loginSuccess"></div>
-            <div class="error" id="loginError"></div>
-            
-            <div class="divider"><span>OR</span></div>
-            
-            <button id="googleLoginButton" class="google-button">
-                <svg class="google-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
-                    <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
-                    <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
-                    <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
-                    <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
-                    <path fill="none" d="M0 0h48v48H0z"/>
-                </svg>
-                Continue with Google
-            </button>
-            
-            <div class="toggle">
-                Don't have an account? <a id="showRegister">Register</a>
+        </div>
+    </header>
+
+    <!-- NEW: Profile Header (Only visible in profile view) -->
+    <div class="profile-header" id="profile-header">
+        <button class="back-button" id="profile-back-btn">
+            <i class="fas fa-arrow-left"></i>
+        </button>
+        <div class="title">My Profile</div>
+        <div></div><!-- Empty div for flex spacing -->
+    </div>
+
+    <!-- NEW: Notification Popup -->
+    <div class="notification-popup" id="notification-popup">
+        <div class="notification-header">
+            <h3>Notifications</h3>
+            <button class="clear-all" id="clear-all-notifications">Clear All</button>
+        </div>
+        <ul class="notification-list" id="notification-list">
+            <!-- Notifications will be dynamically added here -->
+            <li class="empty-notification" id="empty-notification">No notifications</li>
+        </ul>
+    </div>
+
+    <!-- Main Content Container -->
+    <div class="container main-content" id="main-content">
+        <!-- Featured Game -->
+        <div class="featured">
+            <img src="https://i.postimg.cc/zfv3jnNr/truth.jpg" alt="Featured Game">
+            <div class="featured-overlay">
+                <h3>Truth or Dare</h3>
+                <p>Challenge your friends with the ultimate party game!</p>
+                <a href="truth.html" class="featured-btn">Play Now</a>
+            </div>
+        </div>
+        
+        <!-- Categories Horizontal Scroll -->
+        <div class="section-header">
+            <h2>Categories</h2>
+            <a href="#" class="view-all" id="view-all-categories">View All</a>
+        </div>
+        <div class="categories">
+            <div class="category">
+                <i class="fas fa-gamepad"></i>
+                <p>Arcade</p>
+            </div>
+            <div class="category">
+                <i class="fas fa-brain"></i>
+                <p>Puzzle</p>
+            </div>
+            <div class="category">
+                <i class="fas fa-running"></i>
+                <p>Action</p>
+            </div>
+            <div class="category">
+                <i class="fas fa-users"></i>
+                <p>Multiplayer</p>
+            </div>
+            <div class="category">
+                <i class="fas fa-dice"></i>
+                <p>Card Games</p>
+            </div>
+            <div class="category">
+                <i class="fas fa-trophy"></i>
+                <p>Sports</p>
             </div>
         </div>
 
-        <div id="registerForm">
-            <h2>Register</h2>
-            <div class="form-group">
-                <label for="registerFullName">Full Name</label>
-                <input type="text" id="registerFullName" placeholder="Enter your full name" required>
+        <!-- Popular Games -->
+        <div class="section-header">
+            <h2>Popular Games</h2>
+            <a href="popular.html" class="view-all">View All</a>
+        </div>
+        <div class="game-grid">
+            <div class="game-card">
+                <div style="position: relative;">
+                    <img src="https://i.postimg.cc/hvXFjbH2/memory.jpg" alt="Memory Card">
+                    <div class="new-ribbon">NEW</div>
+                </div>
+                <div class="game-info">
+                    <p>Memory Card</p>
+                    <div class="game-meta">
+                        <i class="fas fa-star"></i> 4.8
+                        <span style="margin-left: 10px;"><i class="fas fa-user"></i> 10k+</span>
+                    </div>
+                    <a href="memory.html" class="play-btn game-link">Play Now</a>
+                </div>
             </div>
-            <div class="form-group">
-                <label for="registerEmail">Email</label>
-                <input type="email" id="registerEmail" placeholder="Enter your email" required>
+            <div class="game-card">
+                <img src="https://i.postimg.cc/tJtT7bVC/IMG-20250226-WA0077.jpg" alt="Whack Mole">
+                <div class="game-info">
+                    <p>Whack Mole</p>
+                    <div class="game-meta">
+                        <i class="fas fa-star"></i> 4.5
+                        <span style="margin-left: 10px;"><i class="fas fa-user"></i> 8k+</span>
+                    </div>
+                    <a href="whack.html" class="play-btn game-link">Play Now</a>
+                </div>
             </div>
-            <div class="form-group">
-                <label for="registerPassword">Password</label>
-                <input type="password" id="registerPassword" placeholder="Enter your password" required>
+            <div class="game-card">
+                <img src="https://i.postimg.cc/CL3qTdQn/images-12.jpg" alt="Tic Tac Toe">
+       <div class="game-info">
+                    <p>Tic Tac Toe</p>
+                    <div class="game-meta">
+                        <i class="fas fa-star"></i> 4.7
+                        <span style="margin-left: 10px;"><i class="fas fa-user"></i> 15k+</span>
+                    </div>
+                    <a href="tic-tac-toe.html" class="play-btn game-link">Play Now</a>
+                </div>
             </div>
-            <div class="form-group">
-                <label for="confirmPassword">Confirm Password</label>
-                <input type="password" id="confirmPassword" placeholder="Confirm your password" required>
-            </div>
-            <button id="registerButton">Register</button>
-            <div class="error" id="registerError"></div>
-            <div class="success" id="registerSuccess"></div>
-            
-            <div class="divider"><span>OR</span></div>
-            
-            <button id="googleRegisterButton" class="google-button">
-                <svg class="google-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
-                    <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
-                    <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
-                    <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
-                    <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
-                    <path fill="none" d="M0 0h48v48H0z"/>
-                </svg>
-                Sign up with Google
-            </button>
-            
-            <div class="toggle">
-                Already have an account? <a id="showLogin">Login</a>
+            <div class="game-card">
+                <img src="https://i.postimg.cc/zfv3jnNr/truth.jpg" alt="Truth or Dare">
+                <div class="game-info">
+                    <p>Truth or Dare</p>
+                    <div class="game-meta">
+                        <i class="fas fa-star"></i> 4.9
+                        <span style="margin-left: 10px;"><i class="fas fa-user"></i> 20k+</span>
+                    </div>
+                    <a href="truth.html" class="play-btn game-link">Play Now</a>
+                </div>
             </div>
         </div>
-
-        <div id="forgotPasswordForm">
-            <h2>Reset Password</h2>
-            <p style="text-align: center; color: #666; margin-bottom: 20px;">
-                Enter your email address and we'll send you a link to reset your password.
-            </p>
-            <div class="form-group">
-                <label for="resetEmail">Email</label>
-                <input type="email" id="resetEmail" placeholder="Enter your email" required>
-            </div>
-            <button id="resetPasswordButton">Send Reset Link</button>
-            <div class="error" id="resetError"></div>
-            <div class="success" id="resetSuccess"></div>
-            
-            <div style="text-align: center; margin-top: 20px;">
-                <a id="backToLogin" class="back-button">← Back to Login</a>
-            </div>
+        
+        <!-- New Releases -->
+        <div class="section-header">
+            <h2>New Releases</h2>
+            <a href="new.html" class="view-all">View All</a>
         </div>
-
-        <div id="loadingScreen">
-            <div class="loader"></div>
-            <div id="loadingMessage">Loading...</div>
+        <div class="game-grid">
+            <div class="game-card">
+                <img src="/api/placeholder/400/400" alt="Snake Game">
+                <div class="game-info">
+                    <p>Snake Game</p>
+                    <div class="game-meta">
+                        <i class="fas fa-star"></i> 4.3
+                        <span style="margin-left: 10px;"><i class="fas fa-user"></i> 5k+</span>
+                    </div>
+                    <a href="snake.html" class="play-btn game-link">Play Now</a>
+                </div>
+            </div>
+            <div class="game-card">
+                <img src="/api/placeholder/400/400" alt="Puzzle Rush">
+                <div class="game-info">
+                    <p>Puzzle Rush</p>
+                    <div class="game-meta">
+                        <i class="fas fa-star"></i> 4.6
+                        <span style="margin-left: 10px;"><i class="fas fa-user"></i> 3k+</span>
+                    </div>
+                    <a href="puzzle.html" class="play-btn game-link">Play Now</a>
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- Firebase SDK imports -->
-    <script type="module">
-        // Import the functions you need from the SDKs you need
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
-        import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-analytics.js";
-        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, GoogleAuthProvider, signInWithPopup, updateProfile, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
-        import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+    <!-- UPDATED: Page Content for Categories (Full Screen) -->
+    <div class="page-content" id="categories-content">
+        <iframe src="about:blank" id="categories-iframe" class="page-iframe"></iframe>
+    </div>
 
-        // Your web app's Firebase configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyBw1uA-kNKOZEufWKZ9AMBxvRGHNGF1lkA",
-            authDomain: "multi-games-a2561.firebaseapp.com",
-            projectId: "multi-games-a2561",
-            storageBucket: "multi-games-a2561.appspot.com",
-            messagingSenderId: "150551898066",
-            appId: "1:150551898066:web:4e8fb185f2321ba4140a0b",
-            measurementId: "G-PB8Y87E6XV"
-        };
+    <!-- UPDATED: Page Content for Trending (Full Screen) -->
+    <div class="page-content" id="trending-content">
+        <iframe src="about:blank" id="trending-iframe" class="page-iframe"></iframe>
+    </div>
 
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const analytics = getAnalytics(app);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-        const googleProvider = new GoogleAuthProvider();
+    <!-- UPDATED: Page Content for Profile (Full Screen) -->
+    <div class="page-content" id="profile-content">
+        <iframe src="about:blank" id="profile-iframe" class="page-iframe"></iframe>
+    </div>
 
-        // Alert message function
-        function showAlert(message, type) {
-            const alertElement = document.getElementById("alertMessage");
-            alertElement.textContent = message;
-            alertElement.className = "alert";
-            alertElement.classList.add(type === "success" ? "alert-success" : "alert-info");
-            alertElement.style.display = "block";
-            
-            // Auto hide after 3 seconds
-            setTimeout(() => {
-                alertElement.style.display = "none";
-            }, 3000);
+    <!-- NEW: Page Content for Notifications (Full Screen) -->
+    <div class="page-content" id="notification-content">
+        <iframe src="about:blank" id="notification-iframe" class="page-iframe"></iframe>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+        <a href="#" id="home-nav" class="active"><i class="fas fa-home"></i> Home</a>
+        <a href="#" id="categories-nav"><i class="fas fa-th"></i> Categories</a>
+        <a href="#" id="trending-nav"><i class="fas fa-fire"></i> Trending</a>
+        <a href="#" id="profile-nav"><i class="fas fa-user"></i> Profile</a>
+    </div>
+
+    <script>
+        // Show loader initially and hide after page loads
+document.addEventListener('DOMContentLoaded', function() {
+    // Hide loader after page loads
+    setTimeout(function() {
+        document.getElementById('loader').style.opacity = '0';
+        setTimeout(function() {
+            document.getElementById('loader').style.display = 'none';
+        }, 300);
+    }, 800);
+    
+    // Get all navigation elements
+    const homeLink = document.getElementById('home-link');
+    const homeNav = document.getElementById('home-nav');
+    const categoriesNav = document.getElementById('categories-nav');
+    const trendingNav = document.getElementById('trending-nav');
+    const profileNav = document.getElementById('profile-nav');
+    const viewAllCategories = document.getElementById('view-all-categories');
+    const mainHeader = document.getElementById('main-header');
+    const profileHeader = document.getElementById('profile-header');
+    const profileBackBtn = document.getElementById('profile-back-btn');
+    
+    // Get content containers
+    const mainContent = document.getElementById('main-content');
+    const categoriesContent = document.getElementById('categories-content');
+    const trendingContent = document.getElementById('trending-content');
+    const profileContent = document.getElementById('profile-content');
+    const notificationContent = document.getElementById('notification-content');
+    
+    // Get notification elements
+    const notificationIcon = document.getElementById('notification-icon');
+    const notificationBadge = document.getElementById('notification-badge');
+    const notificationPopup = document.getElementById('notification-popup');
+    const notificationList = document.getElementById('notification-list');
+    const clearAllNotifications = document.getElementById('clear-all-notifications');
+    const emptyNotification = document.getElementById('empty-notification');
+    
+    // Get iframes
+    const categoriesIframe = document.getElementById('categories-iframe');
+    const trendingIframe = document.getElementById('trending-iframe');
+    const profileIframe = document.getElementById('profile-iframe');
+    const notificationIframe = document.getElementById('notification-iframe');
+    
+    // Function to show loader
+    function showLoader() {
+        document.getElementById('loader').style.display = 'flex';
+        document.getElementById('loader').style.opacity = '1';
+    }
+    
+    // Function to hide loader
+    function hideLoader() {
+        document.getElementById('loader').style.opacity = '0';
+        setTimeout(function() {
+            document.getElementById('loader').style.display = 'none';
+        }, 300);
+    }
+    
+    // Function to reset active state
+    function resetActiveState() {
+        homeNav.classList.remove('active');
+        categoriesNav.classList.remove('active');
+        trendingNav.classList.remove('active');
+        profileNav.classList.remove('active');
+        
+        mainContent.classList.add('hidden');
+        categoriesContent.classList.remove('active');
+        trendingContent.classList.remove('active');
+        profileContent.classList.remove('active');
+        notificationContent.classList.remove('active');
+        
+        // Hide profile header
+        profileHeader.classList.remove('visible');
+        
+        // Show main header
+        mainHeader.style.display = 'block';
+    }
+    
+    // Function to handle navigation
+    function handleNavigation(contentElement, iframe, navElement, url) {
+        showLoader();
+        resetActiveState();
+        navElement.classList.add('active');
+        
+        // Set iframe source if it's not already set
+        if (iframe && (iframe.src === 'about:blank' || iframe.src === '')) {
+            iframe.src = url;
         }
-
-        // Function to show loading screen
-        function showLoading(message = "Processing...") {
-            document.getElementById("loginForm").classList.remove("active");
-            document.getElementById("registerForm").classList.remove("active");
-            document.getElementById("forgotPasswordForm").classList.remove("active");
-            document.getElementById("loadingScreen").classList.add("active");
-            document.getElementById("loadingMessage").textContent = message;
+        
+        // Show the correct content
+        contentElement.classList.add('active');
+        
+        // Special handling for profile view
+        if (contentElement === profileContent) {
+            mainHeader.style.display = 'none';
+            profileHeader.classList.add('visible');
         }
-
-        // Function to hide loading screen
-        function hideLoading() {
-            document.getElementById("loadingScreen").classList.remove("active");
+        
+        // Hide loader when iframe loads
+        if (iframe) {
+            iframe.onload = function() {
+                hideLoader();
+            };
+        } else {
+            // If no iframe (like for home), hide loader after a short delay
+            setTimeout(hideLoader, 500);
         }
-
-        // Function to show success message and redirect
-        function showSuccessAndRedirect(message, delay = 1500) {
-            // Show success message with alert
-            showAlert(message, "success");
+    }
+    
+    // Home navigation
+    homeLink.addEventListener('click', function(e) {
+        e.preventDefault();
+        handleNavigation(mainContent, null, homeNav);
+        mainContent.classList.remove('hidden');
+    });
+    
+    homeNav.addEventListener('click', function(e) {
+        e.preventDefault();
+        handleNavigation(mainContent, null, homeNav);
+        mainContent.classList.remove('hidden');
+    });
+    
+    // Categories navigation
+    categoriesNav.addEventListener('click', function(e) {
+        e.preventDefault();
+        handleNavigation(categoriesContent, categoriesIframe, categoriesNav, 'YOUR_CATEGORIES_URL_HERE');
+    });
+    
+    // View All Categories button
+    viewAllCategories.addEventListener('click', function(e) {
+        e.preventDefault();
+        handleNavigation(categoriesContent, categoriesIframe, categoriesNav, 'YOUR_CATEGORIES_URL_HERE');
+    });
+    
+    // Trending navigation
+    trendingNav.addEventListener('click', function(e) {
+        e.preventDefault();
+        handleNavigation(trendingContent, trendingIframe, trendingNav, 'YOUR_TRENDING_URL_HERE');
+    });
+    
+    // Profile navigation
+    profileNav.addEventListener('click', function(e) {
+        e.preventDefault();
+        handleNavigation(profileContent, profileIframe, profileNav, 'YOUR_PROFILE_URL_HERE');
+    });
+    
+    // Profile back button
+    profileBackBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        handleNavigation(mainContent, null, homeNav);
+        mainContent.classList.remove('hidden');
+    });
+    
+    // Notifications functionality
+    let notificationsOpen = false;
+    
+    // Toggle notification popup
+    notificationIcon.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        if (notificationsOpen) {
+            notificationPopup.classList.remove('visible');
+        } else {
+            notificationPopup.classList.add('visible');
             
-            // Redirect after delay
-            setTimeout(() => {
-                window.location.href = "main.html";
-            }, delay);
+            // Reset notification badge
+            notificationBadge.classList.remove('visible');
+            notificationBadge.textContent = '0';
         }
-
-        // Check if user is already logged in
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                // User is signed in, redirect directly to main page
-                window.location.href = "main.html";
-            } else {
-                // No user is signed in, show login form by default
-                document.getElementById("loginForm").classList.add("active");
-            }
-        });
-
-        // Form toggle functionality
-        document.getElementById("showRegister").addEventListener("click", () => {
-            document.getElementById("loginForm").classList.remove("active");
-            document.getElementById("registerForm").classList.add("active");
-        });
-
-        document.getElementById("showLogin").addEventListener("click", () => {
-            document.getElementById("registerForm").classList.remove("active");
-            document.getElementById("loginForm").classList.add("active");
-        });
-
-        document.getElementById("showForgotPassword").addEventListener("click", () => {
-            document.getElementById("loginForm").classList.remove("active");
-            document.getElementById("forgotPasswordForm").classList.add("active");
-        });
-
-        document.getElementById("backToLogin").addEventListener("click", () => {
-            document.getElementById("forgotPasswordForm").classList.remove("active");
-            document.getElementById("loginForm").classList.add("active");
-        });
-
-        // Save user data to Firestore
-        async function saveUserData(user, fullName = null) {
-            try {
-                // If full name is provided, update the user profile
-                if (fullName) {
-                    await updateProfile(user, {
-                        displayName: fullName
-                    });
-                }
-                
-                // Save user data to Firestore
-                await setDoc(doc(db, "users", user.uid), {
-                    uid: user.uid,
-                    email: user.email,
-                    displayName: fullName || user.displayName || '',
-                    createdAt: new Date().toISOString(),
-                    lastLogin: new Date().toISOString()
-                });
-            } catch (error) {
-                console.error("Error saving user data:", error);
-            }
+        
+        notificationsOpen = !notificationsOpen;
+    });
+    
+    // Close notifications when clicking elsewhere
+    document.addEventListener('click', function(e) {
+        if (notificationsOpen && !notificationPopup.contains(e.target) && e.target !== notificationIcon) {
+            notificationPopup.classList.remove('visible');
+            notificationsOpen = false;
         }
-
-        // Register functionality
-        document.getElementById("registerButton").addEventListener("click", async () => {
-            const fullName = document.getElementById("registerFullName").value;
-            const email = document.getElementById("registerEmail").value;
-            const password = document.getElementById("registerPassword").value;
-            const confirmPassword = document.getElementById("confirmPassword").value;
-            const errorElement = document.getElementById("registerError");
-            const successElement = document.getElementById("registerSuccess");
+    });
+    
+    // Clear all notifications
+    clearAllNotifications.addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        // Remove all notification items
+        while (notificationList.firstChild) {
+            notificationList.removeChild(notificationList.firstChild);
+        }
+        
+        // Show empty notification message
+        emptyNotification.style.display = 'flex';
+        
+        // Hide the clear all button
+        clearAllNotifications.style.display = 'none';
+    });
+    
+    // Sample function to add notification (for demonstration)
+    function addNotification(text, time) {
+        // Hide empty notification message
+        emptyNotification.style.display = 'none';
+        
+        // Show clear all button
+        clearAllNotifications.style.display = 'block';
+        
+        // Create notification item
+        const notificationItem = document.createElement('li');
+        notificationItem.className = 'notification-item';
+        
+        const notificationContent = document.createElement('div');
+        notificationContent.className = 'notification-content';
+        
+        const notificationText = document.createElement('p');
+        notificationText.textContent = text;
+        
+        const notificationTime = document.createElement('span');
+        notificationTime.className = 'notification-time';
+        notificationTime.textContent = time;
+        
+        const dismissBtn = document.createElement('button');
+        dismissBtn.className = 'dismiss-notification';
+        dismissBtn.innerHTML = '&times;';
+        
+        // Add event listener to dismiss button
+        dismissBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
             
-            // Clear previous messages
-            errorElement.textContent = "";
-            successElement.textContent = "";
-
-            // Validate inputs
-            if (!fullName || !email || !password || !confirmPassword) {
-                errorElement.textContent = "All fields are required";
-                return;
-            }
+            // Remove this notification
+            notificationList.removeChild(notificationItem);
             
-            if (password !== confirmPassword) {
-                errorElement.textContent = "Passwords do not match";
-                return;
-            }
-
-            if (password.length < 6) {
-                errorElement.textContent = "Password must be at least 6 characters";
-                return;
-            }
-
-            // Show loading screen
-            showLoading("Creating your account...");
-
-            // Create user with Firebase
-            try {
-                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-                
-                // Save user data to Firestore
-                await saveUserData(userCredential.user, fullName);
-                
-                // Hide loading
-                hideLoading();
-                
-                // Show success message and alert
-                successElement.textContent = "Registration successful!";
-                showAlert("Registration successful! Redirecting...", "success");
-                
-                // Redirect after short delay
-                setTimeout(() => {
-                    window.location.href = "main.html";
-                }, 1500);
-                
-            } catch (error) {
-                // Hide loading
-                hideLoading();
-                
-                // Handle errors
-                switch (error.code) {
-                    case "auth/email-already-in-use":
-                        errorElement.textContent = "Email already in use";
-                        break;
-                    case "auth/invalid-email":
-                        errorElement.textContent = "Invalid email address";
-                        break;
-                    default:
-                        errorElement.textContent = "Error: " + error.message;
-                }
+            // Check if list is empty
+            if (notificationList.children.length === 0) {
+                emptyNotification.style.display = 'flex';
+                clearAllNotifications.style.display = 'none';
             }
         });
-
-        // Login functionality
-        document.getElementById("loginButton").addEventListener("click", async () => {
-            const email = document.getElementById("loginEmail").value;
-            const password = document.getElementById("loginPassword").value;
-            const errorElement = document.getElementById("loginError");
-            const successElement = document.getElementById("loginSuccess");
-            
-            // Clear previous messages
-            errorElement.textContent = "";
-            successElement.textContent = "";
-
-            // Validate inputs
-            if (!email || !password) {
-                errorElement.textContent = "Email and password are required";
-                return;
-            }
-
-            // Show loading screen
-            showLoading("Logging you in...");
-
-            // Sign in user with Firebase
-            try {
-                const userCredential = await signInWithEmailAndPassword(auth, email, password);
-                
-                // Update last login timestamp
-                await setDoc(doc(db, "users", userCrential.user.uid), {
-                    lastLogin: new Date().toISOString()
-                }, { merge: true });
-                
-                // Hide loading
-                hideLoading();
-                
-                // Show success message with alert
-                showAlert("Login successful! Welcome back.", "success");
-                
-                // Redirect after short delay
-                setTimeout(() => {
-                    window.location.href = "index.html";
-                }, 1500);
-                
-            } catch (error) {
-                // Hide loading
-                hideLoading();
-                
-                // Handle errors
-                switch (error.code) {
-                    case "auth/invalid-credential":
-                    case "auth/user-not-found":
-                    case "auth/wrong-password":
-                        errorElement.textContent = "Invalid email or password";
-                        break;
-                    default:
-                        errorElement.textContent = "Error: " + error.message;
-                }
-            }
-        });
-
-        // Google Sign In - Login
-        document.getElementById("googleLoginButton").addEventListener("click", async () => {
-            const errorElement = document.getElementById("loginError");
-            const successElement = document.getElementById("loginSuccess");
-            
-            errorElement.textContent = "";
-            successElement.textContent = "";
-            
-            // Show loading screen
-            showLoading("Logging in with Google...");
-            
-            try {
-                const result = await signInWithPopup(auth, googleProvider);
-                
-                // Update last login timestamp
-                await setDoc(doc(db, "users", result.user.uid), {
-                    uid: result.user.uid,
-                    email: result.user.email,
-                    displayName: result.user.displayName || '',
-                    createdAt: new Date().toISOString(),
-                    lastLogin: new Date().toISOString()
-                }, { merge: true });
-                
-                // Hide loading
-                hideLoading();
-                
-                // Show success message with alert
-                showAlert("Google login successful! Welcome back.", "success");
-                
-                // Redirect after short delay
-                setTimeout(() => {
-                    window.location.href = "main.html";
-                }, 1500);
-                
-            } catch (error) {
-                // Hide loading
-                hideLoading();
-                
-                console.error("Google login error:", error);
-                errorElement.textContent = "Error signing in with Google. Please try again.";
-            }
-        });
-
-        // Google Sign In - Register
-        document.getElementById("googleRegisterButton").addEventListener("click", async () => {
-            const errorElement = document.getElementById("registerError");
-            const successElement = document.getElementById("registerSuccess");
-            
-            errorElement.textContent = "";
-            successElement.textContent = "";
-            
-            // Show loading screen
-            showLoading("Signing up with Google...");
-            
-            try {
-                const result = await signInWithPopup(auth, googleProvider);
-                
-                // Save user data to Firestore
-                await saveUserData(result.user);
-                
-                // Hide loading
-                hideLoading();
-                
-                // Show success message with alert
-                showAlert("Google registration successful! Welcome!", "success");
-                
-                // Redirect after short delay
-                setTimeout(() => {
-                    window.location.href = "main.html";
-                }, 1500);
-                
-            } catch (error) {
-                // Hide loading
-                hideLoading();
-                
-                console.error("Google signup error:", error);
-                errorElement.textContent = "Error signing up with Google. Please try again.";
-            }
-        });
-
-        // Password Reset functionality
-        document.getElementById("resetPasswordButton").addEventListener("click", async () => {
-            const email = document.getElementById("resetEmail").value;
-            const errorElement = document.getElementById("resetError");
-            const successElement = document.getElementById("resetSuccess");
-            
-            // Clear previous messages
-            errorElement.textContent = "";
-            successElement.textContent = "";
-
-            // Validate input
-            if (!email) {
-                errorElement.textContent = "Email is required";
-                return;
-            }
-
-            // Show loading screen
-            showLoading("Sending password reset email...");
-
-            try {
-                await sendPasswordResetEmail(auth, email);
-                
-                // Hide loading
-                hideLoading();
-                
-                // Show success message with alert
-                showAlert("Reset link sent to your email!", "info");
-                successElement.textContent = "Password reset email sent!";
-                
-                // Clear the input field
-                document.getElementById("resetEmail").value = "";
-                
-                // After 3 seconds, return to login
-                setTimeout(() => {
-                    document.getElementById("forgotPasswordForm").classList.remove("active");
-                    document.getElementById("loginForm").classList.add("active");
-                }, 3000);
-            } catch (error) {
-                // Hide loading
-                hideLoading();
-                
-                // Handle errors
-                switch (error.code) {
-                    case "auth/user-not-found":
-                        errorElement.textContent = "No account found with this email";
-                        break;
-                    case "auth/invalid-email":
-                        errorElement.textContent = "Invalid email address";
-                        break;
-                    default:
-                        errorElement.textContent = "Error: " + error.message;
-                }
-            }
-        });
-    </script>
+        
+        // Assemble notification item
+        notificationContent.appendChild(notificationText);
+        notificationContent.appendChild(notificationTime);
+        notificationItem.appendChild(notificationContent);
+        notificationItem.appendChild(dismissBtn);
+        
+        // Add to notification list
+        notificationList.appendChild(notificationItem);
+        
+        // Update notification badge
+        updateNotificationBadge();
+    }
+    
+    // Function to update notification badge
+    function updateNotificationBadge() {
+        const count = notificationList.children.length;
+        
+        if (count > 0) {
+            notificationBadge.textContent = count > 9 ? '9+' : count;
+            notificationBadge.classList.add('visible');
+        } else {
+            notificationBadge.classList.remove('visible');
+        }
+    }
+    
+    // Example notifications (remove in production)
+    setTimeout(function() {
+        addNotification('your account was successfully created!', '2 mins ago');
+        addNotification('New featured content is available', '1 hour ago');
+        addNotification('hi gamers', '1 hours ago');
+    }, 2000);
+});
+</script>
 </body>
 </html>
