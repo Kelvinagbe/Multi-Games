@@ -262,7 +262,8 @@ header {
 /* Categories Section */
 .categories {
     display: flex;
-    gap: 15px;
+    gap: 60px;
+    max-height: 120px; /* Adjust height as needed */
     overflow-x: auto;
     padding: 10px 0;
     margin: 20px 0;
@@ -906,7 +907,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Categories navigation
     categoriesNav.addEventListener('click', function(e) {
         e.preventDefault();
-        handleNavigation(categoriesContent, categoriesIframe, categoriesNav, 'YOUR_CATEGORIES_URL_HERE');
+        handleNavigation(categoriesContent, categoriesIframe, categoriesNav, 'categories.html');
     });
     
     // View All Categories button

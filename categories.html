@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gaming Categories</title>
+    <style>
+        :root {
+            --primary: #1a5928; /* Changed to dark green */
+            --primary-dark: #0f4017; /* Darker version of the dark green */
+            --secondary: #0f6a5b; /* Matching secondary dark green-teal */
+            --text-light: #ecf0f1;
+            --text-dark: #2c3e50;
+            --bg-light: #f5f8f5; /* Slightly green-tinted background */
+            --card-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            --hover-transform: translateY(-5px);
+        }
+        
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-light);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-dark);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+        
+        .categories-title {
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 2.5em;
+            color: var(--primary);
+            position: relative;
+        }
+        
+        .categories-title::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 5px;
+            background-color: var(--primary);
+            border-radius: 5px;
+        }
+        
+        .categories {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 25px;
+            margin-top: 40px;
+        }
+        
+        .category-card {
+            background-color: white;
+            border-radius: 25px; /* Changed to 25px */
+            overflow: hidden;
+            box-shadow: var(--card-shadow);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+        
+        .category-card:hover {
+            transform: var(--hover-transform);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+            border-color: var(--primary);
+        }
+        
+        .category-img {
+            height: 150px;
+            background: linear-gradient(135deg, var(--primary-dark), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3em;
+        }
+        
+        .category-content {
+            padding: 20px;
+        }
+        
+        .category-content h3 {
+            margin-top: 0;
+            color: var(--primary);
+            font-size: 1.4em;
+        }
+        
+        .category-content p {
+            margin-bottom: 15px;
+            color: #7f8c8d;
+            font-size: 0.95em;
+            line-height: 1.5;
+        }
+        
+        .badge {
+            display: inline-block;
+            background-color: var(--primary);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 25px;
+            font-size: 0.8em;
+            margin-right: 5px;
+            font-weight: bold;
+        }
+        
+        .popularity-meter {
+            height: 5px;
+            width: 100%;
+            background-color: #eee;
+            border-radius: 10px;
+            margin-top: 15px;
+            overflow: hidden;
+        }
+        
+        .popularity-fill {
+            height: 100%;
+            background-color: var(--primary);
+            border-radius: 10px;
+        }
+        
+        .trending {
+            margin-top: 60px;
+        }
+        
+        .trending h2 {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 30px;
+            color: var(--primary);
+        }
+        
+        .trending h2::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: -10px;
+            width: 50px;
+            height: 4px;
+            background-color: var(--primary);
+            border-radius: 2px;
+        }
+        
+        .trending-games {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        
+        .game-card {
+            background-color: white;
+            border-radius: 25px; /* Changed to 25px */
+            overflow: hidden;
+            box-shadow: var(--card-shadow);
+            transition: transform 0.3s;
+        }
+        
+        .game-card:hover {
+            transform: var(--hover-transform);
+        }
+        
+        .game-img {
+            height: 120px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2em;
+        }
+        
+        .game-content {
+            padding: 15px;
+        }
+        
+        .game-content h4 {
+            margin: 0 0 10px;
+            color: var(--primary);
+        }
+        
+        .rating {
+            color: #f39c12;
+            margin-right: 5px;
+        }
+        
+        .players {
+            font-size: 0.8em;
+            color: #7f8c8d;
+        }
+        
+        .featured-section {
+            background-color: white;
+            border-radius: 25px;
+            padding: 30px;
+            margin: 50px 0;
+            box-shadow: var(--card-shadow);
+        }
+        
+        .featured-section h2 {
+            color: var(--primary);
+            margin-top: 0;
+        }
+        
+        .featured-game {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+        
+        .featured-img {
+            width: 200px;
+            height: 200px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4em;
+            color: white;
+        }
+        
+        .featured-content h3 {
+            color: var(--primary);
+            font-size: 1.8em;
+            margin-top: 0;
+        }
+        
+        .featured-stats {
+            display: flex;
+            gap: 20px;
+            margin: 15px 0;
+        }
+        
+        .stat {
+            background-color: #f5f5f5;
+            padding: 10px 15px;
+            border-radius: 15px;
+            font-size: 0.9em;
+            font-weight: bold;
+        }
+        
+        .category-filters {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+        
+        .filter-btn {
+            background-color: white;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            padding: 8px 15px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        .filter-btn.active {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .filter-btn:hover {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        footer {
+            background-color: var(--primary);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            border-radius: 25px;
+            margin-top: 50px;
+        }
+        
+        @media (max-width: 768px) {
+            .categories {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            }
+            
+            .featured-game {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .featured-img {
+                width: 150px;
+                height: 150px;
+                margin: 0 auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="categories-title">Multi Games 🎮</h1>
+        
+        <div class="category-filters">
+            <button class="filter-btn active">All Games</button>
+            <button class="filter-btn">Free to Play</button>
+            <button class="filter-btn">New Releases</button>
+            <button class="filter-btn">Multiplayer</button>
+            <button class="filter-btn">Single Player</button>
+        </div>
+        
+        <div class="categories">
+            <div class="category-card">
+                <div class="category-img">🎮</div>
+                <div class="category-content">
+                    <h3>Action Games</h3>
+                    <p>Fast-paced games requiring quick reflexes and hand-eye coordination.</p>
+                    <span class="badge">250+ Games</span>
+                    <div class="popularity-meter">
+                        <div class="popularity-fill" style="width: 85%;"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="category-card">
+                <div class="category-img">🧩</div>
+                <div class="category-content">
+                    <h3>Puzzle Games</h3>
+                    <p>Brain teasers and logic puzzles to challenge your mind.</p>
+                    <span class="badge">180+ Games</span>
+                    <div class="popularity-meter">
+                        <div class="popularity-fill" style="width: 70%;"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="category-card">
+                <div class="category-img">🏎️</div>
+                <div class="category-content">
+                    <h3>Racing Games</h3>
+                    <p>Speed through tracks and beat your opponents to the finish line.</p>
+                    <span class="badge">120+ Games</span>
+                    <div class="popularity-meter">
+                        <div class="popularity-fill" style="width: 65%;"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="category-card">
+                <div class="category-img">🎯</div>
+                <div class="category-content">
+                    <h3>Arcade Games</h3>
+                    <p>Classic arcade-style games with simple controls and addictive gameplay.</p>
+                    <span class="badge">300+ Games</span>
+                    <div class="popularity-meter">
+                        <div class="popularity-fill" style="width: 90%;"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="category-card">
+                <div class="category-img">🎲</div>
+                <div class="category-content">
+                    <h3>Board Games</h3>
+                    <p>Digital versions of popular board games and card games.</p>
+                    <span class="badge">150+ Games</span>
+                    <div class="popularity-meter">
+                        <div class="popularity-fill" style="width: 60%;"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="category-card">
+                <div class="category-img">⚔️</div>
+                <div class="category-content">
+                    <h3>Adventure Games</h3>
+                    <p>Embark on epic journeys and complete challenging quests.</p>
+                    <span class="badge">200+ Games</span>
+                    <div class="popularity-meter">
+                        <div class="popularity-fill" style="width: 80%;"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="category-card">
+                <div class="category-img">🧠</div>
+                <div class="category-content">
+                    <h3>Strategy Games</h3>
+                    <p>Plan, think, and outsmart your opponents to achieve victory.</p>
+                    <span class="badge">170+ Games</span>
+                    <div class="popularity-meter">
+                        <div class="popularity-fill" style="width: 75%;"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="category-card">
+                <div class="category-img">👥</div>
+                <div class="category-content">
+                    <h3>Multiplayer Games</h3>
+                    <p>Compete or cooperate with friends and players worldwide.</p>
+                    <span class="badge">220+ Games</span>
+                    <div class="popularity-meter">
+                        <div class="popularity-fill" style="width: 85%;"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="category-card">
+                <div class="category-img">🌌</div>
+                <div class="category-content">
+                    <h3>Open World</h3>
+                    <p>Explore vast, immersive worlds full of quests and hidden treasures.</p>
+                    <span class="badge">95+ Games</span>
+                    <div class="popularity-meter">
+                        <div class="popularity-fill" style="width: 78%;"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="category-card">
+                <div class="category-img">👻</div>
+                <div class="category-content">
+                    <h3>Horror Games</h3>
+                    <p>Spine-chilling experiences that will test your courage.</p>
+                    <span class="badge">80+ Games</span>
+                    <div class="popularity-meter">
+                        <div class="popularity-fill" style="width: 72%;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="featured-section">
+            <h2>Game of the Month</h2>
+            <div class="featured-game">
+                <div class="featured-img">🐉</div>
+                <div class="featured-content">
+                    <h3>Dragon Quest: Legends</h3>
+                    <p>Embark on an epic adventure in a vast fantasy world filled with dangerous monsters, hidden treasures, and powerful magic. Team up with friends to defeat legendary dragons and become the ultimate hero!</p>
+                    <div class="featured-stats">
+                        <div class="stat">⭐ 4.9/5 Rating</div>
+                        <div class="stat">👥 25k+ Players</div>
+                        <div class="stat">🏆 Best RPG 2025</div>
+                    </div>
+                    <button class="filter-btn active">Play Now</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="trending">
+            <h2>Trending Now</h2>
+            <div class="trending-games">
+                <div class="game-card">
+                    <div class="game-img">🚀</div>
+                    <div class="game-content">
+                        <h4>Space Blaster</h4>
+                        <span class="rating">★★★★★</span>
+                        <span class="players">12.5k playing</span>
+                    </div>
+                </div>
+                
+                <div class="game-card">
+                    <div class="game-img">🏰</div>
+                    <div class="game-content">
+                        <h4>Castle Defense</h4>
+                        <span class="rating">★★★★☆</span>
+                        <span class="players">8.3k playing</span>
+                    </div>
+                </div>
+                
+                <div class="game-card">
+                    <div class="game-img">🧟</div>
+                    <div class="game-content">
+                        <h4>Zombie Survival</h4>
+                        <span class="rating">★★★★★</span>
+                        <span class="players">10.1k playing</span>
+                    </div>
+                </div>
+                
+                <div class="game-card">
+                    <div class="game-img">🃏</div>
+                    <div class="game-content">
+                        <h4>Card Master</h4>
+                        <span class="rating">★★★★☆</span>
+                        <span class="players">7.8k playing</span>
+                    </div>
+                </div>
+                
+                <div class="game-card">
+                    <div class="game-img">🏀</div>
+                    <div class="game-content">
+                        <h4>Basketball Pro</h4>
+                        <span class="rating">★★★★☆</span>
+                        <span class="players">9.2k playing</span>
+                    </div>
+                </div>
+                
+                <div class="game-card">
+                    <div class="game-img">🧙‍♂️</div>
+                    <div class="game-content">
+                        <h4>Wizard Wars</h4>
+                        <span class="rating">★★★★★</span>
+                        <span class="players">15.7k playing</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>© 2025 Gaming Universe. All rights reserved.</p>
+            <p>Find your next favorite game today!</p>
+        </footer>
+    </div>
+</body>
+</html>
