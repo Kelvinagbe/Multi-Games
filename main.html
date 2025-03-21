@@ -5,7 +5,40 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Multi Games App</title>
      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5345992350931230"
-     crossorigin="anonymous"></script>
+     crossorigin="anonymous">
+document.addEventListener('DOMContentLoaded', function() {
+    const logoutLink = document.getElementById('logout');
+    if (logoutLink) {
+        logoutLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            let logoutModal = document.getElementById('logoutModal');
+            if (logoutModal) {
+                logoutModal.style.display = 'block';
+            } else {
+                console.error("Logout modal not found!");
+            }
+        });
+    } else {
+        console.error("Logout link not found!");
+    }
+
+    // Close modal when clicking the close button
+    const closeButtons = document.querySelectorAll('.modal-close');
+    closeButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            this.closest('.modal').style.display = 'none';
+        });
+    });
+
+    // Close modal when clicking outside of it
+    window.addEventListener('click', function(e) {
+        if (e.target.classList.contains('modal')) {
+            e.target.style.display = 'none';
+        }
+    });
+});
+
+</script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -525,6 +558,70 @@
             margin-bottom: 15px;
         }
 
+          /* Logout-specific styles (adapted to match modal theme) */
+    #logoutModal .user-info {
+        margin-bottom: 20px;
+        padding: 15px;
+        background-color: rgba(255, 255, 255, 0.1);
+        border-radius: 15px;
+        border: 1px solid var(--accent);
+    }
+
+    #logoutModal .user-email {
+        font-weight: bold;
+        color: var(--accent);
+        font-size: 20px;
+    }
+
+    #logoutModal button {
+        background-color: var(--accent);
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 30px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: all 0.3s ease;
+        margin-top: 10px;
+    }
+
+    #logoutModal button:hover {
+        background-color: var(--accent-hover, #ff5252);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    #logoutModal .alert {
+        padding: 15px;
+        margin-top: 20px;
+        border-radius: 12px;
+        display: none;
+        text-align: center;
+        font-weight: 500;
+    }
+
+    #logoutModal .alert-success {
+        background-color: rgba(76, 175, 80, 0.2);
+        color: #4caf50;
+        border: 1px solid #4caf50;
+    }
+
+    #logoutModal .loader {
+        border: 5px solid rgba(255, 255, 255, 0.2);
+        border-top: 5px solid var(--accent);
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        animation: spin 1s linear infinite;
+        margin: 20px auto;
+        display: none;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
         /* Footer */
         .app-footer {
             background: rgba(0, 0, 0, 0.3);
@@ -748,6 +845,7 @@
         .notification.hide {
             animation: slideUp 0.4s forwards ease-in;
         }
+    }
     </style>
 </head>
 <body>
@@ -779,12 +877,12 @@
 </a>
         <a href="terms.html"><i class="fas fa-file-alt"></i>Terms & Condition</a>
         <a href="about.html"><i class="fas fa-info-circle"></i>About us</a>
-         <a href="logout.html"><i class="fas fa-sign-out-alt"></i>Log out</a>
+         <a href="#" id="logout"><i class="fas fa-sign-out-alt"></i>Log out</a>
     </div>
 
     <!-- Main Content -->
     <div class="container">
-        <button class="menu-btn" onclick="openNav()"><i class="fas fa-bars"></i></button>
+        <button class="menu-btn" id="menuButton"><i class="fas fa-bars"></i></button>
         
         <div class="content" id="content">
             <div class="app-header">
@@ -1076,6 +1174,22 @@
         <p>👻 Report anonymous  added.✅</p>
         <p>🎮New Game .✅</p>
     </div>
+  </div>
+
+<!-- Logout Modal -->
+<div class="modal" id="logoutModal">
+    <div class="modal-content">
+        <span class="modal-close">&times;</span>
+        <h2>Account Settings</h2>
+        <div id="userInfoContainer" class="user-info">
+            <p>Currently logged in as:</p>
+            <p class="user-email" id="userEmail">Loading...</p>
+        </div>
+        <p>Are you sure you want to log out?</p>
+        <button id="logoutButton">Log Out</button>
+        <div id="loader" class="loader"></div>
+        <div id="alertMessage" class="alert"></div>
+    </div>
 </div>
 
             <!-- Footer -->
@@ -1087,248 +1201,437 @@
     </div>
 
     <script>
-        // Sidebar Navigation Functions
-        function openNav() {
-            document.getElementById("sidebar").classList.add("active");
-        }
-        
-        function closeNav() {
-            document.getElementById("sidebar").classList.remove("active");
-        }
-        
-        // Modal Functions
-        function openModal(modalType) {
-            document.getElementById(modalType + "Modal").style.display = "block";
-        }
-        
-        function closeModal(modalType) {
-            document.getElementById(modalType + "Modal").style.display = "none";
-        }
-        
-        // Close modal when clicking outside of it
-        window.onclick = function(event) {
-            if (event.target.classList.contains('modal')) {
-                event.target.style.display = "none";
-            }
-        }
-        
-        // Slider Function for Game Cards
-        function scrollCards(containerId, scrollAmount) {
-            const container = document.getElementById(containerId);
-            const currentScroll = container.scrollLeft;
-            container.scrollTo({
-                left: currentScroll + scrollAmount,
-                behavior: 'smooth'
-            });
-        }
-        
-        // Play Game Function with Privacy Policy
-        function playGame(gameId) {
-            // First check if user has agreed to privacy policy (you could use localStorage for this)
-            const hasAgreedToPrivacy = localStorage.getItem('privacyPolicyAgreed');
-            
-            if (!hasAgreedToPrivacy) {
-                // Redirect to privacy policy
-                window.location.href = "file:///android_asset/htmlapp/root/privacy.html";
-            } else {
-                // Proceed to game
-                console.log("Starting game: " + gameId);
-                // Your game starting logic here
-            }
-        }
+        // Import the functions you need from the SDKs you need
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
+import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
 
-        // Your existing JavaScript
-        // Network Detection Functions
-        let isOnline = navigator.onLine;
-        let allButtons = document.querySelectorAll('button, a');
-        let buttonsState = [];
-        
-        // Store initial enabled/disabled state of all buttons
-        function storeButtonStates() {
-            buttonsState = [];
-            allButtons.forEach(button => {
-                buttonsState.push({
-                    element: button,
-                    wasDisabled: button.classList.contains('disabled')
-                });
-            });
-        }
-        
-        // Initial button state tracking
-        document.addEventListener('DOMContentLoaded', storeButtonStates);
-        
-        // Function to disable all buttons
-        function disableAllButtons() {
-            allButtons.forEach(button => {
-                button.classList.add('disabled');
-            });
-        }
-        
-        // Function to restore buttons to original state
-        function restoreButtonStates() {
-            buttonsState.forEach(buttonState => {
-                if (!buttonState.wasDisabled) {
-                    buttonState.element.classList.remove('disabled');
-                }
-            });
-        }
-        
-        // Function to check network status and update UI
-        function updateNetworkStatus() {
-            if (navigator.onLine) {
-                if (!isOnline) {
-                    // Connection was restored
-                    document.getElementById('networkAlert').classList.remove('active');
-                    document.getElementById('networkOverlay').classList.remove('active');
-                    
-                    // Show success message
-                    const successAlert = document.getElementById('networkSuccess');
-                    successAlert.classList.add('active');
-                    
-                    // Remove success message after 3 seconds
-                    setTimeout(() => {
-                        successAlert.classList.remove('active');
-                    }, 3000);
-                    
-                    // Re-enable buttons
-                    restoreButtonStates();
-                }
-                isOnline = true;
-            } else {
-                // No connection
-                document.getElementById('networkAlert').classList.add('active');
-                document.getElementById('networkOverlay').classList.add('active');
-                
-                // Disable all buttons
-                disableAllButtons();
-                isOnline = false;
-            }
-        }
-        
-        // Initial check
-        updateNetworkStatus();
-        
-        // Event listeners for network changes
-        window.addEventListener('online', updateNetworkStatus);
-        window.addEventListener('offline', updateNetworkStatus);
-        
-        // Check network status every 5 seconds
-        setInterval(updateNetworkStatus, 5000);
-        
-        // Simulate network connection (for testing purposes - remove in production)
-        function simulateNetworkLoss() {
-            // Force the offline state for testing
-            isOnline = true;
-            window.dispatchEvent(new Event('offline'));
-            updateNetworkStatus();
-        }
-        
-        function simulateNetworkRestore() {
-            // Force the online state for testing
-            isOnline = false;
-            window.dispatchEvent(new Event('online'));
-            updateNetworkStatus();
-        }
-        
-        // Debugging commands (remove in production)
-        // simulateNetworkLoss();
-        // setTimeout(simulateNetworkRestore, 3000);
-
-// Modal functionality
-document.getElementById("openModal").addEventListener("click", function(event) {
-    event.preventDefault(); // Prevent default link behavior
-    document.getElementById("infoModal").style.display = "block";
-});
-
-document.querySelector(".modal-close").addEventListener("click", function() {
-    document.getElementById("infoModal").style.display = "none";
-});
-
-// Close modal when clicking outside of it
-window.onclick = function(event) {
-    let modal = document.getElementById("infoModal");
-    if (event.target == modal) {
-        modal.style.display = "none";
-    }
+// Your web app's Firebase configuration
+const firebaseConfig = {
+    apiKey: "AIzaSyBw1uA-kNKOZEufWKZ9AMBxvRGHNGF1lkA",
+    authDomain: "multi-games-a2561.firebaseapp.com",
+    projectId: "multi-games-a2561",
+    storageBucket: "multi-games-a2561.appspot.com",
+    messagingSenderId: "150551898066",
+    appId: "1:150551898066:web:4e8fb185f2321ba4140a0b",
+    measurementId: "G-PB8Y87E6XV"
 };
 
-document.addEventListener('DOMContentLoaded', function() {
-            // Show notification automatically when page loads
-            setTimeout(function() {
-                showNotification('info', 'Ⓜ️MaintanceⓂ️', 'Multi Games is currently on maintenance or feature will be restored back soon!!');
-            }, 500); // Small delay to ensure smooth animation after page load
-        });
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
 
-        function showNotification(type, title, message) {
-            // Create the notification element
-            const notification = document.createElement('div');
-            notification.className = `notification ${type}`;
-            
-            // Create icon based on type
-            const icon = document.createElement('div');
-            icon.className = 'icon';
-            
-            // Set icon based on notification type
-            let iconSvg = '';
-            if (type === 'success') {
-                iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#4CAF50" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>';
-            } else if (type === 'error') {
-                iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#f44336" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>';
-            } else if (type === 'warning') {
-                iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FF9800" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>';
-            } else {
-                iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2196F3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>';
-            }
-            
-            icon.innerHTML = iconSvg;
-            
-            // Create content
-            const content = document.createElement('div');
-            content.className = 'content';
-            
-            const titleElement = document.createElement('h4');
-            titleElement.className = 'title';
-            titleElement.textContent = title;
-            
-            const messageElement = document.createElement('p');
-            messageElement.className = 'message';
-            messageElement.textContent = message;
-            
-            content.appendChild(titleElement);
-            content.appendChild(messageElement);
-            
-            // Create close button
-            const closeBtn = document.createElement('button');
-            closeBtn.className = 'close-btn';
-            closeBtn.innerHTML = '&times;';
-            closeBtn.onclick = function() {
-                closeNotification(notification);
-            };
-            
-            // Append all elements
-            notification.appendChild(icon);
-            notification.appendChild(content);
-            notification.appendChild(closeBtn);
-            
-            // Add to body
-            document.body.appendChild(notification);
-            
-            // Auto-remove after 6 seconds
-            setTimeout(() => {
-                if (document.body.contains(notification)) {
-                    closeNotification(notification);
-                }
-            }, 6000);
+// Global variables
+let isOnline = navigator.onLine;
+let allButtons = document.querySelectorAll('button, a');
+let buttonsState = [];
+
+// =============== UTILITY FUNCTIONS ===============
+
+// Alert message function
+function showAlert(message, type) {
+    const alertElement = document.getElementById("alertMessage");
+    alertElement.textContent = message;
+    alertElement.className = "alert";
+    alertElement.classList.add(type === "success" ? "alert-success" : "alert-info");
+    alertElement.style.display = "block";
+    
+    // Auto hide after 3 seconds
+    setTimeout(() => {
+        alertElement.style.display = "none";
+    }, 3000);
+}
+
+// Show loading spinner
+function showLoader() {
+    document.getElementById("loader").style.display = "block";
+    document.getElementById("logoutButton").disabled = true;
+}
+
+// Hide loading spinner
+function hideLoader() {
+    document.getElementById("loader").style.display = "none";
+    document.getElementById("logoutButton").disabled = false;
+}
+
+// =============== NOTIFICATION FUNCTIONS ===============
+
+function showNotification(type, title, message) {
+    // Create the notification element
+    const notification = document.createElement('div');
+    notification.className = `notification ${type}`;
+    
+    // Create icon based on type
+    const icon = document.createElement('div');
+    icon.className = 'icon';
+    
+    // Set icon based on notification type
+    let iconSvg = '';
+    if (type === 'success') {
+        iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#4CAF50" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>';
+    } else if (type === 'error') {
+        iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#f44336" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>';
+    } else if (type === 'warning') {
+        iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FF9800" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>';
+    } else {
+        iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2196F3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>';
+    }
+    
+    icon.innerHTML = iconSvg;
+    
+    // Create content
+    const content = document.createElement('div');
+    content.className = 'content';
+    
+    const titleElement = document.createElement('h4');
+    titleElement.className = 'title';
+    titleElement.textContent = title;
+    
+    const messageElement = document.createElement('p');
+    messageElement.className = 'message';
+    messageElement.textContent = message;
+    
+    content.appendChild(titleElement);
+    content.appendChild(messageElement);
+    
+    // Create close button
+    const closeBtn = document.createElement('button');
+    closeBtn.className = 'close-btn';
+    closeBtn.innerHTML = '&times;';
+    closeBtn.onclick = function() {
+        closeNotification(notification);
+    };
+    
+    // Append all elements
+    notification.appendChild(icon);
+    notification.appendChild(content);
+    notification.appendChild(closeBtn);
+    
+    // Add to body
+    document.body.appendChild(notification);
+    
+    // Auto-remove after 6 seconds
+    setTimeout(() => {
+        if (document.body.contains(notification)) {
+            closeNotification(notification);
         }
+    }, 6000);
+}
+
+function closeNotification(notification) {
+    notification.classList.add('hide');
+    setTimeout(() => {
+        if (document.body.contains(notification)) {
+            document.body.removeChild(notification);
+        }
+    }, 400);
+}
+
+// =============== SIDEBAR NAVIGATION FUNCTIONS ===============
+
+function openNav() {
+    document.getElementById("sidebar").classList.add("active");
+}
+
+function closeNav() {
+    document.getElementById("sidebar").classList.remove("active");
+}
+
+// =============== MODAL FUNCTIONS ===============
+
+function openModal(modalType) {
+    document.getElementById(modalType + "Modal").style.display = "block";
+}
+
+function closeModal(modalType) {
+    document.getElementById(modalType + "Modal").style.display = "none";
+}
+
+// =============== GAME FUNCTIONS ===============
+
+// Slider Function for Game Cards
+function scrollCards(containerId, scrollAmount) {
+    const container = document.getElementById(containerId);
+    const currentScroll = container.scrollLeft;
+    container.scrollTo({
+        left: currentScroll + scrollAmount,
+        behavior: 'smooth'
+    });
+}
+
+// Play Game Function with Privacy Policy
+function playGame(gameId) {
+    // First check if user has agreed to privacy policy (you could use localStorage for this)
+    const hasAgreedToPrivacy = localStorage.getItem('privacyPolicyAgreed');
+    
+    if (!hasAgreedToPrivacy) {
+        // Redirect to privacy policy
+        window.location.href = "file:///android_asset/htmlapp/root/privacy.html";
+    } else {
+        // Proceed to game
+        console.log("Starting game: " + gameId);
+        // Your game starting logic here
+    }
+}
+
+// =============== NETWORK DETECTION FUNCTIONS ===============
+
+// Store initial enabled/disabled state of all buttons
+function storeButtonStates() {
+    buttonsState = [];
+    allButtons.forEach(button => {
+        buttonsState.push({
+            element: button,
+            wasDisabled: button.classList.contains('disabled')
+        });
+    });
+}
+
+// Function to disable all buttons
+function disableAllButtons() {
+    allButtons.forEach(button => {
+        button.classList.add('disabled');
+    });
+}
+
+// Function to restore buttons to original state
+function restoreButtonStates() {
+    buttonsState.forEach(buttonState => {
+        if (!buttonState.wasDisabled) {
+            buttonState.element.classList.remove('disabled');
+        }
+    });
+}
+
+// Function to check network status and update UI
+function updateNetworkStatus() {
+    if (navigator.onLine) {
+        if (!isOnline) {
+            // Connection was restored
+            document.getElementById('networkAlert').classList.remove('active');
+            document.getElementById('networkOverlay').classList.remove('active');
+            
+            // Show success message
+            const successAlert = document.getElementById('networkSuccess');
+            successAlert.classList.add('active');
+            
+            // Remove success message after 3 seconds
+            setTimeout(() => {
+                successAlert.classList.remove('active');
+            }, 3000);
+            
+            // Re-enable buttons
+            restoreButtonStates();
+        }
+        isOnline = true;
+    } else {
+        // No connection
+        document.getElementById('networkAlert').classList.add('active');
+        document.getElementById('networkOverlay').classList.add('active');
         
-        function closeNotification(notification) {
-            notification.classList.add('hide');
+        // Disable all buttons
+        disableAllButtons();
+        isOnline = false;
+    }
+}
+
+// Simulate network connection (for testing purposes - remove in production)
+function simulateNetworkLoss() {
+    // Force the offline state for testing
+    isOnline = true;
+    window.dispatchEvent(new Event('offline'));
+    updateNetworkStatus();
+}
+
+function simulateNetworkRestore() {
+    // Force the online state for testing
+    isOnline = false;
+    window.dispatchEvent(new Event('online'));
+    updateNetworkStatus();
+}
+
+// =============== AUTHENTICATION FUNCTIONS ===============
+
+// Handle logout process
+function handleLogout() {
+    showLoader();
+
+    // Clear all local storage data (but keep the Firebase account intact)
+    try {
+        localStorage.clear(); // Clear all items from local storage
+        sessionStorage.clear(); // Clear session storage as well
+        
+        // Sign out from Firebase
+        signOut(auth).then(() => {
+            // Sign-out successful
+            showAlert("Logged out successfully!", "success");
+            
+            // Redirect to login page after a short delay
             setTimeout(() => {
-                if (document.body.contains(notification)) {
-                    document.body.removeChild(notification);
-                }
-            }, 400);
+                window.location.href = "index.html";
+            }, 1500);
+        }).catch((error) => {
+            // An error happened during sign out
+            console.error("Logout error:", error);
+            showAlert("Error logging out. Please try again.", "error");
+            hideLoader();
+        });
+    } catch (error) {
+        console.error("Error clearing local storage:", error);
+        showAlert("Error logging out. Please try again.", "error");
+        hideLoader();
+    }
+}
+
+// =============== INITIALIZATION AND EVENT LISTENERS ===============
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Check authentication state
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            // User is signed in
+            const userEmail = document.getElementById("userEmail");
+            if (userEmail) {
+                userEmail.textContent = user.email;
+            }
+        } else {
+            // User is signed out
+            window.location.href = "index.html"; // Redirect to login page
         }
-    </script>
-</body>
+    });
+
+    // Initial button state tracking
+    storeButtonStates();
+    
+    // Initial network check
+    updateNetworkStatus();
+    
+    // Event listeners for network changes
+    window.addEventListener('online', updateNetworkStatus);
+    window.addEventListener('offline', updateNetworkStatus);
+    
+    // Check network status every 5 seconds
+    setInterval(updateNetworkStatus, 5000);
+    
+    // Modal info button
+    const openModalBtn = document.getElementById("openModal");
+    if (openModalBtn) {
+        openModalBtn.addEventListener("click", function(event) {
+            event.preventDefault();
+            document.getElementById("infoModal").style.display = "block";
+        });
+    }
+    
+    // Set up logout link to show modal
+    const logoutLinks = document.querySelectorAll('a[href="#logout"], #logout');
+    logoutLinks.forEach(link => {
+        if (link) {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const logoutModal = document.getElementById('logoutModal');
+                if (logoutModal) {
+                    logoutModal.style.display = 'block';
+                } else {
+                    console.error("Logout modal not found!");
+                }
+            });
+        }
+    });
+
+    // Close button functionality for all modals
+    const closeButtons = document.querySelectorAll('.modal-close');
+    closeButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            this.closest('.modal').style.display = 'none';
+        });
+    });
+
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+        if (event.target.classList.contains('modal')) {
+            event.target.style.display = 'none';
+        }
+    };
+
+    // Attach logout handler to logout button
+    const logoutButton = document.getElementById("logoutButton");
+    if (logoutButton) {
+        logoutButton.addEventListener("click", handleLogout);
+    }
+    
+    // Show automatic notification after page loads
+    setTimeout(function() {
+        showNotification('info', 'New Feature Available', 'We\'ve just launched our new dashboard. Check it out!');
+    }, 500);
+});
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const menuButton = document.getElementById("menuButton");
+    const sidebar = document.getElementById("sidebar");
+
+    if (menuButton && sidebar) {
+        menuButton.addEventListener("click", function() {
+            sidebar.classList.toggle("active");
+        });
+    } else {
+        console.error("Menu button or sidebar not found!");
+    }
+});
+</script><script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Announcement Modal
+    const openModalBtn = document.getElementById("openModal");
+    const infoModal = document.getElementById("infoModal");
+    const logoutModal = document.getElementById("logoutModal");
+    
+    if (openModalBtn && infoModal) {
+        openModalBtn.addEventListener("click", function(event) {
+            event.preventDefault();
+            infoModal.style.display = "block";
+        });
+    } else {
+        console.error("Announcement modal button or modal not found!");
+    }
+
+    // Logout Modal
+    const logoutLinks = document.querySelectorAll('a[href="#logout"], #logout');
+    if (logoutLinks && logoutModal) {
+        logoutLinks.forEach(link => {
+            link.addEventListener("click", function(event) {
+                event.preventDefault();
+                logoutModal.style.display = "block";
+            });
+        });
+    } else {
+        console.error("Logout button or modal not found!");
+    }
+
+    // Close modals when clicking the close button
+    document.querySelectorAll('.modal-close').forEach(button => {
+        button.addEventListener('click', function() {
+            this.closest('.modal').style.display = 'none';
+        });
+    });
+
+    // Close modal when clicking outside of it
+    window.addEventListener('click', function(e) {
+        if (e.target.classList.contains('modal')) {
+            e.target.style.display = 'none';
+        }
+    });
+});
+</script><script>
+document.addEventListener('DOMContentLoaded', function() {
+    const closeButton = document.querySelector('.close-btn');
+    const sidebar = document.getElementById("sidebar");
+
+    if (closeButton && sidebar) {
+        closeButton.addEventListener("click", function() {
+            sidebar.classList.remove("active");
+        });
+    } else {
+        console.error("Sidebar close button or sidebar not found!");
+    }
+});
+</script></body>
 </html>
