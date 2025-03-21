@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Multi Games</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 99vh;
+            background-color: #f5f5f5;
+        }
+
+        .register-container {
+            width: 100%;
+            max-width: 300px;
+            padding: 30px;
+            background-color: white;
+            border-radius: 25px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .register-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .register-header h2 {
+            color: #2a9d51;
+            margin-bottom: 10px;
+        }
+
+        .register-header p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .register-form input {
+            width: 100%;
+            padding: 12px 15px;
+            margin-bottom: 15px;
+            border: 3px solid #ddd;
+            border-radius: 25px;
+            font-size: 14px;
+            transition: border 0.3s;
+        }
+
+        .register-form input:focus {
+            border-color: #2a9d51;
+            outline: none;
+        }
+
+        .register-btn {
+            width: 100%;
+            padding: 12px;
+            background-color: #2a9d51;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .register-btn:hover {
+            background-color: #238944;
+        }
+
+        .or-divider {
+            display: flex;
+            align-items: center;
+            margin: 20px 0;
+            color: #777;
+            font-size: 14px;
+        }
+
+        .or-divider::before, .or-divider::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background-color: #ddd;
+        }
+
+        .or-divider::before {
+            margin-right: 10px;
+        }
+
+        .or-divider::after {
+            margin-left: 10px;
+        }
+
+        .social-login {
+            margin-bottom: 20px;
+        }
+
+        .social-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            padding: 12px;
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 25px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .social-btn i {
+            margin-right: 10px;
+            font-size: 18px;
+        }
+
+        .social-btn:hover {
+            background-color: #f5f5f5;
+        }
+
+        #google-login i {
+            color: #DB4437;
+        }
+
+        .login-prompt {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .login-prompt a {
+            color: #2a9d51;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .login-prompt a:hover {
+            text-decoration: underline;
+        }
+
+        #error-message {
+            color: #e74c3c;
+            margin-bottom: 15px;
+            font-size: 14px;
+            text-align: center;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="error-container">
+        <div class="register-container">
+            <div class="register-header">
+                <h2>Join Multi Games</h2>
+                <p>Create an account to start playing and tracking your progress</p>
+            </div>
+            
+            <form class="register-form" id="register-form">
+                <div id="error-message"></div>
+                <input type="text" id="register-name" placeholder="Full name" required>
+                <input type="email" id="register-email" placeholder="Email address" required>
+                <input type="password" id="register-password" placeholder="Password" required>
+                <input type="password" id="register-confirm-password" placeholder="Confirm password" required>
+                
+                <button type="submit" class="register-btn">Create Account</button>
+                
+                <div class="or-divider">or</div>
+                
+                <div class="social-login">
+                    <div class="social-btn" id="google-register">
+                        <i class="fab fa-google"></i>
+                        <span>Sign up with Google</span>
+                    </div>
+                </div>
+                
+                <div class="login-prompt">
+                    Already have an account? <a href="login.html" id="login-link">Log in</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
+        import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-database.js";
+
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBw1uA-kNKOZEufWKZ9AMBxvRGHNGF1lkA",
+            authDomain: "multi-games-a2561.firebaseapp.com",
+            projectId: "multi-games-a2561",
+            storageBucket: "multi-games-a2561.appspot.com",
+            messagingSenderId: "150551898066",
+            appId: "1:150551898066:web:4e8fb185f2321ba4140a0b",
+            measurementId: "G-PB8Y87E6XV",
+            databaseURL: "https://multi-games-a2561-default-rtdb.firebaseio.com"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth();
+        const database = getDatabase();
+        const googleProvider = new GoogleAuthProvider();
+
+        // Register with email and password
+        document.getElementById('register-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('register-name').value;
+            const email = document.getElementById('register-email').value;
+            const password = document.getElementById('register-password').value;
+            const confirmPassword = document.getElementById('register-confirm-password').value;
+            const errorMessage = document.getElementById('error-message');
+            
+            // Password validation
+            if (password !== confirmPassword) {
+                errorMessage.textContent = "Passwords don't match";
+                errorMessage.style.display = "block";
+                return;
+            }
+            
+            if (password.length < 6) {
+                errorMessage.textContent = "Password should be at least 6 characters";
+                errorMessage.style.display = "block";
+                return;
+            }
+            
+            // Create user
+            createUserWithEmailAndPassword(auth, email, password)
+                .then((userCredential) => {
+                    // User successfully created
+                    const user = userCredential.user;
+                    
+                    // Save user data to database
+                    const userData = {
+                        name: name,
+                        email: email,
+                        dateJoined: new Date().toISOString(),
+                        gamesPlayed: 0,
+                        highScores: {}
+                    };
+                    
+                    set(ref(database, 'users/' + user.uid), userData);
+                    
+                    // Redirect to login page or game dashboard
+                    window.location.href = 'profile.html';
+                })
+                .catch((error) => {
+                    // Handle errors
+                    const errorCode = error.code;
+                    let errorMsg = "Registration failed. Please try again.";
+                    
+                    if (errorCode === 'auth/email-already-in-use') {
+                        errorMsg = "Email already in use. Please use a different email or login.";
+                    }
+                    
+                    errorMessage.textContent = errorMsg;
+                    errorMessage.style.display = "block";
+                });
+        });
+        
+        // Google Sign-up
+        document.getElementById('google-register').addEventListener('click', function() {
+            signInWithPopup(auth, googleProvider)
+                .then((result) => {
+                    const user = result.user;
+                    const isNewUser = result._tokenResponse.isNewUser;
+                    
+                    if (isNewUser) {
+                        // New user, create user profile in database
+                        const userData = {
+                            name: user.displayName || 'User',
+                            email: user.email,
+                            dateJoined: new Date().toISOString(),
+                            gamesPlayed: 0,
+                            highScores: {}
+                        };
+                        
+                        set(ref(database, 'users/' + user.uid), userData);
+                    }
+                    
+                    // Redirect to game dashboard
+                    window.location.href = 'profile.html';
+                })
+                .catch((error) => {
+                    // Handle errors
+                    document.getElementById('error-message').textContent = "Google sign-up failed. Please try again.";
+                    document.getElementById('error-message').style.display = "block";
+                });
+        });
+    </script>
+</body>
+</html>
