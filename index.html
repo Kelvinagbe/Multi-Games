@@ -784,6 +784,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const homeNav = document.getElementById('home-nav');
     const categoriesNav = document.getElementById('categories-nav');
     const trendingNav = document.getElementById('trending-nav');
+    const earnNav = document.getElementById('earn-nav');
     const profileNav = document.getElementById('profile-nav');
     const viewAllCategories = document.getElementById('view-all-categories');
     const mainHeader = document.getElementById('main-header');
@@ -794,6 +795,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const mainContent = document.getElementById('main-content');
     const categoriesContent = document.getElementById('categories-content');
     const trendingContent = document.getElementById('trending-content');
+    const earnContent = document.getElementById('earn-content');
     const profileContent = document.getElementById('profile-content');
     const notificationContent = document.getElementById('notification-content');
     
@@ -808,6 +810,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Get iframes
     const categoriesIframe = document.getElementById('categories-iframe');
     const trendingIframe = document.getElementById('trending-iframe');
+    const earnIframe = document.getElementById('earn-iframe');
     const profileIframe = document.getElementById('profile-iframe');
     const notificationIframe = document.getElementById('notification-iframe');
     
@@ -830,11 +833,13 @@ document.addEventListener('DOMContentLoaded', function() {
         homeNav.classList.remove('active');
         categoriesNav.classList.remove('active');
         trendingNav.classList.remove('active');
+        earnNav.classList.remove('active');
         profileNav.classList.remove('active');
         
         mainContent.classList.add('hidden');
         categoriesContent.classList.remove('active');
         trendingContent.classList.remove('active');
+        earnContent.classList.remove('active');
         profileContent.classList.remove('active');
         notificationContent.classList.remove('active');
         
