@@ -1,0 +1,408 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aha Games</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            padding: 20px;
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        
+        .section-header h2 {
+            color: #333;
+            font-size: 20px;
+        }
+        
+        .game-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 12px;
+        }
+        
+        .game-card {
+            background: white;
+            border-radius: 25px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .game-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+        
+        .game-image-container {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 1/1;
+        }
+        
+        .game-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .game-info {
+            padding: 8px;
+        }
+        
+        .game-info p {
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: #333;
+            font-size: 13px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .game-meta {
+            font-size: 10px;
+            color: #666;
+            margin-bottom: 6px;
+        }
+        
+        .game-meta i {
+            color: #ffc107;
+        }
+        
+        .play-btn {
+            display: block;
+            text-align: center;
+            background-color: #4CAF50;
+            color: white;
+            padding: 6px 0;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 11px;
+            transition: background-color 0.3s;
+        }
+        
+        .play-btn:hover {
+            background-color: #388E3C;
+        }
+        
+        .new-ribbon {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background-color: #ff5252;
+            color: white;
+            font-size: 9px;
+            font-weight: bold;
+            padding: 3px 6px;
+            border-radius: 25px;
+        }
+        
+        .trending-ribbon {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background-color: #ff9800;
+            color: white;
+            font-size: 9px;
+            font-weight: bold;
+            padding: 3px 6px;
+            border-radius: 25px;
+        }
+        
+        .featured-section {
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Popular Games -->
+    <div class="section-header">
+        <h2>Popular Games</h2>
+    </div>
+    <div class="game-grid">
+        <div class="game-card">
+            <div class="game-image-container">
+                <img src="/api/placeholder/400/400" alt="Memory Card">
+                <div class="new-ribbon">NEW</div>
+            </div>
+            <div class="game-info">
+                <p>Memory Card</p>
+                <div class="game-meta">
+                    <i class="fas fa-star"></i> 4.8
+                    <span style="margin-left: 5px;"><i class="fas fa-user"></i> 10k+</span>
+                </div>
+                <a href="memory.html" class="play-btn game-link">Play Now</a>
+            </div>
+        </div>
+        <div class="game-card">
+            <div class="game-image-container">
+                <img src="/api/placeholder/400/400" alt="Whack Mole">
+            </div>
+            <div class="game-info">
+                <p>Whack Mole</p>
+                <div class="game-meta">
+                    <i class="fas fa-star"></i> 4.5
+                    <span style="margin-left: 5px;"><i class="fas fa-user"></i> 8k+</span>
+                </div>
+                <a href="whack.html" class="play-btn game-link">Play Now</a>
+            </div>
+        </div>
+        <div class="game-card">
+            <div class="game-image-container">
+                <img src="/api/placeholder/400/400" alt="Tic Tac Toe">
+            </div>
+            <div class="game-info">
+                <p>Tic Tac Toe</p>
+                <div class="game-meta">
+                    <i class="fas fa-star"></i> 4.7
+                    <span style="margin-left: 5px;"><i class="fas fa-user"></i> 15k+</span>
+                </div>
+                <a href="tic-tac-toe.html" class="play-btn game-link">Play Now</a>
+            </div>
+        </div>
+        <div class="game-card">
+            <div class="game-image-container">
+                <img src="/api/placeholder/400/400" alt="Truth or Dare">
+            </div>
+            <div class="game-info">
+                <p>Truth or Dare</p>
+                <div class="game-meta">
+                    <i class="fas fa-star"></i> 4.9
+                    <span style="margin-left: 5px;"><i class="fas fa-user"></i> 20k+</span>
+                </div>
+                <a href="truth.html" class="play-btn game-link">Play Now</a>
+            </div>
+        </div>
+        <div class="game-card">
+            <div class="game-image-container">
+                <img src="/api/placeholder/400/400" alt="Quiz Game">
+            </div>
+            <div class="game-info">
+                <p>Quiz Game</p>
+                <div class="game-meta">
+                    <i class="fas fa-star"></i> 4.6
+                    <span style="margin-left: 5px;"><i class="fas fa-user"></i> 12k+</span>
+                </div>
+                <a href="quiz.html" class="play-btn game-link">Play Now</a>
+            </div>
+        </div>
+        <div class="game-card">
+            <div class="game-image-container">
+                <img src="/api/placeholder/400/400" alt="Word Find">
+            </div>
+            <div class="game-info">
+                <p>Word Find</p>
+                <div class="game-meta">
+                    <i class="fas fa-star"></i> 4.4
+                    <span style="margin-left: 5px;"><i class="fas fa-user"></i> 9k+</span>
+                </div>
+                <a href="word.html" class="play-btn game-link">Play Now</a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- New Additions Section -->
+    <div class="section-header" style="margin-top: 30px;">
+        <h2>New Additions</h2>
+    </div>
+    <div class="game-grid">
+        <div class="game-card">
+            <div class="game-image-container">
+                <img src="/api/placeholder/400/400" alt="Puzzle Quest">
+                <div class="new-ribbon">NEW</div>
+            </div>
+            <div class="game-info">
+                <p>Puzzle Quest</p>
+                <div class="game-meta">
+                    <i class="fas fa-star"></i> 4.6
+                    <span style="margin-left: 5px;"><i class="fas fa-user"></i> 5k+</span>
+                </div>
+                <a href="puzzle.html" class="play-btn game-link">Play Now</a>
+            </div>
+        </div>
+        <div class="game-card">
+            <div class="game-image-container">
+                <img src="/api/placeholder/400/400" alt="Word Master">
+                <div class="new-ribbon">NEW</div>
+            </div>
+            <div class="game-info">
+                <p>Word Master</p>
+                <div class="game-meta">
+                    <i class="fas fa-star"></i> 4.7
+                    <span style="margin-left: 5px;"><i class="fas fa-user"></i> 6k+</span>
+                </div>
+                <a href="word-master.html" class="play-btn game-link">Play Now</a>
+            </div>
+        </div>
+        <div class="game-card">
+            <div class="game-image-container">
+                <img src="/api/placeholder/400/400" alt="Snake Classic">
+                <div class="new-ribbon">NEW</div>
+            </div>
+            <div class="game-info">
+                <p>Snake Classic</p>
+                <div class="game-meta">
+                    <i class="fas fa-star"></i> 4.4
+                    <span style="margin-left: 5px;"><i class="fas fa-user"></i> 7k+</span>
+                </div>
+                <a href="snake.html" class="play-btn game-link">Play Now</a>
+            </div>
+        </div>
+        <div class="game-card">
+            <div class="game-image-container">
+                <img src="/api/placeholder/400/400" alt="2048 Challenge">
+                <div class="new-ribbon">NEW</div>
+            </div>
+            <div class="game-info">
+                <p>2048 Challenge</p>
+                <div class="game-meta">
+                    <i class="fas fa-star"></i> 4.9
+                    <span style="margin-left: 5px;"><i class="fas fa-user"></i> 4k+</span>
+                </div>
+                <a href="2048.html" class="play-btn game-link">Play Now</a>
+            </div>
+        </div>
+        <div class="game-card">
+            <div class="game-image-container">
+                <img src="/api/placeholder/400/400" alt="Sliding Puzzle">
+                <div class="new-ribbon">NEW</div>
+            </div>
+            <div class="game-info">
+                <p>Sliding Puzzle</p>
+                <div class="game-meta">
+                    <i class="fas fa-star"></i> 4.5
+                    <span style="margin-left: 5px;"><i class="fas fa-user"></i> 3k+</span>
+                </div>
+                <a href="sliding.html" class="play-btn game-link">Play Now</a>
+            </div>
+        </div>
+        <div class="game-card">
+            <div class="game-image-container">
+                <img src="/api/placeholder/400/400" alt="Hangman">
+                <div class="new-ribbon">NEW</div>
+            </div>
+            <div class="game-info">
+                <p>Hangman</p>
+                <div class="game-meta">
+                    <i class="fas fa-star"></i> 4.3
+                    <span style="margin-left: 5px;"><i class="fas fa-user"></i> 2k+</span>
+                </div>
+                <a href="hangman.html" class="play-btn game-link">Play Now</a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Trending Games Section -->
+    <div class="section-header" style="margin-top: 30px;">
+        <h2>Trending Games</h2>
+    </div>
+    <div class="game-grid">
+        <div class="game-card">
+            <div class="game-image-container">
+                <img src="/api/placeholder/400/400" alt="Quiz Master">
+                <div class="trending-ribbon">HOT</div>
+            </div>
+            <div class="game-info">
+                <p>Quiz Master</p>
+                <div class="game-meta">
+                    <i class="fas fa-star"></i> 4.9
+                    <span style="margin-left: 5px;"><i class="fas fa-user"></i> 25k+</span>
+                </div>
+                <a href="quiz.html" class="play-btn game-link">Play Now</a>
+            </div>
+        </div>
+        <div class="game-card">
+            <div class="game-image-container">
+                <img src="/api/placeholder/400/400" alt="Crossword Puzzle">
+                <div class="trending-ribbon">HOT</div>
+            </div>
+            <div class="game-info">
+                <p>Crossword Puzzle</p>
+                <div class="game-meta">
+                    <i class="fas fa-star"></i> 4.7
+                    <span style="margin-left: 5px;"><i class="fas fa-user"></i> 18k+</span>
+                </div>
+                <a href="crossword.html" class="play-btn game-link">Play Now</a>
+            </div>
+        </div>
+        <div class="game-card">
+            <div class="game-image-container">
+                <img src="/api/placeholder/400/400" alt="Sudoku Master">
+                <div class="trending-ribbon">HOT</div>
+            </div>
+            <div class="game-info">
+                <p>Sudoku Master</p>
+                <div class="game-meta">
+                    <i class="fas fa-star"></i> 4.8
+                    <span style="margin-left: 5px;"><i class="fas fa-user"></i> 22k+</span>
+                </div>
+                <a href="sudoku.html" class="play-btn game-link">Play Now</a>
+            </div>
+        </div>
+        <div class="game-card">
+            <div class="game-image-container">
+                <img src="/api/placeholder/400/400" alt="Tetris Classic">
+                <div class="trending-ribbon">HOT</div>
+            </div>
+            <div class="game-info">
+                <p>Tetris Classic</p>
+                <div class="game-meta">
+                    <i class="fas fa-star"></i> 4.9
+                    <span style="margin-left: 5px;"><i class="fas fa-user"></i> 30k+</span>
+                </div>
+                <a href="tetris.html" class="play-btn game-link">Play Now</a>
+            </div>
+        </div>
+        <div class="game-card">
+            <div class="game-image-container">
+                <img src="/api/placeholder/400/400" alt="Minesweeper">
+                <div class="trending-ribbon">HOT</div>
+            </div>
+            <div class="game-info">
+                <p>Minesweeper</p>
+                <div class="game-meta">
+                    <i class="fas fa-star"></i> 4.6
+                    <span style="margin-left: 5px;"><i class="fas fa-user"></i> 15k+</span>
+                </div>
+                <a href="minesweeper.html" class="play-btn game-link">Play Now</a>
+            </div>
+        </div>
+        <div class="game-card">
+            <div class="game-image-container">
+                <img src="/api/placeholder/400/400" alt="Solitaire">
+                <div class="trending-ribbon">HOT</div>
+            </div>
+            <div class="game-info">
+                <p>Solitaire</p>
+                <div class="game-meta">
+                    <i class="fas fa-star"></i> 4.8
+                    <span style="margin-left: 5px;"><i class="fas fa-user"></i> 27k+</span>
+                </div>
+                <a href="solitaire.html" class="play-btn game-link">Play Now</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
