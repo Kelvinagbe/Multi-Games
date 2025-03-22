@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register - Multi Games</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <style>
         * {
             margin: 0;
@@ -23,7 +24,7 @@
 
         .register-container {
             width: 100%;
-            max-width: 300px;
+            max-width: 350px;
             padding: 30px;
             background-color: white;
             border-radius: 25px;
@@ -74,6 +75,11 @@
 
         .register-btn:hover {
             background-color: #238944;
+        }
+
+        .register-btn:disabled {
+            background-color: #aaa;
+            cursor: not-allowed;
         }
 
         .or-divider {
@@ -154,6 +160,39 @@
             text-align: center;
             display: none;
         }
+
+        .checkbox-container {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .checkbox-container input {
+            width: auto;
+            margin: 3px 10px 0 0;
+            cursor: pointer;
+        }
+
+        .checkbox-container label {
+            font-size: 14px;
+            color: #666;
+            cursor: pointer;
+        }
+
+        .checkbox-container a {
+            color: #2a9d51;
+            text-decoration: none;
+        }
+
+        .checkbox-container a:hover {
+            text-decoration: underline;
+        }
+
+        .recaptcha-container {
+            display: flex;
+            justify-content: center;
+            margin: 15px 0;
+        }
     </style>
 </head>
 <body>
@@ -171,7 +210,16 @@
                 <input type="password" id="register-password" placeholder="Password" required>
                 <input type="password" id="register-confirm-password" placeholder="Confirm password" required>
                 
-                <button type="submit" class="register-btn">Create Account</button>
+                <div class="checkbox-container">
+                    <input type="checkbox" id="terms-checkbox" required>
+                    <label for="terms-checkbox">I accept the <a href="#" id="terms-link">Terms and Conditions</a> and <a href="#" id="privacy-link">Privacy Policy</a></label>
+                </div>
+                
+                <div class="recaptcha-container">
+                    <div class="g-recaptcha" data-sitekey="6LcUC_0qAAAAAO9Aa5ydOLmbp2_ymtNJlj9v3ZfF"></div>
+                </div>
+                
+                <button type="submit" id="register-btn" class="register-btn" disabled>Create Account</button>
                 
                 <div class="or-divider">or</div>
                 
@@ -213,9 +261,45 @@
         const database = getDatabase();
         const googleProvider = new GoogleAuthProvider();
 
+        // Function to verify reCAPTCHA and enable/disable register button
+        function verifyRecaptcha() {
+            const response = grecaptcha.getResponse();
+            const termsChecked = document.getElementById('terms-checkbox').checked;
+            const registerBtn = document.getElementById('register-btn');
+            
+            if (response.length !== 0 && termsChecked) {
+                registerBtn.disabled = false;
+            } else {
+                registerBtn.disabled = true;
+            }
+        }
+
+        // Monitor checkbox changes
+        document.getElementById('terms-checkbox').addEventListener('change', verifyRecaptcha);
+
+        // Set up a global callback for when reCAPTCHA is completed
+        window.recaptchaCallback = function() {
+            verifyRecaptcha();
+        };
+
         // Register with email and password
         document.getElementById('register-form').addEventListener('submit', function(e) {
             e.preventDefault();
+            
+            // Check if reCAPTCHA is verified
+            const recaptchaResponse = grecaptcha.getResponse();
+            if(recaptchaResponse.length === 0) {
+                document.getElementById('error-message').textContent = "Please verify that you are not a robot";
+                document.getElementById('error-message').style.display = "block";
+                return;
+            }
+            
+            // Check if terms are accepted
+            if(!document.getElementById('terms-checkbox').checked) {
+                document.getElementById('error-message').textContent = "You must accept the Terms and Conditions";
+                document.getElementById('error-message').style.display = "block";
+                return;
+            }
             
             const name = document.getElementById('register-name').value;
             const email = document.getElementById('register-email').value;
@@ -248,7 +332,9 @@
                         email: email,
                         dateJoined: new Date().toISOString(),
                         gamesPlayed: 0,
-                        highScores: {}
+                        highScores: {},
+                        termsAccepted: true,
+                        termsAcceptedDate: new Date().toISOString()
                     };
                     
                     set(ref(database, 'users/' + user.uid), userData);
@@ -272,6 +358,21 @@
         
         // Google Sign-up
         document.getElementById('google-register').addEventListener('click', function() {
+            // Check if terms are accepted for Google sign-up too
+            if(!document.getElementById('terms-checkbox').checked) {
+                document.getElementById('error-message').textContent = "You must accept the Terms and Conditions";
+                document.getElementById('error-message').style.display = "block";
+                return;
+            }
+            
+            // Check if reCAPTCHA is verified for Google sign-up too
+            const recaptchaResponse = grecaptcha.getResponse();
+            if(recaptchaResponse.length === 0) {
+                document.getElementById('error-message').textContent = "Please verify that you are not a robot";
+                document.getElementById('error-message').style.display = "block";
+                return;
+            }
+            
             signInWithPopup(auth, googleProvider)
                 .then((result) => {
                     const user = result.user;
@@ -284,7 +385,9 @@
                             email: user.email,
                             dateJoined: new Date().toISOString(),
                             gamesPlayed: 0,
-                            highScores: {}
+                            highScores: {},
+                            termsAccepted: true,
+                            termsAcceptedDate: new Date().toISOString()
                         };
                         
                         set(ref(database, 'users/' + user.uid), userData);
@@ -299,6 +402,26 @@
                     document.getElementById('error-message').style.display = "block";
                 });
         });
+        
+        // Terms and privacy links
+        document.getElementById('terms-link').addEventListener('click', function(e) {
+            e.preventDefault();
+            alert('Terms and Conditions document would open here.');
+            // Implement actual terms and conditions page/modal
+        });
+        
+        document.getElementById('privacy-link').addEventListener('click', function(e) {
+            e.preventDefault();
+            alert('Privacy Policy document would open here.');
+            // Implement actual privacy policy page/modal
+        });
+    </script>
+    
+    <script>
+        // Global callback function for reCAPTCHA
+        function recaptchaCallback() {
+            verifyRecaptcha();
+        }
     </script>
 </body>
 </html>
