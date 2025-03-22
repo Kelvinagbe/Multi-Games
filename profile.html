@@ -389,28 +389,7 @@
     </style>
 
 <script type="module">
-    // Import Firebase SDKs
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
-    import { getAuth } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
-    import { getDatabase } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-database.js";
     import { initializeAppCheck, DebugAppCheckProvider } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app-check.js";
-
-    // Firebase configuration
-    const firebaseConfig = {
-        apiKey: "AIzaSyBw1uA-kNKOZEufWKZ9AMBxvRGHNGF1lkA",
-        authDomain: "multi-games-a2561.firebaseapp.com",
-        projectId: "multi-games-a2561",
-        storageBucket: "multi-games-a2561.appspot.com",
-        messagingSenderId: "150551898066",
-        appId: "1:150551898066:web:4e8fb185f2321ba4140a0b",
-        measurementId: "G-PB8Y87E6XV",
-        databaseURL: "https://multi-games-a2561-default-rtdb.firebaseio.com"
-    };
-
-    // Initialize Firebase
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth();
-    const database = getDatabase();
 
     // Initialize Firebase App Check with Debug Provider
     self.FIREBASE_APPCHECK_DEBUG_TOKEN = true;
@@ -420,6 +399,34 @@
     });
 
     console.log("Firebase App Check initialized");
+
+    // Function to manually get the App Check token and use it in API requests
+    async function getAppCheckToken() {
+        try {
+            const token = await firebase.appCheck().getToken(true);
+            console.log("App Check Token:", token.token);
+
+            // Example: Attach the token to a Firebase Database request
+            const dbRef = ref(database, "users/" + auth.currentUser.uid);
+            get(dbRef, { headers: { "X-Firebase-AppCheck": token.token } })
+                .then(snapshot => {
+                    if (snapshot.exists()) {
+                        console.log("User Data:", snapshot.val());
+                    } else {
+                        console.log("No user data found.");
+                    }
+                })
+                .catch(error => console.error("Error fetching user data:", error));
+
+        } catch (error) {
+            console.error("Error retrieving App Check token:", error);
+        }
+    }
+
+    // Run the function to attach the token when the page loads
+    document.addEventListener("DOMContentLoaded", () => {
+        getAppCheckToken();
+    });
 </script>
 
 </head>
