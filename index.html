@@ -565,6 +565,46 @@ header {
     }
 }
     </style>
+
+<style>
+/* Navigation Button Colors */
+.bottom-nav a#home-nav.active {
+    color: green !important;
+}
+
+.bottom-nav a#home-nav.active i {
+    background-color: green !important;
+    color: white !important;
+}
+
+.bottom-nav a#trending-nav.active {
+    color: red !important;
+}
+
+.bottom-nav a#trending-nav.active i {
+    background-color: red !important;
+    color: white !important;
+}
+
+.bottom-nav a#profile-nav.active {
+    color: blue !important;
+}
+
+.bottom-nav a#profile-nav.active i {
+    background-color: blue !important;
+    color: white !important;
+}
+
+.bottom-nav a#categories-nav.active {
+    color: darkgoldenrod !important; /* Dark Yellow */
+}
+
+.bottom-nav a#categories-nav.active i {
+    background-color: darkgoldenrod !important;
+    color: white !important;
+}
+</style>
+
 </head>
 <body>
 <amp-auto-ads type="adsense"
@@ -1072,5 +1112,272 @@ document.addEventListener('DOMContentLoaded', function() {
     }, 2000);
 });
 </script>
+
+<script>
+// Function to update notification badge
+function updateNotificationBadge() {
+    const notificationBadge = document.getElementById("notification-badge");
+    const notificationList = document.getElementById("notification-list");
+
+    const count = notificationList.children.length;
+
+    if (count > 0) {
+        notificationBadge.textContent = ""; // Show red dot without a number
+        notificationBadge.classList.add("active"); // Make it visible
+    } else {
+        notificationBadge.classList.remove("active"); // Hide when empty
+    }
+}
+
+// Function to add a new notification
+function addNotification(text, time) {
+    const notificationList = document.getElementById("notification-list");
+    const emptyNotification = document.getElementById("empty-notification");
+    const clearAllNotifications = document.getElementById("clear-all-notifications");
+
+    // Hide "No Notifications" message
+    emptyNotification.style.display = "none";
+
+    // Show clear all button
+    clearAllNotifications.style.display = "block";
+
+    // Create notification item
+    let notificationItem = document.createElement("li");
+    notificationItem.classList.add("notification-item", "unread");
+
+    let notificationContent = document.createElement("div");
+    notificationContent.classList.add("notification-content");
+
+    let notificationText = document.createElement("p");
+    notificationText.textContent = text;
+
+    let notificationTime = document.createElement("span");
+    notificationTime.classList.add("notification-time");
+    notificationTime.textContent = time;
+
+    let dismissBtn = document.createElement("button");
+    dismissBtn.classList.add("dismiss-notification");
+    dismissBtn.innerHTML = "&times;";
+
+    // Add event listener to dismiss button
+    dismissBtn.addEventListener("click", function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        // Remove this notification
+        notificationList.removeChild(notificationItem);
+
+        // Update badge after removing notification
+        updateNotificationBadge();
+    });
+
+    // Assemble notification item
+    notificationContent.appendChild(notificationText);
+    notificationContent.appendChild(notificationTime);
+    notificationItem.appendChild(notificationContent);
+    notificationItem.appendChild(dismissBtn);
+
+    // Add to notification list
+    notificationList.appendChild(notificationItem);
+
+    // Update notification badge
+    updateNotificationBadge();
+}
+
+// Clear all notifications
+document.getElementById("clear-all-notifications").addEventListener("click", function(e) {
+    e.preventDefault();
+
+    // Remove all notification items
+    document.getElementById("notification-list").innerHTML = "";
+
+    // Show empty notification message
+    document.getElementById("empty-notification").style.display = "block";
+
+    // Hide the clear all button
+    document.getElementById("clear-all-notifications").style.display = "none";
+
+    // Hide notification badge
+    updateNotificationBadge();
+});
+
+// Example: Simulate a new notification after 3 seconds
+setTimeout(() => {
+    addNotification("New message received!", "Just now");
+}, 3000);
+</script>
+
+
+<script>
+// Function to update notification badge
+function updateNotificationBadge() {
+    const notificationBadge = document.getElementById("notification-badge");
+    const notificationList = document.getElementById("notification-list");
+
+    const count = notificationList.children.length;
+
+    if (count > 0) {
+        notificationBadge.textContent = ""; // Show red dot without a number
+        notificationBadge.classList.add("active"); // Make it visible
+    } else {
+        notificationBadge.classList.remove("active"); // Hide when empty
+    }
+}
+
+// Function to add a new notification
+function addNotification(text, time) {
+    const notificationList = document.getElementById("notification-list");
+    const emptyNotification = document.getElementById("empty-notification");
+    const clearAllNotifications = document.getElementById("clear-all-notifications");
+    const notificationBadge = document.getElementById("notification-badge");
+
+    // Hide "No Notifications" message
+    emptyNotification.style.display = "none";
+
+    // Show clear all button
+    clearAllNotifications.style.display = "block";
+
+    // Create notification item
+    let notificationItem = document.createElement("li");
+    notificationItem.classList.add("notification-item", "unread");
+
+    let notificationContent = document.createElement("div");
+    notificationContent.classList.add("notification-content");
+
+    let notificationText = document.createElement("p");
+    notificationText.textContent = text;
+
+    let notificationTime = document.createElement("span");
+    notificationTime.classList.add("notification-time");
+    notificationTime.textContent = time;
+
+    let dismissBtn = document.createElement("button");
+    dismissBtn.classList.add("dismiss-notification");
+    dismissBtn.innerHTML = "&times;";
+
+    // Add event listener to dismiss button
+    dismissBtn.addEventListener("click", function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        // Remove this notification
+        notificationList.removeChild(notificationItem);
+
+        // Update badge after removing notification
+        updateNotificationBadge();
+    });
+
+    // Assemble notification item
+    notificationContent.appendChild(notificationText);
+    notificationContent.appendChild(notificationTime);
+    notificationItem.appendChild(notificationContent);
+    notificationItem.appendChild(dismissBtn);
+
+    // Add to notification list
+    notificationList.appendChild(notificationItem);
+
+    // Show the notification badge when a new notification arrives
+    notificationBadge.classList.add("active");
+}
+
+// Clear all notifications
+document.getElementById("clear-all-notifications").addEventListener("click", function(e) {
+    e.preventDefault();
+
+    // Remove all notification items
+    document.getElementById("notification-list").innerHTML = "";
+
+    // Show empty notification message
+    document.getElementById("empty-notification").style.display = "block";
+
+    // Hide the clear all button
+    document.getElementById("clear-all-notifications").style.display = "none";
+
+    // Hide notification badge
+    updateNotificationBadge();
+});
+
+// Toggle notification popup and clear the badge when clicked
+document.getElementById("notification-icon").addEventListener("click", function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const notificationPopup = document.getElementById("notification-popup");
+    const notificationBadge = document.getElementById("notification-badge");
+
+    // Toggle the popup visibility
+    if (notificationPopup.classList.contains("visible")) {
+        notificationPopup.classList.remove("visible");
+    } else {
+        notificationPopup.classList.add("visible");
+
+        // Clear the notification badge when opened
+        notificationBadge.classList.remove("active");
+    }
+});
+
+// Example: Simulate a new notification after 3 seconds
+setTimeout(() => {
+    addNotification("New message received!", "Just now");
+}, 3000);
+</script>
+
+
+<script>
+// Function to reset active states for navigation buttons
+function resetActiveState() {
+    document.querySelectorAll(".bottom-nav a").forEach(nav => {
+        nav.classList.remove("active");
+    });
+}
+
+// Home button activation
+document.getElementById("home-nav").addEventListener("click", function(e) {
+    e.preventDefault();
+    resetActiveState();
+    this.classList.add("active");
+});
+
+// Trending button activation
+document.getElementById("trending-nav").addEventListener("click", function(e) {
+    e.preventDefault();
+    resetActiveState();
+    this.classList.add("active");
+});
+
+// Profile button activation
+document.getElementById("profile-nav").addEventListener("click", function(e) {
+    e.preventDefault();
+    resetActiveState();
+    this.classList.add("active");
+});
+
+// Categories button activation
+document.getElementById("categories-nav").addEventListener("click", function(e) {
+    e.preventDefault();
+    resetActiveState();
+    this.classList.add("active");
+});
+
+// Ensure the button stays active when reloading the page
+document.addEventListener("DOMContentLoaded", function() {
+    const page = window.location.href;
+
+    if (page.includes("trending.html")) {
+        resetActiveState();
+        document.getElementById("trending-nav").classList.add("active");
+    } else if (page.includes("profile.html")) {
+        resetActiveState();
+        document.getElementById("profile-nav").classList.add("active");
+    } else if (page.includes("categories.html")) {
+        resetActiveState();
+        document.getElementById("categories-nav").classList.add("active");
+    } else {
+        resetActiveState();
+        document.getElementById("home-nav").classList.add("active");
+    }
+});
+</script>
+
 </body>
 </html>
