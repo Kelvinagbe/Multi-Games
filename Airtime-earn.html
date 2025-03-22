@@ -849,7 +849,7 @@
                     const data = await response.json();
                     return data;
                     
-                    /* Fallback if API is not working
+                    // Fallback if API is not working
                     await new Promise(resolve => setTimeout(resolve, 1500));
                     
                     const statuses = [200, 200, 200, 200, 200, 400, 800]; 
@@ -862,7 +862,7 @@
                                 randomStatus === 900 ? 'Reversed' : 'Failed',
                         reference: generateReference()
                     };
-                    */
+                    //
                 } catch (error) {
                     console.error('API Error:', error);
                     throw error;
