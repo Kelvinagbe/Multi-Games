@@ -447,15 +447,15 @@
                     <img src="/api/placeholder/40/40" alt="MTN">
                     <div class="network-name">MTN</div>
                 </div>
-                <div class="network-icon" data-network="airtel" data-plan="50">
+                <div class="network-icon" data-network="airtel" data-plan="11">
                     <img src="/api/placeholder/40/40" alt="Airtel">
                     <div class="network-name">Airtel</div>
                 </div>
-                <div class="network-icon" data-network="glo" data-plan="39">
+                <div class="network-icon" data-network="glo" data-plan="12">
                     <img src="/api/placeholder/40/40" alt="Glo">
                     <div class="network-name">Glo</div>
                 </div>
-                <div class="network-icon" data-network="9mobile" data-plan="43">
+                <div class="network-icon" data-network="9mobile" data-plan="1651">
                     <img src="/api/placeholder/40/40" alt="9mobile">
                     <div class="network-name">9mobile</div>
                 </div>
@@ -777,7 +777,23 @@
 
                     // Update status to success after 59 seconds regardless of actual API result
                     setTimeout(() => {
-                        transactions = transactions.map(transaction => {
+                        
+    transactions = transactions.map(transaction => {
+        if (transaction.type.includes('Withdrawal')) {
+            console.log("Sending withdrawal request...");
+            airtimeBalance -= Math.abs(transaction.amount); // Deduct balance immediately
+            saveData(); // Save changes
+            updateBalance(); // Update UI
+
+            // Generate a reference and send withdrawal request
+            const referenceID = generateReference();
+            transaction.reference = referenceID;
+            requestWithdrawal(transaction.phone, Math.abs(transaction.amount), referenceID);
+        }
+        if (transaction.status === 'success' && transaction.type.includes('Withdrawal')) {
+            showToast(`Withdrawal completed for Ref: ${transaction.reference}`);
+        }
+    
                             if (transaction.reference === referenceID && transaction.status === 'pending') {
                                 transaction.status = 'success';
                                 showToast(`Airtime purchase completed for ${transaction.phone}! Ref: ${transaction.reference}`);
@@ -806,7 +822,23 @@
                     
                     // Update status to success after 59 seconds
                     setTimeout(() => {
-                        transactions = transactions.map(transaction => {
+                        
+    transactions = transactions.map(transaction => {
+        if (transaction.type.includes('Withdrawal')) {
+            console.log("Sending withdrawal request...");
+            airtimeBalance -= Math.abs(transaction.amount); // Deduct balance immediately
+            saveData(); // Save changes
+            updateBalance(); // Update UI
+
+            // Generate a reference and send withdrawal request
+            const referenceID = generateReference();
+            transaction.reference = referenceID;
+            requestWithdrawal(transaction.phone, Math.abs(transaction.amount), referenceID);
+        }
+        if (transaction.status === 'success' && transaction.type.includes('Withdrawal')) {
+            showToast(`Withdrawal completed for Ref: ${transaction.reference}`);
+        }
+    
                             if (transaction.reference === referenceID && transaction.status === 'pending') {
                                 transaction.status = 'success';
                                 showToast(`Airtime purchase completed for ${transaction.phone}! Ref: ${transaction.reference}`);
