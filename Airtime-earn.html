@@ -402,6 +402,7 @@
             height: 70px;
         }
     </style>
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
 </head>
 <body>
     <div class="container">
@@ -426,7 +427,7 @@
             </div>
         </div>
         
-        <div class="card">
+        <div class="card" style="margin-bottom: 30px;">
             <div class="daily-reward-card">
                 <div class="reward-info">
                     <div class="reward-amount">₦4</div>
@@ -435,9 +436,15 @@
                         Next reward in: <span id="countdown-timer">24:00:00</span>
                     </div>
                 </div>
-                <button id="claim-btn" class="btn btn-primary">Claim</button>
-            </div>
-        </div>
+               
+       <button id="claim-btn" class="btn btn-primary" disabled>Claim</button>
+    </div>
+</div>
+
+<!-- reCAPTCHA positioned between sections -->
+<div style="display: flex; justify-content: center; margin-bottom: 20px;">
+    <div class="g-recaptcha" data-sitekey="6LfANf0qAAAAALmlg5u3HnW00PtLEEkKMV-ulglv" data-callback="enableClaimButton"></div>
+</div>
         
         <div class="card">
             <div class="card-title">Buy Airtime</div>
@@ -1107,5 +1114,32 @@ if (window.matchMedia('(display-mode: standalone)').matches) {
 }
 });
 </script>
+
+<script>
+    function enableClaimButton() {
+        document.getElementById("claim-btn").disabled = false;
+    }
+
+    function validateRecaptcha(event) {
+        event.preventDefault();
+        
+        var response = grecaptcha.getResponse();
+        if (!response.length) {
+            alert("Please complete the reCAPTCHA verification.");
+            return;
+        }
+
+        // Proceed with the claim function if reCAPTCHA is verified
+        claimDailyReward();
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        var claimBtn = document.getElementById("claim-btn");
+        if (claimBtn) {
+            claimBtn.addEventListener("click", validateRecaptcha);
+        }
+    });
+</script>
+
 </body>
 </html>
