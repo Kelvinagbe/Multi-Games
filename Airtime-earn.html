@@ -36,7 +36,7 @@
             margin: 0 auto;
             padding: 15px;
             background-color: #fff;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.7);
             min-height: 100vh;
             position: relative;
         }
@@ -62,7 +62,7 @@
             padding: 20px;
             border-radius: 25px;
             margin-bottom: 20px;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.7);
         }
         
         .balance-title {
@@ -77,7 +77,7 @@
         }
         
         .balance-amount::before {
-            content: '₦';
+            content: '_';
             font-size: 24px;
             margin-right: 2px;
         }
@@ -109,7 +109,7 @@
             border-radius: 25px;
             padding: 15px;
             margin-bottom: 20px;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.7);
         }
         
         .card-title {
@@ -187,7 +187,7 @@
             cursor: pointer;
             transition: all 0.3s;
             width: 23%;
-            border: 1px solid #eee;
+            border: 3px solid #eee;
         }
         
         .network-icon img {
@@ -261,7 +261,7 @@
             width: 20px;
             height: 20px;
             border: 2px solid #f3f3f3;
-            border-top: 2px solid var(--primary-color);
+            border-top: 3px solid var(--primary-color);
             border-radius: 50%;
             margin-right: 10px;
             animation: spin 1s linear infinite;
@@ -323,7 +323,7 @@
         
         .alert {
             padding: 10px 15px;
-            border-radius: 5px;
+            border-radius: 25px;
             margin-bottom: 15px;
         }
         
@@ -376,7 +376,7 @@
             display: flex;
             justify-content: space-around;
             padding: 10px 0;
-            box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
+            box-shadow: 0 -2px 5px rgba(0,0,0,0.7);
             z-index: 100;
         }
         
@@ -431,7 +431,7 @@
             <div class="daily-reward-card">
                 <div class="reward-info">
                     <div class="reward-amount">₦4</div>
-                    <b>Complete reCAPTCHA to claim</b>
+                     <b>Complete reCAPTCHA to claim</b>
                     <div class="reward-status">Daily Reward: <span id="daily-reward-status">Loading...</span></div>
                     <div id="countdown-display" class="countdown-display">
                         Next reward in: <span id="countdown-timer">24:00:00</span>
