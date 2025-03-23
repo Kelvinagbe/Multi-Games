@@ -733,11 +733,6 @@
                 updateBalance();
                 checkDailyReward();
                 showAlert(`Daily reward of ₦${DAILY_REWARD} claimed successfully!`, 'success');
-                
-                // Reset the reCAPTCHA after successful claim
-                if (typeof grecaptcha !== 'undefined') {
-                    grecaptcha.reset();
-                }
             }
 
             async function purchaseAirtime() {
@@ -1028,36 +1023,9 @@ function generateReference() {
     return 'REF' + Math.random().toString(36).substring(2, 10).toUpperCase();
 }
 
-// Fixed function to validate reCAPTCHA before claiming reward
-function validateRecaptcha(event) {
-    event.preventDefault();
-    
-    // Check if reCAPTCHA exists and is loaded
-    if (typeof grecaptcha === 'undefined') {
-        console.error('reCAPTCHA not loaded');
-        showAlert('reCAPTCHA verification failed to load', 'danger');
-        return false;
-    }
-    
-    var response = grecaptcha.getResponse();
-    if (!response.length) {
-        showAlert("Please complete the reCAPTCHA verification.", "warning");
-        return false; // Stop execution if reCAPTCHA is not completed
-    }
-
-    // Only if reCAPTCHA is verified, proceed with the claim function
-    claimDailyReward();
-    return true;
-}
-
 // Event Listeners
 if (claimBtn) {
-    // Remove any existing event listeners to prevent multiple calls
-    const freshClaimBtn = claimBtn.cloneNode(true);
-    claimBtn.parentNode.replaceChild(freshClaimBtn, claimBtn);
-    
-    // Add the validateRecaptcha event listener to the fresh button
-    document.getElementById("claim-btn").addEventListener("click", validateRecaptcha);
+    claimBtn.addEventListener('click', claimDailyReward);
 }
 
 if (purchaseBtn) {
@@ -1145,6 +1113,80 @@ if (window.matchMedia('(display-mode: standalone)').matches) {
     console.log('App is running as PWA');
 }
 });
+
+    
+function enableClaimButton() {
+    var claimBtn = document.getElementById("claim-btn");
+    if (claimBtn) {
+        claimBtn.dataset.recaptchaVerified = "true"; // Set flag
+        claimBtn.style.display = "block"; // Show button
+        claimBtn.style.backgroundColor = "#4CAF50"; // Restore normal button color
+        claimBtn.style.opacity = "1"; // Fully visible
+        claimBtn.disabled = false; // Enable button
+    }
+}
+
+function validateRecaptcha(event) {
+    event.preventDefault();
+    
+    var claimBtn = document.getElementById("claim-btn");
+    var response = grecaptcha.getResponse();
+    
+    if (!response.length) {
+        alert("Please complete the reCAPTCHA verification.");
+        return;
+    }
+    
+    if (claimBtn.dataset.recaptchaVerified !== "true") {
+        alert("reCAPTCHA verification failed. Please try again.");
+        return;
+    }
+
+    // Proceed with the claim function if reCAPTCHA is verified
+    claimDailyReward();
+
+    // Reset reCAPTCHA and disable the button again after claiming
+    grecaptcha.reset();
+    claimBtn.dataset.recaptchaVerified = "false";
+    claimBtn.style.display = "none"; // Hide button again to prevent multiple claims
+    claimBtn.disabled = true; // Disable button again
+}
+
+// Ensure button is initially hidden
+document.addEventListener("DOMContentLoaded", function () {
+    var claimBtn = document.getElementById("claim-btn");
+    if (claimBtn) {
+        claimBtn.style.display = "none"; // Hide the button initially
+        claimBtn.style.backgroundColor = "lightgray"; // Make it look inactive
+        claimBtn.style.opacity = "0.5"; // Lower opacity
+        claimBtn.disabled = true; // Disable button initially
+
+        claimBtn.addEventListener("click", validateRecaptcha);
+    }
+});
+ {
+        document.getElementById("claim-btn").disabled = false;
+    }
+
+    function validateRecaptcha(event) {
+        event.preventDefault();
+        
+        var response = grecaptcha.getResponse();
+        if (!response.length) {
+            alert("Please complete the reCAPTCHA verification.");
+            return;
+        }
+
+        // Proceed with the claim function if reCAPTCHA is verified
+        claimDailyReward();
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        var claimBtn = document.getElementById("claim-btn");
+        if (claimBtn) {
+            claimBtn.addEventListener("click", validateRecaptcha);
+        }
+    });
 </script>
 </body>
 </html>
