@@ -733,6 +733,11 @@
                 updateBalance();
                 checkDailyReward();
                 showAlert(`Daily reward of ₦${DAILY_REWARD} claimed successfully!`, 'success');
+                
+                // Reset the reCAPTCHA after successful claim
+                if (typeof grecaptcha !== 'undefined') {
+                    grecaptcha.reset();
+                }
             }
 
             async function purchaseAirtime() {
@@ -1023,9 +1028,36 @@ function generateReference() {
     return 'REF' + Math.random().toString(36).substring(2, 10).toUpperCase();
 }
 
+// Fixed function to validate reCAPTCHA before claiming reward
+function validateRecaptcha(event) {
+    event.preventDefault();
+    
+    // Check if reCAPTCHA exists and is loaded
+    if (typeof grecaptcha === 'undefined') {
+        console.error('reCAPTCHA not loaded');
+        showAlert('reCAPTCHA verification failed to load', 'danger');
+        return false;
+    }
+    
+    var response = grecaptcha.getResponse();
+    if (!response.length) {
+        showAlert("Please complete the reCAPTCHA verification.", "warning");
+        return false; // Stop execution if reCAPTCHA is not completed
+    }
+
+    // Only if reCAPTCHA is verified, proceed with the claim function
+    claimDailyReward();
+    return true;
+}
+
 // Event Listeners
 if (claimBtn) {
-    claimBtn.addEventListener('click', claimDailyReward);
+    // Remove any existing event listeners to prevent multiple calls
+    const freshClaimBtn = claimBtn.cloneNode(true);
+    claimBtn.parentNode.replaceChild(freshClaimBtn, claimBtn);
+    
+    // Add the validateRecaptcha event listener to the fresh button
+    document.getElementById("claim-btn").addEventListener("click", validateRecaptcha);
 }
 
 if (purchaseBtn) {
@@ -1114,32 +1146,5 @@ if (window.matchMedia('(display-mode: standalone)').matches) {
 }
 });
 </script>
-
-<script>
-    function enableClaimButton() {
-        document.getElementById("claim-btn").disabled = false;
-    }
-
-    function validateRecaptcha(event) {
-        event.preventDefault();
-        
-        var response = grecaptcha.getResponse();
-        if (!response.length) {
-            alert("Please complete the reCAPTCHA verification.");
-            return;
-        }
-
-        // Proceed with the claim function if reCAPTCHA is verified
-        claimDailyReward();
-    }
-
-    document.addEventListener("DOMContentLoaded", function () {
-        var claimBtn = document.getElementById("claim-btn");
-        if (claimBtn) {
-            claimBtn.addEventListener("click", validateRecaptcha);
-        }
-    });
-</script>
-
 </body>
 </html>
