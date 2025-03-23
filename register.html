@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register - Multi Games</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
-    <style>
-        * {
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register - Multi Games</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+  <style>
+    /* Your existing CSS styles here */
+       * {
             margin: 9;
             padding: 0;
             box-sizing: border-box;
@@ -193,235 +194,231 @@
             justify-content: center;
             margin: 15px 0;
         }
-    </style>
+  </style>
 </head>
 <body>
-    <div id="error-container">
-        <div class="register-container">
-            <div class="register-header">
-                <h2>Join Multi Games</h2>
-                <p>Create an account to start playing and tracking your progress</p>
-            </div>
-            
-            <form class="register-form" id="register-form">
-                <div id="error-message"></div>
-                <input type="text" id="register-name" placeholder="Full name" required>
-                <input type="email" id="register-email" placeholder="Email address" required>
-                <input type="password" id="register-password" placeholder="Password" required>
-                <input type="password" id="register-confirm-password" placeholder="Confirm password" required>
-                
-                <div class="checkbox-container">
-                    <input type="checkbox" id="terms-checkbox" required>
-                    <label for="terms-checkbox">I accept the <a href="#" id="terms-link">Terms and Conditions</a> and <a href="#" id="privacy-link">Privacy Policy</a></label>
-                </div>
-                
-                <div class="recaptcha-container">
-                    <div class="g-recaptcha" data-sitekey="6LcUC_0qAAAAAO9Aa5ydOLmbp2_ymtNJlj9v3ZfF"></div>
-                </div>
-                
-                <button type="submit" id="register-btn" class="register-btn" disabled>Create Account</button>
-                
-                <div class="or-divider">or</div>
-                
-                <div class="social-login">
-                    <div class="social-btn" id="google-register">
-                        <i class="fab fa-google"></i>
-                        <span>Sign up with Google</span>
-                    </div>
-                </div>
-                
-                <div class="login-prompt">
-                    Already have an account? <a href="profile.html" id="login-link">Log in</a>
-                </div>
-            </form>
+  <div id="error-container">
+    <div class="register-container">
+      <div class="register-header">
+        <h2>Join Multi Games</h2>
+        <p>Create an account to start playing and tracking your progress</p>
+      </div>
+      
+      <form class="register-form" id="register-form">
+        <div id="error-message"></div>
+        <input type="text" id="register-name" placeholder="Full name" required>
+        <input type="email" id="register-email" placeholder="Email address" required>
+        <input type="password" id="register-password" placeholder="Password" required>
+        <input type="password" id="register-confirm-password" placeholder="Confirm password" required>
+        <!-- New manual referral input (optional) -->
+        <input type="text" id="manual-referral" placeholder="Referral code (optional)">
+        
+        <div class="checkbox-container">
+          <input type="checkbox" id="terms-checkbox" required>
+          <label for="terms-checkbox">I accept the <a href="#" id="terms-link">Terms and Conditions</a> and <a href="#" id="privacy-link">Privacy Policy</a></label>
         </div>
+        
+        <div class="recaptcha-container">
+          <div class="g-recaptcha" data-sitekey="6LcUC_0qAAAAAO9Aa5ydOLmbp2_ymtNJlj9v3ZfF"></div>
+        </div>
+        
+        <button type="submit" id="register-btn" class="register-btn" disabled>Create Account</button>
+        
+        <div class="or-divider">or</div>
+        
+        <div class="social-login">
+          <div class="social-btn" id="google-register">
+            <i class="fab fa-google"></i>
+            <span>Sign up with Google</span>
+          </div>
+        </div>
+        
+        <div class="login-prompt">
+          Already have an account? <a href="profile.html" id="login-link">Log in</a>
+        </div>
+      </form>
     </div>
+  </div>
 
-    <script type="module">
-        // Import the functions you need from the SDKs you need
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
-        import { getAuth, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
-        import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-database.js";
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
+    import { getDatabase, ref, set, get, child, update } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-database.js";
 
-        // Your web app's Firebase configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyBw1uA-kNKOZEufWKZ9AMBxvRGHNGF1lkA",
-            authDomain: "multi-games-a2561.firebaseapp.com",
-            projectId: "multi-games-a2561",
-            storageBucket: "multi-games-a2561.appspot.com",
-            messagingSenderId: "150551898066",
-            appId: "1:150551898066:web:4e8fb185f2321ba4140a0b",
-            measurementId: "G-PB8Y87E6XV",
-            databaseURL: "https://multi-games-a2561-default-rtdb.firebaseio.com"
-        };
+    // Your Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyBw1uA-kNKOZEufWKZ9AMBxvRGHNGF1lkA",
+      authDomain: "multi-games-a2561.firebaseapp.com",
+      projectId: "multi-games-a2561",
+      storageBucket: "multi-games-a2561.appspot.com",
+      messagingSenderId: "150551898066",
+      appId: "1:150551898066:web:4e8fb185f2321ba4140a0b",
+      measurementId: "G-PB8Y87E6XV",
+      databaseURL: "https://multi-games-a2561-default-rtdb.firebaseio.com"
+    };
 
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth();
-        const database = getDatabase();
-        const googleProvider = new GoogleAuthProvider();
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth();
+    const database = getDatabase();
+    const googleProvider = new GoogleAuthProvider();
 
-        // Function to verify reCAPTCHA and enable/disable register button
-        function verifyRecaptcha() {
-            const response = grecaptcha.getResponse();
-            const termsChecked = document.getElementById('terms-checkbox').checked;
-            const registerBtn = document.getElementById('register-btn');
-            
-            if (response.length !== 0 && termsChecked) {
-                registerBtn.disabled = false;
-            } else {
-                registerBtn.disabled = true;
-            }
+    // Function to verify reCAPTCHA and enable/disable register button
+    function verifyRecaptcha() {
+      const response = grecaptcha.getResponse();
+      const termsChecked = document.getElementById('terms-checkbox').checked;
+      const registerBtn = document.getElementById('register-btn');
+      
+      if (response.length !== 0 && termsChecked) {
+        registerBtn.disabled = false;
+      } else {
+        registerBtn.disabled = true;
+      }
+    }
+
+    document.getElementById('terms-checkbox').addEventListener('change', verifyRecaptcha);
+    window.recaptchaCallback = function() {
+      verifyRecaptcha();
+    };
+
+    // Function to generate a unique referral code
+    async function generateReferralCode() {
+      let code;
+      let exists = true;
+      while (exists) {
+        code = "GMR" + Math.random().toString(36).substr(2, 6).toUpperCase();
+        const dbRef = ref(database);
+        const snapshot = await get(child(dbRef, `referralCodes/${code}`));
+        exists = snapshot.exists();
+      }
+      return code;
+    }
+
+    // Function to capture referral code from URL
+    function getReferralCodeFromURL() {
+      const params = new URLSearchParams(window.location.search);
+      return params.get("ref") || null;
+    }
+
+    // Function to track referral usage
+    async function trackReferral(referralCode) {
+      if (!referralCode) return;
+      const dbRef = ref(database);
+      const snapshot = await get(child(dbRef, `referralCodes/${referralCode}`));
+      if (snapshot.exists()) {
+        const referrerId = snapshot.val().userId;
+        const userRef = ref(database, `users/${referrerId}`);
+        const userSnapshot = await get(userRef);
+        if (userSnapshot.exists()) {
+          const referrerData = userSnapshot.val();
+          const newReferralCount = (referrerData.referrals || 0) + 1;
+          update(userRef, { referrals: newReferralCount });
         }
+      }
+    }
 
-        // Monitor checkbox changes
-        document.getElementById('terms-checkbox').addEventListener('change', verifyRecaptcha);
+    // Registration form submission handler
+    document.getElementById('register-form').addEventListener('submit', async function (e) {
+      e.preventDefault();
 
-        // Set up a global callback for when reCAPTCHA is completed
-        window.recaptchaCallback = function() {
-            verifyRecaptcha();
-        };
+      const name = document.getElementById('register-name').value;
+      const email = document.getElementById('register-email').value;
+      const password = document.getElementById('register-password').value;
+      const confirmPassword = document.getElementById('register-confirm-password').value;
+      const manualReferral = document.getElementById('manual-referral').value.trim();
 
-        // Register with email and password
-        document.getElementById('register-form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            // Check if reCAPTCHA is verified
-            const recaptchaResponse = grecaptcha.getResponse();
-            if(recaptchaResponse.length === 0) {
-                document.getElementById('error-message').textContent = "Please verify that you are not a robot";
-                document.getElementById('error-message').style.display = "block";
-                return;
-            }
-            
-            // Check if terms are accepted
-            if(!document.getElementById('terms-checkbox').checked) {
-                document.getElementById('error-message').textContent = "You must accept the Terms and Conditions";
-                document.getElementById('error-message').style.display = "block";
-                return;
-            }
-            
-            const name = document.getElementById('register-name').value;
-            const email = document.getElementById('register-email').value;
-            const password = document.getElementById('register-password').value;
-            const confirmPassword = document.getElementById('register-confirm-password').value;
-            const errorMessage = document.getElementById('error-message');
-            
-            // Password validation
-            if (password !== confirmPassword) {
-                errorMessage.textContent = "Passwords don't match";
-                errorMessage.style.display = "block";
-                return;
-            }
-            
-            if (password.length < 6) {
-                errorMessage.textContent = "Password should be at least 6 characters";
-                errorMessage.style.display = "block";
-                return;
-            }
-            
-            // Create user
-            createUserWithEmailAndPassword(auth, email, password)
-                .then((userCredential) => {
-                    // User successfully created
-                    const user = userCredential.user;
-                    
-                    // Save user data to database
-                    const userData = {
-                        name: name,
-                        email: email,
-                        dateJoined: new Date().toISOString(),
-                        gamesPlayed: 0,
-                        highScores: {},
-                        termsAccepted: true,
-                        termsAcceptedDate: new Date().toISOString()
-                    };
-                    
-                    set(ref(database, 'users/' + user.uid), userData);
-                    
-                    // Redirect to login page or game dashboard
-                    window.location.href = 'profile.html';
-                })
-                .catch((error) => {
-                    // Handle errors
-                    const errorCode = error.code;
-                    let errorMsg = "Registration failed. Please try again.";
-                    
-                    if (errorCode === 'auth/email-already-in-use') {
-                        errorMsg = "Email already in use. Please use a different email or login.";
-                    }
-                    
-                    errorMessage.textContent = errorMsg;
-                    errorMessage.style.display = "block";
-                });
+      // Basic password validation
+      if (password !== confirmPassword) {
+        document.getElementById('error-message').textContent = "Passwords don't match";
+        document.getElementById('error-message').style.display = "block";
+        return;
+      }
+      if (password.length < 6) {
+        document.getElementById('error-message').textContent = "Password should be at least 6 characters";
+        document.getElementById('error-message').style.display = "block";
+        return;
+      }
+
+      // Generate a unique referral code for this new user
+      const userReferralCode = await generateReferralCode();
+
+      // Determine the referral code to use: manual input takes precedence over URL parameter
+      const referralUsed = manualReferral || getReferralCodeFromURL();
+
+      createUserWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          const user = userCredential.user;
+          const userId = user.uid;
+
+          // Prepare user data including referral details
+          const userData = {
+            name: name,
+            email: email,
+            referralCode: userReferralCode,
+            referredBy: referralUsed || null,
+            dateJoined: new Date().toISOString()
+          };
+
+          // Save the referral code mapping for this user
+          set(ref(database, `referralCodes/${userReferralCode}`), { userId });
+
+          // Save user data in Firebase
+          set(ref(database, `users/${userId}`), userData);
+
+          // If a referral code was used, track it
+          if (referralUsed) {
+            trackReferral(referralUsed);
+          }
+
+          // Redirect to profile page after registration
+          window.location.href = 'profile.html';
+        })
+        .catch((error) => {
+          document.getElementById('error-message').textContent = error.message;
+          document.getElementById('error-message').style.display = "block";
         });
-        
-        // Google Sign-up
-        document.getElementById('google-register').addEventListener('click', function() {
-            // Check if terms are accepted for Google sign-up too
-            if(!document.getElementById('terms-checkbox').checked) {
-                document.getElementById('error-message').textContent = "You must accept the Terms and Conditions";
-                document.getElementById('error-message').style.display = "block";
-                return;
-            }
-            
-            // Check if reCAPTCHA is verified for Google sign-up too
-            const recaptchaResponse = grecaptcha.getResponse();
-            if(recaptchaResponse.length === 0) {
-                document.getElementById('error-message').textContent = "Please verify that you are not a robot";
-                document.getElementById('error-message').style.display = "block";
-                return;
-            }
-            
-            signInWithPopup(auth, googleProvider)
-                .then((result) => {
-                    const user = result.user;
-                    const isNewUser = result._tokenResponse.isNewUser;
-                    
-                    if (isNewUser) {
-                        // New user, create user profile in database
-                        const userData = {
-                            name: user.displayName || 'User',
-                            email: user.email,
-                            dateJoined: new Date().toISOString(),
-                            gamesPlayed: 0,
-                            highScores: {},
-                            termsAccepted: true,
-                            termsAcceptedDate: new Date().toISOString()
-                        };
-                        
-                        set(ref(database, 'users/' + user.uid), userData);
-                    }
-                    
-                    // Redirect to game dashboard
-                    window.location.href = 'profile.html';
-                })
-                .catch((error) => {
-                    // Handle errors
-                    document.getElementById('error-message').textContent = "Google sign-up failed. Please try again.";
-                    document.getElementById('error-message').style.display = "block";
-                });
+    });
+
+    // Google Sign-up (existing code)
+    document.getElementById('google-register').addEventListener('click', function() {
+      if(!document.getElementById('terms-checkbox').checked) {
+        document.getElementById('error-message').textContent = "You must accept the Terms and Conditions";
+        document.getElementById('error-message').style.display = "block";
+        return;
+      }
+      const recaptchaResponse = grecaptcha.getResponse();
+      if(recaptchaResponse.length === 0) {
+        document.getElementById('error-message').textContent = "Please verify that you are not a robot";
+        document.getElementById('error-message').style.display = "block";
+        return;
+      }
+      signInWithPopup(auth, googleProvider)
+        .then((result) => {
+          const user = result.user;
+          // You can implement similar referral tracking for Google sign-up if needed.
+          window.location.href = 'profile.html';
+        })
+        .catch((error) => {
+          document.getElementById('error-message').textContent = "Google sign-up failed. Please try again.";
+          document.getElementById('error-message').style.display = "block";
         });
-        
-        // Terms and privacy links
-        document.getElementById('terms-link').addEventListener('click', function(e) {
-            e.preventDefault();
-            alert('Terms and Conditions document would open here.');
-            // Implement actual terms and conditions page/modal
-        });
-        
-        document.getElementById('privacy-link').addEventListener('click', function(e) {
-            e.preventDefault();
-            alert('Privacy Policy document would open here.');
-            // Implement actual privacy policy page/modal
-        });
-    </script>
-    
-    <script>
-        // Global callback function for reCAPTCHA
-        function recaptchaCallback() {
-            verifyRecaptcha();
-        }
-    </script>
+    });
+
+    // Terms and privacy links
+    document.getElementById('terms-link').addEventListener('click', function(e) {
+      e.preventDefault();
+      alert('Terms and Conditions document would open here.');
+    });
+    document.getElementById('privacy-link').addEventListener('click', function(e) {
+      e.preventDefault();
+      alert('Privacy Policy document would open here.');
+    });
+  </script>
+  
+  <script>
+    function recaptchaCallback() {
+      verifyRecaptcha();
+    }
+  </script>
 </body>
 </html>

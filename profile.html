@@ -1,14 +1,13 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profile | Multi Games</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        * {
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profile | Multi Games</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* Your existing CSS styles for profile page */
+      * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
@@ -386,559 +385,607 @@
         .register-prompt a:hover {
             text-decoration: underline;
         }
-    </style>
 
-<script type="module">
+.referral-section {
+  margin: 20px auto;
+  padding: 15px;
+  background-color: #f7f7f7;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  max-width: 500px;
+  text-align: center;
+}
+
+.referral-section h3 {
+  margin-bottom: 10px;
+  font-size: 18px;
+  color: #2E7D32;
+}
+
+.referral-section input[type="text"] {
+  width: calc(100% - 110px);
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+.referral-section button {
+  width: 90px;
+  padding: 10px;
+  background-color: #2E7D32;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  margin-left: 10px;
+  transition: background-color 0.3s ease;
+}
+
+.referral-section button:hover {
+  background-color: #1B5E20;
+}
+
+.referral-start {
+  margin: 10px;
+  padding: 10px;
+  left: 70px;
+  background-color: #f5f9f5;
+  border: 3px solid #2E7D32;
+  border-radius: 30px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+  max-width: 270px;
+  text-align: center;
+  font-family: 'Arial', sans-serif;
+  display: block;
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.referral-start h2 {
+  margin: 0 0 15px 0;
+  font-size: 20px;
+  color: #2E7D32;
+}
+
+.referral-start p {
+  font-size: 14px;
+  color: #555;
+  margin: 0 0 10px 0;
+  line-height: 1.4;
+}
+
+.referral-start #referral-count {
+  font-weight: bold;
+  color: #2E7D32;
+  font-size: 16px;
+}
+
+.referral-start .cta-button {
+  margin-top: 15px;
+  padding: 8px 20px;
+  background-color: #2E7D32;
+  color: white;
+  border: none;
+  border-radius: 30px;
+  font-size: 14px;
+  cursor: pointer;
+  display: inline-block;
+  font-weight: bold;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.referral-start .cta-button:hover {
+  background-color: #1B5E20;
+  transform: translateY(-1px);
+}
+
+.referral-start .cta-button:active {
+  transform: translateY(1px);
+}
+  </style>
+
+  <script type="module">
     import { initializeAppCheck, DebugAppCheckProvider } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app-check.js";
 
-    // Initialize Firebase App Check with Debug Provider
     self.FIREBASE_APPCHECK_DEBUG_TOKEN = true;
     const appCheck = initializeAppCheck(app, {
-        provider: new DebugAppCheckProvider(),
-        isTokenAutoRefreshEnabled: true
+      provider: new DebugAppCheckProvider(),
+      isTokenAutoRefreshEnabled: true
     });
-
     console.log("Firebase App Check initialized");
 
-    // Function to manually get the App Check token and use it in API requests
     async function getAppCheckToken() {
-        try {
-            const token = await firebase.appCheck().getToken(true);
-            console.log("App Check Token:", token.token);
-
-            // Example: Attach the token to a Firebase Database request
-            const dbRef = ref(database, "users/" + auth.currentUser.uid);
-            get(dbRef, { headers: { "X-Firebase-AppCheck": token.token } })
-                .then(snapshot => {
-                    if (snapshot.exists()) {
-                        console.log("User Data:", snapshot.val());
-                    } else {
-                        console.log("No user data found.");
-                    }
-                })
-                .catch(error => console.error("Error fetching user data:", error));
-
-        } catch (error) {
-            console.error("Error retrieving App Check token:", error);
-        }
+      try {
+        const token = await firebase.appCheck().getToken(true);
+        console.log("App Check Token:", token.token);
+      } catch (error) {
+        console.error("Error retrieving App Check token:", error);
+      }
     }
-
-    // Run the function to attach the token when the page loads
     document.addEventListener("DOMContentLoaded", () => {
-        getAppCheckToken();
+      getAppCheckToken();
     });
-</script>
-
+  </script>
 </head>
 <body>
+  <div id="loading">
+    <h3>Loading profile...</h3>
+  </div>
 
-    <div id="loading">
-        <h3>Loading profile...</h3>
+  <div id="error-container">
+    <div class="login-container">
+      <div class="login-header">
+        <h2>Welcome to Multi Games</h2>
+        <p>Log in to access your profile and game history</p>
+      </div>
+      <form class="login-form" id="login-form">
+        <input type="email" id="login-email" placeholder="Email address" required>
+        <input type="password" id="login-password" placeholder="Password" required>
+        <button type="submit" class="login-btn">Log In</button>
+        <div class="login-options">
+          <label><input type="checkbox" id="remember-me"> Remember me</label>
+          <a href="#" id="forgot-password">Forgot password?</a>
+        </div>
+        <div class="or-divider">or</div>
+        <div class="social-login">
+          <div class="social-btn" id="google-login">
+            <i class="fab fa-google"></i>
+            <span>Google</span>
+          </div>
+        </div>
+        <div class="register-prompt">
+          Don't have an account? <a href="#" id="register-link">Register now</a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="profile-content" style="display: none;">
+    <div class="profile-header">
+      <img id="profile-picture" src="https://via.placeholder.com/100" alt="Profile Picture">
+      <div class="profile-name" id="profile-name">Loading...</div>
+      <div class="profile-email" id="profile-email">Loading...</div>
     </div>
 
-    <div id="error-container">
-        <div class="login-container">
-            <div class="login-header">
-                <h2>Welcome to Multi Games</h2>
-                <p>Log in to access your profile and game history</p>
-            </div>
-            
-            <form class="login-form" id="login-form">
-                <input type="email" id="login-email" placeholder="Email address" required>
-                <input type="password" id="login-password" placeholder="Password" required>
-                
-                <button type="submit" class="login-btn">Log In</button>
-                
-                <div class="login-options">
-                    <label><input type="checkbox" id="remember-me"> Remember me</label>
-                    <a href="#" id="forgot-password">Forgot password?</a>
-                </div>
-                
-                <div class="or-divider">or</div>
-                
-                <div class="social-login">
-                    <div class="social-btn" id="google-login">
-                        <i class="fab fa-google"></i>
-                        <span>Google</span>
-                    </div>
-                </div>
-                
-                <div class="register-prompt">
-                    Don't have an account? <a href="#" id="register-link">Register now</a>
-                </div>
-            </form>
-        </div>
+    <div class="stats-container">
+      <div class="stat-item">
+        <div class="stat-value" id="games-played">0</div>
+        <div class="stat-label">Games Played</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value" id="wins">0</div>
+        <div class="stat-label">Wins</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value" id="win-rate">0</div>
+        <div class="stat-label">Win Rate %</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value" id="rank">-</div>
+        <div class="stat-label">Rank</div>
+      </div>
     </div>
 
-    <div id="profile-content" style="display: none;">
-        <div class="profile-header">
-            <img id="profile-picture" src="https://via.placeholder.com/100" alt="Profile Picture">
-            <div class="profile-name" id="profile-name">Loading...</div>
-            <div class="profile-email" id="profile-email">Loading...</div>
-        </div>
-
-        <div class="stats-container">
-            <div class="stat-item">
-                <div class="stat-value" id="games-played">0</div>
-                <div class="stat-label">Games Played</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-value" id="wins">0</div>
-                <div class="stat-label">Wins</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-value" id="win-rate">0</div>
-                <div class="stat-label">Win Rate %</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-value" id="rank">-</div>
-                <div class="stat-label">Rank</div>
-            </div>
-        </div>
-
-        <div class="tab-container">
-            <div class="tab active" data-tab="overview">Overview</div>
-            <div class="tab" data-tab="history">Game History</div>
-            <div class="tab" data-tab="achievements">Achievements</div>
-            <div class="tab" data-tab="settings">Settings</div>
-        </div>
-
-        <div class="tab-content active" id="overview">
-            <div class="content">
-                <h3>About Me</h3>
-                <p id="user-bio">Loading bio...</p>
-                
-                <h3 style="margin-top: 25px;">Player Stats</h3>
-                <div class="profile-stat-grid">
-                    <div class="profile-stat-item">
-                        <span>Time Played</span>
-                        <span id="time-played">0</span>
-                    </div>
-                    <div class="profile-stat-item">
-                        <span>Favorite Game</span>
-                        <span id="favorite-game">None</span>
-                    </div>
-                </div>
-                
-                <div class="button-container">
-                    <button class="edit-profile-btn" id="edit-profile-btn">Edit Profile</button>
-                </div>
-            </div>
-        </div>
-
-        <div class="tab-content" id="history">
-            <div class="content">
-                <h3>Recent Games</h3>
-                <ul id="recent-games">
-                    <li>Loading game history...</li>
-                </ul>
-            </div>
-        </div>
-
-        <div class="tab-content" id="achievements">
-            <div class="content">
-                <h3>My Achievements</h3>
-                <div id="achievements-container">
-                    <p>Loading achievements...</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="tab-content" id="settings">
-            <div class="content">
-                <h3>Profile Settings</h3>
-                <form id="edit-profile-form">
-                    <div class="form-group">
-                        <label for="display-name">Display Name</label>
-                        <input type="text" id="display-name" placeholder="Enter your display name">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="bio">Bio</label>
-                        <textarea id="bio" placeholder="Tell us about yourself"></textarea>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="profile-pic-url">Profile Picture URL</label>
-                        <input type="text" id="profile-pic-url" placeholder="Enter profile picture URL">
-                    </div>
-                    
-                    <div id="profile-update-message"></div>
-                    
-                    <div class="button-container">
-                        <button type="submit" class="edit-profile-btn">Save Changes</button>
-                    </div>
-                </form>
-                
-                <h3 style="margin-top: 30px;">Account Settings</h3>
-                <div class="button-container">
-                    <button id="change-password-btn" class="edit-profile-btn">Change Password</button>
-                    <button id="delete-account-btn" class="danger-btn">Delete Account</button>
-                    <button id="logout-btn" class="logout-btn">Log Out</button>
-                </div>
-            </div>
-        </div>
+    <!-- Referral Section -->
+    <div class="referral-section">
+      <h3>Your Referral Link</h3>
+      <input type="text" id="user-referral-link" readonly>
+      <button onclick="copyReferralLink()">Copy Link</button>
     </div>
 
-    <script type="module">
-// Import the functions you need from the SDKs you need
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
-        import { getAuth, signOut, onAuthStateChanged, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, FacebookAuthProvider } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
-        import { getDatabase, ref, onValue, update, set } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-database.js";
+    <div class="referral-start">
+  <h2>Start Referring Friends Today!</h2>
+  <p>Share your unique referral link with friends and family to earn amazing rewards. The more people you refer, the more benefits you unlock!</p>
+  <p>You have referred <span id="referral-count">0</span> friends so far.</p>
+  <button class="cta-button">Get My Referral Link</button>
+</div>
 
-        // Your web app's Firebase configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyBw1uA-kNKOZEufWKZ9AMBxvRGHNGF1lkA",
-            authDomain: "multi-games-a2561.firebaseapp.com",
-            projectId: "multi-games-a2561",
-            storageBucket: "multi-games-a2561.appspot.com",
-            messagingSenderId: "150551898066",
-            appId: "1:150551898066:web:4e8fb185f2321ba4140a0b",
-            measurementId: "G-PB8Y87E6XV",
-            databaseURL: "https://multi-games-a2561-default-rtdb.firebaseio.com"
-        };
+    <div class="tab-container">
+      <div class="tab active" data-tab="overview">Overview</div>
+      <div class="tab" data-tab="history">Game History</div>
+      <div class="tab" data-tab="achievements">Achievements</div>
+      <div class="tab" data-tab="settings">Settings</div>
+    </div>
 
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth();
-        const database = getDatabase();
-        
-        // DOM Elements
-        const loadingElement = document.getElementById('loading');
-        const errorContainer = document.getElementById('error-container');
-        const profileContent = document.getElementById('profile-content');
-        const logoutBtn = document.getElementById('logout-btn');
-        const tabs = document.querySelectorAll('.tab');
-        const tabContents = document.querySelectorAll('.tab-content');
-        const editProfileForm = document.getElementById('edit-profile-form');
-        const profileUpdateMessage = document.getElementById('profile-update-message');
-        const changePasswordBtn = document.getElementById('change-password-btn');
-        const deleteAccountBtn = document.getElementById('delete-account-btn');
-        const editProfileBtn = document.getElementById('edit-profile-btn');
-        const loginForm = document.getElementById('login-form');
-        const googleLoginBtn = document.getElementById('google-login');
-        const facebookLoginBtn = document.getElementById('facebook-login');
-        const registerLink = document.getElementById('register-link');
-        const forgotPasswordLink = document.getElementById('forgot-password');
-        
-        // Check if user is logged in
-        onAuthStateChanged(auth, (user) => {
-            loadingElement.style.display = 'none';
-            
-            if (user) {
-                // User is signed in
-                errorContainer.style.display = 'none';
-                profileContent.style.display = 'block';
-                loadUserProfile(user);
-            } else {
-                // User is signed out
-                profileContent.style.display = 'none';
-                errorContainer.style.display = 'block';
-            }
-        });
-        
-        // Load user profile data
-        function loadUserProfile(user) {
-            const userRef = ref(database, 'users/' + user.uid);
-            
-            onValue(userRef, (snapshot) => {
-                const userData = snapshot.val() || {};
-                
-                // Update profile sidebar
-                document.getElementById('profile-name').textContent = userData.displayName || user.displayName || 'User';
-                document.getElementById('profile-email').textContent = user.email;
-                
-                if (userData.profilePicUrl) {
-                    document.getElementById('profile-picture').src = userData.profilePicUrl;
-                }
-                
-                // Update stats
-                document.getElementById('games-played').textContent = userData.gamesPlayed || 0;
-                document.getElementById('wins').textContent = userData.wins || 0;
-                document.getElementById('rank').textContent = userData.rank || '-';
-                
-                // Update overview
-                document.getElementById('user-bio').textContent = userData.bio || 'No bio provided yet.';
-                document.getElementById('time-played').textContent = userData.timePlayed || 0;
-                document.getElementById('favorite-game').textContent = userData.favoriteGame || 'None';
-                
-                const winRate = userData.gamesPlayed ? Math.round((userData.wins / userData.gamesPlayed) * 100) : 0;
-                document.getElementById('win-rate').textContent = winRate;
-                
-                // Update game history
-                const gameHistoryEl = document.getElementById('recent-games');
-                gameHistoryEl.innerHTML = '';
-                
-                if (userData.gameHistory && Array.isArray(userData.gameHistory)) {
-                    userData.gameHistory.slice(0, 10).forEach(game => {
-                        const gameItem = document.createElement('li');
-                        gameItem.className = 'game-item';
-                        
-                        const gameInfo = document.createElement('div');
-                        gameInfo.textContent = `${game.game} - ${new Date(game.timestamp).toLocaleDateString()}`;
-                        
-                        const gameResult = document.createElement('div');
-                        gameResult.className = 'game-result ' + (game.won ? 'result-win' : 'result-loss');
-                        gameResult.textContent = game.won ? 'Win' : 'Loss';
-                        
-                        gameItem.appendChild(gameInfo);
-                        gameItem.appendChild(gameResult);
-                        gameHistoryEl.appendChild(gameItem);
-                    });
-                } else {
-                    gameHistoryEl.innerHTML = '<li>No game history available.</li>';
-                }
-                
-                // Update achievements
-                const achievementsContainer = document.getElementById('achievements-container');
-                achievementsContainer.innerHTML = '';
-                
-                if (userData.achievements && Array.isArray(userData.achievements)) {
-                    userData.achievements.forEach(achievement => {
-                        const badge = document.createElement('span');
-                        badge.className = 'badge';
-                        badge.textContent = achievement;
-                        achievementsContainer.appendChild(badge);
-                    });
-                } else {
-                    achievementsContainer.innerHTML = '<p>No achievements unlocked yet.</p>';
-                }
-                
-                // Set form values
-                document.getElementById('display-name').value = userData.displayName || '';
-                document.getElementById('bio').value = userData.bio || '';
-                document.getElementById('profile-pic-url').value = userData.profilePicUrl || '';
-            });
+    <div class="tab-content active" id="overview">
+      <div class="content">
+        <h3>About Me</h3>
+        <p id="user-bio">Loading bio...</p>
+        <h3 style="margin-top: 25px;">Player Stats</h3>
+        <div class="profile-stat-grid">
+          <div class="profile-stat-item">
+            <span>Time Played</span>
+            <span id="time-played">0</span>
+          </div>
+          <div class="profile-stat-item">
+            <span>Favorite Game</span>
+            <span id="favorite-game">None</span>
+          </div>
+        </div>
+        <div class="button-container">
+          <button class="edit-profile-btn" id="edit-profile-btn">Edit Profile</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-content" id="history">
+      <div class="content">
+        <h3>Recent Games</h3>
+        <ul id="recent-games">
+          <li>Loading game history...</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="tab-content" id="achievements">
+      <div class="content">
+        <h3>My Achievements</h3>
+        <div id="achievements-container">
+          <p>Loading achievements...</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-content" id="settings">
+      <div class="content">
+        <h3>Profile Settings</h3>
+        <form id="edit-profile-form">
+          <div class="form-group">
+            <label for="display-name">Display Name</label>
+            <input type="text" id="display-name" placeholder="Enter your display name">
+          </div>
+          <div class="form-group">
+            <label for="bio">Bio</label>
+            <textarea id="bio" placeholder="Tell us about yourself"></textarea>
+          </div>
+          <div class="form-group">
+            <label for="profile-pic-url">Profile Picture URL</label>
+            <input type="text" id="profile-pic-url" placeholder="Enter profile picture URL">
+          </div>
+          <div id="profile-update-message"></div>
+          <div class="button-container">
+            <button type="submit" class="edit-profile-btn">Save Changes</button>
+          </div>
+        </form>
+        <h3 style="margin-top: 30px;">Account Settings</h3>
+        <div class="button-container">
+          <button id="change-password-btn" class="edit-profile-btn">Change Password</button>
+          <button id="delete-account-btn" class="danger-btn">Delete Account</button>
+          <button id="logout-btn" class="logout-btn">Log Out</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
+    import { getAuth, signOut, onAuthStateChanged, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, FacebookAuthProvider } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
+    import { getDatabase, ref, onValue, update, set, get, child } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBw1uA-kNKOZEufWKZ9AMBxvRGHNGF1lkA",
+      authDomain: "multi-games-a2561.firebaseapp.com",
+      projectId: "multi-games-a2561",
+      storageBucket: "multi-games-a2561.appspot.com",
+      messagingSenderId: "150551898066",
+      appId: "1:150551898066:web:4e8fb185f2321ba4140a0b",
+      measurementId: "G-PB8Y87E6XV",
+      databaseURL: "https://multi-games-a2561-default-rtdb.firebaseio.com"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth();
+    const database = getDatabase();
+
+    const loadingElement = document.getElementById('loading');
+    const errorContainer = document.getElementById('error-container');
+    const profileContent = document.getElementById('profile-content');
+    const logoutBtn = document.getElementById('logout-btn');
+    const tabs = document.querySelectorAll('.tab');
+    const tabContents = document.querySelectorAll('.tab-content');
+    const editProfileForm = document.getElementById('edit-profile-form');
+    const profileUpdateMessage = document.getElementById('profile-update-message');
+    const changePasswordBtn = document.getElementById('change-password-btn');
+    const deleteAccountBtn = document.getElementById('delete-account-btn');
+    const editProfileBtn = document.getElementById('edit-profile-btn');
+    const loginForm = document.getElementById('login-form');
+    const googleLoginBtn = document.getElementById('google-login');
+    const facebookLoginBtn = document.getElementById('facebook-login');
+    const registerLink = document.getElementById('register-link');
+    const forgotPasswordLink = document.getElementById('forgot-password');
+
+    onAuthStateChanged(auth, (user) => {
+      loadingElement.style.display = 'none';
+      if (user) {
+        errorContainer.style.display = 'none';
+        profileContent.style.display = 'block';
+        loadUserProfile(user);
+      } else {
+        profileContent.style.display = 'none';
+        errorContainer.style.display = 'block';
+      }
+    });
+
+    function loadUserProfile(user) {
+      const userRef = ref(database, 'users/' + user.uid);
+      onValue(userRef, (snapshot) => {
+        const userData = snapshot.val() || {};
+        document.getElementById('profile-name').textContent = userData.displayName || user.displayName || 'User';
+        document.getElementById('profile-email').textContent = user.email;
+        if (userData.profilePicUrl) {
+          document.getElementById('profile-picture').src = userData.profilePicUrl;
         }
-        
-        // Tab switching
-        tabs.forEach(tab => {
-            tab.addEventListener('click', () => {
-                // Remove active class from all tabs and contents
-                tabs.forEach(t => t.classList.remove('active'));
-                tabContents.forEach(c => c.classList.remove('active'));
-                
-                // Add active class to clicked tab and corresponding content
-                tab.classList.add('active');
-                const tabId = tab.getAttribute('data-tab');
-                document.getElementById(tabId).classList.add('active');
-            });
+        document.getElementById('games-played').textContent = userData.gamesPlayed || 0;
+        document.getElementById('wins').textContent = userData.wins || 0;
+        document.getElementById('rank').textContent = userData.rank || '-';
+        document.getElementById('user-bio').textContent = userData.bio || 'No bio provided yet.';
+        document.getElementById('time-played').textContent = userData.timePlayed || 0;
+        document.getElementById('favorite-game').textContent = userData.favoriteGame || 'None';
+
+        const winRate = userData.gamesPlayed ? Math.round((userData.wins / userData.gamesPlayed) * 100) : 0;
+        document.getElementById('win-rate').textContent = winRate;
+
+        const gameHistoryEl = document.getElementById('recent-games');
+        gameHistoryEl.innerHTML = '';
+        if (userData.gameHistory && Array.isArray(userData.gameHistory)) {
+          userData.gameHistory.slice(0, 10).forEach(game => {
+            const gameItem = document.createElement('li');
+            gameItem.className = 'game-item';
+            const gameInfo = document.createElement('div');
+            gameInfo.textContent = `${game.game} - ${new Date(game.timestamp).toLocaleDateString()}`;
+            const gameResult = document.createElement('div');
+            gameResult.className = 'game-result ' + (game.won ? 'result-win' : 'result-loss');
+            gameResult.textContent = game.won ? 'Win' : 'Loss';
+            gameItem.appendChild(gameInfo);
+            gameItem.appendChild(gameResult);
+            gameHistoryEl.appendChild(gameItem);
+          });
+        } else {
+          gameHistoryEl.innerHTML = '<li>No game history available.</li>';
+        }
+
+        const achievementsContainer = document.getElementById('achievements-container');
+        achievementsContainer.innerHTML = '';
+        if (userData.achievements && Array.isArray(userData.achievements)) {
+          userData.achievements.forEach(achievement => {
+            const badge = document.createElement('span');
+            badge.className = 'badge';
+            badge.textContent = achievement;
+            achievementsContainer.appendChild(badge);
+          });
+        } else {
+          achievementsContainer.innerHTML = '<p>No achievements unlocked yet.</p>';
+        }
+
+        document.getElementById('display-name').value = userData.displayName || '';
+        document.getElementById('bio').value = userData.bio || '';
+        document.getElementById('profile-pic-url').value = userData.profilePicUrl || '';
+
+        // Load referral link
+        loadUserReferralCode();
+        // Load referral stats
+        loadReferralStats();
+      });
+    }
+
+    // Referral link functions
+    async function loadUserReferralCode() {
+      const user = auth.currentUser;
+      if (!user) return;
+      const dbRef = ref(database);
+      const snapshot = await get(child(dbRef, `users/${user.uid}`));
+      if (snapshot.exists()) {
+        const userData = snapshot.val();
+        const referralCode = userData.referralCode || "N/A";
+        document.getElementById('user-referral-link').value =
+          `https://multi-games-fawn.vercel.app/index.html?ref=${referralCode}`;
+      }
+    }
+
+    function copyReferralLink() {
+      const copyText = document.getElementById('user-referral-link');
+      copyText.select();
+      document.execCommand("copy");
+      alert("Referral link copied!");
+    }
+
+    async function loadReferralStats() {
+      const user = auth.currentUser;
+      if (!user) return;
+      const dbRef = ref(database);
+      const snapshot = await get(child(dbRef, `users/${user.uid}`));
+      if (snapshot.exists()) {
+        document.getElementById('referral-count').textContent = snapshot.val().referrals || 0;
+      }
+    }
+
+    // Tab switching logic
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        tabs.forEach(t => t.classList.remove('active'));
+        tabContents.forEach(c => c.classList.remove('active'));
+        tab.classList.add('active');
+        const tabId = tab.getAttribute('data-tab');
+        document.getElementById(tabId).classList.add('active');
+      });
+    });
+
+    editProfileBtn.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      tabContents.forEach(c => c.classList.remove('active'));
+      document.querySelector('[data-tab="settings"]').classList.add('active');
+      document.getElementById('settings').classList.add('active');
+    });
+
+    editProfileForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const user = auth.currentUser;
+      if (!user) return;
+      const displayName = document.getElementById('display-name').value;
+      const bio = document.getElementById('bio').value;
+      const profilePicUrl = document.getElementById('profile-pic-url').value;
+      const updates = {};
+      if (displayName) updates.displayName = displayName;
+      if (bio) updates.bio = bio;
+      if (profilePicUrl) updates.profilePicUrl = profilePicUrl;
+      update(ref(database, 'users/' + user.uid), updates)
+        .then(() => {
+          profileUpdateMessage.textContent = 'Profile updated successfully!';
+          profileUpdateMessage.className = 'success-message';
+          setTimeout(() => {
+            profileUpdateMessage.textContent = '';
+          }, 3000);
+        })
+        .catch((error) => {
+          profileUpdateMessage.textContent = 'Error updating profile: ' + error.message;
+          profileUpdateMessage.className = 'error-message';
         });
-        
-        // Edit profile shortcut
-        editProfileBtn.addEventListener('click', () => {
-            // Switch to settings tab
-            tabs.forEach(t => t.classList.remove('active'));
-            tabContents.forEach(c => c.classList.remove('active'));
-            
-            document.querySelector('[data-tab="settings"]').classList.add('active');
-            document.getElementById('settings').classList.add('active');
-        });
-        
-        // Update profile
-        editProfileForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            
-            const user = auth.currentUser;
-            if (!user) return;
-            
-            const displayName = document.getElementById('display-name').value;
-            const bio = document.getElementById('bio').value;
-            const profilePicUrl = document.getElementById('profile-pic-url').value;
-            
-            const updates = {};
-            if (displayName) updates.displayName = displayName;
-            if (bio) updates.bio = bio;
-            if (profilePicUrl) updates.profilePicUrl = profilePicUrl;
-            
-            update(ref(database, 'users/' + user.uid), updates)
+    });
+
+    changePasswordBtn.addEventListener('click', () => {
+      alert('Change password functionality will be implemented soon.');
+    });
+
+    deleteAccountBtn.addEventListener('click', () => {
+      const confirmDelete = confirm('Are you sure you want to delete your account? This action cannot be undone.');
+      if (confirmDelete) {
+        const user = auth.currentUser;
+        if (user) {
+          set(ref(database, 'users/' + user.uid), null)
+            .then(() => {
+              user.delete()
                 .then(() => {
-                    profileUpdateMessage.textContent = 'Profile updated successfully!';
-                    profileUpdateMessage.className = 'success-message';
-                    
-                    // Clear message after 3 seconds
-                    setTimeout(() => {
-                        profileUpdateMessage.textContent = '';
-                    }, 3000);
+                  window.location.href = 'index.html';
                 })
                 .catch((error) => {
-                    profileUpdateMessage.textContent = 'Error updating profile: ' + error.message;
-                    profileUpdateMessage.className = 'error-message';
+                  alert('Error deleting account: ' + error.message);
                 });
-        });
-        
-        // Change password
-        changePasswordBtn.addEventListener('click', () => {
-            // Redirect to change password page or show a modal
-            alert('Change password functionality will be implemented soon.');
-        });
-        
-        // Delete account
-        deleteAccountBtn.addEventListener('click', () => {
-            const confirmDelete = confirm('Are you sure you want to delete your account? This action cannot be undone.');
-            
-            if (confirmDelete) {
-                const user = auth.currentUser;
-                
-                if (user) {
-                    // Delete user data from the database
-                    set(ref(database, 'users/' + user.uid), null)
-                        .then(() => {
-                            // Delete user account
-                            user.delete()
-                                .then(() => {
-                                    window.location.href = 'index.html';
-                                })
-                                .catch((error) => {
-                                    alert('Error deleting account: ' + error.message);
-                                });
-                        })
-                        .catch((error) => {
-                            alert('Error deleting user data: ' + error.message);
-                        });
-                }
-            }
-        });
-        
-        // Logout
-        logoutBtn.addEventListener('click', () => {
-            signOut(auth)
-                .then(() => {
-                    window.location.href = 'index.html';
-                })
-                .catch((error) => {
-                    alert('Error signing out: ' + error.message);
-                });
-        });
-        
-        // Login form functionality
-        if (loginForm) {
-            loginForm.addEventListener('submit', (e) => {
-                e.preventDefault();
-                
-                const email = document.getElementById('login-email').value;
-                const password = document.getElementById('login-password').value;
-                const errorMessageContainer = document.createElement('div');
-                errorMessageContainer.className = 'error-message';
-                errorMessageContainer.style.marginTop = '10px';
-                
-                // Clear any existing error messages
-                const existingError = loginForm.querySelector('.error-message');
-                if (existingError) existingError.remove();
-                
-                signInWithEmailAndPassword(auth, email, password)
-                    .then((userCredential) => {
-                        // Signed in successfully
-                        errorContainer.style.display = 'none';
-                        profileContent.style.display = 'block';
-                        loadUserProfile(userCredential.user);
-                    })
-                    .catch((error) => {
-                        // Handle errors
-                        errorMessageContainer.textContent = getAuthErrorMessage(error.code);
-                        loginForm.appendChild(errorMessageContainer);
-                    });
-            });
-        }
-        
-        // Google login
-if (googleLoginBtn) {
-    googleLoginBtn.addEventListener('click', () => {
-        const provider = new GoogleAuthProvider();
-        signInWithPopup(auth, provider)
-            .then((result) => {
-                // The signed-in user info
-                const user = result.user;
-                
-                // Create user profile in database if it doesn't exist
-                createUserProfileIfNeeded(user);
             })
             .catch((error) => {
-                console.error("Google login error:", error);
-                alert('Error signing in with Google: ' + error.message);
-            });
-    });
-}
-
-// Helper function to create user profile if it doesn't exist
-function createUserProfileIfNeeded(user) {
-    const userRef = ref(database, 'users/' + user.uid);
-    
-    onValue(userRef, (snapshot) => {
-        // If user doesn't exist in database yet
-        if (!snapshot.exists()) {
-            // Set initial user data
-            set(userRef, {
-                displayName: user.displayName || '',
-                email: user.email,
-                profilePicUrl: user.photoURL || '',
-                gamesPlayed: 0,
-                wins: 0,
-                rank: 'Beginner',
-                bio: '',
-                timePlayed: 0,
-                favoriteGame: '',
-                gameHistory: [],
-                achievements: []
+              alert('Error deleting user data: ' + error.message);
             });
         }
-    }, { onlyOnce: true });
-}
+      }
+    });
 
-// Register link
-if (registerLink) {
-    registerLink.addEventListener('click', (e) => {
+    logoutBtn.addEventListener('click', () => {
+      signOut(auth)
+        .then(() => {
+          window.location.href = 'index.html';
+        })
+        .catch((error) => {
+          alert('Error signing out: ' + error.message);
+        });
+    });
+
+    if (loginForm) {
+      loginForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const email = document.getElementById('login-email').value;
+        const password = document.getElementById('login-password').value;
+        const errorMessageContainer = document.createElement('div');
+        errorMessageContainer.className = 'error-message';
+        errorMessageContainer.style.marginTop = '10px';
+        const existingError = loginForm.querySelector('.error-message');
+        if (existingError) existingError.remove();
+        signInWithEmailAndPassword(auth, email, password)
+          .then((userCredential) => {
+            errorContainer.style.display = 'none';
+            profileContent.style.display = 'block';
+            loadUserProfile(userCredential.user);
+          })
+          .catch((error) => {
+            errorMessageContainer.textContent = getAuthErrorMessage(error.code);
+            loginForm.appendChild(errorMessageContainer);
+          });
+      });
+    }
+
+    if (googleLoginBtn) {
+      googleLoginBtn.addEventListener('click', () => {
+        const provider = new GoogleAuthProvider();
+        signInWithPopup(auth, provider)
+          .then((result) => {
+            const user = result.user;
+            createUserProfileIfNeeded(user);
+          })
+          .catch((error) => {
+            console.error("Google login error:", error);
+            alert('Error signing in with Google: ' + error.message);
+          });
+      });
+    }
+
+    function createUserProfileIfNeeded(user) {
+      const userRef = ref(database, 'users/' + user.uid);
+      onValue(userRef, (snapshot) => {
+        if (!snapshot.exists()) {
+          set(userRef, {
+            displayName: user.displayName || '',
+            email: user.email,
+            profilePicUrl: user.photoURL || '',
+            gamesPlayed: 0,
+            wins: 0,
+            rank: 'Beginner',
+            bio: '',
+            timePlayed: 0,
+            favoriteGame: '',
+            gameHistory: [],
+            achievements: []
+          });
+        }
+      }, { onlyOnce: true });
+    }
+
+    if (registerLink) {
+      registerLink.addEventListener('click', (e) => {
         e.preventDefault();
         window.location.href = 'register.html';
-    });
-}
+      });
+    }
 
-// Forgot password link
-if (forgotPasswordLink) {
-    forgotPasswordLink.addEventListener('click', (e) => {
+    if (forgotPasswordLink) {
+      forgotPasswordLink.addEventListener('click', (e) => {
         e.preventDefault();
         window.location.href = 'forgot-password.html';
-    });
-}
-
-// Helper function to get user-friendly error messages
-function getAuthErrorMessage(errorCode) {
-    switch (errorCode) {
-        case 'auth/invalid-email':
-            return 'Invalid email address format.';
-        case 'auth/user-disabled':
-            return 'This account has been disabled.';
-        case 'auth/user-not-found':
-            return 'No account with this email exists.';
-        case 'auth/wrong-password':
-            return 'Incorrect password.';
-        case 'auth/email-already-in-use':
-            return 'An account with this email already exists.';
-        case 'auth/weak-password':
-            return 'Password should be at least 6 characters.';
-        case 'auth/operation-not-allowed':
-            return 'This login method is not enabled.';
-        case 'auth/popup-closed-by-user':
-            return 'Login popup was closed before completion.';
-        default:
-            return 'An error occurred during authentication. Please try again.';
+      });
     }
-}
 
-// On page load, check which UI elements to show
-document.addEventListener('DOMContentLoaded', () => {
-    // Check if on login page
-    if (document.getElementById('login-form')) {
-        // Set login as default active tab if on appropriate page
+    function getAuthErrorMessage(errorCode) {
+      switch (errorCode) {
+        case 'auth/invalid-email':
+          return 'Invalid email address format.';
+        case 'auth/user-disabled':
+          return 'This account has been disabled.';
+        case 'auth/user-not-found':
+          return 'No account with this email exists.';
+        case 'auth/wrong-password':
+          return 'Incorrect password.';
+        case 'auth/email-already-in-use':
+          return 'An account with this email already exists.';
+        case 'auth/weak-password':
+          return 'Password should be at least 6 characters.';
+        case 'auth/operation-not-allowed':
+          return 'This login method is not enabled.';
+        case 'auth/popup-closed-by-user':
+          return 'Login popup was closed before completion.';
+        default:
+          return 'An error occurred during authentication. Please try again.';
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      if (document.getElementById('login-form')) {
         document.querySelector('[data-tab="overview"]')?.classList.add('active');
         document.getElementById('overview')?.classList.add('active');
-    }
-    
-    // Show loading indicator until auth state is determined
-    if (loadingElement) {
+      }
+      if (loadingElement) {
         loadingElement.style.display = 'block';
-    }
-});
-</script>
+      }
+    });
+  </script>
 </body>
 </html>
