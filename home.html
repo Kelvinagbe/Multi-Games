@@ -3,846 +3,826 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Multi Games- Your Ultimate Gaming Experience</title>
+    <title>Multi Games</title>
+    <meta property="og:title" content="Multi Games">
+<meta property="og:description" content="Join the next generation of gaming with exclusive titles and a vibrant community.">
+<meta property="og:image" content="https://multi-games-fawn.vercel.app/logo.png">
+<meta property="og:url" content="https://multi-games-fawn.vercel.app/home.html">
     <style>
-        :root {
-            --primary-dark: #0a2e0a;
-            --primary: #1a472a;
-            --primary-light: #2d5f38;
-            --accent: #8bc34a;
-            --text-light: #e0e0e0;
-            --text-dark: #121212;
-            --card-bg: rgba(26, 71, 42, 0.8);
-            --overlay: rgba(10, 46, 10, 0.9);
-        }
-
+        /* Reset and Base Styles */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-
+        
         body {
-            background-color: var(--primary-dark);
-            color: var(--text-light);
-            line-height: 1.6;
+            background-color: #0a0a0a;
+            color: #ffffff;
             overflow-x: hidden;
-            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="%230a2e0a"/><path d="M0 10L100 10" stroke="%23143914" stroke-width="1"/><path d="M0 30L100 30" stroke="%23143914" stroke-width="0.5"/><path d="M0 50L100 50" stroke="%23143914" stroke-width="0.5"/><path d="M0 70L100 70" stroke="%23143914" stroke-width="0.5"/><path d="M0 90L100 90" stroke="%23143914" stroke-width="1"/><path d="M10 0L10 100" stroke="%23143914" stroke-width="1"/><path d="M30 0L30 100" stroke="%23143914" stroke-width="0.5"/><path d="M50 0L50 100" stroke="%23143914" stroke-width="0.5"/><path d="M70 0L70 100" stroke="%23143914" stroke-width="0.5"/><path d="M90 0L90 100" stroke="%23143914" stroke-width="1"/></svg>');
         }
-
+        
+        /* Header Styles */
         header {
-            background-color: var(--primary);
-            padding: 1rem 2rem;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
             position: fixed;
-            width: 100%;
             top: 0;
-            z-index: 100;
-        }
-
-        nav {
+            width: 100%;
+            padding: 1.5rem 5%;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            max-width: 1400px;
-            margin: 0 auto;
+            z-index: 1000;
+            transition: background-color 0.3s;
         }
-
+        
+        header.scrolled {
+            background-color: rgba(10, 10, 10, 0.9);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+        }
+        
         .logo {
             font-size: 1.8rem;
-            font-weight: bold;
-            color: var(--accent);
-            text-shadow: 0 0 5px rgba(139, 195, 74, 0.5);
-            display: flex;
-            align-items: center;
+            font-weight: 700;
+            color: #4eff4e;
+            letter-spacing: 1px;
+            text-decoration: none;
         }
-
-        .logo-icon {
-            margin-right: 10px;
-            font-size: 2rem;
+        
+        .logo span {
+            color: #ffffff;
         }
-
+        
         .nav-links {
             display: flex;
             gap: 2rem;
         }
-
+        
         .nav-links a {
-            color: var(--text-light);
+            color: #ffffff;
             text-decoration: none;
+            font-size: 1rem;
             font-weight: 500;
             transition: color 0.3s;
             position: relative;
         }
-
-        .nav-links a:after {
+        
+        .nav-links a:hover {
+            color: #4eff4e;
+        }
+        
+        .nav-links a::after {
             content: '';
             position: absolute;
-            bottom: -5px;
-            left: 0;
             width: 0;
             height: 2px;
-            background-color: var(--accent);
-            transition: width 0.3s;
+            bottom: -5px;
+            left: 0;
+            background-color: #4eff4e;
+            transition: width 0.3s ease;
         }
-
-        .nav-links a:hover {
-            color: var(--accent);
-        }
-
-        .nav-links a:hover:after {
+        
+        .nav-links a:hover::after {
             width: 100%;
         }
-
-        .hero {
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            position: relative;
-            padding: 0 2rem;
-            margin-top: 4rem;
-        }
-
-        .hero-content {
-            max-width: 1400px;
-            margin: 0 auto;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            width: 100%;
-        }
-
-        .hero-text {
-            max-width: 600px;
-        }
-
-        .hero-title {
-            font-size: 3.5rem;
-            font-weight: 800;
-            margin-bottom: 1rem;
-            line-height: 1.2;
-            background: linear-gradient(45deg, var(--text-light), var(--accent));
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-
-        .hero-subtitle {
-            font-size: 1.25rem;
-            margin-bottom: 2rem;
-            color: #b0b0b0;
-        }
-
-        .btn {
-            display: inline-block;
-            padding: 0.8rem 2rem;
-            background-color: var(--accent);
-            color: var(--text-dark);
-            border: none;
-            border-radius: 50px;
-            font-weight: bold;
-            font-size: 1rem;
+        
+        .nav-toggle {
+            display: none;
+            font-size: 1.5rem;
             cursor: pointer;
-            transition: all 0.3s;
-            text-decoration: none;
-            box-shadow: 0 4px 10px rgba(139, 195, 74, 0.3);
+            color: #ffffff;
         }
-
-        .btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 15px rgba(139, 195, 74, 0.4);
-        }
-
-        .btn-primary {
-            background-color: var(--accent);
-        }
-
-        .btn-secondary {
-            background-color: transparent;
-            border: 2px solid var(--accent);
-            color: var(--accent);
-            margin-left: 1rem;
-        }
-
-        .btn-secondary:hover {
-            background-color: var(--accent);
-            color: var(--text-dark);
-        }
-
-        .hero-image {
+        
+        /* Hero Section Styles */
+        .hero {
             position: relative;
-            width: 600px;
-            height: 400px;
-            perspective: 1000px;
-        }
-
-        .game-card {
-            position: absolute;
-            width: 280px;
-            height: 380px;
-            background-color: var(--card-bg);
-            border-radius: 15px;
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
-            transition: all 0.5s ease;
+            height: 100vh;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             overflow: hidden;
-            transform: rotateY(20deg) rotateX(10deg);
         }
-
-        .game-card:hover {
-            transform: rotateY(0deg) rotateX(0deg) translateZ(20px);
-            box-shadow: 0 25px 50px rgba(139, 195, 74, 0.3);
-        }
-
-        .game-card:nth-child(1) {
+        
+        .hero-bg {
+            position: absolute;
             top: 0;
             left: 0;
-            z-index: 3;
-            transform: rotateY(25deg) rotateX(5deg);
-        }
-
-        .game-card:nth-child(2) {
-            top: 30px;
-            left: 160px;
-            z-index: 2;
-            transform: rotateY(-5deg) rotateX(8deg);
-        }
-
-        .game-card:nth-child(3) {
-            top: 80px;
-            left: 300px;
-            z-index: 1;
-            transform: rotateY(-20deg) rotateX(5deg);
-        }
-
-        .card-image {
             width: 100%;
-            height: 65%;
+            height: 100%;
+            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.8)), url('/api/placeholder/1920/1080') center/cover no-repeat;
+            z-index: -1;
+        }
+        
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, rgba(78, 255, 78, 0.15), transparent 70%);
+            z-index: -1;
+        }
+        
+        .hero-content {
+            text-align: center;
+            max-width: 800px;
+            padding: 0 2rem;
+            animation: fadeIn 1s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .hero-content h1 {
+            font-size: 4rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            line-height: 1.2;
+            text-shadow: 0 0 10px rgba(78, 255, 78, 0.5);
+        }
+        
+        .hero-content h1 span {
+            color: #4eff4e;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .hero-content h1 span::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 8px;
+            bottom: -5px;
+            left: 0;
+            background: linear-gradient(to right, #4eff4e, transparent);
+        }
+        
+        .hero-content p {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            margin-bottom: 2.5rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .cta-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .cta-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem 2.5rem;
+            background: linear-gradient(to right, #4eff4e, #00cc00);
+            color: #000000;
+            font-weight: 700;
+            font-size: 1.1rem;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(78, 255, 78, 0.5);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .cta-button.secondary {
+            background: linear-gradient(to right, #292929, #131313);
+            border: 2px solid #4eff4e;
+            color: #4eff4e;
+        }
+        
+        .cta-button i {
+            margin-right: 10px;
+            font-size: 1.2rem;
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 0 30px rgba(78, 255, 78, 0.7);
+        }
+        
+        .cta-button:active {
+            transform: translateY(1px);
+        }
+        
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: 0.5s;
+        }
+        
+        .cta-button:hover::before {
+            left: 100%;
+        }
+        
+        /* Featured Games Section */
+        .featured-games {
+            padding: 6rem 5%;
+            background-color: #0e0e0e;
+            position: relative;
+        }
+        
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+        
+        .game-card {
+            position: relative;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transition: transform 0.4s, box-shadow 0.4s;
+            height: 350px;
+        }
+        
+        .game-card:hover {
+            transform: translateY(-10px) scale(1.03);
+            box-shadow: 0 15px 40px rgba(78, 255, 78, 0.2);
+        }
+        
+        .game-img {
+            width: 100%;
+            height: 100%;
             object-fit: cover;
         }
-
-        .card-content {
-            padding: 1rem;
+        
+        .game-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 2rem;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.9), transparent);
+            transform: translateY(50px);
+            opacity: 0;
+            transition: transform 0.3s, opacity 0.3s;
         }
-
-        .card-title {
-            font-size: 1.25rem;
-            font-weight: bold;
+        
+        .game-card:hover .game-overlay {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        .game-title {
+            font-size: 1.8rem;
             margin-bottom: 0.5rem;
-            color: var(--accent);
+            font-weight: 700;
         }
-
-        .card-text {
+        
+        .game-genre {
+            color: #4eff4e;
             font-size: 0.9rem;
-            color: #b0b0b0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
             margin-bottom: 1rem;
         }
-
-        .play-btn {
+        
+        .game-desc {
+            font-size: 0.95rem;
+            line-height: 1.5;
+            color: #cccccc;
+            margin-bottom: 1.5rem;
+        }
+        
+        .game-btn {
             display: inline-block;
-            padding: 0.5rem 1.5rem;
-            background-color: var(--accent);
-            color: var(--text-dark);
-            border: none;
-            border-radius: 50px;
-            font-weight: bold;
-            font-size: 0.7rem;
-            cursor: pointer;
-            transition: all 0.3s;
+            padding: 0.6rem 1.5rem;
+            background-color: #4eff4e;
+            color: #000000;
+            font-weight: 600;
+            border-radius: 4px;
             text-decoration: none;
+            transition: all 0.3s;
         }
-
-        .play-btn:hover {
+        
+        .game-btn:hover {
+            background-color: #3ad83a;
             transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(139, 195, 74, 0.4);
         }
-
-        .featured-games {
-            padding: 6rem 2rem;
-            max-width: 1400px;
-            margin: 0 auto;
+        
+        /* Features Section Styles */
+        .features {
+            padding: 6rem 5%;
+            background-color: #0c0c0c;
+            position: relative;
+            overflow: hidden;
         }
-
+        
         .section-title {
-            font-size: 2.5rem;
             text-align: center;
             margin-bottom: 3rem;
             position: relative;
-            color: var(--accent);
         }
-
-        .section-title:after {
+        
+        .section-title h2 {
+            font-size: 2.5rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 1rem;
+        }
+        
+        .section-title h2 span {
+            color: #4eff4e;
+        }
+        
+        .section-title::after {
             content: '';
             position: absolute;
             bottom: -10px;
             left: 50%;
             transform: translateX(-50%);
-            width: 100px;
+            width: 80px;
             height: 4px;
-            background: linear-gradient(90deg, var(--primary-light), var(--accent));
-            border-radius: 2px;
+            background: linear-gradient(to right, #4eff4e, #00cc00);
         }
-
-        .games-grid {
+        
+        .features-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 2rem;
         }
-
-        .game-item {
+        
+        .feature-card {
+            background-color: rgba(20, 20, 20, 0.8);
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
             position: relative;
-            border-radius: 15px;
             overflow: hidden;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
-            transition: transform 0.4s, box-shadow 0.4s;
-            cursor: pointer;
+            border: 1px solid rgba(78, 255, 78, 0.1);
         }
-
-        .game-item:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
-        }
-
-        .game-item img {
+        
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
-            height: 200px;
-            object-fit: cover;
+            height: 3px;
+            background: linear-gradient(to right, #4eff4e, #00cc00);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.3s;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 30px rgba(78, 255, 78, 0.15);
+        }
+        
+        .feature-card:hover::before {
+            transform: scaleX(1);
+        }
+        
+        .feature-icon {
+            font-size: 3rem;
+            color: #4eff4e;
+            margin-bottom: 1.5rem;
             transition: transform 0.5s;
         }
-
-        .game-item:hover img {
-            transform: scale(1.1);
+        
+        .feature-card:hover .feature-icon {
+            transform: rotateY(360deg);
         }
-
-        .game-overlay {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            padding: 1.5rem;
-            background: linear-gradient(to top, var(--overlay), transparent);
-            transition: height 0.5s;
-        }
-
-        .game-item:hover .game-overlay {
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            background: var(--overlay);
-        }
-
-        .game-title {
-            font-size: 1.4rem;
-            font-weight: bold;
-            margin-bottom: 0.5rem;
-        }
-
-        .game-description {
-            opacity: 0;
-            transform: translateY(20px);
-            transition: opacity 0.5s, transform 0.5s;
+        
+        .feature-card h3 {
+            font-size: 1.5rem;
             margin-bottom: 1rem;
         }
-
-        .game-item:hover .game-description {
-            opacity: 1;
-            transform: translateY(0);
+        
+        .feature-card p {
+            color: #cccccc;
+            line-height: 1.6;
         }
-
-        .play-now {
-            opacity: 0;
-            transform: translateY(20px);
-            transition: opacity 0.5s, transform 0.5s;
-            transition-delay: 0.1s;
-        }
-
-        .game-item:hover .play-now {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        footer {
-            background-color: var(--primary);
-            padding: 3rem 2rem;
-            text-align: center;
-            box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.2);
-        }
-
-        .footer-content {
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        .footer-links {
-            display: flex;
-            justify-content: center;
-            gap: 2rem;
-            margin-bottom: 2rem;
-        }
-
-        .footer-links a {
-            color: var(--text-light);
-            text-decoration: none;
-            transition: color 0.3s;
-        }
-
-        .footer-links a:hover {
-            color: var(--accent);
-        }
-
-        .social-links {
-            display: flex;
-            justify-content: center;
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .social-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background-color: var(--primary-light);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s;
-        }
-
-        .social-icon:hover {
-            background-color: var(--accent);
-            transform: translateY(-5px);
-        }
-
-        .copyright {
-            color: #b0b0b0;
-            font-size: 0.9rem;
-        }
-
-        .mobile-menu {
-            display: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-        }
-
-        @media (max-width: 1200px) {
-            .hero-content {
-                flex-direction: column;
-                text-align: center;
-                gap: 3rem;
-            }
-
-            .hero-text {
-                max-width: 100%;
-            }
-
-            .hero-image {
-                width: 100%;
-                height: 450px;
-                margin-top: 2rem;
-            }
-
-            .game-card:nth-child(1) {
-                left: calc(50% - 300px);
-            }
-
-            .game-card:nth-child(2) {
-                left: calc(50% - 140px);
-            }
-
-            .game-card:nth-child(3) {
-                left: calc(50% + 20px);
-            }
-        }
-
-        @media (max-width: 992px) {
-            .hero-title {
-                font-size: 2.5rem;
-            }
-
-            .game-card:nth-child(1) {
-                left: calc(50% - 280px);
-            }
-
-            .game-card:nth-child(2) {
-                left: calc(50% - 140px);
-            }
-
-            .game-card:nth-child(3) {
-                left: calc(50% + 0px);
-            }
-        }
-
-        @media (max-width: 768px) {
-            .nav-links {
-                display: none;
-            }
-
-            .mobile-menu {
-                display: block;
-            }
-
-            .hero {
-                padding-top: 2rem;
-            }
-
-            .hero-image {
-                height: 400px;
-            }
-
-            .game-card {
-                width: 220px;
-                height: 300px;
-            }
-
-            .game-card:nth-child(1) {
-                left: calc(50% - 230px);
-            }
-
-            .game-card:nth-child(2) {
-                left: calc(50% - 110px);
-            }
-
-            .game-card:nth-child(3) {
-                left: calc(50% + 10px);
-            }
-
-            .footer-links {
-                flex-direction: column;
-                gap: 1rem;
-            }
-        }
-
-        @media (max-width: 576px) {
-            .hero-title {
-                font-size: 2rem;
-            }
-
-            .hero-image {
-                height: 350px;
-            }
-
-            .game-card {
-                width: 180px;
-                height: 250px;
-            }
-
-            .game-card:nth-child(1) {
-                left: calc(50% - 180px);
-            }
-
-            .game-card:nth-child(2) {
-                left: calc(50% - 90px);
-            }
-
-            .game-card:nth-child(3) {
-                left: calc(50% + 0px);
-            }
-
-            .card-title {
-                font-size: 1rem;
-            }
-
-            .card-text {
-                font-size: 0.8rem;
-            }
-
-            .play-btn {
-                padding: 0.4rem 1rem;
-                font-size: 0.8rem;
-            }
-
-            .section-title {
-                font-size: 2rem;
-            }
-        }
-
-        /* Mobile menu overlay */
-        .mobile-menu-overlay {
-            position: fixed;
+        
+        /* Floating Elements */
+        .floating-elements {
+            position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: var(--overlay);
-            z-index: 999;
+            overflow: hidden;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .floating-element {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            background-color: rgba(78, 255, 78, 0.1);
+            border-radius: 20%;
+            pointer-events: none;
+            animation: float 15s linear infinite;
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translate(0, 0) rotate(0deg) scale(1);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.8;
+            }
+            90% {
+                opacity: 0.6;
+            }
+            100% {
+                transform: translate(var(--move-x), var(--move-y)) rotate(var(--rotate)) scale(var(--scale));
+                opacity: 0;
+            }
+        }
+        
+        /* Footer Styles */
+        footer {
+            background-color: #080808;
+            padding: 2rem 5%;
+            text-align: center;
+            border-top: 1px solid rgba(78, 255, 78, 0.2);
+        }
+        
+        .footer-content {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            transform: translateY(-100%);
-            transition: transform 0.5s;
         }
-
-        .mobile-menu-overlay.active {
-            transform: translateY(0);
-        }
-
-        .close-menu {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            font-size: 2rem;
-            cursor: pointer;
-            color: var(--accent);
-        }
-
-        .mobile-links {
-            display: flex;
-            flex-direction: column;
-            gap: 2rem;
-            text-align: center;
-        }
-
-        .mobile-links a {
-            color: var(--text-light);
-            text-decoration: none;
+        
+        .footer-logo {
             font-size: 1.5rem;
-            font-weight: 500;
+            font-weight: 700;
+            color: #4eff4e;
+            margin-bottom: 1rem;
+        }
+        
+        .footer-links {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .footer-links a {
+            color: #ffffff;
+            text-decoration: none;
             transition: color 0.3s;
         }
-
-        .mobile-links a:hover {
-            color: var(--accent);
+        
+        .footer-links a:hover {
+            color: #4eff4e;
+        }
+        
+        .social-icons {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .social-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            transition: background-color 0.3s, transform 0.3s;
+            text-decoration: none;
+            color: #ffffff;
+        }
+        
+        .social-icon:hover {
+            background-color: #4eff4e;
+            transform: translateY(-3px);
+            color: #000000;
+        }
+        
+        .copyright {
+            color: #777777;
+            font-size: 0.9rem;
+        }
+        
+        /* Scroll Animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: opacity 0.8s, transform 0.8s;
+        }
+        
+        .fade-in.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* Responsive Styles */
+        @media (max-width: 992px) {
+            .hero-content h1 {
+                font-size: 3.5rem;
+            }
+            
+            .games-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .nav-links {
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                flex-direction: column;
+                gap: 0;
+                background-color: rgba(10, 10, 10, 0.95);
+                clip-path: polygon(0 0, 100% 0, 100% 0, 0 0);
+                transition: clip-path 0.4s ease-in-out;
+                padding: 1rem 0;
+            }
+            
+            .nav-links.active {
+                clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+            }
+            
+            .nav-links a {
+                display: block;
+                padding: 1rem 2rem;
+                text-align: center;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            }
+            
+            .nav-toggle {
+                display: block;
+            }
+            
+            .hero-content h1 {
+                font-size: 3rem;
+            }
+            
+            .hero-content p {
+                font-size: 1.1rem;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .hero-content h1 {
+                font-size: 2.5rem;
+            }
+            
+            .cta-button {
+                padding: 0.9rem 2rem;
+                font-size: 1rem;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
         }
 
-        /* Animation */
-        @keyframes float {
-            0% {
-                transform: translateY(0px);
-            }
-            50% {
-                transform: translateY(-10px);
-            }
-            100% {
-                transform: translateY(0px);
-            }
+        /* Cursor Effect */
+        .cursor-effect {
+            position: fixed;
+            width: 30px;
+            height: 30px;
+            border: 2px solid #4eff4e;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            transition: transform 0.1s, width 0.3s, height 0.3s, border-color 0.3s;
+            z-index: 9999;
+            opacity: 0;
+            mix-blend-mode: difference;
         }
 
-        .animate-float {
-            animation: float 5s ease-in-out infinite;
+        .cursor-effect.active {
+            opacity: 0.7;
         }
-    .logo {
-    display: flex; 
-    align-items: center; /* Aligns items vertically */
-    gap: 10px; /* Adds space between the logo and text */
-}
 
-.logo img {
-    width: 50px;
-    height: 50px;
-    border-radius: 20px; /* Makes the image round */
-    object-fit: cover; /* Ensures the image fits well */
-    left: 20px;
-}
+        .cursor-effect.hover {
+            width: 50px;
+            height: 50px;
+            border-color: #4eff4e;
+            background-color: rgba(78, 255, 78, 0.1);
+            transform: translate(-50%, -50%) scale(1.5);
+        }
     </style>
 </head>
 <body>
-    <header>
+    <!-- Custom Cursor Effect -->
+    <div class="cursor-effect" id="cursorEffect"></div>
+
+    <!-- Header -->
+    <header id="header">
+        <a href="#" class="logo">Multi Games<span>Games</span></a>
         <nav>
-            <div class="logo">
-                <img src="https://i.postimg.cc/6ppCC84g/20250227-233505-copy-330x330.jpg"
-                    alt="logo">
-                <span>Multi Games</span>
-            </div>
-            <div class="nav-links">
-                <a href="#home">Home</a>
-                <a href="index.html">Games</a>
-                <a href="about.html">About</a>
-                <a href="contact.html">Contact</a>
-            </div>
-            <div class="mobile-menu" id="mobileMenuBtn">
-                ☰
+            <div class="nav-toggle" id="navToggle">☰</div>
+            <div class="nav-links" id="navLinks">
+                <a href="#">Home</a>
+                <a href="#">Games</a>
+                <a href="#">Features</a>
+                <a href="#">Community</a>
+                <a href="#">Support</a>
             </div>
         </nav>
     </header>
 
-    <div class="mobile-menu-overlay" id="mobileMenu">
-        <div class="close-menu" id="closeMenuBtn">✕</div>
-        <div class="mobile-links">
-            <a href="#home">Home</a>
-            <a href="index.html">Games</a>
-            <a href="#about">About</a>
-            <a href="#contact">Contact</a>
-        </div>
-    </div>
-
-    <section class="hero" id="home">
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-bg"></div>
+        <div class="hero-overlay"></div>
         <div class="hero-content">
-            <div class="hero-text">
-                <h1 class="hero-title">Immerse Yourself in Gaming Excellence</h1>
-                <p class="hero-subtitle">Discover a world of fantastic games curated for every type of player. From action-packed adventures to brain-teasing puzzles, there's something for everyone.</p>
-                <div class="hero-btns">
-                    <a href="index.html" class="btn btn-primary">Play Now</a>
-                    <a href="about.html" class="btn btn-secondary">Learn More</a>
-                </div>
-            </div>
-            <div class="hero-image">
-                <div class="game-card animate-float">
-                    <img src="https://i.postimg.cc/G2QX6HVH/Screenshot-20250316-013311.jpg" alt="placeholder" class="card-image">
-                    <div class="card-content">
-                        <h3 class="card-title">Mystical Quest</h3>
-                        <p class="card-text">Embark on an epic journey through enchanted lands.</p>
-                        <a href="#" class="play-btn">Play</a>
-                    </div>
-                </div>
-                <div class="game-card animate-float" style="animation-delay: 0.5s;">
-                    <img src="https://i.postimg.cc/MTbmT5k9/Halloween-Icon-Logo-Subway-Surfers-purple.jpg" alt="placeholder" class="card-image">
-                    <div class="card-content">
-                        <h3 class="card-title">Subway Surfer</h3>
-                        <p class="card-text">Navigate through the cosmos and discover new worlds.</p>
-                        <a href="#" class="play-btn">Play</a>
-                    </div>
-                </div>
-                <div class="game-card animate-float" style="animation-delay: 1s;">
-                    <img src="https://i.postimg.cc/zfv3jnNr/truth.jpg" alt="placeholder" class="card-image">
-                    <div class="card-content">
-                        <h3 class="card-title">Truth or Dare </h3>
-                        <p class="card-text">Master the arts of stealth and combat.</p>
-                        <a href="#" class="play-btn">Play</a>
-                    </div>
-                </div>
+            <h1>Level Up Your <span>Gaming</span> Experience</h1>
+            <p>Join the next generation of gaming with cutting-edge technology, exclusive content, and a community of passionate players ready to welcome you.</p>
+            <div class="cta-buttons">
+                <a href="#" class="cta-button">Get Started</a>
+                <a href="#" class="cta-button secondary"><i>📱</i>Download App</a>
             </div>
         </div>
     </section>
 
-    <section class="featured-games" id="games">
-        <h2 class="section-title">Featured Games</h2>
+    <!-- Featured Games Section -->
+    <section class="featured-games">
+        <div class="section-title fade-in">
+            <h2>Featured <span>Games</span></h2>
+        </div>
         <div class="games-grid">
-            <div class="game-item">
-                <img src="https://i.postimg.cc/CL3qTdQn/images-12.jpg" alt="placeholder">
+            <div class="game-card fade-in">
+                <img src="/api/placeholder/800/500" alt="Game 1" class="game-img">
                 <div class="game-overlay">
-                    <h3 class="game-title">Dragon's Revenge</h3>
-                    <p class="game-description">Join the battle against ancient dragons in this action-packed RPG adventure. Collect powerful weapons and forge alliances.</p>
-                    <a href="#" class="btn play-now">Get Started</a>
+                    <h3 class="game-title">Nexus Legends</h3>
+                    <div class="game-genre">Action RPG</div>
+                    <p class="game-desc">Embark on an epic journey through a vast open world filled with dangerous creatures, ancient mysteries, and powerful magic.</p>
+                    <a href="#" class="game-btn">Play Now</a>
                 </div>
             </div>
-            <div class="game-item">
-                <img src="https://i.postimg.cc/5y5TRLFq/images-10.jpg" alt="placeholder">
+            <div class="game-card fade-in">
+                <img src="/api/placeholder/800/500" alt="Game 2" class="game-img">
                 <div class="game-overlay">
-                    <h3 class="game-title">Puzzle Master</h3>
-                    <p class="game-description">Challenge your mind with increasingly difficult puzzles. Perfect your strategy and become the ultimate Puzzle Master.</p>
-                    <a href="#" class="btn play-now">Get Started</a>
-                </div>
-            </div>
-            <div class="game-item">
-                <img src="https://i.postimg.cc/jd4Yg0H0/images-11.jpg" alt="placeholder">
-                <div class="game-overlay">
-                    <h3 class="game-title">Racing Champions</h3>
-                    <p class="game-description">Speed through exotic tracks around the world. Upgrade your vehicles and compete against the best racers.</p>
-                    <a href="#" class="btn play-now">Get Started</a>
-                </div>
-            </div>
-            <div class="game-item">
-                <img src="https://i.postimg.cc/tJtT7bVC/IMG-20250226-WA0077.jpg" alt="placeholder">
-                <div class="game-overlay">
-                    <h3 class="game-title">City Builder</h3>
-                    <p class="game-description">Design, build, and manage your perfect city. Balance resources and keep your citizens happy.</p>
-                    <a href="#" class="btn play-now">Get Started</a>
-                </div>
-            </div>
-            <div class="game-item">
-                <img src="https://i.postimg.cc/HLjWry4C/icon.webp" alt="placeholder">
-                <div class="game-overlay">
-                    <h3 class="game-title">Zombie Survival</h3>
-                    <p class="game-description">Survive in a post-apocalyptic world overrun by zombies. Scavenge for resources and build your shelter.</p>
-                    <a href="#" class="btn play-now">Get Started</a>
-                </div>
-            </div>
-            <div class="game-item">
-                <img src="https://i.postimg.cc/xC0Pd8QM/Screenshot-20250316-221515.jpg" alt="placeholder">
-                <div class="game-overlay">
-                    <h3 class="game-title">Fantasy Kingdoms</h3>
-                    <p class="game-description">Build your kingdom, train your army, and expand your territory in this strategy game.</p>
-                    <a href="#" class="btn play-now">Get Started</a>
+                    <h3 class="game-title">Cyber Drift</h3>
+                    <div class="game-genre">Racing / Sci-Fi</div>
+                    <p class="game-desc">Race through futuristic neon-lit cities at breakneck speeds, customize your hover vehicle, and compete against players worldwide.</p>
+                    <a href="#" class="game-btn">Play Now</a>
                 </div>
             </div>
         </div>
     </section>
 
+    <!-- Features Section -->
+    <section class="features">
+        <div class="floating-elements" id="floatingElements"></div>
+        <div class="section-title fade-in">
+            <h2>Why Choose <span>Us</span></h2>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card fade-in">
+                <div class="feature-icon">🎮</div>
+                <h3>Exclusive Games</h3>
+                <p>Access our library of exclusive titles you won't find anywhere else, with new releases every month.</p>
+            </div>
+            <div class="feature-card fade-in">
+                <div class="feature-icon">🔥</div>
+                <h3>High Performance</h3>
+          <p>Experience gaming at its finest with optimized performance and minimal latency on any device.</p>
+            </div>
+            <div class="feature-card fade-in">
+                <div class="feature-icon">👥</div>
+                <h3>Active Community</h3>
+                <p>Connect with players worldwide, join tournaments, and make new friends in our gaming community.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
     <footer>
         <div class="footer-content">
+            <div class="footer-logo">NexusGaming</div>
             <div class="footer-links">
-                <a href="#home">Home</a>
-                <a href="#games">Games</a>
-                <a href="#about">About Us</a>
-                <a href="#contact">Contact</a>
+                <a href="#">About Us</a>
                 <a href="#">Privacy Policy</a>
                 <a href="#">Terms of Service</a>
+                <a href="#">Contact</a>
             </div>
-            <div class="social-links">
-                <a href="#" class="social-icon">
-                    <span>𝕏</span>
-                </a>
-                <a href="#" class="social-icon">
-                    <span>𝕗</span>
-                </a>
-                <a href="#" class="social-icon">
-                    <span>𝕚</span>
-                </a>
-                <a href="#" class="social-icon">
-                    <span>𝕪</span>
-                </a>
+            <div class="social-icons">
+                <a href="#" class="social-icon">f</a>
+                <a href="#" class="social-icon">t</a>
+                <a href="#" class="social-icon">i</a>
+                <a href="#" class="social-icon">y</a>
             </div>
-            <p class="copyright">© 2025 GameVault. All rights reserved.</p>
+            <div class="copyright">© 2025 NexusGaming. All rights reserved.</div>
         </div>
     </footer>
 
     <script>
-                       // Mobile menu functionality
-        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-        const closeMenuBtn = document.getElementById('closeMenuBtn');
-        const mobileMenu = document.getElementById('mobileMenu');
-
-        mobileMenuBtn.addEventListener('click', () => {
-            mobileMenu.classList.add('active');
+        // Header scroll effect
+        window.addEventListener('scroll', function() {
+            const header = document.getElementById('header');
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
         });
-
-        closeMenuBtn.addEventListener('click', () => {
-            mobileMenu.classList.remove('active');
+        
+        // Mobile navigation toggle
+        const navToggle = document.getElementById('navToggle');
+        const navLinks = document.getElementById('navLinks');
+        
+        navToggle.addEventListener('click', function() {
+            navLinks.classList.toggle('active');
         });
-
-        // Close mobile menu when clicking a link
-        const mobileLinks = document.querySelectorAll('.mobile-links a');
-        mobileLinks.forEach(link => {
-            link.addEventListener('click', () => {
-                mobileMenu.classList.remove('active');
-            });
-        });
-
-        // Smooth scrolling for anchor links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function(e) {
-                e.preventDefault();
+        
+        // Scroll animation
+        const fadeElements = document.querySelectorAll('.fade-in');
+        
+        function checkFade() {
+            fadeElements.forEach(element => {
+                const elementTop = element.getBoundingClientRect().top;
+                const elementVisible = 150;
                 
-                const targetId = this.getAttribute('href');
-                if (targetId === '#') return;
-                
-                const targetElement = document.querySelector(targetId);
-                if (targetElement) {
-                    window.scrollTo({
-                        top: targetElement.offsetTop - 80,
-                        behavior: 'smooth'
-                    });
+                if (elementTop < window.innerHeight - elementVisible) {
+                    element.classList.add('active');
                 }
             });
+        }
+        
+        window.addEventListener('scroll', checkFade);
+        checkFade(); // Check on initial load
+        
+        // Generate floating elements
+        const floatingContainer = document.getElementById('floatingElements');
+        const numberOfElements = 15;
+        
+        for (let i = 0; i < numberOfElements; i++) {
+            const element = document.createElement('div');
+            element.classList.add('floating-element');
+            
+            // Random positions, rotations, and scales
+            const moveX = Math.random() * 1000 - 500 + 'px';
+            const moveY = Math.random() * 1000 - 500 + 'px';
+            const rotate = Math.random() * 360 + 'deg';
+            const scale = Math.random() * 1.5 + 0.5;
+            const size = (Math.random() * 60 + 20) + 'px';
+            const delay = Math.random() * 5 + 's';
+            
+            element.style.setProperty('--move-x', moveX);
+            element.style.setProperty('--move-y', moveY);
+            element.style.setProperty('--rotate', rotate);
+            element.style.setProperty('--scale', scale);
+            element.style.animationDelay = delay;
+            element.style.width = size;
+            element.style.height = size;
+            
+            // Random starting positions
+            element.style.left = Math.random() * 100 + '%';
+            element.style.top = Math.random() * 100 + '%';
+            element.style.opacity = 0;
+            
+            floatingContainer.appendChild(element);
+        }
+        
+        // Custom cursor effect
+        const cursor = document.getElementById('cursorEffect');
+        const links = document.querySelectorAll('a, button, .nav-toggle');
+        
+        window.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+            cursor.classList.add('active');
         });
-
-        // Animation on scroll
-        const observerOptions = {
-            threshold: 0.1
-        };
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('animate-in');
-                }
+        
+        window.addEventListener('mouseout', () => {
+            cursor.classList.remove('active');
+        });
+        
+        links.forEach(link => {
+            link.addEventListener('mouseenter', () => {
+                cursor.classList.add('hover');
             });
-        }, observerOptions);
-
-        document.querySelectorAll('.game-item').forEach(item => {
-            observer.observe(item);
+            
+            link.addEventListener('mouseleave', () => {
+                cursor.classList.remove('hover');
+            });
         });
     </script>
 </body>
