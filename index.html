@@ -565,24 +565,41 @@ header {
     }
 }
         
-    #earn-content,
-#profile-content {
+    #earn-content {
     position: fixed;
-    top: 60px; /* Start immediately below the header */
+    top: 78px;
     left: 0;
-    width: 100%;
-    height: calc(100vh - 60px); /* Full viewport height minus the header */
-    overflow: hidden;
+    width: 99%;
+    height: calc(100vh - 55px);
+    overflow: auto;
     z-index: 99;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
 }
 
-/* Ensure the iframes fill their containers */
-#earn-iframe,
+#profile-content {
+    position: fixed;
+    top: 50px;
+    right: 0;
+    width: 99%;
+    height: calc(100vh - 60px);
+    overflow: auto;
+    z-index: 99;
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+}
+
+#earn-iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    background-color: #f8f9fa;
+}
+
 #profile-iframe {
     width: 100%;
     height: 100%;
     border: none;
-   }
+    background-color: #f0f4f8;
+}
     </style>
 
 <style>
