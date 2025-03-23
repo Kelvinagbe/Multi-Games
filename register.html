@@ -219,7 +219,7 @@
         </div>
         
         <div class="recaptcha-container">
-          <div class="g-recaptcha" data-sitekey="6LcUC_0qAAAAAO9Aa5ydOLmbp2_ymtNJlj9v3ZfF"></div>
+          <div class="g-recaptcha" data-sitekey="6LcUC_0qAAAAAO9Aa5ydOLmbp2_ymtNJlj9v3ZfF" data-callback="recaptchaCallback"></div>
         </div>
         
         <button type="submit" id="register-btn" class="register-btn" disabled>Create Account</button>
@@ -239,6 +239,20 @@
       </form>
     </div>
   </div>
+
+  <!-- Global script for recaptcha callback -->
+  <script>
+    function recaptchaCallback() {
+      const termsChecked = document.getElementById('terms-checkbox').checked;
+      const registerBtn = document.getElementById('register-btn');
+      
+      if (termsChecked) {
+        registerBtn.disabled = false;
+      } else {
+        registerBtn.disabled = true;
+      }
+    }
+  </script>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
@@ -277,9 +291,6 @@
     }
 
     document.getElementById('terms-checkbox').addEventListener('change', verifyRecaptcha);
-    window.recaptchaCallback = function() {
-      verifyRecaptcha();
-    };
 
     // Function to generate a unique referral code
     async function generateReferralCode() {
@@ -413,12 +424,6 @@
       e.preventDefault();
       alert('Privacy Policy document would open here.');
     });
-  </script>
-  
-  <script>
-    function recaptchaCallback() {
-      verifyRecaptcha();
-    }
   </script>
 </body>
 </html>
