@@ -652,15 +652,6 @@ header {
         </div>
     </header>
 
-    <!-- NEW: Profile Header (Only visible in profile view) -->
-    <div class="profile-header" id="profile-header">
-        <button class="back-button" id="profile-back-btn">
-            <i class="fas fa-arrow-left"></i>
-        </button>
-        <div class="title">My Profile</div>
-        <div></div><!-- Empty div for flex spacing -->
-    </div>
-
     <!-- NEW: Notification Popup -->
     <div class="notification-popup" id="notification-popup">
         <div class="notification-header">
@@ -1023,12 +1014,6 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Show the correct content
         contentElement.classList.add('active');
-        
-        // Special handling for profile view
-        if (contentElement === profileContent) {
-            mainHeader.style.display = 'none';
-            profileHeader.classList.add('visible');
-        }
         
         // Hide loader when iframe loads
         if (iframe) {
@@ -1450,6 +1435,11 @@ document.getElementById("profile-nav").addEventListener("click", function(e) {
     this.classList.add("active");
 });
 
+document.getElementById("earn-nav").addEventListener("click", function(e) {
+    e.preventDefault();
+    resetActiveState();
+    this.classList.add("active");
+
 // Categories button activation
 document.getElementById("categories-nav").addEventListener("click", function(e) {
     e.preventDefault();
@@ -1470,6 +1460,9 @@ document.addEventListener("DOMContentLoaded", function() {
     } else if (page.includes("categories.html")) {
         resetActiveState();
         document.getElementById("categories-nav").classList.add("active");
+    } else if (page.includes("Airtime-earn.html")) {
+        resetActiveState();
+        document.getElementById("earn-nav").classList.add("active")
     } else {
         resetActiveState();
         document.getElementById("home-nav").classList.add("active");
