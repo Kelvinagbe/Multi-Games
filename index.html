@@ -1435,11 +1435,6 @@ document.getElementById("profile-nav").addEventListener("click", function(e) {
     this.classList.add("active");
 });
 
-document.getElementById("earn-nav").addEventListener("click", function(e) {
-    e.preventDefault();
-    resetActiveState();
-    this.classList.add("active");
-
 // Categories button activation
 document.getElementById("categories-nav").addEventListener("click", function(e) {
     e.preventDefault();
@@ -1460,9 +1455,6 @@ document.addEventListener("DOMContentLoaded", function() {
     } else if (page.includes("categories.html")) {
         resetActiveState();
         document.getElementById("categories-nav").classList.add("active");
-    } else if (page.includes("Airtime-earn.html")) {
-        resetActiveState();
-        document.getElementById("earn-nav").classList.add("active")
     } else {
         resetActiveState();
         document.getElementById("home-nav").classList.add("active");
