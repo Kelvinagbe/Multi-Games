@@ -565,7 +565,7 @@ header {
     }
 }
         
-        #earn-content,
+    #earn-content,
 #profile-content {
     position: fixed;
     top: 60px; /* Start immediately below the header */
@@ -582,7 +582,7 @@ header {
     width: 100%;
     height: 100%;
     border: none;
-                                                        }
+   }
     </style>
 
 <style>
@@ -624,6 +624,21 @@ header {
 }
 </style>
 
+
+<style>
+#refresh-button {
+    background: none;
+    border: none;
+    font-size: 20px;
+    color: #555;
+    cursor: pointer;
+    margin-left: 10px;
+}
+#refresh-button:hover {
+    color: #006400;
+}
+</style>
+
 </head>
 <body>
 <amp-auto-ads type="adsense"
@@ -643,14 +658,25 @@ header {
                 <i class="fas fa-search"></i>
                 <input type="text" placeholder="Search games...">
             </div>
-            <div class="header-icons">
+            
+<div class="header-icons">
                 <div class="notification-icon" id="notification-icon">
                     <i class="fas fa-bell"></i>
                     <div class="notification-badge" id="notification-badge"></div>
                 </div>
-            </div>
+                <button id="refresh-button" title="Refresh"><i class="fas fa-sync"></i></button>
+</div>
         </div>
     </header>
+
+    <!-- NEW: Profile Header (Only visible in profile view) -->
+    <div class="profile-header" id="profile-header">
+        <button class="back-button" id="profile-back-btn">
+            <i class="fas fa-arrow-left"></i>
+        </button>
+        <div class="title">My Profile</div>
+        <div></div><!-- Empty div for flex spacing -->
+    </div>
 
     <!-- NEW: Notification Popup -->
     <div class="notification-popup" id="notification-popup">
@@ -1014,6 +1040,12 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Show the correct content
         contentElement.classList.add('active');
+        
+        // Special handling for profile view
+        if (contentElement === profileContent) {
+            mainHeader.style.display = 'none';
+            profileHeader.classList.add('visible');
+        }
         
         // Hide loader when iframe loads
         if (iframe) {
@@ -1458,6 +1490,57 @@ document.addEventListener("DOMContentLoaded", function() {
     } else {
         resetActiveState();
         document.getElementById("home-nav").classList.add("active");
+    }
+});
+</script>
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    setTimeout(function() {
+        const loader = document.getElementById("loader");
+        if (loader && loader.style.display !== "none") {
+            alert("Network error: Page failed to load. Please check your connection and try again.");
+            loader.style.display = "none";
+        }
+    }, 3000); // 3 seconds timeout
+});
+</script>
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    let startY = 0;
+    let isRefreshing = false;
+
+    document.addEventListener("touchstart", function(event) {
+        if (window.scrollY === 0) {
+            startY = event.touches[0].clientY;
+        }
+    });
+
+    document.addEventListener("touchmove", function(event) {
+        if (window.scrollY === 0 && event.touches[0].clientY - startY > 50 && !isRefreshing) {
+            isRefreshing = true;
+            location.reload(); // Refresh the page
+        }
+    });
+
+    document.addEventListener("touchend", function() {
+        isRefreshing = false;
+    });
+});
+</script>
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const refreshButton = document.getElementById("refresh-button");
+    if(refreshButton) {
+        refreshButton.addEventListener("click", function(e) {
+            e.preventDefault();
+            location.reload();
+        });
     }
 });
 </script>
