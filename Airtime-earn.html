@@ -860,6 +860,19 @@
     localStorage.setItem('transactions', JSON.stringify(transactions));
   }
 
+function enableClaimButton() {
+  var claimBtn = document.getElementById("claim-btn");
+  if (claimBtn) {
+    // Set reCAPTCHA verified flag if needed
+    claimBtn.dataset.recaptchaVerified = "true";
+    // Make the button visible and active
+    claimBtn.style.display = "block";
+    claimBtn.style.opacity = "1";
+    // Change the background color to green
+    claimBtn.style.backgroundColor = "#4CAF50";
+    claimBtn.disabled = false;
+  }
+}
   // ----- Authentication Listener -----
   auth.onAuthStateChanged((user) => {
     if (user) {
