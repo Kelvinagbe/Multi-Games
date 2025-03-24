@@ -390,9 +390,9 @@
   margin: 20px auto;
   padding: 15px;
   background-color: #f7f7f7;
-  border-radius: 10px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  max-width: 500px;
+  border-radius: 26px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  max-width: 300px;
   text-align: center;
 }
 
@@ -405,8 +405,8 @@
 .referral-section input[type="text"] {
   width: calc(100% - 110px);
   padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
+  border: 3px solid #ddd;
+  border-radius: 25px;
   font-size: 14px;
 }
 
@@ -415,8 +415,8 @@
   padding: 10px;
   background-color: #2E7D32;
   color: #fff;
-  border: none;
-  border-radius: 5px;
+  border: 1px;
+  border-radius: 25px;
   cursor: pointer;
   font-size: 14px;
   margin-left: 10px;
@@ -430,12 +430,12 @@
 .referral-start {
   margin: 10px;
   padding: 10px;
-  left: 70px;
+  margin-left: -1px; /* Moves the box 50px to the right */
   background-color: #f5f9f5;
   border: 3px solid #2E7D32;
   border-radius: 30px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.4);
-  max-width: 270px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  max-width: 300px;
   text-align: center;
   font-family: 'Arial', sans-serif;
   display: block;
@@ -484,7 +484,7 @@
 
 .referral-start .cta-button:active {
   transform: translateY(1px);
-}
+} 
   </style>
 
   <script type="module">
@@ -571,16 +571,15 @@
 
     <!-- Referral Section -->
     <div class="referral-section">
-      <h3>Your Referral Link</h3>
+      <h3>Your Referral code</h3>
       <input type="text" id="user-referral-link" readonly>
       <button onclick="copyReferralLink()">Copy Link</button>
     </div>
 
     <div class="referral-start">
   <h2>Start Referring Friends Today!</h2>
-  <p>Share your unique referral link with friends and family to earn amazing rewards. The more people you refer, the more benefits you unlock!</p>
-  <p>You have referred <span id="referral-count">0</span> friends so far.</p>
-  <button class="cta-button">Get My Referral Link</button>
+  <p>Share your unique referral code with friends and family to earn. rewards. The more people you refer, the more benefits you unlock!</p>
+  <p>You have referred <span id="referral-count">0</span> person so far.</p>
 </div>
 
     <div class="tab-container">
@@ -781,7 +780,7 @@
         const userData = snapshot.val();
         const referralCode = userData.referralCode || "N/A";
         document.getElementById('user-referral-link').value =
-          `https://multi-games-fawn.vercel.app/index.html?ref=${referralCode}`;
+          `${referralCode}`;
       }
     }
 
