@@ -109,6 +109,20 @@
         .active {
             display: flex;
         }
+
+        /* Offline indicator styles */
+        #offline-indicator {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #ff4444;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            display: none;
+            z-index: 2000;
+        }
     </style>
 </head>
 <body>
@@ -129,7 +143,39 @@
         <div class="menu-item" id="exitButton">Exit</div>
     </div>
 
+    <div id="offline-indicator">You are currently offline</div>
+
     <script>
+        // Register Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/service-worker.js')
+                    .then(registration => {
+                        console.log('Service Worker registered successfully:', registration.scope);
+                    })
+                    .catch(error => {
+                        console.log('Service Worker registration failed:', error);
+                    });
+            });
+        }
+
+        // Offline/Online status handling
+        const offlineIndicator = document.getElementById('offline-indicator');
+
+        function updateOnlineStatus() {
+            if (!navigator.onLine) {
+                offlineIndicator.style.display = 'block';
+            } else {
+                offlineIndicator.style.display = 'none';
+            }
+        }
+
+        window.addEventListener('online', updateOnlineStatus);
+        window.addEventListener('offline', updateOnlineStatus);
+
+        // Initial check
+        updateOnlineStatus();
+
         // Make the menu button draggable
         const menuButton = document.getElementById('menuButton');
         const menuOverlay = document.getElementById('menuOverlay');
