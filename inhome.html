@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi Games</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #ffffff;
+            color: #333;
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+        }
+        .logo {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #28a745;
+        }
+        .search-box {
+            width: 100%;
+            max-width: 290px;
+            padding: 10px;
+            font-size: 16px;
+            border: 3px solid #28a745;
+            border-radius: 25px;
+            outline: none;
+            margin-bottom: 20px;
+        }
+        .game-card {
+            background: #f8f9fa;
+            border-radius: 26px;
+            padding: 15px;
+            width: 290px;
+            margin: 10px auto;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .game-card img {
+            width: 100%;
+            border-radius: 10px;
+        }
+        .game-title {
+            font-size: 20px;
+            margin: 10px 0;
+            font-weight: bold;
+        }
+        .game-desc {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 15px;
+        }
+        .play-button {
+            background: #28a745;
+            color: white;
+            padding: 10px 15px;
+            text-decoration: none;
+            font-size: 16px;
+            border-radius: 5px;
+            display: inline-block;
+        }
+        .play-button:hover {
+            background: #218838;
+        }
+
+        /* Pop-in Notification */
+        .popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #fff;
+            width: 90%;
+            max-width: 250px;
+            padding: 20px;
+            border-radius: 25px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            display: none;
+        }
+
+         .popup h1 {
+            font-size: ,35px;
+            margin-bottom: 10px;
+            color: green;
+      }
+
+        .popup h2 {
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+        .popup p {
+            font-size: 14px;
+            color: #555;
+            margin-bottom: 20px;
+        }
+        .popup button {
+            border: none;
+            padding: 10px 15px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 25px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            margin: 5px;
+        }
+        .download-btn {
+            background: #28a745;
+            color: white;
+        }
+        .download-btn:hover {
+            background: #218838;
+        }
+        .continue-btn {
+            background: #6c757d;
+            color: white;
+        }
+        .continue-btn:hover {
+            background: #5a6268;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="logo">Multi Games</div>
+
+    <input type="text" class="search-box" placeholder="Search games..." onkeyup="filterGames()">
+
+    <div class="game-card">
+        <img src="https://i.postimg.cc/MTbmT5k9/Halloween-Icon-Logo-Subway-Surfers-purple.jpg" alt="Game Image">
+        <div class="game-title">Game Title</div>
+        <div class="game-desc">This is a short game description.</div>
+        <a href="iframe-subway.html" class="play-button">Play Now</a>
+    </div>
+
+    <!-- Pop-in Notification -->
+    <div class="popup" id="popup">
+         <h1> Multi Games app </h1>
+        <h2>Download Our App 📲</h2>
+        <p>Get more games and exclusive features when you download our app.</p>
+        <button class="download-btn" onclick="downloadApp()">Download 📥</button>
+        <button class="continue-btn" onclick="closePopup()">Continue</button>
+    </div>
+
+    <script>
+        function filterGames() {
+            let input = document.querySelector('.search-box').value.toLowerCase();
+            let gameCard = document.querySelector('.game-card');
+            let title = document.querySelector('.game-title').innerText.toLowerCase();
+
+            gameCard.style.display = title.includes(input) ? "block" : "none";
+        }
+
+        // Show pop-up after 3 seconds
+        setTimeout(() => {
+            document.getElementById("popup").style.display = "block";
+        }, 3000);
+
+        function closePopup() {
+            document.getElementById("popup").style.display = "none";
+        }
+
+        function downloadApp() {
+            alert("Redirecting to download page...");
+            window.location.href = "Multi Games.apk";
+        }
+    </script>
+
+</body>
+</html>
