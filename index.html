@@ -616,15 +616,32 @@
 
 <style>
 #refresh-button {
-    background: none;
+    position: fixed;
+    top: 22px;
+    right: 25px;
+    background: rgba(255, 255, 255, 0.95);
     border: none;
-    font-size: 20px;
+    font-size: 20px; /* Slightly larger icon */
     color: #555;
     cursor: pointer;
-    margin-left: 10px;
+    padding: 15px; /* Increase clickable area */
+    border-radius: 50%;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    z-index: 9999; /* Ensure it stays on top */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    touch-action: manipulation; /* Improve touch response */
+    transition: background 0.2s, transform 0.1s; /* Smooth click feedback */
 }
+
 #refresh-button:hover {
-    color: #006400;
+    background: #006400;
+    color: white;
+}
+
+#refresh-button:active {
+    transform: scale(0.9); /* Slight press effect */
 }
 </style>
 </head>
@@ -637,6 +654,8 @@
   <div class="loader-container" id="loader">
       <div class="m-loader">M</div>
   </div>
+
+  <button id="refresh-button"><i class="fas fa-sync-alt"></i></button>
 
   <!-- Floating Search Bar (Home Only) -->
   <div class="floating-search" id="floating-search">
@@ -1041,6 +1060,56 @@
                 </div>
               </div>
    </div>
+
+
+        <!-- More Ads -->
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5345992350931230"
+            crossorigin="anonymous"></script>
+        <ins class="adsbygoogle"
+            style="display:block"
+            data-ad-format="fluid"
+            data-ad-layout-key="-fb+5w+4e-db+86"
+            data-ad-client="ca-pub-5345992350931230"
+            data-ad-slot="1925101979"></ins>
+        <script>
+            (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
+
+<div class="section-header" style="margin-top: 10px;">
+       <h2></h2>
+</div>
+</div>
+   <div class="game-grid">
+            <div class="game-card">
+                <div class="game-image-container">
+                    <img src="https://ali.iningame.com/cy/sdk/icon/Subway_Surfers_Holiday.png" alt="subway">
+                    <div class="trending-ribbon">HOT🔥</div>
+                </div>
+                <div class="game-info">
+                    <p>Subway Surfers Holiday</p>
+                    <div class="game-meta">
+                        <i class="fas fa-star"></i> 1.8k
+                        <span style="margin-left: 5px;"><i class="fas fa-user"></i> 25k+</span>
+                    </div>
+                    <a href="iframe-subway-surfers-holiday.html" class="play-btn game-link">Play Now</a>
+                </div>
+              </div>
+   <div class="game-grid">
+            <div class="game-card">
+                <div class="game-image-container">
+                    <img src="https://ali.iningame.com/cy/sdk/icon/ORV_Racing.png" alt="ORV racing">
+                    <div class="trending-ribbon">HOT🔥</div>
+                </div>
+                <div class="game-info">
+                    <p>ORV Racing </p>
+                    <div class="game-meta">
+                        <i class="fas fa-star"></i> 1.0k
+                        <span style="margin-left: 5px;"><i class="fas fa-user"></i> 2k+</span>
+                    </div>
+                    <a href="iframe-ORV-Racing.html" class="play-btn game-link">Play Now</a>
+                </div>
+              </div>
+   </div>
 </div>
 
 <!-- UPDATED: Page Content for Trending (Full Screen) -->
@@ -1219,6 +1288,30 @@ document.getElementById("profile-nav").addEventListener("click", function(e) {
     const profileContent = document.getElementById('profile-content');
     const profileIframe = document.getElementById('profile-iframe');
     handleNavigation(profileContent, profileIframe, this, 'profile.html');
+});
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    var refreshButton = document.getElementById("refresh-button");
+
+    if (refreshButton) {
+        refreshButton.addEventListener("touchstart", function(event) {
+            event.preventDefault();
+            refreshButton.style.transform = "scale(0.9)"; // Instant feedback
+        });
+
+        refreshButton.addEventListener("touchend", function(event) {
+            event.preventDefault();
+            refreshButton.style.transform = "scale(1)"; // Reset effect
+            location.reload(); // Refresh the page
+        });
+
+        refreshButton.addEventListener("click", function(event) {
+            event.preventDefault();
+            location.reload();
+        });
+    }
 });
 </script>
 </body>
