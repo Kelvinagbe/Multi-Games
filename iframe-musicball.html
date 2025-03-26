@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game</title>
+    <link rel="manifest" href="https://www.hnyigegame.com/Smash_Colors_Music_Ball/manifest_transsion.json">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #0f172a;
+            color: white;
+            min-height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .game-iframe-container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+            background-color: #0f172a;
+        }
+        
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        
+        .menu-button {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background-color: #166534; /* Dark green by default */
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: move;
+            z-index: 1000;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            border: none;
+            transition: background-color 0.3s;
+        }
+        
+        .menu-button.active {
+            background-color: white; /* White when active */
+        }
+        
+        .power-icon {
+            width: 40px;
+            height: 40px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transform: translateY(-1px); /* Slight vertical adjustment */
+        }
+        
+        .power-icon svg {
+            width: 36px;
+            height: 36px;
+            fill: none;
+            stroke: white;
+            stroke-width: 2.5;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            transition: all 0.3s;
+        }
+        
+        .power-icon.on svg {
+            stroke: #166534; /* Dark green when on (button is white) */
+        }
+        
+        .menu-overlay {
+            position: absolute;
+            display: none;
+            flex-direction: column;
+            background-color: #1e293b;
+            border-radius: 10px;
+            padding: 10px;
+            z-index: 999;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+        
+        .menu-item {
+            padding: 10px 20px;
+            color: white;
+            cursor: pointer;
+            border-radius: 5px;
+            margin: 5px 0;
+            text-align: center;
+            transition: background-color 0.2s;
+        }
+        
+        .menu-item:hover {
+            background-color: #334155;
+        }
+        
+        .active {
+            display: flex;
+        }
+
+        /* Offline indicator styles */
+        #offline-indicator {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #ff4444;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            display: none;
+            z-index: 2000;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-iframe-container">
+        <iframe src="https://www.hnyigegame.com/Smash_Colors_Music_Ball/index_aha.html" allowfullscreen></iframe>
+    </div>
+    
+    <button class="menu-button" id="menuButton">
+        <div class="power-icon" id="powerIcon">
+            <svg viewBox="0 0 24 24">
+                <path d="M12 3.5v9M18.36 6.64C19.6 7.88 20.38 9.57 20.38 11.38c0 4.13-3.25 7.38-7.38 7.38-4.12 0-7.38-3.25-7.38-7.38 0-1.81 0.77-3.5 2.02-4.74" />
+            </svg>
+        </div>
+    </button>
+    
+    <div class="menu-overlay" id="menuOverlay">
+        <div class="menu-item" id="homeButton">Home</div>
+        <div class="menu-item" id="exitButton">Exit</div>
+    </div>
+
+    <div id="offline-indicator">You are currently offline</div>
+
+    <script>
+        // Register Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/service-worker.js')
+                    .then(registration => {
+                        console.log('Service Worker registered successfully:', registration.scope);
+                    })
+                    .catch(error => {
+                        console.log('Service Worker registration failed:', error);
+                    });
+            });
+        }
+
+        // Offline/Online status handling
+        const offlineIndicator = document.getElementById('offline-indicator');
+
+        function updateOnlineStatus() {
+            if (!navigator.onLine) {
+                offlineIndicator.style.display = 'block';
+            } else {
+                offlineIndicator.style.display = 'none';
+            }
+        }
+
+        window.addEventListener('online', updateOnlineStatus);
+        window.addEventListener('offline', updateOnlineStatus);
+
+        // Initial check
+        updateOnlineStatus();
+
+        // Make the menu button draggable
+        const menuButton = document.getElementById('menuButton');
+        const menuOverlay = document.getElementById('menuOverlay');
+        const homeButton = document.getElementById('homeButton');
+        const exitButton = document.getElementById('exitButton');
+        const powerIcon = document.getElementById('powerIcon');
+        
+        let isDragging = false;
+        let offsetX, offsetY;
+        let isMenuActive = false;
+        
+        // Position the menu overlay relative to the button
+        function positionMenuOverlay() {
+            const buttonRect = menuButton.getBoundingClientRect();
+            menuOverlay.style.top = `${buttonRect.bottom + 10}px`;
+            menuOverlay.style.left = `${buttonRect.left - 30}px`;
+        }
+        
+        // Toggle menu visibility
+        menuButton.addEventListener('click', function(e) {
+            if (!isDragging) {
+                isMenuActive = !isMenuActive;
+                menuOverlay.classList.toggle('active');
+                menuButton.classList.toggle('active');
+                powerIcon.classList.toggle('on');
+                positionMenuOverlay();
+            }
+        });
+        
+        // Make the button draggable
+        menuButton.addEventListener('mousedown', function(e) {
+            isDragging = false;
+            offsetX = e.clientX - menuButton.getBoundingClientRect().left;
+            offsetY = e.clientY - menuButton.getBoundingClientRect().top;
+            document.addEventListener('mousemove', onMouseMove);
+            document.addEventListener('mouseup', onMouseUp);
+        });
+        
+        // Touch support for mobile
+        menuButton.addEventListener('touchstart', function(e) {
+            isDragging = false;
+            const touch = e.touches[0];
+            offsetX = touch.clientX - menuButton.getBoundingClientRect().left;
+            offsetY = touch.clientY - menuButton.getBoundingClientRect().top;
+            document.addEventListener('touchmove', onTouchMove);
+            document.addEventListener('touchend', onTouchEnd);
+        });
+        
+        function onMouseMove(e) {
+            isDragging = true;
+            menuButton.style.left = `${e.clientX - offsetX}px`;
+            menuButton.style.top = `${e.clientY - offsetY}px`;
+            
+            // Keep button within viewport
+            const buttonRect = menuButton.getBoundingClientRect();
+            if (buttonRect.left < 0) menuButton.style.left = '0px';
+            if (buttonRect.top < 0) menuButton.style.top = '0px';
+            if (buttonRect.right > window.innerWidth) 
+                menuButton.style.left = `${window.innerWidth - buttonRect.width}px`;
+            if (buttonRect.bottom > window.innerHeight) 
+                menuButton.style.top = `${window.innerHeight - buttonRect.height}px`;
+        }
+        
+        function onTouchMove(e) {
+            isDragging = true;
+            const touch = e.touches[0];
+            menuButton.style.left = `${touch.clientX - offsetX}px`;
+            menuButton.style.top = `${touch.clientY - offsetY}px`;
+            
+            // Keep button within viewport
+            const buttonRect = menuButton.getBoundingClientRect();
+            if (buttonRect.left < 0) menuButton.style.left = '0px';
+            if (buttonRect.top < 0) menuButton.style.top = '0px';
+            if (buttonRect.right > window.innerWidth) 
+                menuButton.style.left = `${window.innerWidth - buttonRect.width}px`;
+            if (buttonRect.bottom > window.innerHeight) 
+                menuButton.style.top = `${window.innerHeight - buttonRect.height}px`;
+        }
+        
+        function onMouseUp() {
+            document.removeEventListener('mousemove', onMouseMove);
+            document.removeEventListener('mouseup', onMouseUp);
+            
+            // If we weren't dragging, the click event will toggle the menu
+            setTimeout(() => {
+                isDragging = false;
+            }, 10);
+        }
+        
+        function onTouchEnd() {
+            document.removeEventListener('touchmove', onTouchMove);
+            document.removeEventListener('touchend', onTouchEnd);
+            
+            // If we weren't dragging, the click event will toggle the menu
+            setTimeout(() => {
+                isDragging = false;
+            }, 10);
+        }
+        
+        // Hide the menu when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!menuButton.contains(e.target) && !menuOverlay.contains(e.target) && isMenuActive) {
+                menuOverlay.classList.remove('active');
+                menuButton.classList.remove('active');
+                powerIcon.classList.remove('on');
+                isMenuActive = false;
+            }
+        });
+        
+        // Navigate to index.html for both Home and Exit
+        homeButton.addEventListener('click', function() {
+            window.location.href = 'index.html';
+        });
+        
+        exitButton.addEventListener('click', function() {
+            window.location.href = 'index.html';
+        });
+    </script>
+</body>
+</html>
