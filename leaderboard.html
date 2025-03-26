@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leaderboard | Multi Games</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background-color: #f0f2f5;
+            font-family: 'Poppins', sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+
+        .leaderboard-container {
+            max-width: 400px;
+            margin: 20px auto;
+            padding: 15px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .leaderboard-container h3 {
+            color: #2E7D32;
+            margin-bottom: 10px;
+            font-size: 22px;
+        }
+
+        #leaderboard-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        #leaderboard-list li {
+            padding: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #eee;
+        }
+
+        #leaderboard-list li:nth-child(1) { color: gold; font-size: 18px; }
+        #leaderboard-list li:nth-child(2) { color: silver; }
+        #leaderboard-list li:nth-child(3) { color: #cd7f32; }
+
+        .alert {
+            position: fixed;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 10px 20px;
+            background: red;
+            color: white;
+            border-radius: 5px;
+            display: none;
+            font-weight: bold;
+            z-index: 1000;
+        }
+
+        .alert.success { background: green; }
+        .alert.offline { background: orange; }
+    </style>
+</head>
+<body>
+
+    <div id="alert-box" class="alert"></div>
+
+    <div class="leaderboard-container">
+        <h3>🏆 Leaderboard</h3>
+        <ul id="leaderboard-list">
+            <li>Loading leaderboard...</li>
+        </ul>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
+        import { getDatabase, ref, query, orderByChild, get } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBw1uA-kNKOZEufWKZ9AMBxvRGHNGF1lkA",
+            authDomain: "multi-games-a2561.firebaseapp.com",
+            projectId: "multi-games-a2561",
+            storageBucket: "multi-games-a2561.appspot.com",
+            messagingSenderId: "150551898066",
+            appId: "1:150551898066:web:4e8fb185f2321ba4140a0b",
+            measurementId: "G-PB8Y87E6XV",
+            databaseURL: "https://multi-games-a2561-default-rtdb.firebaseio.com"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+        const auth = getAuth();
+
+        // Check if the user is logged in
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                showAlert(`✅ Logged in as ${user.email}`, "success");
+                loadLeaderboard();
+            } else {
+                showAlert("❌ You are not logged in!", "error");
+            }
+        });
+
+        // Function to load leaderboard
+        async function loadLeaderboard() {
+            try {
+                const usersRef = query(ref(database, 'users'), orderByChild('airtimeBalance'));
+                const snapshot = await get(usersRef);
+
+                if (snapshot.exists()) {
+                    let leaderboardData = [];
+                    snapshot.forEach(childSnapshot => {
+                        let airtimeBalance = childSnapshot.val().airtimeBalance || 0;
+                        let calculatedScore = airtimeBalance * 5; // Convert to points
+
+                        leaderboardData.push({
+                            id: childSnapshot.key,
+                            name: childSnapshot.val().name || "Unknown",
+                            airtimeScore: calculatedScore // Store calculated points
+                        });
+                    });
+
+                    // Sort users by airtimeScore in descending order
+                    leaderboardData.sort((a, b) => b.airtimeScore - a.airtimeScore);
+
+                    const leaderboardElement = document.getElementById("leaderboard-list");
+                    leaderboardElement.innerHTML = "";
+
+                    leaderboardData.forEach((user, index) => {
+                        let medal = '';
+                        if (index === 0) medal = '🥇';
+                        else if (index === 1) medal = '🥈';
+                        else if (index === 2) medal = '🥉';
+
+                        const listItem = document.createElement("li");
+                        listItem.innerHTML = `${medal} <strong>${user.name}</strong> - ${user.airtimeScore} Points`;
+                        leaderboardElement.appendChild(listItem);
+                    });
+
+                    showAlert("🏆 Leaderboard updated!", "success");
+                } else {
+                    document.getElementById("leaderboard-list").innerHTML = "<li>No leaderboard data available.</li>";
+                    showAlert("⚠️ No leaderboard data found.", "error");
+                }
+            } catch (error) {
+                console.error("Error loading leaderboard:", error);
+                showAlert(`❌ Failed to load leaderboard: ${error.message}`, "error");
+            }
+        }
+
+        // Function to show alert messages
+        function showAlert(message, type) {
+            const alertBox = document.getElementById("alert-box");
+            alertBox.textContent = message;
+            alertBox.className = "alert " + type;
+            alertBox.style.display = "block";
+            setTimeout(() => { alertBox.style.display = "none"; }, 3000);
+        }
+
+        // Check Internet Connectivity
+        function checkInternetStatus() {
+            if (!navigator.onLine) {
+                showAlert("⚠️ You are offline. Please check your internet connection.", "offline");
+            } else {
+                showAlert("✅ You are back online!", "success");
+                loadLeaderboard();
+            }
+        }
+
+        window.addEventListener("offline", () => showAlert("⚠️ You lost internet connection!", "offline"));
+        window.addEventListener("online", checkInternetStatus);
+
+    </script>
+
+</body>
+</html>
