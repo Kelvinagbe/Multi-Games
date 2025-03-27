@@ -224,5 +224,27 @@
             document.removeEventListener('touchend', onTouchEnd);
         }
     </script>
+
+<script>
+    // Define game details (change per game)
+    const gameName = "Pixel Shooter"; // Change this for each game
+
+    // Retrieve existing played games or initialize an empty array
+    let playedGames = JSON.parse(localStorage.getItem("playedGames")) || [];
+
+    // Remove game if already exists to avoid duplicates
+    playedGames = playedGames.filter(game => game !== gameName);
+
+    // Add new game at the beginning (most recent first)
+    playedGames.unshift(gameName);
+
+    // Keep only the last 4 games
+    if (playedGames.length > 4) {
+        playedGames.pop();
+    }
+
+    // Save updated list back to localStorage
+    localStorage.setItem("playedGames", JSON.stringify(playedGames));
+</script>
 </body>
 </html>
