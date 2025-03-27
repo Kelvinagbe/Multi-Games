@@ -612,16 +612,15 @@
 
     <div class="tab-content" id="history">
       <div class="content">
-        <h3>Recent Games</h3>
-        <ul id="recent-games">
-          <li>Loading game history...</li>
+      <h3>Recent Games</h3>
+<ul id="recentGamesList"></ul>
         </ul>
       </div>
     </div>
 
     <div class="tab-content" id="achievements">
   <div class="content">
-    <iframe src="leaderboard.html" width="103%" height="500px" style="border: none; border-radius: 15px;"></iframe>
+    <iframe src="leaderboard.html" width="103%" height="410px" style="border: none; border-radius: 15px;"></iframe>
   </div>
 </div>
 
@@ -983,5 +982,21 @@
       }
     });
   </script>
+
+<script>
+    // Retrieve played games from localStorage
+    let playedGames = JSON.parse(localStorage.getItem("playedGames")) || [];
+    const recentGamesList = document.getElementById("recentGamesList");
+
+    if (playedGames.length > 0) {
+        playedGames.forEach(game => {
+            const gameItem = document.createElement("li");
+            gameItem.textContent = game; // Only show game name
+            recentGamesList.appendChild(gameItem);
+        });
+    } else {
+        recentGamesList.innerHTML = "<p>No recent games played.</p>";
+    }
+</script>
 </body>
 </html>
