@@ -1,1002 +1,923 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Profile | Multi Games</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <style>
-    /* Your existing CSS styles for profile page */
-      * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gaming Profile Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
+    <style>
+        /* Existing styles from previous document */
+       :root {
+            --primary-color: #2ecc71;
+            --secondary-color: #27ae60;
+            --background-color: #ecf0f1;
+            --text-color: #2c3e50;
+            --card-background: #ffffff;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+        }
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
         }
         body {
-            background-color: #f0f2f5;
-            color: #333;
-            padding-bottom: 70px; /* Space for bottom nav */
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, var(--background-color) 0%, #dfe4ea 100%);
+            color: var(--text-color);
+            min-height: 100vh;
+            overflow-x: hidden;
         }
-        .profile-header {
-            background: linear-gradient(to right, #2E7D32, #1B5E20);
-            padding: 40px;
-            text-align: center;
-            color: white;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        .profile-container { 
+            width: 100%; 
+            min-height: 100vh; 
+            padding: 0; 
+            background: var(--card-background); 
         }
-        .profile-header img {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            border: 3px solid white;
+        .profile-header { 
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); 
+            padding: 20px; 
+            color: #fff; 
+            display: flex; 
+            align-items: center; 
+            gap: 15px; 
+        }
+        .profile-avatar { 
+            width: 70px; 
+            height: 70px; 
+            border-radius: 50%; 
+            border: 3px solid #fff; 
             object-fit: cover;
         }
-        .profile-name {
-            font-size: 24px;
-            font-weight: bold;
-            margin-top: 10px;
+        .profile-info { 
+            flex: 1; 
         }
-        .profile-email {
-            font-size: 14px;
-            opacity: 0.9;
+        .profile-header h2 { 
+            font-size: 1.2rem; 
         }
-        .stats-container {
-            display: flex;
-            justify-content: space-around;
-            padding: 20px;
-            background: white;
-            margin: -20px auto 20px auto;
-            border-radius: 16px;
-            width: 90%;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        .auth-button { 
+            padding: 10px 20px; 
+            background: #ffffff; 
+            border-radius: 5px; 
+            color: var(--primary-color); 
+            border: none; 
+            cursor: pointer; 
+            transition: 0.3s; 
         }
-        .stat-item {
-            text-align: center;
-            padding: 10px;
+        .auth-button:hover { 
+            background: var(--primary-color); 
+            color: #ffffff; 
         }
-        .stat-value {
-            font-size: 22px;
-            font-weight: bold;
-            color: #2E7D32;
+        .profile-content { 
+            padding: 20px; 
         }
-        .stat-label {
-            font-size: 13px;
-            opacity: 0.8;
-            margin-top: 4px;
+        .wallet-section { 
+            padding: 15px; 
+            background: #f5f5f5; 
+            border-radius: 10px; 
+            box-shadow: 0 5px 15px var(--shadow-color); 
+            margin-bottom: 20px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            border: 2px solid var(--primary-color); 
         }
-        .tab-container {
-            display: flex;
-            justify-content: space-around;
-            background: white;
-            padding: 0;
-            border-top: 1px solid #eee;
-            border-bottom: 1px solid #eee;
-            position: sticky;
+        .wallet-info { 
+            display: flex; 
+            flex-direction: column; 
+            gap: 5px; 
+        }
+        .wallet-balance { 
+            display: flex; 
+            align-items: center; 
+            gap: 10px; 
+        }
+        .wallet-icon { 
+            color: var(--primary-color); 
+            font-size: 1.5rem; 
+        }
+        .wallet-history { 
+            font-size: 0.7rem; 
+            color: var(--primary-color); 
+            cursor: pointer; 
+            transition: opacity 0.3s; 
+        }
+        .wallet-history:hover { 
+            opacity: 0.7; 
+        }
+        .wallet-actions { 
+            display: flex; 
+            align-items: center; 
+            gap: 10px; 
+        }
+        .withdraw-btn { 
+            padding: 10px 20px; 
+            background: var(--primary-color); 
+            border: 2px solid var(--primary-color); 
+            border-radius: 25px; 
+            color: #fff; 
+            cursor: pointer; 
+            transition: 0.3s; 
+            font-weight: bold; 
+        }
+        .withdraw-btn:hover { 
+            background: transparent; 
+            color: var(--primary-color); 
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1); 
+        }
+        .quick-actions { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); 
+            gap: 15px; 
+        }
+        .quick-action { 
+            background: #f5f5f5; 
+            padding: 15px; 
+            border-radius: 10px; 
+            text-align: center; 
+            transition: 0.3s; 
+            box-shadow: 0 5px 10px var(--shadow-color); 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            gap: 10px; 
+        }
+        .quick-action:hover { 
+            transform: translateY(-5px); 
+        }
+        .quick-action i { 
+            font-size: 2rem; 
+            color: var(--primary-color); 
+        }
+        #loading-overlay {
+            position: fixed;
             top: 0;
-            z-index: 10;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-        }
-        .tab {
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-            padding: 15px 0;
-            flex: 1;
-            text-align: center;
-            transition: all 0.3s;
-        }
-        .tab.active {
-            color: #2E7D32;
-            border-bottom: 3px solid #2E7D32;
-            background-color: rgba(46, 125, 50, 0.05);
-        }
-        .tab:hover {
-            background-color: rgba(46, 125, 50, 0.05);
-        }
-        .content {
-            padding: 25px;
-            background: white;
-            margin: 20px;
-            border-radius: 12px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-        }
-        .content h3 {
-            margin-bottom: 15px;
-            color: #444;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 10px;
-        }
-        .hidden {
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
             display: none;
-        }
-        .edit-profile-btn {
-            background: #2E7D32;
-            color: white;
-            padding: 10px 18px;
-            text-align: center;
-            border-radius: 25px;
-            cursor: pointer;
-            margin: 15px auto;
-            display: inline-block;
-            font-weight: 600;
-            border: none;
-            box-shadow: 0 4px 8px rgba(46, 125, 50, 0.3);
-            transition: all 0.3s;
-        }
-        .edit-profile-btn:hover {
-            background: #1B5E20;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(46, 125, 50, 0.4);
-        }
-        .logout-btn {
-            background: #1B5E20;
-            color: white;
-            padding: 10px 18px;
-            text-align: center;
-            border-radius: 25px;
-            cursor: pointer;
-            margin: 15px 10px;
-            display: inline-block;
-            font-weight: 600;
-            border: none;
-            box-shadow: 0 4px 8px rgba(27, 94, 32, 0.3);
-            transition: all 0.3s;
-        }
-        .logout-btn:hover {
-            background: #0D3010;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(27, 94, 32, 0.4);
-        }
-        .button-container {
-            display: flex;
             justify-content: center;
-            flex-wrap: wrap;
-        }
-        .form-group {
-            margin-bottom: 20px;
-        }
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 500;
-        }
-        .form-group input, .form-group textarea {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            font-size: 14px;
-        }
-        .form-group textarea {
-            height: 100px;
-            resize: vertical;
-        }
-        .success-message {
-            color: #28a745;
-            margin: 10px 0;
-            padding: 10px;
-            background-color: rgba(40, 167, 69, 0.1);
-            border-radius: 5px;
-        }
-        .error-message {
-            color: #dc3545;
-            margin: 10px 0;
-            padding: 10px;
-            background-color: rgba(220, 53, 69, 0.1);
-            border-radius: 5px;
-        }
-        .danger-btn {
-            background-color: #dc3545;
-            color: white;
-            padding: 10px 18px;
-            border-radius: 25px;
-            cursor: pointer;
-            border: none;
-            margin: 5px;
-            font-weight: 600;
-            box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3);
-        }
-        .danger-btn:hover {
-            background-color: #c82333;
-        }
-        .badge {
-            display: inline-block;
-            padding: 8px 12px;
-            margin: 5px;
-            background: linear-gradient(to right, #2E7D32, #1B5E20);
-            color: white;
-            border-radius: 20px;
-            font-size: 13px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-        .game-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 12px;
-            border-bottom: 1px solid #eee;
             align-items: center;
+            z-index: 1000;
         }
-        .game-result {
-            padding: 5px 10px;
-            border-radius: 15px;
-            font-size: 13px;
-            font-weight: 600;
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
         }
-        .result-win {
-            background-color: rgba(40, 167, 69, 0.2);
-            color: #28a745;
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
-        .result-loss {
-            background-color: rgba(220, 53, 69, 0.2);
-            color: #dc3545;
-        }
-        #loading {
-            text-align: center;
-            padding: 40px;
-        }
-        #error-container {
-            text-align: center;
-            padding: 40px;
+
+        /* Login Modal Styles */
+        #login-modal {
             display: none;
-        }
-        .profile-stat-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-        .profile-stat-item {
-            background-color: #f8f9fa;
-            padding: 15px;
-            border-radius: 8px;
-            display: flex;
-            justify-content: space-between;
+            position: fixed;
+            z-index: 1500;
+            left: 2px;
+            top: 2px;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+            justify-content: center;
             align-items: center;
         }
-        .profile-stat-item span:first-child {
-            font-weight: 600;
-            color: #666;
-        }
-        .profile-stat-item span:last-child {
-            font-weight: 700;
-            color: #2E7D32;
-        }
-        ul {
-            list-style: none;
-        }
-        /* Login form styles */
-        .login-container {
-            max-width: 400px;
-            margin: 40px auto;
-            padding: 25px;
-            background: white;
-            border-radius: 30px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-        }
-        .login-header {
+        .login-modal-content {
+            background-color: #fefefe;
+            padding: 40px;
+            border-radius: 29px;
+            width: 100%;
+            max-width: 320px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
             text-align: center;
-            margin-bottom: 25px;
         }
-        .login-header h2 {
-            color: #2E7D32;
-            margin-bottom: 10px;
+        .login-modal-content h2 {
+            margin-bottom: 20px;
+            color: var(--primary-color);
         }
-        .login-header p {
-            color: #777;
-            font-size: 14px;
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
         }
-        .login-form input {
-            width: 100%;
-            padding: 12px;
-            margin-bottom: 15px;
-            border: 3px solid #ddd;
+        .login-input {
+            padding: 10px;
+            border: 2px solid #ddd;
             border-radius: 25px;
-            font-size: 14px;
-        }
-        .login-form input:focus {
-            border-color: #2E7D32;
-            outline: none;
-        }
-        .login-btn {
             width: 100%;
-            background: #2E7D32;
+        }
+        .login-button {
+            background-color: var(--primary-color);
             color: white;
-            padding: 12px;
             border: none;
-            border-radius: 28px;
+            padding: 12px;
+            border-radius: 25px;
             cursor: pointer;
-            font-size: 16px;
-            font-weight: 600;
-            margin-top: 10px;
-            box-shadow: 0 4px 8px rgba(46, 125, 50, 0.3);
-            transition: all 0.3s;
+            transition: background-color 0.3s;
         }
-        .login-btn:hover {
-            background: #1B5E20;
-            box-shadow: 0 6px 12px rgba(46, 125, 50, 0.4);
+        .login-button:hover {
+            background-color: var(--secondary-color);
         }
-        .login-options {
+        .login-alternatives {
+            margin-top: 20px;
             display: flex;
             justify-content: space-between;
-            margin-top: 20px;
-            font-size: 14px;
-        }
-        .login-options a {
-            color: #2E7D32;
-            text-decoration: none;
-        }
-        .login-options a:hover {
-            text-decoration: underline;
         }
         .social-login {
             display: flex;
-            margin-top: 25px;
             justify-content: center;
             gap: 15px;
+            margin-top: 15px;
         }
-        .social-btn {
-            flex: 1;
-            text-align: center;
+        .social-login-btn {
+            background: none;
+            border: 1px solid #ddd;
             padding: 10px;
-            border-radius: 28px;
-            cursor: pointer;
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
-            border: 3px solid #ddd;
-            transition: all 0.3s;
+            cursor: pointer;
+            transition: background-color 0.3s;
         }
-        .social-btn:hover {
-            background-color: #f7f7f7;
+        .social-login-btn:hover {
+            background-color: #f0f0f0;
         }
-        .social-btn i {
-            font-size: 18px;
+        .social-login-btn i {
+            font-size: 1.5rem;
+            color: var(--text-color);
         }
-        .or-divider {
+        .error-message {
+            color: red;
+            margin-bottom: 15px;
+            display: none;
+        }
+        
+        /* Avatar Upload Styles */
+        .avatar-container {
+            position: relative;
+            width: 70px;
+            height: 70px;
+        }
+        .avatar-upload-icon {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
             display: flex;
             align-items: center;
-            margin: 25px 0;
-            color: #777;
+            justify-content: center;
+            cursor: pointer;
+            transition: background-color 0.3s;
         }
-        .or-divider:before, .or-divider:after {
-            content: "";
-            flex: 1;
-            border-bottom: 1px solid #ddd;
+        .avatar-upload-icon:hover {
+            background-color: var(--secondary-color);
         }
-        .or-divider:before {
-            margin-right: 10px;
+        #avatar-file-input {
+            display: none;
         }
-        .or-divider:after {
-            margin-left: 10px;
+
+        /* New Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1500;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+            justify-content: center;
+            align-items: center;
         }
-        .register-prompt {
+        .modal-content {
+            background-color: #fefefe;
+            padding: 30px;
+            border-radius: 29px;
+            width: 100%;
+            max-width: 320px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
             text-align: center;
+        }
+        .modal-content h2 {
+            margin-bottom: 20px;
+            color: var(--primary-color);
+        }
+        .modal-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .modal-input {
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 25px;
+            width: 100%;
+        }
+        .modal-button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .modal-button:hover {
+            background-color: var(--secondary-color);
+        }
+        .modal-close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            position: absolute;
+            top: 70px;
+            right: 20px;
+        }
+        .modal-close:hover {
+            color: var(--primary-color);
+        }
+
+        /* Settings Modal Specific Styles */
+        .settings-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
             margin-top: 20px;
-            color: #777;
-            font-size: 14px;
         }
-        .register-prompt a {
-            color: #2E7D32;
-            font-weight: 600;
-            text-decoration: none;
+        .settings-option {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 29px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            transition: background-color 0.3s;
         }
-        .register-prompt a:hover {
-            text-decoration: underline;
+        .settings-option:hover {
+            background-color: #e0e0e0;
         }
-
-.referral-section {
-  margin: 20px auto;
-  padding: 15px;
-  background-color: #f7f7f7;
-  border-radius: 26px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-  max-width: 300px;
-  text-align: center;
-}
-
-.referral-section h3 {
-  margin-bottom: 10px;
-  font-size: 18px;
-  color: #2E7D32;
-}
-
-.referral-section input[type="text"] {
-  width: calc(100% - 110px);
-  padding: 10px;
-  border: 3px solid #ddd;
-  border-radius: 25px;
-  font-size: 14px;
-}
-
-.referral-section button {
-  width: 90px;
-  padding: 10px;
-  background-color: #2E7D32;
-  color: #fff;
-  border: 1px;
-  border-radius: 25px;
-  cursor: pointer;
-  font-size: 14px;
-  margin-left: 10px;
-  transition: background-color 0.3s ease;
-}
-
-.referral-section button:hover {
-  background-color: #1B5E20;
-}
-
-.referral-start {
-  margin: 10px;
-  padding: 10px;
-  margin-left: -1px; /* Moves the box 50px to the right */
-  background-color: #f5f9f5;
-  border: 3px solid #2E7D32;
-  border-radius: 30px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-  max-width: 300px;
-  text-align: center;
-  font-family: 'Arial', sans-serif;
-  display: block;
-  position: relative;
-  left: 50%;
-  transform: translateX(-50%);
-}
-
-.referral-start h2 {
-  margin: 0 0 15px 0;
-  font-size: 20px;
-  color: #2E7D32;
-}
-
-.referral-start p {
-  font-size: 14px;
-  color: #555;
-  margin: 0 0 10px 0;
-  line-height: 1.4;
-}
-
-.referral-start #referral-count {
-  font-weight: bold;
-  color: #2E7D32;
-  font-size: 16px;
-}
-
-.referral-start .cta-button {
-  margin-top: 15px;
-  padding: 8px 20px;
-  background-color: #2E7D32;
-  color: white;
-  border: none;
-  border-radius: 30px;
-  font-size: 14px;
-  cursor: pointer;
-  display: inline-block;
-  font-weight: bold;
-  transition: background-color 0.2s ease, transform 0.1s ease;
-}
-
-.referral-start .cta-button:hover {
-  background-color: #1B5E20;
-  transform: translateY(-1px);
-}
-
-.referral-start .cta-button:active {
-  transform: translateY(1px);
-} 
-  </style>
-
-  <script type="module">
-    import { initializeAppCheck, DebugAppCheckProvider } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app-check.js";
-
-    self.FIREBASE_APPCHECK_DEBUG_TOKEN = true;
-    const appCheck = initializeAppCheck(app, {
-      provider: new DebugAppCheckProvider(),
-      isTokenAutoRefreshEnabled: true
-    });
-    console.log("Firebase App Check initialized");
-
-    async function getAppCheckToken() {
-      try {
-        const token = await firebase.appCheck().getToken(true);
-        console.log("App Check Token:", token.token);
-      } catch (error) {
-        console.error("Error retrieving App Check token:", error);
-      }
-    }
-    document.addEventListener("DOMContentLoaded", () => {
-      getAppCheckToken();
-    });
-  </script>
+        .settings-option i {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+        }
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .toggle-slider {
+            background-color: var(--primary-color);
+        }
+        input:checked + .toggle-slider:before {
+            transform: translateX(26px);
+        }
+    </style>
 </head>
 <body>
-  <div id="loading">
-    <h3>Loading profile...</h3>
-  </div>
+    <!-- Existing content from previous document -->
+      <div id="loading-overlay">
+        <div class="spinner"></div>
+    </div>
 
-  <div id="error-container">
-    <div class="login-container">
-      <div class="login-header">
-        <h2>Welcome to Multi Games</h2>
-        <p>Log in to access your profile and game history</p>
-      </div>
-      <form class="login-form" id="login-form">
-        <input type="email" id="login-email" placeholder="Email address" required>
-        <input type="password" id="login-password" placeholder="Password" required>
-        <button type="submit" class="login-btn">Log In</button>
-        <div class="login-options">
-          <label><input type="checkbox" id="remember-me"> Remember me</label>
-          <a href="#" id="forgot-password">Forgot password?</a>
+    <div id="login-modal">
+        <div class="login-modal-content">
+            <h2>Connect Gaming Account</h2>
+            <div id="login-error" class="error-message">Invalid credentials. Please try again.</div>
+            <form id="login-form" class="login-form">
+                <input type="email" id="login-email" class="login-input" placeholder="Email" required>
+                <input type="password" id="login-password" class="login-input" placeholder="Password" required>
+                <button type="submit" class="login-button">Login</button>
+            </form>
+            <div class="login-alternatives">
+                <a href="#" id="forgot-password">Forgot Password?</a>
+                <a href="#" id="create-account">Create Account</a>
+            </div>
+            <div class="social-login">
+                <button class="social-login-btn" id="google-login"><i class="ri-google-fill"></i></button>
+                <button class="social-login-btn" id="facebook-login"><i class="ri-facebook-fill"></i></button>
+                <button class="social-login-btn" id="apple-login"><i class="ri-apple-fill"></i></button>
+            </div>
         </div>
-        <div class="or-divider">or</div>
-        <div class="social-login">
-          <div class="social-btn" id="google-login">
-            <i class="fab fa-google"></i>
-            <span>Google</span>
-          </div>
+    </div>
+
+    <div class="profile-container">
+        <div class="profile-header">
+            <img src="/api/placeholder/120/120" alt="Profile" class="profile-avatar" id="user-avatar">
+            <div class="profile-info">
+                <h2 id="username">Loading...</h2>
+                <p id="user-email">Fetching user details...</p>
+                <button class="auth-button" id="auth-action-btn">Connect Gaming Account</button>
+            </div>
         </div>
-        <div class="register-prompt">
-          Don't have an account? <a href="#" id="register-link">Register now</a>
+        <div class="profile-content">
+            <div class="wallet-section">
+                <div class="wallet-info">
+                    <div class="wallet-balance">
+                        <i class="ri-wallet-line wallet-icon"></i>
+                        <span id="wallet-balance">Wallet: $0</span>
+                    </div>
+                    <div class="wallet-history">View Transaction History</div>
+                </div>
+                <div class="wallet-actions">
+                    <button class="withdraw-btn">Withdraw</button>
+                </div>
+            </div>
+            <div class="quick-actions">
+                <div class="quick-action"><i class="ri-gamepad-line"></i>Game Library</div>
+                <div class="quick-action"><i class="ri-trophy-line"></i>Achievements</div>
+                <div class="quick-action"><i class="ri-settings-3-line"></i>Settings</div>
+                <div class="quick-action"><i class="ri-store-2-line"></i>Store</div>
+            </div>
         </div>
-      </form>
-    </div>
-  </div>
+  
 
-  <div id="profile-content" style="display: none;">
-    <div class="profile-header">
-      <img id="profile-picture" src="https://via.placeholder.com/100" alt="Profile Picture">
-      <div class="profile-name" id="profile-name">Loading...</div>
-      <div class="profile-email" id="profile-email">Loading...</div>
-    </div>
+    <!-- Avatar Upload Input (Hidden) -->
+    <input type="file" id="avatar-file-input" accept="image/*">
 
-    <div class="stats-container">
-      <div class="stat-item">
-        <div class="stat-value" id="games-played">0</div>
-        <div class="stat-label">Games Played</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-value" id="wins">0</div>
-        <div class="stat-label">Wins</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-value" id="win-rate">0</div>
-        <div class="stat-label">Win Rate %</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-value" id="rank">-</div>
-        <div class="stat-label">Rank</div>
-      </div>
-    </div>
-
-    <!-- Referral Section -->
-    <div class="referral-section">
-      <h3>Your Referral code</h3>
-      <input type="text" id="user-referral-link" readonly>
-      <button onclick="copyReferralLink()">Copy Link</button>
-    </div>
-
-    <div class="referral-start">
-  <h2>Start Referring Friends Today!</h2>
-  <p>Share your unique referral code with friends and family to earn. rewards. The more people you refer, the more benefits you unlock!</p>
-  <p>You have referred <span id="referral-count">0</span> person so far.</p>
-</div>
-
-    <div class="tab-container">
-      <div class="tab active" data-tab="overview">Overview</div>
-      <div class="tab" data-tab="history">Game History</div>
-      <div class="tab" data-tab="achievements">Achievements</div>
-      <div class="tab" data-tab="settings">Settings</div>
-    </div>
-
-    <div class="tab-content active" id="overview">
-      <div class="content">
-        <h3>About Me</h3>
-        <p id="user-bio">Loading bio...</p>
-        <h3 style="margin-top: 25px;">Player Stats</h3>
-        <div class="profile-stat-grid">
-          <div class="profile-stat-item">
-            <span>Time Played</span>
-            <span id="time-played">0</span>
-          </div>
-          <div class="profile-stat-item">
-            <span>Favorite Game</span>
-            <span id="favorite-game">None</span>
-          </div>
+    <!-- Registration Modal -->
+    <div id="register-modal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close" id="register-close">&times;</span>
+            <h2>Create Account</h2>
+            <form id="register-form" class="modal-form">
+                <input type="text" id="register-username" class="modal-input" placeholder="Username" required>
+                <input type="email" id="register-email" class="modal-input" placeholder="Email" required>
+                <input type="password" id="register-password" class="modal-input" placeholder="Password" required>
+                <input type="password" id="register-confirm-password" class="modal-input" placeholder="Confirm Password" required>
+                <button type="submit" class="modal-button">Create Account</button>
+            </form>
         </div>
-        <div class="button-container">
-          <button class="edit-profile-btn" id="edit-profile-btn">Edit Profile</button>
+    </div>
+
+    <!-- Forgot Password Modal -->
+    <div id="forgot-password-modal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close" id="forgot-password-close">&times;</span>
+            <h2>Reset Password</h2>
+            <form id="forgot-password-form" class="modal-form">
+                <input type="email" id="forgot-password-email" class="modal-input" placeholder="Enter your email" required>
+                <button type="submit" class="modal-button">Send Reset Link</button>
+            </form>
         </div>
-      </div>
     </div>
 
-    <div class="tab-content" id="history">
-      <div class="content">
-      <h3>Recent Games</h3>
-<ul id="recentGamesList"></ul>
-        </ul>
-      </div>
-    </div>
-
-    <div class="tab-content" id="achievements">
-  <div class="content">
-    <iframe src="leaderboard.html" width="103%" height="410px" style="border: none; border-radius: 15px;"></iframe>
-  </div>
-</div>
-
-    <div class="tab-content" id="settings">
-      <div class="content">
-        <h3>Profile Settings</h3>
-        <form id="edit-profile-form">
-          <div class="form-group">
-            <label for="display-name">Display Name</label>
-            <input type="text" id="display-name" placeholder="Enter your display name">
-          </div>
-          <div class="form-group">
-            <label for="bio">Bio</label>
-            <textarea id="bio" placeholder="Tell us about yourself"></textarea>
-          </div>
-          <div class="form-group">
-            <label for="profile-pic-url">Profile Picture URL</label>
-            <input type="text" id="profile-pic-url" placeholder="Enter profile picture URL">
-          </div>
-          <div id="profile-update-message"></div>
-          <div class="button-container">
-            <button type="submit" class="edit-profile-btn">Save Changes</button>
-          </div>
-        </form>
-        <h3 style="margin-top: 30px;">Account Settings</h3>
-        <div class="button-container">
-          <button id="change-password-btn" class="edit-profile-btn">Change Password</button>
-          <button id="delete-account-btn" class="danger-btn">Delete Account</button>
-          <button id="logout-btn" class="logout-btn">Log Out</button>
+    <!-- Settings Modal -->
+    <div id="settings-modal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close" id="settings-close">&times;</span>
+            <h2>Settings</h2>
+            <div class="settings-grid">
+                <div class="settings-option">
+                    <div>
+                        <i class="ri-notification-line"></i>
+                        Notifications
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="notifications-toggle">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="settings-option">
+                    <div>
+                        <i class="ri-lock-line"></i>
+                        Privacy Mode
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="privacy-toggle">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="settings-option">
+                    <div>
+                        <i class="ri-palette-line"></i>
+                        Dark Mode
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="dark-mode-toggle">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="settings-option">
+                    <div>
+                        <i class="ri-game-line"></i>
+                        Stream Mode
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="stream-mode-toggle">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="settings-option">
+                    <div>
+                        <i class="ri-global-line"></i>
+                        Language
+                    </div>
+                    <select class="modal-input">
+                        <option>English</option>
+                        <option>Spanish</option>
+                        <option>French</option>
+                        <option>German</option>
+                    </select>
+                </div>
+                <div class="settings-option">
+                    <div>
+                        <i class="ri-sound-module-line"></i>
+                        Sound
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="sound-toggle">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
-  </div>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
-    import { getAuth, signOut, onAuthStateChanged, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, FacebookAuthProvider } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
-    import { getDatabase, ref, onValue, update, set, get, child } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-database.js";
+    <!-- Script to modify existing profile header -->
+    <script type="module">
+        // Add camera icon to avatar container
+        const avatarContainer = document.createElement('div');
+        avatarContainer.className = 'avatar-container';
+        const avatarEl = document.getElementById('user-avatar');
+        const parentNode = avatarEl.parentNode;
+        parentNode.replaceChild(avatarContainer, avatarEl);
+        avatarContainer.appendChild(avatarEl);
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyBw1uA-kNKOZEufWKZ9AMBxvRGHNGF1lkA",
-      authDomain: "multi-games-a2561.firebaseapp.com",
-      projectId: "multi-games-a2561",
-      storageBucket: "multi-games-a2561.appspot.com",
-      messagingSenderId: "150551898066",
-      appId: "1:150551898066:web:4e8fb185f2321ba4140a0b",
-      measurementId: "G-PB8Y87E6XV",
-      databaseURL: "https://multi-games-a2561-default-rtdb.firebaseio.com"
-    };
+        // Create camera upload icon
+        const cameraIcon = document.createElement('div');
+        cameraIcon.className = 'avatar-upload-icon';
+        cameraIcon.innerHTML = '<i class="ri-camera-line"></i>';
+        avatarContainer.appendChild(cameraIcon);
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth();
-    const database = getDatabase();
+        // Hidden file input for avatar upload
+        const avatarFileInput = document.getElementById('avatar-file-input');
 
-    const loadingElement = document.getElementById('loading');
-    const errorContainer = document.getElementById('error-container');
-    const profileContent = document.getElementById('profile-content');
-    const logoutBtn = document.getElementById('logout-btn');
-    const tabs = document.querySelectorAll('.tab');
-    const tabContents = document.querySelectorAll('.tab-content');
-    const editProfileForm = document.getElementById('edit-profile-form');
-    const profileUpdateMessage = document.getElementById('profile-update-message');
-    const changePasswordBtn = document.getElementById('change-password-btn');
-    const deleteAccountBtn = document.getElementById('delete-account-btn');
-    const editProfileBtn = document.getElementById('edit-profile-btn');
-    const loginForm = document.getElementById('login-form');
-    const googleLoginBtn = document.getElementById('google-login');
-    const facebookLoginBtn = document.getElementById('facebook-login');
-    const registerLink = document.getElementById('register-link');
-    const forgotPasswordLink = document.getElementById('forgot-password');
-
-    onAuthStateChanged(auth, (user) => {
-      loadingElement.style.display = 'none';
-      if (user) {
-        errorContainer.style.display = 'none';
-        profileContent.style.display = 'block';
-        loadUserProfile(user);
-      } else {
-        profileContent.style.display = 'none';
-        errorContainer.style.display = 'block';
-      }
-    });
-
-    function loadUserProfile(user) {
-      const userRef = ref(database, 'users/' + user.uid);
-      onValue(userRef, (snapshot) => {
-        const userData = snapshot.val() || {};
-        document.getElementById('profile-name').textContent = userData.displayName || user.displayName || 'User';
-        document.getElementById('profile-email').textContent = user.email;
-        if (userData.profilePicUrl) {
-          document.getElementById('profile-picture').src = userData.profilePicUrl;
-        }
-        document.getElementById('games-played').textContent = userData.gamesPlayed || 0;
-        document.getElementById('wins').textContent = userData.wins || 0;
-        document.getElementById('rank').textContent = userData.rank || '-';
-        document.getElementById('user-bio').textContent = userData.bio || 'No bio provided yet.';
-        document.getElementById('time-played').textContent = userData.timePlayed || 0;
-        document.getElementById('favorite-game').textContent = userData.favoriteGame || 'None';
-
-        const winRate = userData.gamesPlayed ? Math.round((userData.wins / userData.gamesPlayed) * 100) : 0;
-        document.getElementById('win-rate').textContent = winRate;
-
-        const gameHistoryEl = document.getElementById('recent-games');
-        gameHistoryEl.innerHTML = '';
-        if (userData.gameHistory && Array.isArray(userData.gameHistory)) {
-          userData.gameHistory.slice(0, 10).forEach(game => {
-            const gameItem = document.createElement('li');
-            gameItem.className = 'game-item';
-            const gameInfo = document.createElement('div');
-            gameInfo.textContent = `${game.game} - ${new Date(game.timestamp).toLocaleDateString()}`;
-            const gameResult = document.createElement('div');
-            gameResult.className = 'game-result ' + (game.won ? 'result-win' : 'result-loss');
-            gameResult.textContent = game.won ? 'Win' : 'Loss';
-            gameItem.appendChild(gameInfo);
-            gameItem.appendChild(gameResult);
-            gameHistoryEl.appendChild(gameItem);
-          });
-        } else {
-          gameHistoryEl.innerHTML = '<li>No game history available.</li>';
-        }
-
-        const achievementsContainer = document.getElementById('achievements-container');
-        achievementsContainer.innerHTML = '';
-        if (userData.achievements && Array.isArray(userData.achievements)) {
-          userData.achievements.forEach(achievement => {
-            const badge = document.createElement('span');
-            badge.className = 'badge';
-            badge.textContent = achievement;
-            achievementsContainer.appendChild(badge);
-          });
-        } else {
-          achievementsContainer.innerHTML = '<p>No achievements unlocked yet.</p>';
-        }
-
-        document.getElementById('display-name').value = userData.displayName || '';
-        document.getElementById('bio').value = userData.bio || '';
-        document.getElementById('profile-pic-url').value = userData.profilePicUrl || '';
-
-        // Load referral link
-        loadUserReferralCode();
-        // Load referral stats
-        loadReferralStats();
-      });
-    }
-
-    // Referral link functions
-    async function loadUserReferralCode() {
-      const user = auth.currentUser;
-      if (!user) return;
-      const dbRef = ref(database);
-      const snapshot = await get(child(dbRef, `users/${user.uid}`));
-      if (snapshot.exists()) {
-        const userData = snapshot.val();
-        const referralCode = userData.referralCode || "N/A";
-        document.getElementById('user-referral-link').value =
-          `${referralCode}`;
-      }
-    }
-
-    function copyReferralLink() {
-      const copyText = document.getElementById('user-referral-link');
-      copyText.select();
-      document.execCommand("copy");
-      alert("Referral link copied!");
-    }
-
-    async function loadReferralStats() {
-      const user = auth.currentUser;
-      if (!user) return;
-      const dbRef = ref(database);
-      const snapshot = await get(child(dbRef, `users/${user.uid}`));
-      if (snapshot.exists()) {
-        document.getElementById('referral-count').textContent = snapshot.val().referrals || 0;
-      }
-    }
-
-    // Tab switching logic
-    tabs.forEach(tab => {
-      tab.addEventListener('click', () => {
-        tabs.forEach(t => t.classList.remove('active'));
-        tabContents.forEach(c => c.classList.remove('active'));
-        tab.classList.add('active');
-        const tabId = tab.getAttribute('data-tab');
-        document.getElementById(tabId).classList.add('active');
-      });
-    });
-
-    editProfileBtn.addEventListener('click', () => {
-      tabs.forEach(t => t.classList.remove('active'));
-      tabContents.forEach(c => c.classList.remove('active'));
-      document.querySelector('[data-tab="settings"]').classList.add('active');
-      document.getElementById('settings').classList.add('active');
-    });
-
-    editProfileForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const user = auth.currentUser;
-      if (!user) return;
-      const displayName = document.getElementById('display-name').value;
-      const bio = document.getElementById('bio').value;
-      const profilePicUrl = document.getElementById('profile-pic-url').value;
-      const updates = {};
-      if (displayName) updates.displayName = displayName;
-      if (bio) updates.bio = bio;
-      if (profilePicUrl) updates.profilePicUrl = profilePicUrl;
-      update(ref(database, 'users/' + user.uid), updates)
-        .then(() => {
-          profileUpdateMessage.textContent = 'Profile updated successfully!';
-          profileUpdateMessage.className = 'success-message';
-          setTimeout(() => {
-            profileUpdateMessage.textContent = '';
-          }, 3000);
-        })
-        .catch((error) => {
-          profileUpdateMessage.textContent = 'Error updating profile: ' + error.message;
-          profileUpdateMessage.className = 'error-message';
+        // Handle avatar upload icon click
+        cameraIcon.addEventListener('click', () => {
+            avatarFileInput.click();
         });
-    });
 
-    changePasswordBtn.addEventListener('click', () => {
-      alert('Change password functionality will be implemented soon.');
-    });
+        // Handle file selection
+        avatarFileInput.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                // Here you would typically:
+                // 1. Validate file type and size
+                // 2. Upload to storage (e.g., localStorage or a custom storage solution)
+                // 3. Update avatar source
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    avatarEl.src = e.target.result;
+                    // Optional: Save to localStorage
+                    localStorage.setItem('userAvatar', e.target.result);
+                };
+                reader.readAsDataURL(file);
+            }
+        });
 
-    deleteAccountBtn.addEventListener('click', () => {
-      const confirmDelete = confirm('Are you sure you want to delete your account? This action cannot be undone.');
-      if (confirmDelete) {
-        const user = auth.currentUser;
-        if (user) {
-          set(ref(database, 'users/' + user.uid), null)
-            .then(() => {
-              user.delete()
-                .then(() => {
-                  window.location.href = 'index.html';
-                })
-                .catch((error) => {
-                  alert('Error deleting account: ' + error.message);
-                });
-            })
-            .catch((error) => {
-              alert('Error deleting user data: ' + error.message);
+        // Modal Functionality
+        const modals = {
+            register: document.getElementById('register-modal'),
+            forgotPassword: document.getElementById('forgot-password-modal'),
+            settings: document.getElementById('settings-modal')
+        };
+
+        const modalCloseButtons = {
+            register: document.getElementById('register-close'),
+            forgotPassword: document.getElementById('forgot-password-close'),
+            settings: document.getElementById('settings-close')
+        };
+
+        // Close modal functions
+        Object.keys(modals).forEach(modalKey => {
+            modalCloseButtons[modalKey].addEventListener('click', () => {
+                modals[modalKey].style.display = 'none';
             });
-        }
-      }
-    });
-
-    logoutBtn.addEventListener('click', () => {
-      signOut(auth)
-        .then(() => {
-          window.location.href = 'index.html';
-        })
-        .catch((error) => {
-          alert('Error signing out: ' + error.message);
         });
-    });
 
-    if (loginForm) {
-      loginForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const email = document.getElementById('login-email').value;
-        const password = document.getElementById('login-password').value;
-        const errorMessageContainer = document.createElement('div');
-        errorMessageContainer.className = 'error-message';
-        errorMessageContainer.style.marginTop = '10px';
-        const existingError = loginForm.querySelector('.error-message');
-        if (existingError) existingError.remove();
-        signInWithEmailAndPassword(auth, email, password)
-          .then((userCredential) => {
-            errorContainer.style.display = 'none';
-            profileContent.style.display = 'block';
-            loadUserProfile(userCredential.user);
-          })
-          .catch((error) => {
-            errorMessageContainer.textContent = getAuthErrorMessage(error.code);
-            loginForm.appendChild(errorMessageContainer);
-          });
-      });
-    }
+        // Register form submission
+        const registerForm = document.getElementById('register-form');
+        registerForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const password = document.getElementById('register-password').value;
+            const confirmPassword = document.getElementById('register-confirm-password').value;
 
-    if (googleLoginBtn) {
-      googleLoginBtn.addEventListener('click', () => {
-        const provider = new GoogleAuthProvider();
-        signInWithPopup(auth, provider)
-          .then((result) => {
-            const user = result.user;
-            createUserProfileIfNeeded(user);
-          })
-          .catch((error) => {
-            console.error("Google login error:", error);
-            alert('Error signing in with Google: ' + error.message);
-          });
-      });
-    }
+            if (password !== confirmPassword) {
+                alert('Passwords do not match!');
+                return;
+            }
 
-    function createUserProfileIfNeeded(user) {
-      const userRef = ref(database, 'users/' + user.uid);
-      onValue(userRef, (snapshot) => {
-        if (!snapshot.exists()) {
-          set(userRef, {
-            displayName: user.displayName || '',
-            email: user.email,
-            profilePicUrl: user.photoURL || '',
-            gamesPlayed: 0,
-            wins: 0,
-            rank: 'Beginner',
-            bio: '',
-            timePlayed: 0,
-            favoriteGame: '',
-            gameHistory: [],
-            achievements: []
-          });
-        }
-      }, { onlyOnce: true });
-    }
-
-    if (registerLink) {
-      registerLink.addEventListener('click', (e) => {
-        e.preventDefault();
-        window.location.href = 'register.html';
-      });
-    }
-
-    if (forgotPasswordLink) {
-      forgotPasswordLink.addEventListener('click', (e) => {
-        e.preventDefault();
-        window.location.href = 'forgot-password.html';
-      });
-    }
-
-    function getAuthErrorMessage(errorCode) {
-      switch (errorCode) {
-        case 'auth/invalid-email':
-          return 'Invalid email address format.';
-        case 'auth/user-disabled':
-          return 'This account has been disabled.';
-        case 'auth/user-not-found':
-          return 'No account with this email exists.';
-        case 'auth/wrong-password':
-          return 'Incorrect password.';
-        case 'auth/email-already-in-use':
-          return 'An account with this email already exists.';
-        case 'auth/weak-password':
-          return 'Password should be at least 6 characters.';
-        case 'auth/operation-not-allowed':
-          return 'This login method is not enabled.';
-        case 'auth/popup-closed-by-user':
-          return 'Login popup was closed before completion.';
-        default:
-          return 'An error occurred during authentication. Please try again.';
-      }
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-      if (document.getElementById('login-form')) {
-        document.querySelector('[data-tab="overview"]')?.classList.add('active');
-        document.getElementById('overview')?.classList.add('active');
-      }
-      if (loadingElement) {
-        loadingElement.style.display = 'block';
-      }
-    });
-  </script>
-
-<script>
-    // Retrieve played games from localStorage
-    let playedGames = JSON.parse(localStorage.getItem("playedGames")) || [];
-    const recentGamesList = document.getElementById("recentGamesList");
-
-    if (playedGames.length > 0) {
-        playedGames.forEach(game => {
-            const gameItem = document.createElement("li");
-            gameItem.textContent = game; // Only show game name
-            recentGamesList.appendChild(gameItem);
+            // Here you would typically:
+            // 1. Validate form inputs
+            // 2. Create user account with Firebase Authentication
+            alert('Registration functionality to be implemented');
+            modals.register.style.display = 'none';
         });
-    } else {
-        recentGamesList.innerHTML = "<p>No recent games played.</p>";
-    }
-</script>
+
+        // Forgot Password form submission
+        const forgotPasswordForm = document.getElementById('forgot-password-form');
+        forgotPasswordForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            // Here you would typically:
+            // 1. Send password reset email via Firebase Authentication
+            alert('Password reset link to be sent');
+            modals.forgotPassword.style.display = 'none';
+        });
+
+        // Add event listeners to open various modals
+        document.getElementById('create-account').addEventListener('click', () => {
+            modals.register.style.display = 'flex';
+        });
+
+        document.getElementById('forgot-password').addEventListener('click', () => {
+            modals.forgotPassword.style.display = 'flex';
+        });
+
+        document.querySelector('.quick-action:nth-child(3)').addEventListener('click', () => {
+            modals.settings.style.display = 'flex';
+        });
+
+        // Settings toggles
+        const settingsToggles = [
+            'notifications-toggle',
+            'privacy-toggle', 
+            'dark-mode-toggle', 
+            'stream-mode-toggle', 
+            'sound-toggle'
+        ];
+
+        settingsToggles.forEach(toggleId => {
+            const toggle = document.getElementById(toggleId);
+            toggle.addEventListener('change', () => {
+                // Here you would typically save the toggle state
+                localStorage.setItem(toggleId, toggle.checked);
+            });
+
+            // Load previous state from localStorage
+            const savedState = localStorage.getItem(toggleId);
+            if (savedState !== null) {
+                toggle.checked = savedState === 'true';
+            }
+        });
+    </script>
+
+    
+    
+    <!-- Firebase Configuration and Authentication Script -->
+    <script type="module">
+        // Import Firebase modules
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
+        import { 
+            getAuth, 
+            onAuthStateChanged, 
+            signOut, 
+            signInWithEmailAndPassword,
+            GoogleAuthProvider,
+            FacebookAuthProvider,
+            signInWithPopup
+        } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
+        import { 
+            getDatabase, 
+            ref, 
+            onValue, 
+            update, 
+            set, 
+            get, 
+            child 
+        } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-database.js";
+
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBw1uA-kNKOZEufWKZ9AMBxvRGHNGF1lkA",
+            authDomain: "multi-games-a2561.firebaseapp.com",
+            projectId: "multi-games-a2561",
+            storageBucket: "multi-games-a2561.appspot.com",
+            messagingSenderId: "150551898066",
+            appId: "1:150551898066:web:4e8fb185f2321ba4140a0b",
+            measurementId: "G-PB8Y87E6XV",
+            databaseURL: "https://multi-games-a2561-default-rtdb.firebaseio.com"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const database = getDatabase(app);
+
+        // DOM Elements
+        const usernameEl = document.getElementById('username');
+        const userEmailEl = document.getElementById('user-email');
+        const authActionBtn = document.getElementById('auth-action-btn');
+        const avatarEl = document.getElementById('user-avatar');
+        const walletBalanceEl = document.getElementById('wallet-balance');
+        const loadingOverlay = document.getElementById('loading-overlay');
+        const loginModal = document.getElementById('login-modal');
+        const loginForm = document.getElementById('login-form');
+        const loginErrorEl = document.getElementById('login-error');
+        const googleLoginBtn = document.getElementById('google-login');
+        const facebookLoginBtn = document.getElementById('facebook-login');
+
+        // Show Loading
+        function showLoading() {
+            loadingOverlay.style.display = 'flex';
+        }
+
+        // Hide Loading
+        function hideLoading() {
+            loadingOverlay.style.display = 'none';
+        }
+
+        // Show Login Modal
+        function showLoginModal() {
+            loginModal.style.display = 'flex';
+        }
+
+        // Hide Login Modal
+        function hideLoginModal() {
+            loginModal.style.display = 'none';
+            loginErrorEl.style.display = 'none';
+        }
+
+        // Update Profile Information
+        async function updateProfileInfo(user) {
+            try {
+                // Show loading
+                showLoading();
+
+                // Get user data from Realtime Database
+                const userRef = ref(database, 'users/' + user.uid);
+                const snapshot = await get(userRef);
+                
+                // If user doc doesn't exist, create it
+                if (!snapshot.exists()) {
+                    await set(userRef, {
+                        displayName: user.displayName || 'GameMaster',
+                        email: user.email,
+                        walletBalance: 0,
+                        createdAt: new Date().toISOString()
+                    });
+                }
+                
+                // Get user data
+                const userData = snapshot.exists() ? snapshot.val() : {};
+                
+                // Update username
+                const displayName = userData.displayName || user.displayName || 'GameMaster';
+                usernameEl.textContent = displayName;
+
+                // Update email
+                userEmailEl.textContent = user.email || 'Elite Gamer';
+
+                // Update avatar
+                avatarEl.src = user.photoURL || '/api/placeholder/120/120';
+
+                // Update auth action button
+                authActionBtn.textContent = 'Logout';
+                authActionBtn.onclick = () => {
+                    signOut(auth).then(() => {
+                        showLoginModal();
+                    }).catch((error) => {
+                        console.error('Logout error', error);
+                    });
+                };
+
+                // Update wallet balance
+                walletBalanceEl.textContent = `Wallet: $${userData.walletBalance || 0}`;
+
+                // Hide login modal if open
+                hideLoginModal();
+            } catch (error) {
+                console.error('Error updating profile:', error);
+            } finally {
+                // Hide loading
+                hideLoading();
+            }
+        }
+
+        // Email/Password Login
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+
+            try {
+                showLoading();
+                const userCredential = await signInWithEmailAndPassword(auth, email, password);
+                hideLoading();
+            } catch (error) {
+                hideLoading();
+                loginErrorEl.style.display = 'block';
+                loginErrorEl.textContent = error.message || 'Login failed. Please try again.';
+            }
+        });
+
+        // Google Login
+        googleLoginBtn.addEventListener('click', async () => {
+            const provider = new GoogleAuthProvider();
+            try {
+                showLoading();
+                const result = await signInWithPopup(auth, provider);
+                hideLoading();
+            } catch (error) {
+                hideLoading();
+                loginErrorEl.style.display = 'block';
+                loginErrorEl.textContent = error.message || 'Google login failed.';
+            }
+        });
+
+        // Facebook Login
+        facebookLoginBtn.addEventListener('click', async () => {
+            const provider = new FacebookAuthProvider();
+            try {
+                showLoading();
+                const result = await signInWithPopup(auth, provider);
+                hideLoading();
+            } catch (error) {
+                hideLoading();
+                loginErrorEl.style.display = 'block';
+                loginErrorEl.textContent = error.message || 'Facebook login failed.';
+            }
+        });
+
+        // Authentication State Observer
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                // User is signed in, update profile
+                updateProfileInfo(user);
+            } else {
+                // No user is signed in, show login modal
+                showLoginModal();
+            }
+        });
+
+        // Connect Gaming Account Button
+        authActionBtn.addEventListener('click', () => {
+            const user = auth.currentUser;
+            if (user) {
+                // If user is logged in, log out
+                signOut(auth).then(() => {
+                    showLoginModal();
+                }).catch((error) => {
+                    console.error('Logout error', error);
+                });
+            } else {
+                // If no user, show login modal
+                showLoginModal();
+            }
+        });
+
+        // Forgot Password
+        document.getElementById('forgot-password').addEventListener('click', () => {
+            // Implement password reset logic
+            alert('Password reset functionality coming soon!');
+        });
+
+        // Create Account
+        document.getElementById('create-account').addEventListener('click', () => {
+            // Redirect to sign-up page or show sign-up modal
+            alert('Create account functionality coming soon!');
+        });
+    </script>
 </body>
 </html>
