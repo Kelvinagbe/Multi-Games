@@ -1759,46 +1759,65 @@ document.addEventListener('DOMContentLoaded', () => {
     <script type="module">
         // Function to show notification
         function showNotification(title, message, duration = 5000) {
-            document.getElementById('notification-title').textContent = title;
-            document.getElementById('notification-message').textContent = message;
-            notification.style.display = 'block';
-            
-            // Hide notification after duration
-            setTimeout(() => {
-                notification.style.display = 'none';
-            }, duration);
-        }
+    const notification = document.getElementById('notification');
+    document.getElementById('notification-title').textContent = title;
+    document.getElementById('notification-message').textContent = message;
+    notification.style.display = 'block';
+    
+    // Hide notification after duration
+    setTimeout(() => {
+        notification.style.display = 'none';
+    }, duration);
+}
 
-        // Download app function
-        async function downloadApp() {
-            const appUrl = 'https://multi-games-fawn.vercel.app/Multi%20Games.apk';
-            
-            try {
-                showLoading();
-                
-                // Create an anchor element
-                const a = document.createElement('a');
-                a.href = appUrl;
-                a.download = 'Multi Games.apk';
-                
-                // Triggering download
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                
-                // Show success notification
-                showNotification('Download Complete', 'App downloaded successfully!');
-            } catch (error) {
-                console.error('Download failed:', error);
-                showNotification('Download Failed', 'Please try again later.', 3000);
-            } finally {
-                hideLoading();
-            }
-        }
+// Show/hide loading functions
+function showLoading() {
+    const loader = document.getElementById('loader');
+    if (loader) loader.style.display = 'block';
+}
 
-        // Add click event to update app button
-        const updateAppBtn = document.getElementById('update-app');
+function hideLoading() {
+    const loader = document.getElementById('loader');
+    if (loader) loader.style.display = 'none';
+}
+
+// Download app function
+async function downloadApp() {
+    const appUrl = 'https://multi-games-fawn.vercel.app/multigames.apk';
+   
+    try {
+        showLoading();
+        
+        // Create an anchor element
+        const a = document.createElement('a');
+        a.href = appUrl;
+        a.download = 'Multi Games.apk';
+        a.target = '_blank'; // Open in new tab
+        
+        // Triggering download
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        
+        // Show success notification
+        showNotification('Download Started', 'If download doesn\'t start automatically, click the link again.');
+    } catch (error) {
+        console.error('Download failed:', error);
+        showNotification('Download Failed', 'Please try again later.', 3000);
+    } finally {
+        hideLoading();
+    }
+}
+
+// Add click event to update app button
+document.addEventListener('DOMContentLoaded', () => {
+    const updateAppBtn = document.getElementById('update-app');
+    if (updateAppBtn) {
         updateAppBtn.addEventListener('click', downloadApp);
+    } else {
+        console.error('Update button not found');
+    }
+});
     </script>
 </body>
 </html>
