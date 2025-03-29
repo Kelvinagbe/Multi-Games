@@ -56,54 +56,6 @@
             color: var(--primary-color);
         }
         
-        .balance-section {
-            background: linear-gradient(135deg, var(--primary-color), #2E7D32);
-            color: white;
-            padding: 20px;
-            border-radius: 25px;
-            margin-bottom: 20px;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.7);
-        }
-        
-        .balance-title {
-            font-size: 14px;
-            margin-bottom: 5px;
-        }
-        
-        .balance-amount {
-            font-size: 32px;
-            font-weight: bold;
-            margin-bottom: 15px;
-        }
-        
-        .balance-amount::before {
-            content: '💰';
-            font-size: 24px;
-            margin-right: 2px;
-        }
-        
-        .progress-container {
-            background-color: rgba(255,255,255,0.2);
-            border-radius: 25px;
-            height: 10px;
-            width: 100%;
-            margin-bottom: 5px;
-        }
-        
-        .progress-bar {
-            background-color: white;
-            border-radius: 25px;
-            height: 100%;
-            width: 0%;
-            transition: width 0.3s;
-        }
-        
-        .progress-text {
-            font-size: 12px;
-            display: flex;
-            justify-content: space-between;
-        }
-        
         .card {
             background-color: white;
             border-radius: 25px;
@@ -415,76 +367,24 @@
         
         <div id="alert-container" class="hidden"></div>
         
-        <div class="balance-section">
-            <div class="balance-title">Available Balance</div>
-            <div class="balance-amount">₦<span id="balance-display">0</span></div>
-            <div class="progress-container">
-                <div id="progress-bar" class="progress-bar"></div>
-            </div>
-            <div class="progress-text">
-                <span>₦0</span>
-                <span>₦50 (Min. Withdrawal)</span>
-            </div>
-        </div>
-        
         <div class="card" style="margin-bottom: 30px;">
             <div class="daily-reward-card">
                 <div class="reward-info">
                     <div class="reward-amount">₦4</div>
-                     <b>Complete reCAPTCHA to claim</b>
+                    <b>Complete reCAPTCHA to claim</b>
                     <div class="reward-status">Daily Reward: <span id="daily-reward-status">Loading...</span></div>
                     <div id="countdown-display" class="countdown-display">
                         Next reward in: <span id="countdown-timer">24:00:00</span>
                     </div>
                 </div>
                
-       <button id="claim-btn" class="btn btn-primary" disabled>Claim</button>
-    </div>
-</div>
+                <button id="claim-btn" class="btn btn-primary hidden" disabled>Claim</button>
+            </div>
+        </div>
 
-<!-- reCAPTCHA positioned between sections -->
-<div style="display: flex; justify-content: center; margin-bottom: 20px;">
-    <div class="g-recaptcha" data-sitekey="6LfANf0qAAAAALmlg5u3HnW00PtLEEkKMV-ulglv" data-callback="enableClaimButton"></div>
-</div>
-        
-        <div class="card">
-            <div class="card-title">Buy Airtime</div>
-            
-            <div class="network-selection">
-                <div class="network-icon active" data-network="mtn" data-plan="10">
-                    <img src="https://i.postimg.cc/26qX1XXT/Rounded-20250313-203346.png" alt="MTN">
-                    <div class="network-name">MTN</div>
-                </div>
-                <div class="network-icon" data-network="airtel" data-plan="11">
-                    <img src="https://i.postimg.cc/NFc7QJhK/Rounded-20250313-203547.png" alt="Airtel">
-                    <div class="network-name">Airtel</div>
-                </div>
-                <div class="network-icon" data-network="glo" data-plan="12">
-                    <img src="https://i.postimg.cc/6qfVqrwY/Rounded-20250313-203607.png" alt="Glo">
-                    <div class="network-name">Glo</div>
-                </div>
-                <div class="network-icon" data-network="9mobile" data-plan="1651">
-                    <img src="https://i.postimg.cc/SQ6fgh8C/Rounded-20250313-203622.png" alt="9mobile">
-                    <div class="network-name">9mobile</div>
-                </div>
-            </div>
-            
-            <div class="amount-selection">
-                <div class="amount-option active" data-amount="50">₦50</div>
-                <div class="amount-option" data-amount="100">₦100</div>
-                <div class="amount-option" data-amount="200">₦200</div>
-                <div class="amount-option" data-amount="500">₦500</div>
-            </div>
-            
-            <div class="form-group">
-                <label for="phone-number">Phone Number</label>
-                <input type="text" id="phone-number" placeholder="Enter 11 digit phone number">
-            </div>
-            
-            <div class="purchase-btn-container">
-                <div id="purchase-loader" class="purchase-loader hidden"></div>
-                <button id="purchase-btn" class="btn btn-primary" style="width: 100%;">Buy Airtime</button>
-            </div>
+        <!-- reCAPTCHA positioned between sections -->
+        <div id="recaptcha-container" style="display: flex; justify-content: center; margin-bottom: 20px;">
+            <div class="g-recaptcha" data-sitekey="6LfANf0qAAAAALmlg5u3HnW00PtLEEkKMV-ulglv" data-callback="enableClaimButton"></div>
         </div>
         
         <div class="card">
@@ -505,428 +405,316 @@
 
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
-<script>
-  // ----- Firebase Initialization (unchanged) -----
-  const firebaseConfig = {
-    apiKey: "AIzaSyBw1uA-kNKOZEufWKZ9AMBxvRGHNGF1lkA",
-    authDomain: "multi-games-a2561.firebaseapp.com",
-    databaseURL: "https://multi-games-a2561-default-rtdb.firebaseio.com",
-    projectId: "multi-games-a2561",
-    storageBucket: "multi-games-a2561.appspot.com",
-    messagingSenderId: "150551898066",
-    appId: "1:150551898066:web:4e8fb185f2321ba4140a0b",
-    measurementId: "G-PB8Y87E6XV"
-  };
-  firebase.initializeApp(firebaseConfig);
-  const auth = firebase.auth();
-  const database = firebase.database();
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+    <script>
+        // ----- Firebase Initialization (unchanged) -----
+        const firebaseConfig = {
+            apiKey: "AIzaSyBw1uA-kNKOZEufWKZ9AMBxvRGHNGF1lkA",
+            authDomain: "multi-games-a2561.firebaseapp.com",
+            databaseURL: "https://multi-games-a2561-default-rtdb.firebaseio.com",
+            projectId: "multi-games-a2561",
+            storageBucket: "multi-games-a2561.appspot.com",
+            messagingSenderId: "150551898066",
+            appId: "1:150551898066:web:4e8fb185f2321ba4140a0b",
+            measurementId: "G-PB8Y87E6XV"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const database = firebase.database();
 
-  // ----- Global Constants and Variables -----
-  const API_KEY = '2K6DSZdbL57EWYJNI4f31cX0O9PHQ8MFGaVCAUBReT7345D80Jea5bbEGkLfBFvAj9C';
-  const DAILY_REWARD = 4; // Naira
-  const MINIMUM_WITHDRAWAL = 50; // Naira
-  const PIN = '5678';
+        // ----- Global Constants and Variables -----
+        const API_KEY = '2K6DSZdbL57EWYJNI4f31cX0O9PHQ8MFGaVCAUBReT7345D80Jea5bbEGkLfBFvAj9C';
+        const DAILY_REWARD = 4; // Naira
+        const PIN = '5678';
 
-  let userId = null;
-  let airtimeBalance = 0;
-  let lastClaim = 0;
-  let transactions = [];
-  let selectedNetwork = 'mtn';
-  let selectedPlanId = '10'; // Default network plan ID (MTN)
-  let selectedAmount = 50;
+        let userId = null;
+        let airtimeBalance = 0;
+        let lastClaim = 0;
+        let transactions = [];
+        let selectedNetwork = 'mtn';
+        let selectedPlanId = '10'; // Default network plan ID (MTN)
+        let selectedAmount = 50;
+        let captchaValidated = false;
 
-  // ----- DOM Elements -----
-  const balanceDisplay = document.getElementById('balance-display');
-  const progressBar = document.getElementById('progress-bar');
-  const claimBtn = document.getElementById('claim-btn');
-  const countdownDisplay = document.getElementById('countdown-display');
-  const countdownTimer = document.getElementById('countdown-timer');
-  const dailyRewardStatus = document.getElementById('daily-reward-status');
-  const alertContainer = document.getElementById('alert-container');
-  const purchaseLoader = document.getElementById('purchase-loader');
-  const transactionHistory = document.getElementById('transaction-history');
-  // DOM elements for purchasing airtime:
-  const phoneNumberInput = document.getElementById('phone-number');
-  const purchaseBtn = document.getElementById('purchase-btn');
-  // (Assume that the network selection divs, amount options, and sign-out button are already in your HTML)
+        // ----- DOM Elements -----
+        const claimBtn = document.getElementById('claim-btn');
+        const countdownDisplay = document.getElementById('countdown-display');
+        const countdownTimer = document.getElementById('countdown-timer');
+        const dailyRewardStatus = document.getElementById('daily-reward-status');
+        const alertContainer = document.getElementById('alert-container');
+        const purchaseLoader = document.getElementById('purchase-loader');
+        const transactionHistory = document.getElementById('transaction-history');
+        const recaptchaContainer = document.getElementById('recaptcha-container');
+        const phoneNumberInput = document.getElementById('phone-number');
+        const purchaseBtn = document.getElementById('purchase-btn');
 
-  // ----- User Data Initialization and Sync Functions -----
-  function initUserData(uid) {
-    const userRef = database.ref(`users/${uid}`);
-    userRef.get().then((snapshot) => {
-      if (!snapshot.exists()) {
-        userRef.set({
-          airtimeBalance: 0,
-          lastClaim: 0,
-          transactions: []
-        });
-      }
-    }).catch((error) => {
-      console.error("Error checking user data:", error);
-    });
-  }
+        // ----- User Data Initialization and Sync Functions -----
+        function initUserData(uid) {
+            const userRef = database.ref(`users/${uid}`);
+            userRef.get().then((snapshot) => {
+                if (!snapshot.exists()) {
+                    userRef.set({
+                        airtimeBalance: 0,
+                        lastClaim: 0,
+                        transactions: []
+                    });
+                }
+            }).catch((error) => {
+                console.error("Error checking user data:", error);
+            });
+        }
 
-  function syncFromFirebase(uid) {
-    const userRef = database.ref(`users/${uid}`);
-    userRef.on('value', (snapshot) => {
-      const data = snapshot.val() || {};
-      airtimeBalance = data.airtimeBalance || 0;
-      lastClaim = data.lastClaim || 0;
-      transactions = data.transactions || [];
-      updateBalance();
-      updateTransactionHistory();
-      checkDailyReward();
-    });
-  }
+        function syncFromFirebase(uid) {
+            const userRef = database.ref(`users/${uid}`);
+            userRef.on('value', (snapshot) => {
+                const data = snapshot.val() || {};
+                airtimeBalance = data.airtimeBalance || 0;
+                lastClaim = data.lastClaim || 0;
+                transactions = data.transactions || [];
+                updateTransactionHistory();
+                checkDailyReward();
+            });
+        }
 
-  function syncToFirebase(uid) {
-    if (!uid) return;
-    const userRef = database.ref(`users/${uid}`);
-    userRef.update({
-      airtimeBalance: airtimeBalance,
-      lastClaim: lastClaim,
-      transactions: transactions
-    });
-  }
+        function syncToFirebase(uid) {
+            if (!uid) return;
+            const userRef = database.ref(`users/${uid}`);
+            userRef.update({
+                airtimeBalance: airtimeBalance,
+                lastClaim: lastClaim,
+                transactions: transactions
+            });
+        }
 
-  // ----- UI Update Functions -----
-  function updateBalance() {
-    if (balanceDisplay) balanceDisplay.textContent = airtimeBalance;
-    if (progressBar) {
-      const progressPercentage = Math.min((airtimeBalance / MINIMUM_WITHDRAWAL) * 100, 100);
-      progressBar.style.width = progressPercentage + '%';
-    }
-  }
+        // ----- UI Update Functions -----
+        function updateTransactionHistory() {
+            if (!transactionHistory) return;
+            if (transactions.length === 0) {
+                transactionHistory.innerHTML = `<div class="transaction-item" style="text-align: center; color: #888;">No transactions yet</div>`;
+                return;
+            }
+            transactionHistory.innerHTML = '';
+            
+            // Only show 3 most recent transactions
+            transactions.slice(0, 3).forEach(transaction => {
+                const date = new Date(transaction.date);
+                const formattedDate = `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
+                const statusClass = transaction.status === 'success' ? 'success' :
+                                  transaction.status === 'pending' ? 'pending' :
+                                  transaction.status === 'reversed' ? 'reversed' : 'failed';
+                transactionHistory.innerHTML += `
+                    <div class="transaction-item">
+                        <div class="transaction-info">
+                            <div class="transaction-title">${transaction.type}</div>
+                            <div class="transaction-date">${formattedDate}</div>
+                            ${transaction.phone ? `<div class="transaction-phone">${transaction.phone}</div>` : ''}
+                            ${transaction.reference ? `<div class="transaction-reference">Ref: ${transaction.reference}</div>` : ''}
+                        </div>
+                        <div class="transaction-amount ${transaction.amount > 0 ? 'credit' : 'debit'}">
+                            ${transaction.amount > 0 ? '+' : ''}₦${Math.abs(transaction.amount)}
+                        </div>
+                        <div class="transaction-status ${statusClass}">${transaction.status}</div>
+                    </div>
+                `;
+            });
+        }
 
-  function updateTransactionHistory() {
-    if (!transactionHistory) return;
-    if (transactions.length === 0) {
-      transactionHistory.innerHTML = `<div class="transaction-item" style="text-align: center; color: #888;">No transactions yet</div>`;
-      return;
-    }
-    transactionHistory.innerHTML = '';
-    transactions.slice(0, 10).forEach(transaction => {
-      const date = new Date(transaction.date);
-      const formattedDate = `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
-      const statusClass = transaction.status === 'success' ? 'success' :
-                          transaction.status === 'pending' ? 'pending' :
-                          transaction.status === 'reversed' ? 'reversed' : 'failed';
-      transactionHistory.innerHTML += `
-        <div class="transaction-item">
-          <div class="transaction-info">
-            <div class="transaction-title">${transaction.type}</div>
-            <div class="transaction-date">${formattedDate}</div>
-            ${transaction.phone ? `<div class="transaction-phone">${transaction.phone}</div>` : ''}
-            ${transaction.reference ? `<div class="transaction-reference">Ref: ${transaction.reference}</div>` : ''}
-          </div>
-          <div class="transaction-amount ${transaction.amount > 0 ? 'credit' : 'debit'}">
-            ${transaction.amount > 0 ? '+' : ''}₦${Math.abs(transaction.amount)}
-          </div>
-          <div class="transaction-status ${statusClass}">${transaction.status}</div>
-        </div>
-      `;
-    });
-  }
+        function showAlert(message, type) {
+            if (!alertContainer) return;
+            alertContainer.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
+            alertContainer.classList.remove('hidden');
+            setTimeout(() => { alertContainer.classList.add('hidden'); }, 3000);
+        }
 
-  function showAlert(message, type) {
-    if (!alertContainer) return;
-    alertContainer.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
-    alertContainer.classList.remove('hidden');
-    setTimeout(() => { alertContainer.classList.add('hidden'); }, 3000);
-  }
+        function showToast(message) {
+            // Minimal toast implementation; adjust as needed.
+            console.log("Toast:", message);
+        }
 
-  function showToast(message) {
-    // Minimal toast implementation; adjust as needed.
-    console.log("Toast:", message);
-  }
+        // ----- DAILY REWARD LOGIC (UPDATED) -----
+        function checkDailyReward() {
+            if (!dailyRewardStatus || !claimBtn || !countdownDisplay) return;
 
-  // ----- DAILY REWARD LOGIC (UPDATED) -----
-  // This function checks if 24 hours have passed from the last claim.
-  function checkDailyReward() {
-    if (!dailyRewardStatus || !claimBtn || !countdownDisplay) return;
+            const now = new Date().getTime();
+            const twentyFourHours = 24 * 60 * 60 * 1000;
 
-    const now = new Date().getTime();
-    const twentyFourHours = 24 * 60 * 60 * 1000;
+            if (now - lastClaim >= twentyFourHours) {
+                dailyRewardStatus.textContent = 'Available';
+                // Don't show claim button initially, wait for reCAPTCHA
+                countdownDisplay.style.display = 'none';
+                recaptchaContainer.style.display = 'flex';
+            } else {
+                dailyRewardStatus.textContent = 'Claimed for today';
+                claimBtn.classList.add('hidden');
+                countdownDisplay.style.display = 'block';
+                recaptchaContainer.style.display = 'none';
+                startMainRewardCountdown(lastClaim);
+            }
+        }
 
-    if (now - lastClaim >= twentyFourHours) {
-      dailyRewardStatus.textContent = 'Available';
-      claimBtn.disabled = false;
-      claimBtn.style.opacity = '1';
-      claimBtn.style.display = "block"; // Ensure the button is visible
-      countdownDisplay.style.display = 'none';
-    } else {
-      dailyRewardStatus.textContent = 'Claimed for today';
-      claimBtn.disabled = true;
-      claimBtn.style.opacity = '0.5';
-      countdownDisplay.style.display = 'block';
-      startMainRewardCountdown(lastClaim); // Start countdown from last claim time
-    }
-  }
+        // Countdown function that counts down from lastClaim + 24 hours.
+        function startMainRewardCountdown(lastClaimTime) {
+            if (!countdownTimer) return;
+            const targetTime = lastClaimTime + (24 * 60 * 60 * 1000);
 
-  // Countdown function that counts down from lastClaim + 24 hours.
-  function startMainRewardCountdown(lastClaimTime) {
-    if (!countdownTimer) return;
-    const targetTime = lastClaimTime + (24 * 60 * 60 * 1000);
+            const updateCountdown = () => {
+                const now = new Date().getTime();
+                const timeRemaining = targetTime - now;
 
-    const updateCountdown = () => {
-      const now = new Date().getTime();
-      const timeRemaining = targetTime - now;
+                if (timeRemaining <= 0) {
+                    countdownTimer.textContent = "00:00:00";
+                    checkDailyReward(); // Re-check to update claim status
+                    clearInterval(countdownInterval);
+                    return;
+                }
 
-      if (timeRemaining <= 0) {
-        countdownTimer.textContent = "00:00:00";
-        checkDailyReward(); // Re-check to update claim status
-        clearInterval(countdownInterval);
-        return;
-      }
+                const hours = Math.floor(timeRemaining / (1000 * 60 * 60));
+                const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
+                countdownTimer.textContent = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            };
 
-      const hours = Math.floor(timeRemaining / (1000 * 60 * 60));
-      const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
-      const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
-      countdownTimer.textContent = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-    };
+            updateCountdown();
+            const countdownInterval = setInterval(updateCountdown, 1000);
+            window.addEventListener('beforeunload', () => clearInterval(countdownInterval));
+        }
 
-    updateCountdown();
-    const countdownInterval = setInterval(updateCountdown, 1000);
-    window.addEventListener('beforeunload', () => clearInterval(countdownInterval));
-  }
+        // Daily reward claim function.
+        function claimDailyReward() {
+            if (!userId) {
+                showAlert('Please login to claim your daily reward', 'warning');
+                return;
+            }
+            
+            if (!captchaValidated) {
+                showAlert('Please complete the reCAPTCHA first', 'warning');
+                return;
+            }
+            
+            const now = new Date().getTime();
+            airtimeBalance += DAILY_REWARD;
+            lastClaim = now;
+            
+            // Save data to Firebase
+            syncToFirebase(userId);
+            
+            addTransaction({
+                type: 'Daily Reward Claimed',
+                amount: DAILY_REWARD,
+                date: now,
+                status: 'success'
+            });
+            
+            checkDailyReward();
+            showAlert(`Daily reward of ₦${DAILY_REWARD} claimed successfully!`, 'success');
+            
+            // Hide claim button and reCAPTCHA after claiming
+            claimBtn.classList.add('hidden');
+            recaptchaContainer.style.display = 'none';
+            
+            // Reset captcha validation
+            captchaValidated = false;
+        }
 
-  // Daily reward claim function.
-  function claimDailyReward() {
-    if (!userId) {
-      showAlert('Please login to claim your daily reward', 'warning');
-      return;
-    }
-    const now = new Date().getTime();
-    airtimeBalance += DAILY_REWARD;
-    lastClaim = now;
-    saveData();
-    addTransaction({
-      type: 'Daily Reward Claimed',
-      amount: DAILY_REWARD,
-      date: now,
-      status: 'success'
-    });
-    updateBalance();
-    checkDailyReward();
-    showAlert(`Daily reward of ₦${DAILY_REWARD} claimed successfully!`, 'success');
-  }
+        // ----- reCAPTCHA VALIDATION (UPDATED) -----
+        function enableClaimButton() {
+            captchaValidated = true;
+            claimBtn.disabled = false;
+            claimBtn.classList.remove('hidden');
+            
+            // Add event listener for claim button
+            claimBtn.addEventListener('click', function(event) {
+                event.preventDefault();
+                claimDailyReward();
+                // Don't reset reCAPTCHA here to prevent re-claiming
+            });
+        }
 
-  // ----- reCAPTCHA VALIDATION & CLAIM BUTTON EVENT (UPDATED) -----
-  // Single event listener for the claim button.
-  function validateRecaptcha(event) {
-    event.preventDefault();
-    var response = grecaptcha.getResponse();
-    if (!response.length) {
-      alert("Please complete the reCAPTCHA verification.");
-      return;
-    }
-    claimDailyReward();
-    grecaptcha.reset();
-    // Optionally hide/disable the claim button after claiming.
-    claimBtn.style.display = "none";
-    claimBtn.disabled = true;
-  }
-
-  // ----- AIRTIME PURCHASE FUNCTIONALITY (ADDED) -----
-  async function purchaseAirtime() {
-    if (!userId) {
-      showAlert('Please login to purchase airtime', 'warning');
-      return;
-    }
-    if (!phoneNumberInput) return;
-
-    const phoneNumber = phoneNumberInput.value.trim();
-
-    // Validate phone number length.
-    if (!phoneNumber || phoneNumber.length < 11) {
-      showAlert('Please enter a valid 11-digit phone number', 'danger');
-      return;
-    }
-
-    // Check for sufficient balance.
-    if (airtimeBalance < selectedAmount) {
-      showAlert(`Insufficient balance. You need ₦${selectedAmount} to make this purchase.`, 'danger');
-      return;
-    }
-
-    // Show loader and disable purchase button.
-    if (purchaseLoader) purchaseLoader.classList.remove('hidden');
-    if (purchaseBtn) purchaseBtn.disabled = true;
-
-    try {
-      // Call the API to purchase airtime.
-      const response = await makeRealApiCall(phoneNumber, selectedAmount);
-      const currentTime = new Date().getTime();
-      const referenceID = response.reference || generateReference();
-
-      // Deduct the airtime balance.
-      airtimeBalance -= selectedAmount;
-      saveData();
-
-      addTransaction({
-        type: `Airtime Purchase (${selectedNetwork.toUpperCase()})`,
-        amount: -selectedAmount,
-        date: currentTime,
-        status: 'pending',
-        reference: referenceID,
-        phone: phoneNumber
-      });
-
-      showAlert('Your airtime purchase is pending. Airtime will be sent shortly.', 'warning');
-
-      // After 59 seconds, update transaction status to success.
-      setTimeout(() => {
-        transactions = transactions.map(transaction => {
-          if (transaction.reference === referenceID && transaction.status === 'pending') {
-            transaction.status = 'success';
-            showToast(`Airtime purchase completed for ${transaction.phone}! Ref: ${transaction.reference}`);
-            saveData();
+        // Helper function to add transaction
+        function addTransaction(transaction) {
+            transactions.unshift(transaction); // Add to beginning of array
+            syncToFirebase(userId);
             updateTransactionHistory();
-          }
-          return transaction;
+        }
+
+        // Initialize auth state listener
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                userId = user.uid;
+                initUserData(userId);
+                syncFromFirebase(userId);
+                document.getElementById('sign-out-btn').classList.remove('hidden');
+            } else {
+                // Handle not logged in state
+                userId = null;
+                airtimeBalance = 0;
+                lastClaim = 0;
+                transactions = [];
+                document.getElementById('sign-out-btn').classList.add('hidden');
+            }
         });
-      }, 59000);
 
-      updateBalance();
-    } catch (error) {
-      const referenceID = generateReference();
-      addTransaction({
-        type: `Airtime Purchase (${selectedNetwork.toUpperCase()})`,
-        amount: -selectedAmount,
-        date: new Date().getTime(),
-        status: 'pending',
-        reference: referenceID,
-        phone: phoneNumber
-      });
-      showAlert('Your airtime purchase is pending. Airtime will be sent shortly.', 'warning');
-      setTimeout(() => {
-        transactions = transactions.map(transaction => {
-          if (transaction.reference === referenceID && transaction.status === 'pending') {
-            transaction.status = 'success';
-            showToast(`Airtime purchase completed for ${transaction.phone}! Ref: ${transaction.reference}`);
-            saveData();
-            updateTransactionHistory();
-          }
-          return transaction;
+        // ----- Event listeners -----
+        // Network selection
+        document.querySelectorAll('.network-icon').forEach(icon => {
+            icon.addEventListener('click', function() {
+                // Remove active class from all network icons
+                document.querySelectorAll('.network-icon').forEach(n => n.classList.remove('active'));
+                // Add active class to clicked icon
+                this.classList.add('active');
+                selectedNetwork = this.getAttribute('data-network');
+                selectedPlanId = this.getAttribute('data-plan');
+            });
         });
-      }, 59000);
-      console.error('Error:', error);
-    } finally {
-      if (purchaseLoader) purchaseLoader.classList.add('hidden');
-      if (purchaseBtn) purchaseBtn.disabled = false;
-      if (phoneNumberInput) phoneNumberInput.value = '';
-      updateTransactionHistory();
-    }
-  }
 
-  // API call for airtime purchase.
-  async function makeRealApiCall(phoneNumber, amount) {
-    try {
-      const formData = new FormData();
-      formData.append('pin', PIN);
-      formData.append('plan_id', selectedPlanId);
-      formData.append('phone', phoneNumber);
-      formData.append('amount', amount.toString());
-      formData.append('reference', generateReference());
+        // Amount selection
+        document.querySelectorAll('.amount-option').forEach(option => {
+            option.addEventListener('click', function() {
+                // Remove active class from all amount options
+                document.querySelectorAll('.amount-option').forEach(o => o.classList.remove('active'));
+                // Add active class to clicked option
+                this.classList.add('active');
+                selectedAmount = parseInt(this.getAttribute('data-amount'));
+            });
+        });
 
-      const response = await fetch(`https://sabuss.com/vtu/api/buy/${API_KEY}`, {
-        method: 'POST',
-        body: formData
-      });
-      const data = await response.json();
-      return data;
-    } catch (error) {
-      console.error('API Error:', error);
-      throw error;
-    }
-  }
+        // Purchase airtime button
+        if (purchaseBtn) {
+            purchaseBtn.addEventListener('click', function() {
+                // Handle airtime purchase logic here
+                const phoneNumber = phoneNumberInput ? phoneNumberInput.value.trim() : '';
+                if (!phoneNumber || phoneNumber.length < 11) {
+                    showAlert('Please enter a valid 11-digit phone number', 'danger');
+                    return;
+                }
+                
+                // Add your airtime purchase implementation here
+                showAlert('Airtime purchase functionality to be implemented', 'info');
+            });
+        }
 
-  // Helper function to add a transaction.
-  function addTransaction(transaction) {
-    transactions.unshift(transaction);
-    saveData();
-    updateTransactionHistory();
-  }
+        // Sign out button
+        const signOutBtn = document.getElementById('sign-out-btn');
+        if (signOutBtn) {
+            signOutBtn.addEventListener('click', function() {
+                auth.signOut().then(() => {
+                    showAlert('Signed out successfully', 'success');
+                }).catch((error) => {
+                    console.error('Error signing out:', error);
+                    showAlert('Error signing out', 'danger');
+                });
+            });
+        }
 
-  // Save data to Firebase and local storage.
-  function saveData() {
-    if (userId) {
-      syncToFirebase(userId);
-    }
-    localStorage.setItem('airtimeBalance', airtimeBalance.toString());
-    localStorage.setItem('lastClaim', lastClaim.toString());
-    localStorage.setItem('transactions', JSON.stringify(transactions));
-  }
-
-function enableClaimButton() {
-  var claimBtn = document.getElementById("claim-btn");
-  if (claimBtn) {
-    // Set reCAPTCHA verified flag if needed
-    claimBtn.dataset.recaptchaVerified = "true";
-    // Make the button visible and active
-    claimBtn.style.display = "block";
-    claimBtn.style.opacity = "1";
-    // Change the background color to green
-    claimBtn.style.backgroundColor = "#4CAF50";
-    claimBtn.disabled = false;
-  }
-}
-  // ----- Authentication Listener -----
-  auth.onAuthStateChanged((user) => {
-    if (user) {
-      userId = user.uid;
-      initUserData(userId);
-      syncFromFirebase(userId);
-      // (Code to show the sign-out button may go here.)
-    } else {
-      userId = null;
-      loadFromLocalStorage();
-      showAlert('You are not logged in. Click on the Profile navigation to login.', 'warning');
-    }
-  });
-
-  function loadFromLocalStorage() {
-    if (!localStorage.getItem('airtimeBalance')) {
-      localStorage.setItem('airtimeBalance', '0');
-    }
-    if (!localStorage.getItem('lastClaim')) {
-      localStorage.setItem('lastClaim', '0');
-    }
-    if (!localStorage.getItem('transactions')) {
-      localStorage.setItem('transactions', JSON.stringify([]));
-    }
-    airtimeBalance = parseInt(localStorage.getItem('airtimeBalance'));
-    lastClaim = parseInt(localStorage.getItem('lastClaim'));
-    transactions = JSON.parse(localStorage.getItem('transactions'));
-    updateBalance();
-    updateTransactionHistory();
-    checkDailyReward();
-  }
-
-  // ----- DOMContentLoaded Event Listener (UPDATED) -----
-  document.addEventListener("DOMContentLoaded", function () {
-    // Initialize the claim button for daily rewards.
-    if (claimBtn) {
-      claimBtn.style.display = "none";
-      claimBtn.style.backgroundColor = "lightgray";
-      claimBtn.style.opacity = "0.5";
-      claimBtn.disabled = true;
-      claimBtn.addEventListener("click", validateRecaptcha);
-    }
-    // Initialize other UI components here (e.g., network selection, amount options, sign-out button, etc.)
-    updateBalance();
-    checkDailyReward();
-    updateTransactionHistory();
-  });
-
-  // ----- Helper Function for Generating References -----
-  function generateReference() {
-    return 'REF' + Math.random().toString(36).substring(2, 10).toUpperCase();
-  }
-
-  // Additional functions for network/amount selection, sign out, etc., remain unchanged.
-</script>
+        // Initial app state check
+        window.addEventListener('DOMContentLoaded', () => {
+            if (auth.currentUser) {
+                userId = auth.currentUser.uid;
+                initUserData(userId);
+                syncFromFirebase(userId);
+            }
+        });
+    </script>
 </body>
 </html>
