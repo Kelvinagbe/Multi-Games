@@ -626,7 +626,7 @@
                 <div class="quick-action"><i class="ri-gamepad-line"></i>Game Library</div>
                 <div class="quick-action"><i class="ri-trophy-line"></i>Achievements</div>
                 <div class="quick-action"><i class="ri-settings-3-line"></i>Settings</div>
-                <div class="quick-action"><i class="ri-store-2-line"></i>Store</div>
+                <div class="quick-action" id="update-app"><i class="ri-download-line"></i>Update App</div>
             </div>
         </div>
   
@@ -732,6 +732,16 @@
             </div>
         </div>
     </div>
+
+   <div id="notification" style="display: none; position: fixed; bottom: 20px; right: 20px; background-color: var(--primary-color); color: white; padding: 15px; border-radius: 5px; box-shadow: 0 4px 8px rgba(0,0,0,0.2); z-index: 1000; max-width: 300px;">
+    <div style="display: flex; align-items: center; gap: 10px;">
+        <i class="ri-checkbox-circle-line" style="font-size: 1.5rem;"></i>
+        <div>
+            <div style="font-weight: bold;" id="notification-title">Success</div>
+            <div id="notification-message">App downloaded successfully!</div>
+        </div>
+    </div>
+</div>
 
     <!-- Script to modify existing profile header -->
     <script type="module">
@@ -957,6 +967,9 @@ const loginErrorEl = document.getElementById('login-error');
 const googleLoginBtn = document.getElementById('google-login');
 const facebookLoginBtn = document.getElementById('facebook-login');
 const withdrawBtn = document.querySelector('.withdraw-btn');
+const updateAppBtn = document.getElementById('update-app');
+const notification = document.getElementById('notification');
+
 
 // State Variables
 let currentUser = null;
@@ -1741,5 +1754,51 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 </script>
+
+    <!-- New Download App Code -->
+    <script type="module">
+        // Function to show notification
+        function showNotification(title, message, duration = 5000) {
+            document.getElementById('notification-title').textContent = title;
+            document.getElementById('notification-message').textContent = message;
+            notification.style.display = 'block';
+            
+            // Hide notification after duration
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, duration);
+        }
+
+        // Download app function
+        async function downloadApp() {
+            const appUrl = 'https://multi-games-fawn.vercel.app/Multi%20Games.apk';
+            
+            try {
+                showLoading();
+                
+                // Create an anchor element
+                const a = document.createElement('a');
+                a.href = appUrl;
+                a.download = 'Multi Games.apk';
+                
+                // Triggering download
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                
+                // Show success notification
+                showNotification('Download Complete', 'App downloaded successfully!');
+            } catch (error) {
+                console.error('Download failed:', error);
+                showNotification('Download Failed', 'Please try again later.', 3000);
+            } finally {
+                hideLoading();
+            }
+        }
+
+        // Add click event to update app button
+        const updateAppBtn = document.getElementById('update-app');
+        updateAppBtn.addEventListener('click', downloadApp);
+    </script>
 </body>
 </html>
