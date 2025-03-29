@@ -989,6 +989,29 @@ function showAlert(message, type = 'info') {
     const alertEl = document.createElement('div');
     alertEl.className = `alert alert-${type}`;
     alertEl.textContent = message;
+    alertEl.style.position = 'fixed';
+    alertEl.style.top = '20px';
+    alertEl.style.left = '50%';
+    alertEl.style.transform = 'translateX(-50%)';
+    alertEl.style.zIndex = '9999';
+    alertEl.style.padding = '12px 20px';
+    alertEl.style.borderRadius = '5px';
+    alertEl.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
+    alertEl.style.fontSize = '14px';
+    alertEl.style.fontWeight = 'bold';
+    
+    // Set colors based on type
+    if (type === 'error') {
+        alertEl.style.backgroundColor = '#f44336';
+        alertEl.style.color = 'white';
+    } else if (type === 'success') {
+        alertEl.style.backgroundColor = '#4CAF50';
+        alertEl.style.color = 'white';
+    } else {
+        alertEl.style.backgroundColor = '#2196F3';
+        alertEl.style.color = 'white';
+    }
+    
     document.body.appendChild(alertEl);
     
     setTimeout(() => {
@@ -1072,7 +1095,10 @@ function updateTransactionHistory(newTransactions) {
     // Sort transactions by date (most recent first)
     const sortedTransactions = newTransactions.sort((a, b) => b.date - a.date);
     
-    const transactionsHtml = sortedTransactions.map(transaction => `
+    // Limit to only the 3 most recent transactions
+    const limitedTransactions = sortedTransactions.slice(0, 3);
+    
+    const transactionsHtml = limitedTransactions.map(transaction => `
         <div class="transaction-item">
             <div class="transaction-details">
                 <span class="transaction-type">${transaction.type}</span>
@@ -1097,6 +1123,13 @@ function showWithdrawalModalError(errorMessage) {
         if (errorMessageEl) {
             errorMessageEl.textContent = errorMessage;
             errorMessageEl.style.display = 'block';
+            errorMessageEl.style.color = '#f44336';
+            errorMessageEl.style.backgroundColor = '#ffebee';
+            errorMessageEl.style.padding = '10px';
+            errorMessageEl.style.marginBottom = '15px';
+            errorMessageEl.style.borderRadius = '5px';
+            errorMessageEl.style.fontWeight = 'bold';
+            errorMessageEl.style.textAlign = 'center';
         }
     }
 }
@@ -1367,6 +1400,22 @@ function createWithdrawalModal() {
         </div>
     `;
     
+    // Add CSS for error message
+    const style = document.createElement('style');
+    style.textContent = `
+        .error-message {
+            display: none;
+            color: #f44336;
+            background-color: #ffebee;
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            font-weight: bold;
+            text-align: center;
+        }
+    `;
+    document.head.appendChild(style);
+    
     document.body.appendChild(withdrawalModal);
     withdrawalModalInstance = withdrawalModal;
     
@@ -1490,6 +1539,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             // Check if the user has the minimum required balance before showing the withdrawal modal
             if (airtimeBalance < MINIMUM_WITHDRAWAL) {
+                // Show a prominent alert instead of a subtle one at the bottom
                 showAlert(WithdrawalErrorMessages[WithdrawalErrorCodes.INSUFFICIENT_BALANCE], 'error');
                 return;
             }
