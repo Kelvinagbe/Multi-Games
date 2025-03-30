@@ -1893,7 +1893,10 @@ document.addEventListener('DOMContentLoaded', () => {
     </script>
 
 <script>
-// Get modal and button elements
+// Set the initial state of the modal to be hidden
+if (achievementModal) {
+    achievementModal.style.display = "none";
+}
 
 // Function to open modal
 function openModal() {
@@ -1916,6 +1919,13 @@ if (achievementBtn) {
 if (closeBtn) {
     closeBtn.addEventListener("click", closeModal);
 }
+
+// When the user clicks anywhere outside of the modal, close it
+window.addEventListener("click", function(event) {
+    if (event.target === achievementModal) {
+        closeModal();
+    }
+});
 </script>
 </body>
 </html>
