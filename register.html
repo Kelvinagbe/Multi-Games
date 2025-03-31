@@ -314,293 +314,294 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, updateProfile } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
-import { getDatabase, ref, set, get, child, update } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-database.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, updateProfile } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
+    import { getDatabase, ref, set, get, child, update } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-database.js";
 
-// Your Firebase configuration
-const firebaseConfig = {
-  apiKey: "AIzaSyBw1uA-kNKOZEufWKZ9AMBxvRGHNGF1lkA",
-  authDomain: "multi-games-a2561.firebaseapp.com",
-  projectId: "multi-games-a2561",
-  storageBucket: "multi-games-a2561.appspot.com",
-  messagingSenderId: "150551898066",
-  appId: "1:150551898066:web:4e8fb185f2321ba4140a0b",
-  measurementId: "G-PB8Y87E6XV",
-  databaseURL: "https://multi-games-a2561-default-rtdb.firebaseio.com"
-};
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const database = getDatabase(app);
-const googleProvider = new GoogleAuthProvider();
-
-// Function to show error messages
-function showError(message) {
-  const errorElement = document.getElementById('error-message');
-  errorElement.textContent = message;
-  errorElement.style.display = "block";
-  
-  // Hide the error after 5 seconds
-  setTimeout(() => {
-    errorElement.style.display = "none";
-  }, 5000);
-}
-
-// Function to show loading state
-function setLoading(isLoading) {
-  const spinner = document.getElementById('loading-spinner');
-  const registerBtn = document.getElementById('register-btn');
-  const registeringMessage = document.getElementById('registering-message');
-  
-  if (isLoading) {
-    spinner.style.display = 'inline-block';
-    registerBtn.disabled = true;
-    registeringMessage.style.display = 'block';
-  } else {
-    spinner.style.display = 'none';
-    registeringMessage.style.display = 'none';
-    updateRegisterButton();
-  }
-}
-
-// Function to generate a unique referral code
-async function generateReferralCode() {
-  let code;
-  let exists = true;
-  
-  try {
-    while (exists) {
-      code = "GMR" + Math.random().toString(36).substring(2, 8).toUpperCase();
-      const dbRef = ref(database);
-      const snapshot = await get(child(dbRef, `referralCodes/${code}`));
-      exists = snapshot.exists();
-    }
-    return code;
-  } catch (error) {
-    console.error("Error generating referral code:", error);
-    return "GMR" + Math.random().toString(36).substring(2, 8).toUpperCase();
-  }
-}
-
-// Function to capture referral code from URL
-function getReferralCodeFromURL() {
-  const params = new URLSearchParams(window.location.search);
-  return params.get("ref") || null;
-}
-
-// UPDATED Function to track referral usage
-async function trackReferral(referralCode) {
-  if (!referralCode) return;
-  
-  try {
-    // First check if the referral code exists
-    const dbRef = ref(database);
-    const codeSnapshot = await get(child(dbRef, `referralCodes/${referralCode}`));
-    
-    if (codeSnapshot.exists()) {
-      // Get the user ID of the referrer
-      const referrerId = codeSnapshot.val().userId;
-      
-      // Get the referrer's user data
-      const userRef = ref(database, `users/${referrerId}`);
-      const userSnapshot = await get(userRef);
-      
-      if (userSnapshot.exists()) {
-        // Get current data
-        const userData = userSnapshot.val();
-        
-        // Use 0 as default if referrals property doesn't exist
-        const currentReferrals = userData.referrals || 0;
-        const newReferralCount = currentReferrals + 1;
-        
-        // Update only the referrals field
-        await update(userRef, { 
-          referrals: newReferralCount 
-        });
-        
-        console.log("Referral tracked successfully. New count:", newReferralCount);
-      } else {
-        console.log("Referrer user not found");
-      }
-    } else {
-      console.log("Invalid referral code");
-    }
-  } catch (error) {
-    console.error("Error tracking referral:", error);
-  }
-}
-
-// Registration form submission handler
-document.getElementById('register-form').addEventListener('submit', async function (e) {
-  e.preventDefault();
-  
-  setLoading(true);
-
-  const name = document.getElementById('register-name').value.trim();
-  const email = document.getElementById('register-email').value.trim();
-  const password = document.getElementById('register-password').value;
-  const confirmPassword = document.getElementById('register-confirm-password').value;
-  const manualReferral = document.getElementById('manual-referral').value.trim();
-  
-  // Validation
-  if (!name) {
-    showError("Please enter your name");
-    setLoading(false);
-    return;
-  }
-  
-  if (!email) {
-    showError("Please enter your email address");
-    setLoading(false);
-    return;
-  }
-  
-  // Basic email validation
-  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailPattern.test(email)) {
-    showError("Please enter a valid email address");
-    setLoading(false);
-    return;
-  }
-
-  // Basic password validation
-  if (password !== confirmPassword) {
-    showError("Passwords don't match");
-    setLoading(false);
-    return;
-  }
-  
-  if (password.length < 6) {
-    showError("Password should be at least 6 characters");
-    setLoading(false);
-    return;
-  }
-  
-  // ReCAPTCHA validation
-  if (!recaptchaVerified) {
-    showError("Please verify that you are not a robot");
-    setLoading(false);
-    return;
-  }
-
-  try {
-    // Generate a unique referral code for this new user
-    const userReferralCode = await generateReferralCode();
-
-    // Determine the referral code to use: manual input takes precedence over URL parameter
-    const referralUsed = manualReferral || getReferralCodeFromURL();
-
-    // Create user with email and password
-    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-    const user = userCredential.user;
-    
-    // Update the user's display name
-    await updateProfile(user, {
-      displayName: name
-    });
-
-    // Prepare user data including referral details
-    const userData = {
-      name: name,
-      email: email,
-      referralCode: userReferralCode,
-      referredBy: referralUsed || null,
-      dateJoined: new Date().toISOString(),
-      referrals: 0 // Initialize referrals count to 0
+    // Your Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyBw1uA-kNKOZEufWKZ9AMBxvRGHNGF1lkA",
+      authDomain: "multi-games-a2561.firebaseapp.com",
+      projectId: "multi-games-a2561",
+      storageBucket: "multi-games-a2561.appspot.com",
+      messagingSenderId: "150551898066",
+      appId: "1:150551898066:web:4e8fb185f2321ba4140a0b",
+      measurementId: "G-PB8Y87E6XV",
+      databaseURL: "https://multi-games-a2561-default-rtdb.firebaseio.com"
     };
 
-    // Save the referral code mapping for this user
-    await set(ref(database, `referralCodes/${userReferralCode}`), { 
-      userId: user.uid,
-      created: new Date().toISOString()
-    });
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const database = getDatabase(app);
+    const googleProvider = new GoogleAuthProvider();
 
-    // Save user data in Firebase
-    await set(ref(database, `users/${user.uid}`), userData);
-
-    // If a referral code was used, track it
-    if (referralUsed) {
-      await trackReferral(referralUsed);
+    // Function to show error messages
+    function showError(message) {
+      const errorElement = document.getElementById('error-message');
+      errorElement.textContent = message;
+      errorElement.style.display = "block";
+      
+      // Hide the error after 5 seconds
+      setTimeout(() => {
+        errorElement.style.display = "none";
+      }, 5000);
     }
 
-    // Redirect to profile page after registration
-    window.location.href = 'profile.html';
-  } catch (error) {
-    console.error("Registration error:", error);
-    
-    if (error.code === 'auth/email-already-in-use') {
-      showError("This email is already registered. Please use another email or log in.");
-    } else if (error.code === 'auth/invalid-email') {
-      showError("Please enter a valid email address.");
-    } else if (error.code === 'auth/weak-password') {
-      showError("Password is too weak. Please use a stronger password.");
-    } else {
-      showError("Registration failed: " + error.message);
-    }
-    
-    setLoading(false);
-  }
-});
-
-// Google Sign-up handler
-document.getElementById('google-register').addEventListener('click', async function() {
-  if (!document.getElementById('terms-checkbox').checked) {
-    showError("You must accept the Terms and Conditions");
-    return;
-  }
-  
-  if (!recaptchaVerified) {
-    showError("Please verify that you are not a robot");
-    return;
-  }
-  
-  setLoading(true);
-  
-  try {
-    const result = await signInWithPopup(auth, googleProvider);
-    const user = result.user;
-    const isNewUser = result._tokenResponse.isNewUser;
-    
-    if (isNewUser) {
-      // Generate a referral code for this new Google user
-      const userReferralCode = await generateReferralCode();
-      const referralUsed = document.getElementById('manual-referral').value.trim() || getReferralCodeFromURL();
+    // Function to show loading state
+    function setLoading(isLoading) {
+      const spinner = document.getElementById('loading-spinner');
+      const registerBtn = document.getElementById('register-btn');
+      const registeringMessage = document.getElementById('registering-message');
       
-      // Save user data
-      const userData = {
-        name: user.displayName || "User",
-        email: user.email,
-        referralCode: userReferralCode,
-        referredBy: referralUsed || null,
-        dateJoined: new Date().toISOString(),
-        signupMethod: "google",
-        referrals: 0 // Initialize referrals count to 0
-      };
-      
-      // Save the referral code mapping
-      await set(ref(database, `referralCodes/${userReferralCode}`), { 
-        userId: user.uid,
-        created: new Date().toISOString()
-      });
-      
-      // Save user data in Firebase
-      await set(ref(database, `users/${user.uid}`), userData);
-      
-      // Track referral if applicable
-      if (referralUsed) {
-        await trackReferral(referralUsed);
+      if (isLoading) {
+        spinner.style.display = 'inline-block';
+        registerBtn.disabled = true;
+        registeringMessage.style.display = 'block';
+      } else {
+        spinner.style.display = 'none';
+        registeringMessage.style.display = 'none';
+        updateRegisterButton();
       }
     }
-    
-    // Redirect to profile page
-    window.location.href = 'profile.html';
-  } catch (error) {
-    console.error("Google sign-up error:", error);
-    showError("Google sign-up failed. Please try again.");
-    setLoading(false);
-  }
-});
-  </script>
+
+    // Function to generate a unique referral code
+    async function generateReferralCode() {
+      let code;
+      let exists = true;
+      
+      try {
+        while (exists) {
+          code = "GMR" + Math.random().toString(36).substring(2, 8).toUpperCase();
+          const dbRef = ref(database);
+          const snapshot = await get(child(dbRef, `referralCodes/${code}`));
+          exists = snapshot.exists();
+        }
+        return code;
+      } catch (error) {
+        console.error("Error generating referral code:", error);
+        return "GMR" + Math.random().toString(36).substring(2, 8).toUpperCase();
+      }
+    }
+
+    // Function to capture referral code from URL
+    function getReferralCodeFromURL() {
+      const params = new URLSearchParams(window.location.search);
+      return params.get("ref") || null;
+    }
+
+    // FIXED Function to track referral usage
+    async function trackReferral(referralCode) {
+      if (!referralCode) return;
+      
+      try {
+        // First check if the referral code exists
+        const dbRef = ref(database);
+        const codeSnapshot = await get(child(dbRef, `referralCodes/${referralCode}`));
+        
+        if (codeSnapshot.exists()) {
+          // Get the user ID of the referrer
+          const referrerId = codeSnapshot.val().userId;
+          
+          // Get the referrer's user data
+          const userRef = ref(database, `users/${referrerId}`);
+          const userSnapshot = await get(userRef);
+          
+          if (userSnapshot.exists()) {
+            // Get current data
+            const userData = userSnapshot.val();
+            
+            // Use 0 as default if referrals property doesn't exist
+            const currentReferrals = userData.referrals || 0;
+            const newReferralCount = currentReferrals + 1;
+            
+            console.log("Updating referral count for user:", referrerId);
+            console.log("Current count:", currentReferrals, "New count:", newReferralCount);
+            
+            // Update only the referrals field with set() instead of update()
+            await set(ref(database, `users/${referrerId}/referrals`), newReferralCount);
+            
+            console.log("Referral tracked successfully. New count:", newReferralCount);
+          } else {
+            console.log("Referrer user not found");
+          }
+        } else {
+          console.log("Invalid referral code");
+        }
+      } catch (error) {
+        console.error("Error tracking referral:", error.message);
+      }
+    }
+
+    // Registration form submission handler
+    document.getElementById('register-form').addEventListener('submit', async function (e) {
+      e.preventDefault();
+      
+      setLoading(true);
+
+      const name = document.getElementById('register-name').value.trim();
+      const email = document.getElementById('register-email').value.trim();
+      const password = document.getElementById('register-password').value;
+      const confirmPassword = document.getElementById('register-confirm-password').value;
+      const manualReferral = document.getElementById('manual-referral').value.trim();
+      
+      // Validation
+      if (!name) {
+        showError("Please enter your name");
+        setLoading(false);
+        return;
+      }
+      
+      if (!email) {
+        showError("Please enter your email address");
+        setLoading(false);
+        return;
+      }
+      
+      // Basic email validation
+      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailPattern.test(email)) {
+        showError("Please enter a valid email address");
+        setLoading(false);
+        return;
+      }
+
+      // Basic password validation
+      if (password !== confirmPassword) {
+        showError("Passwords don't match");
+        setLoading(false);
+        return;
+      }
+      
+      if (password.length < 6) {
+        showError("Password should be at least 6 characters");
+        setLoading(false);
+        return;
+      }
+      
+      // ReCAPTCHA validation
+      if (!recaptchaVerified) {
+        showError("Please verify that you are not a robot");
+        setLoading(false);
+        return;
+      }
+
+      try {
+        // Generate a unique referral code for this new user
+        const userReferralCode = await generateReferralCode();
+
+        // Determine the referral code to use: manual input takes precedence over URL parameter
+        const referralUsed = manualReferral || getReferralCodeFromURL();
+
+        // Create user with email and password
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+        
+        // Update the user's display name
+        await updateProfile(user, {
+          displayName: name
+        });
+
+        // Prepare user data including referral details
+        const userData = {
+          name: name,
+          email: email,
+          referralCode: userReferralCode,
+          referredBy: referralUsed || null,
+          dateJoined: new Date().toISOString(),
+          referrals: 0 // Initialize referrals count to 0
+        };
+
+        // Save the referral code mapping for this user
+        await set(ref(database, `referralCodes/${userReferralCode}`), { 
+          userId: user.uid,
+          created: new Date().toISOString()
+        });
+
+        // Save user data in Firebase
+        await set(ref(database, `users/${user.uid}`), userData);
+
+        // If a referral code was used, track it
+        if (referralUsed) {
+          await trackReferral(referralUsed);
+        }
+
+        // Redirect to profile page after registration
+        window.location.href = 'profile.html';
+      } catch (error) {
+        console.error("Registration error:", error);
+        
+        if (error.code === 'auth/email-already-in-use') {
+          showError("This email is already registered. Please use another email or log in.");
+        } else if (error.code === 'auth/invalid-email') {
+          showError("Please enter a valid email address.");
+        } else if (error.code === 'auth/weak-password') {
+          showError("Password is too weak. Please use a stronger password.");
+        } else {
+          showError("Registration failed: " + error.message);
+        }
+        
+        setLoading(false);
+      }
+    });
+
+    // Google Sign-up handler
+    document.getElementById('google-register').addEventListener('click', async function() {
+      if (!document.getElementById('terms-checkbox').checked) {
+        showError("You must accept the Terms and Conditions");
+        return;
+      }
+      
+      if (!recaptchaVerified) {
+        showError("Please verify that you are not a robot");
+        return;
+      }
+      
+      setLoading(true);
+      
+      try {
+        const result = await signInWithPopup(auth, googleProvider);
+        const user = result.user;
+        const isNewUser = result._tokenResponse.isNewUser;
+        
+        if (isNewUser) {
+          // Generate a referral code for this new Google user
+          const userReferralCode = await generateReferralCode();
+          const referralUsed = document.getElementById('manual-referral').value.trim() || getReferralCodeFromURL();
+          
+          // Save user data
+          const userData = {
+            name: user.displayName || "User",
+            email: user.email,
+            referralCode: userReferralCode,
+            referredBy: referralUsed || null,
+            dateJoined: new Date().toISOString(),
+            signupMethod: "google",
+            referrals: 0 // Initialize referrals count to 0
+          };
+          
+          // Save the referral code mapping
+          await set(ref(database, `referralCodes/${userReferralCode}`), { 
+            userId: user.uid,
+            created: new Date().toISOString()
+          });
+          
+          // Save user data in Firebase
+          await set(ref(database, `users/${user.uid}`), userData);
+          
+          // Track referral if applicable
+          if (referralUsed) {
+            await trackReferral(referralUsed);
+          }
+        }
+        
+        // Redirect to profile page
+        window.location.href = 'profile.html';
+      } catch (error) {
+        console.error("Google sign-up error:", error);
+        showError("Google sign-up failed. Please try again.");
+        setLoading(false);
+      }
+    });
+</script>
 </body>
 </html>
