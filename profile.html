@@ -695,7 +695,7 @@
 
 .referral-start {
     margin-top: 4px;
-    margin-bottom: 15px;
+    margin-bottom: 3px;
     padding: 8px 15px;
     background-color: rgba(40, 167, 69, 0.2); /* Subtle green overlay */
     border: 2px solid rgba(40, 167, 69, 0.3); /* Light green border */
@@ -733,6 +733,68 @@
 
 .referral-start span.updated {
     animation: pulse 0.5s ease;
+}
+
+.whatsapp-box {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 13px auto; /* Top/bottom margins and centered horizontally */
+    padding: 12px 18px;
+    max-width: 400px; /* Reduced max-width */
+    margin-left: 0px; /* Left margin */
+    margin-right: 0px; /* Right margin */
+    text-align: left;
+    background-color: rgba(40, 167, 69, 0.2); /* Subtle green overlay from referral */
+    border: 2px solid rgba(40, 167, 69, 0.3); /* Light green border from referral */
+    border-radius: 15px;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(40, 167, 69, 0.2);
+    transition: all 0.3s ease;
+}
+
+.whatsapp-box:hover {
+    background-color: rgba(40, 167, 69, 0.25);
+    box-shadow: 0 5px 12px rgba(0, 0, 0, 0.15), 0 2px 4px rgba(40, 167, 69, 0.25);
+    transform: translateY(-1px);
+}
+
+.whatsapp-description {
+    margin: 0;
+    font-size: 13px;
+    color: #1e7e34; /* Darker green text for better contrast */
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+}
+
+.whatsapp-description span {
+    font-weight: bold;
+    color: #155724; /* Even darker green for emphasis */
+    padding: 0 3px;
+}
+
+.whatsapp-join-button {
+    display: inline-block;
+    padding: 6px 14px;
+    background-color: #28a745; /* Green button */
+    color: #fff;
+    border-radius: 20px;
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 800;
+    transition: all 0.3s ease;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+    border: none;
+}
+
+.whatsapp-join-button:hover {
+    background-color: #218838; /* Slightly darker green on hover */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+}
+
+.whatsapp-join-button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
     </style>
 </head>
@@ -795,10 +857,16 @@
                     <button class="withdraw-btn">Withdraw</button>
                 </div>
             </div>
-                   
-    <div class="referral-start">
+
+   <div class="referral-start">
   <p>You have referred <span id="referral-count">0</span> person, Share your code to earn rewards </p>
-            </div>
+            </div>  
+
+  <div class="whatsapp-box">
+  <p class="whatsapp-description">Join our WhatsApp channel</p>
+  <a href="https://whatsapp.com/channel/0029Vb2DzFZA2pLDgDZTAD06" target="_blank" class="whatsapp-join-button">Join Channel</a>
+</div>
+  
                 <div class="quick-actions">
           
                <div class="quick-action" id="achievementBtn"><i class="ri-trophy-line"></i>Leaderboard</div>
@@ -806,8 +874,7 @@
                <div class="quick-action" id="update-app"><i class="ri-download-line"></i>Update App</div>
             </div>
         </div>
-  
-
+     
     <!-- Avatar Upload Input (Hidden) -->
     <input type="file" id="avatar-file-input" accept="image/*">
 
