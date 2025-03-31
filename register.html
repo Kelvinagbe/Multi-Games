@@ -315,7 +315,7 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
 import { getAuth, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, updateProfile } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
-import { getDatabase, ref, set, get, child, update, runTransaction } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-database.js";
+import { getDatabase, ref, set, get, child, update } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-database.js";
 
 // Your Firebase configuration
 const firebaseConfig = {
@@ -389,35 +389,42 @@ function getReferralCodeFromURL() {
   return params.get("ref") || null;
 }
 
-// UPDATED: Improved function to track referral usage with transactions
+// UPDATED Function to track referral usage
 async function trackReferral(referralCode) {
   if (!referralCode) return;
   
   try {
+    // First check if the referral code exists
     const dbRef = ref(database);
-    const snapshot = await get(child(dbRef, `referralCodes/${referralCode}`));
+    const codeSnapshot = await get(child(dbRef, `referralCodes/${referralCode}`));
     
-    if (snapshot.exists()) {
-      const referrerId = snapshot.val().userId;
+    if (codeSnapshot.exists()) {
+      // Get the user ID of the referrer
+      const referrerId = codeSnapshot.val().userId;
       
-      // Use a transaction to safely increment the referral count
-      const referralCountRef = ref(database, `users/${referrerId}/referrals`);
+      // Get the referrer's user data
+      const userRef = ref(database, `users/${referrerId}`);
+      const userSnapshot = await get(userRef);
       
-      await runTransaction(referralCountRef, (currentCount) => {
-        // If referrals field doesn't exist or is null, initialize it to 1
-        // Otherwise increment it by 1
-        return (currentCount === null) ? 1 : currentCount + 1;
-      });
-      
-      // Log additional referral data if needed
-      const referralTimestamp = new Date().toISOString();
-      await update(ref(database, `users/${referrerId}`), {
-        lastReferralAt: referralTimestamp
-      });
-      
-      console.log("Referral tracked successfully");
+      if (userSnapshot.exists()) {
+        // Get current data
+        const userData = userSnapshot.val();
+        
+        // Use 0 as default if referrals property doesn't exist
+        const currentReferrals = userData.referrals || 0;
+        const newReferralCount = currentReferrals + 1;
+        
+        // Update only the referrals field
+        await update(userRef, { 
+          referrals: newReferralCount 
+        });
+        
+        console.log("Referral tracked successfully. New count:", newReferralCount);
+      } else {
+        console.log("Referrer user not found");
+      }
     } else {
-      console.warn("Invalid referral code used:", referralCode);
+      console.log("Invalid referral code");
     }
   } catch (error) {
     console.error("Error tracking referral:", error);
@@ -493,14 +500,14 @@ document.getElementById('register-form').addEventListener('submit', async functi
       displayName: name
     });
 
-    // UPDATED: Prepare user data including referral details and initialized referrals count
+    // Prepare user data including referral details
     const userData = {
       name: name,
       email: email,
       referralCode: userReferralCode,
       referredBy: referralUsed || null,
       dateJoined: new Date().toISOString(),
-      referrals: 0  // Initialize the referrals counter
+      referrals: 0 // Initialize referrals count to 0
     };
 
     // Save the referral code mapping for this user
@@ -560,7 +567,7 @@ document.getElementById('google-register').addEventListener('click', async funct
       const userReferralCode = await generateReferralCode();
       const referralUsed = document.getElementById('manual-referral').value.trim() || getReferralCodeFromURL();
       
-      // UPDATED: Save user data with initialized referrals count
+      // Save user data
       const userData = {
         name: user.displayName || "User",
         email: user.email,
@@ -568,7 +575,7 @@ document.getElementById('google-register').addEventListener('click', async funct
         referredBy: referralUsed || null,
         dateJoined: new Date().toISOString(),
         signupMethod: "google",
-        referrals: 0  // Initialize the referrals counter
+        referrals: 0 // Initialize referrals count to 0
       };
       
       // Save the referral code mapping
@@ -593,17 +600,6 @@ document.getElementById('google-register').addEventListener('click', async funct
     showError("Google sign-up failed. Please try again.");
     setLoading(false);
   }
-});
-
-// Terms and privacy links
-document.getElementById('terms-link').addEventListener('click', function(e) {
-  e.preventDefault();
-  alert('Terms and Conditions document would open here.');
-});
-
-document.getElementById('privacy-link').addEventListener('click', function(e) {
-  e.preventDefault();
-  alert('Privacy Policy document would open here.');
 });
   </script>
 </body>
