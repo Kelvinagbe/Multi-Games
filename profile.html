@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gaming Profile Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
         /* Existing styles from previous document */
        :root {
@@ -632,6 +633,83 @@
     border-radius: 8px;
     background: white;
 }
+
+.referral-container {
+    margin: 10px 0;
+}
+
+.referral-label {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 5px;
+}
+
+.referral-code-box {
+    display: flex;
+    align-items: center;
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 2px solid #ffffff;
+    border-radius: 15px;
+    padding: 8px 15px;
+    max-width: fit-content;
+}
+
+#referral-code {
+    font-family: monospace;
+    font-weight: bold;
+    color: #ffffff;
+    letter-spacing: 1px;
+}
+
+.copy-btn {
+    background: none;
+    border: none;
+    color: #ffffff;
+    cursor: pointer;
+    font-size: 16px;
+    padding: 0 0 0 10px;
+    transition: transform 0.2s;
+}
+
+.copy-btn:hover {
+    transform: scale(1.2);
+}
+
+.copy-message {
+    display: none;
+    color: #ffffff;
+    font-size: 12px;
+    margin-left: 10px;
+    animation: fade 1.5s;
+}
+.copy-btn.copied {
+  color: #FFD700; /* Change to yellow (gold) when copied */
+}
+
+@keyframes fade {
+    0% { opacity: 0; }
+    25% { opacity: 1; }
+    75% { opacity: 1; }
+    100% { opacity: 0; }
+}
+
+.referral-start {
+    margin-top: 10px;
+    padding: 5px 10px;
+    background-color: rgba(255, 255, 255, 0.2); /* Subtle white overlay */
+    border-radius: 5px;
+    display: inline-block;
+}
+
+.referral-start p {
+    margin: 0;
+    font-size: 14px;
+    color: #fff; /* Matches the white text in the header gradient */
+}
+
+.referral-start span {
+    font-weight: bold;
+}
     </style>
 </head>
 <body>
@@ -639,7 +717,6 @@
       <div id="loading-overlay">
         <div class="spinner"></div>
     </div>
-
     <div id="login-modal">
         <div class="login-modal-content">
             <h2>Login to Multi Games</h2>
@@ -651,7 +728,7 @@
             </form>
             <div class="login-alternatives">
                 <a href="#" id="forgot-password">Forgot Password?</a>
-                <a href="#" id="create-account">Create Account</a>
+                <a href="register.html">Create Account</a>
             </div>
             <div class="social-login">
                 <button class="social-login-btn" id="google-login"><i class="ri-google-fill"></i></button>
@@ -661,14 +738,28 @@
         </div>
     </div>
 
+        
     <div class="profile-container">
-        <div class="profile-header">
-            <img src="https://multi-games-fawn.vercel.app/logo.png" alt="Profile" class="profile-avatar" id="user-avatar">
-            <div class="profile-info">
-                <h2 id="username">Loading...</h2>
-                <p id="user-email">Fetching user details...</p>
-                <button class="auth-button" id="auth-action-btn">Sign up/ log in</button>
+    <div class="profile-header">
+        <img src="https://multi-games-fawn.vercel.app/logo.png" alt="Profile" class="profile-avatar" id="user-avatar">
+        <div class="profile-info">
+            <h2 id="username">Loading...</h2>
+            <p id="user-email">Fetching user details...</p>
+            <div class="referral-container">
+                <p class="referral-label">Your Referral Code:</p>
+                <div class="referral-code-box">
+                    <span id="referral-code">Loading...</span>
+                    <button id="copy-referral" class="copy-btn" title="Copy to clipboard">
+                        <i class="fas fa-copy"></i>
+                    </button>
+                </div>
+                <span id="copy-message" class="copy-message">Copied!</span>
             </div>
+              <div class="referral-start">
+                <p>You have referred <span id="referral-count">0</span> users</p>
+            </div>
+            <button class="auth-button" id="auth-action-btn">Sign up/ log in</button>
+        </div>
         </div>
         <div class="profile-content">
             <div class="wallet-section">
@@ -1042,6 +1133,7 @@ const notification = document.getElementById('notification');
 const achievementModal = document.getElementById("achievementModal");
 const achievementBtn = document.getElementById("achievementBtn");
 const closeBtn = document.querySelector(".close"); // Assuming you have a close button
+const referralCodeEl = document.getElementById('referral-code');
 
 // State Variables
 let currentUser = null;
@@ -1423,6 +1515,15 @@ async function updateProfileInfo(user) {
         if (userEmailEl) {
             userEmailEl.textContent = user.email || 'Elite Gamer';
         }
+
+// Update the referral code display
+if (referralCodeEl) {
+    if (userData.referralCode) {
+        referralCodeEl.textContent = userData.referralCode;
+    } else {
+        referralCodeEl.textContent = 'No referral code';
+    }
+}
 
         // Update avatar
         if (avatarEl) {
@@ -1925,6 +2026,46 @@ window.addEventListener("click", function(event) {
     if (event.target === achievementModal) {
         closeModal();
     }
+});
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const copyButton = document.getElementById('copy-referral');
+  const referralCodeElement = document.getElementById('referral-code');
+  
+  copyButton.addEventListener('click', function() {
+    // Get the text content from the referral code span
+    const referralCode = referralCodeElement.textContent;
+    
+    // Create a temporary textarea element to copy from
+    const textarea = document.createElement('textarea');
+    textarea.value = referralCode;
+    textarea.setAttribute('readonly', '');
+    textarea.style.position = 'absolute';
+    textarea.style.left = '-9999px';
+    document.body.appendChild(textarea);
+    
+    // Select and copy the text
+    textarea.select();
+    document.execCommand('copy');
+    
+    // Remove the temporary element
+    document.body.removeChild(textarea);
+    
+    // Visual feedback for the user
+    const originalTitle = copyButton.getAttribute('title');
+    copyButton.setAttribute('title', 'Copied!');
+    
+    // Optional: Add a class for visual feedback
+    copyButton.classList.add('copied');
+    
+    // Reset after a short delay
+    setTimeout(function() {
+      copyButton.setAttribute('title', originalTitle);
+      copyButton.classList.remove('copied');
+    }, 2000);
+  });
 });
 </script>
 </body>
