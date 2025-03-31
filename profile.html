@@ -864,7 +864,7 @@
 
   <div class="whatsapp-box">
   <p class="whatsapp-description">Join our WhatsApp channel</p>
-  <a href="https://whatsapp.com/channel/0029Vb2DzFZA2pLDgDZTAD06" target="_blank" class="whatsapp-join-button">Join Channel</a>
+  <a href="#" onclick="openWhatsAppChannel()" class="whatsapp-join-button">Join Channel</a>
 </div>
   
                 <div class="quick-actions">
@@ -2202,6 +2202,12 @@ function updateReferralCount(uid) {
         console.error("Error fetching user data:", error);
     });
 }
+</script>
+
+<script>
+  function openWhatsAppChannel() {
+    window.open("https://chat.whatsapp.com/YourChannelInviteCode", "_blank", "width=600,height=600");
+  }
 </script>
 </body>
 </html>
