@@ -390,48 +390,48 @@
     }
 
     // FIXED Function to track referral usage
-    async function trackReferral(referralCode) {
-      if (!referralCode) return;
-      
-      try {
-        // First check if the referral code exists
-        const dbRef = ref(database);
-        const codeSnapshot = await get(child(dbRef, `referralCodes/${referralCode}`));
-        
-        if (codeSnapshot.exists()) {
-          // Get the user ID of the referrer
-          const referrerId = codeSnapshot.val().userId;
-          
-          // Get the referrer's user data
-          const userRef = ref(database, `users/${referrerId}`);
-          const userSnapshot = await get(userRef);
-          
-          if (userSnapshot.exists()) {
-            // Get current data
-            const userData = userSnapshot.val();
-            
-            // Use 0 as default if referrals property doesn't exist
-            const currentReferrals = userData.referrals || 0;
-            const newReferralCount = currentReferrals + 1;
-            
-            console.log("Updating referral count for user:", referrerId);
-            console.log("Current count:", currentReferrals, "New count:", newReferralCount);
-            
-            // Update only the referrals field with set() instead of update()
-            await set(ref(database, `users/${referrerId}/referrals`), newReferralCount);
-            
-            console.log("Referral tracked successfully. New count:", newReferralCount);
-          } else {
-            console.log("Referrer user not found");
-          }
-        } else {
-          console.log("Invalid referral code");
-        }
-      } catch (error) {
-        console.error("Error tracking referral:", error.message);
-      }
-    }
+// Replace your current trackReferral function with this implementation:
 
+// Function to track referral usage
+async function trackReferral(referralCode) {
+  if (!referralCode) return;
+  
+  try {
+    console.log("Tracking referral code:", referralCode);
+    
+    // First check if the referral code exists
+    const dbRef = ref(database);
+    const codeSnapshot = await get(child(dbRef, `referralCodes/${referralCode}`));
+    
+    if (codeSnapshot.exists()) {
+      // Get the user ID of the referrer
+      const referrerId = codeSnapshot.val().userId;
+      console.log("Referrer ID found:", referrerId);
+      
+      // Reference to the referrer's referrals count
+      const referralsRef = ref(database, `users/${referrerId}/referrals`);
+      
+      // Get current referrals count
+      const referralsSnapshot = await get(referralsRef);
+      
+      // If referrals field exists, increment it, otherwise set it to 1
+      let newCount = 1;
+      if (referralsSnapshot.exists()) {
+        newCount = referralsSnapshot.val() + 1;
+      }
+      
+      console.log("Current referrals:", referralsSnapshot.val(), "New count:", newCount);
+      
+      // Update referrals count
+      await set(referralsRef, newCount);
+      console.log("Referral tracked successfully. New count:", newCount);
+    } else {
+      console.log("Invalid referral code:", referralCode);
+    }
+  } catch (error) {
+    console.error("Error tracking referral:", error.message);
+  }
+}
     // Registration form submission handler
     document.getElementById('register-form').addEventListener('submit', async function (e) {
       e.preventDefault();
