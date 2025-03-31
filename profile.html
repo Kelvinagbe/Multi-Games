@@ -694,21 +694,45 @@
 }
 
 .referral-start {
-    margin-top: 10px;
-    padding: 5px 10px;
-    background-color: rgba(255, 255, 255, 0.2); /* Subtle white overlay */
-    border-radius: 5px;
+    margin-top: 4px;
+    margin-bottom: 15px;
+    padding: 8px 15px;
+    background-color: rgba(40, 167, 69, 0.2); /* Subtle green overlay */
+    border: 2px solid rgba(40, 167, 69, 0.3); /* Light green border */
+    border-radius: 15px;
     display: inline-block;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(40, 167, 69, 0.2);
+    transition: all 0.3s ease;
+}
+
+.referral-start:hover {
+    background-color: rgba(40, 167, 69, 0.25);
+    box-shadow: 0 5px 12px rgba(0, 0, 0, 0.15), 0 2px 4px rgba(40, 167, 69, 0.25);
+    transform: translateY(-1px);
 }
 
 .referral-start p {
     margin: 0;
     font-size: 14px;
-    color: #fff; /* Matches the white text in the header gradient */
+    color: #1e7e34; /* Darker green text for better contrast */
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
 
 .referral-start span {
     font-weight: bold;
+    color: #155724; /* Even darker green for emphasis */
+    padding: 0 3px;
+}
+
+/* Optional animation for when the count changes */
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+.referral-start span.updated {
+    animation: pulse 0.5s ease;
 }
     </style>
 </head>
@@ -755,9 +779,6 @@
                 </div>
                 <span id="copy-message" class="copy-message">Copied!</span>
             </div>
-              <div class="referral-start">
-                <p>You have referred <span id="referral-count">0</span> users</p>
-            </div>
             <button class="auth-button" id="auth-action-btn">Sign up/ log in</button>
         </div>
         </div>
@@ -774,10 +795,14 @@
                     <button class="withdraw-btn">Withdraw</button>
                 </div>
             </div>
+                   
+    <div class="referral-start">
+  <p>You have referred <span id="referral-count">0</span> person, Share your code to earn rewards </p>
+            </div>
                 <div class="quick-actions">
-               <div class="quick-action"><i class="ri-gamepad-line"></i>Game Library</div>
+          
                <div class="quick-action" id="achievementBtn"><i class="ri-trophy-line"></i>Leaderboard</div>
-               <div class="quick-action"><i class="ri-settings-3-line"></i>Settings</div>
+        
                <div class="quick-action" id="update-app"><i class="ri-download-line"></i>Update App</div>
             </div>
         </div>
@@ -1548,6 +1573,15 @@ if (referralCodeEl) {
             walletBalanceEl.textContent = `Wallet: ₦${airtimeBalance}`;
         }
 
+// Update referral count
+if (userData.referrals !== undefined) {
+    const referralCountEl = document.getElementById('referral-count');
+    if (referralCountEl) {
+        referralCountEl.textContent = userData.referrals;
+        console.log("Updated referral count to:", userData.referrals);
+    }
+}
+
         // Update transactions
         if (userData.transactions) {
             // Convert object of transactions to array if needed
@@ -2067,6 +2101,40 @@ document.addEventListener('DOMContentLoaded', function() {
     }, 2000);
   });
 });
+</script>
+
+<script>
+function updateReferralCount(uid) {
+    const referralCountEl = document.getElementById('referral-count');
+    
+    if (!referralCountEl) {
+        console.error("Could not find element with ID 'referral-count'");
+        return;
+    }
+    
+    // Reference to the user's data
+    const userRef = ref(database, `users/${uid}`);
+    
+    get(userRef).then((snapshot) => {
+        if (snapshot.exists()) {
+            const userData = snapshot.val();
+            console.log("Full user data:", userData); // Debug log
+            
+            if (userData.referrals !== undefined) {
+                console.log("Found referrals value:", userData.referrals);
+                referralCountEl.textContent = userData.referrals;
+            } else {
+                console.log("No referrals field in user data");
+                referralCountEl.textContent = "0";
+            }
+        } else {
+            console.log("No user data found for ID:", uid);
+            referralCountEl.textContent = "0";
+        }
+    }).catch((error) => {
+        console.error("Error fetching user data:", error);
+    });
+}
 </script>
 </body>
 </html>
