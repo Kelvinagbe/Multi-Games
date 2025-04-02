@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Airtime Purchase</title>
+    <title>Airtime Withdrawal</title>
     <style>
         * {
             margin: 0;
@@ -16,218 +16,230 @@
             background-color: #fff;
             color: #333;
             line-height: 1;
-            padding: px;
+            padding: 0;
         }
 
-.container {
-    max-width: 800px;
-    margin: 0 auto;
-    background: #fff;
-    border-radius: 15px;
-    overflow: hidden;
-    box-shadow: 0px 0px rgba(0, 0, 0, 0.0);
-}
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0px 0px rgba(0, 0, 0, 0.0);
+        }
 
-.card {
-    padding: 20px;
-}
+        .card {
+            padding: 20px;
+        }
 
-.card-title {
-    font-size: 24px;
-    font-weight: bold;
-    text-align: center;
-    margin-bottom: 5px;
-    color: #333;
-}
+        .card-title {
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 5px;
+            color: #333;
+        }
 
-.network-selection {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 25px;
-}
+        .balance-display {
+            text-align: center;
+            margin-bottom: 15px;
+            padding: 8px;
+            background-color: #f0fff8;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+        }
 
-.network-icon {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    cursor: pointer;
-    width: 70px;
-    height: 80px;
-    border-radius: 12px;
-    padding: 10px;
-    transition: all 0.3s ease;
-}
+        .network-selection {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 25px;
+        }
 
-.network-icon img {
-    width: 40px;
-    height: 40px;
-    margin-bottom: 8px;
-    border-radius: 50%;
-}
+        .network-icon {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            width: 70px;
+            height: 80px;
+            border-radius: 12px;
+            padding: 10px;
+            transition: all 0.3s ease;
+        }
 
-.network-name {
-    font-size: 12px;
-    text-align: center;
-}
+        .network-icon img {
+            width: 40px;
+            height: 40px;
+            margin-bottom: 8px;
+            border-radius: 50%;
+        }
 
-.network-icon.active {
-    background-color: #f0fff8;
-    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
-    transform: translateY(-3px);
-}
+        .network-name {
+            font-size: 12px;
+            text-align: center;
+        }
 
-.amount-selection {
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-bottom: 19px;
-}
+        .network-icon.active {
+            background-color: #f0fff8;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+            transform: translateY(-3px);
+        }
 
-.amount-option {
-    flex: 1;
-    min-width: 60px;
-    padding: 12px;
-    text-align: center;
-    border: 2px solid #ddd;
-    border-radius: 20px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
+        .amount-selection {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 19px;
+        }
 
-.amount-option.active {
-    background-color: #f0fff8;
-    border-color: #4ae26a;
-    color: #4ae26a;
-    font-weight: bold;
-}
+        .amount-option {
+            flex: 1;
+            min-width: 60px;
+            padding: 12px;
+            text-align: center;
+            border: 2px solid #ddd;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
 
-.input-group {
-    margin-bottom: 20px;
-}
+        .amount-option.active {
+            background-color: #f0fff8;
+            border-color: #4ae26a;
+            color: #4ae26a;
+            font-weight: bold;
+        }
 
-.input-label {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: 600;
-    font-size: 14px;
-}
+        .input-group {
+            margin-bottom: 20px;
+        }
 
-.phone-input {
-    width: 100%;
-    padding: 12px 15px;
-    border: 2px solid #ddd;
-    border-radius: 20px;
-    font-size: 16px;
-    transition: border 0.3s ease;
-}
+        .input-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 14px;
+        }
 
-.phone-input:focus {
-    border-color: #4ae26a;
-    outline: none;
-}
+        .phone-input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 20px;
+            font-size: 16px;
+            transition: border 0.3s ease;
+        }
 
-.purchase-btn {
-    width: 100%;
-    padding: 14px;
-    background-color: green;
-    color: white;
-    border: none;
-    border-radius: 20px;
-    font-size: 16px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background 0.3s ease;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
+        .phone-input:focus {
+            border-color: #4ae26a;
+            outline: none;
+        }
 
-.purchase-btn:hover {
-    background-color: #3ac857;
-}
+        .purchase-btn {
+            width: 100%;
+            padding: 14px;
+            background-color: green;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
 
-.purchase-btn:disabled {
-    background-color: #cccccc;
-    cursor: not-allowed;
-}
+        .purchase-btn:hover {
+            background-color: #3ac857;
+        }
 
-.loader {
-    width: 20px;
-    height: 20px;
-    border: 3px solid rgba(255,255,255,.3);
-    border-radius: 50%;
-    border-top-color: #fff;
-    animation: spin 1s ease-in-out infinite;
-    margin-left: 10px;
-    display: none;
-}
+        .purchase-btn:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
 
-@keyframes spin {
-    to { transform: rotate(360deg); }
-}
+        .loader {
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+            margin-left: 10px;
+            display: none;
+        }
 
-.loader.show {
-    display: inline-block;
-}
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
 
-.alert-container {
-    margin-bottom: 20px;
-    display: none;
-}
+        .loader.show {
+            display: inline-block;
+        }
 
-.alert {
-    padding: 12px;
-    border-radius: 20px;
-    font-size: 14px;
-}
+        .alert-container {
+            margin-bottom: 20px;
+            display: none;
+        }
 
-.alert-success {
-    background-color: #d4edda;
-    color: #155724;
-    border: 2px solid #c3e6cb;
-}
+        .alert {
+            padding: 12px;
+            border-radius: 20px;
+            font-size: 14px;
+        }
 
-.alert-warning {
-    background-color: #fff3cd;
-    color: #856404;
-    border: 2px solid #ffeeba;
-}
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 2px solid #c3e6cb;
+        }
 
-.alert-danger {
-    background-color: #f8d7da;
-    color: #721c24;
-    border: 1px solid #f5c6cb;
-}
+        .alert-warning {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 2px solid #ffeeba;
+        }
 
-.show {
-    display: block;
-}
+        .alert-danger {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
 
-.toast {
-    position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: rgba(0, 0, 0, 0.8);
-    color: white;
-    padding: 12px 20px;
-    border-radius: 20px;
-    font-size: 14px;
-    z-index: 1000;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
+        .show {
+            display: block;
+        }
 
-.toast.show {
-    opacity: 1;
-}
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 20px;
+            font-size: 14px;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .toast.show {
+            opacity: 1;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="card">
-            <div class="card-title">Withdraw</div>
+            <div class="card-title">Withdraw Airtime</div>
+            
+            <div id="balance-display" class="balance-display">Loading balance...</div>
             
             <div id="alert-container" class="alert-container"></div>
             
@@ -305,6 +317,7 @@
         const toast = document.getElementById('toast');
         const networkIcons = document.querySelectorAll('.network-icon');
         const amountOptions = document.querySelectorAll('.amount-option');
+        const balanceDisplay = document.getElementById('balance-display');
 
         // State variables
         let userId = null;
@@ -313,35 +326,46 @@
         let selectedAmount = 50;
         let airtimeBalance = 0;
         let transactions = [];
+        let balanceRef = null;
 
         // Auth state listener
         auth.onAuthStateChanged((user) => {
             if (user) {
                 userId = user.uid;
-                loadUserData(userId);
+                setupRealtimeListeners(userId);
             } else {
                 userId = null;
                 loadFromLocalStorage();
                 showAlert('You are not logged in. Your purchase may not be saved.', 'warning');
+                updateBalanceDisplay();
             }
         });
 
-        // Load user data from Firebase
-        function loadUserData(uid) {
-            const userRef = database.ref(`users/${uid}`);
-            
-            userRef.get().then((snapshot) => {
+        // Setup realtime listeners for Firebase data
+        function setupRealtimeListeners(uid) {
+            // Listen for balance changes
+            balanceRef = database.ref(`users/${uid}/airtimeBalance`);
+            balanceRef.on('value', (snapshot) => {
                 if (snapshot.exists()) {
-                    const data = snapshot.val();
-                    airtimeBalance = data.airtimeBalance || 0;
-                    transactions = data.transactions || [];
+                    airtimeBalance = snapshot.val() || 0;
+                    updateBalanceDisplay();
                 } else {
                     initUserData(uid);
                 }
-            }).catch((error) => {
-                console.error("Error loading user data:", error);
-                loadFromLocalStorage();
             });
+
+            // Listen for transaction changes
+            const transactionsRef = database.ref(`users/${uid}/transactions`);
+            transactionsRef.on('value', (snapshot) => {
+                if (snapshot.exists()) {
+                    transactions = snapshot.val() || [];
+                }
+            });
+        }
+
+        // Update balance display
+        function updateBalanceDisplay() {
+            balanceDisplay.textContent = `Your Balance: ₦${airtimeBalance}`;
         }
 
         // Initialize user data in Firebase
@@ -362,22 +386,50 @@
             transactions = JSON.parse(localStorage.getItem('transactions') || '[]');
         }
 
-        // Save data to both Firebase and local storage
-        function saveData() {
-            // Save to Firebase if logged in
-            if (userId) {
-                const userRef = database.ref(`users/${userId}`);
-                userRef.update({
-                    airtimeBalance: airtimeBalance,
-                    transactions: transactions
-                }).catch((error) => {
-                    console.error("Error saving to Firebase:", error);
-                });
-            }
+        // Save transaction to Firebase
+        function saveTransaction(transaction) {
+            if (!userId) return;
+
+            // Get a reference to the transactions array
+            const transactionsRef = database.ref(`users/${userId}/transactions`);
             
-            // Also save to local storage as backup
-            localStorage.setItem('airtimeBalance', airtimeBalance.toString());
-            localStorage.setItem('transactions', JSON.stringify(transactions));
+            // Fetch current transactions
+            transactionsRef.once('value')
+                .then((snapshot) => {
+                    let currentTransactions = [];
+                    if (snapshot.exists()) {
+                        currentTransactions = snapshot.val() || [];
+                    }
+                    
+                    // Add new transaction at the beginning
+                    currentTransactions.unshift(transaction);
+                    
+                    // Update Firebase
+                    transactionsRef.set(currentTransactions)
+                        .catch((error) => {
+                            console.error("Error saving transaction:", error);
+                        });
+                })
+                .catch((error) => {
+                    console.error("Error fetching transactions:", error);
+                });
+        }
+
+        // Update balance in Firebase
+        function updateBalance(newBalance) {
+            if (!userId) {
+                airtimeBalance = newBalance;
+                localStorage.setItem('airtimeBalance', airtimeBalance.toString());
+                updateBalanceDisplay();
+                return;
+            }
+
+            // Update balance in Firebase
+            const balanceRef = database.ref(`users/${userId}/airtimeBalance`);
+            balanceRef.set(newBalance)
+                .catch((error) => {
+                    console.error("Error updating balance:", error);
+                });
         }
 
         // Purchase airtime
@@ -390,8 +442,20 @@
                 return;
             }
             
+            // Get the latest balance directly from Firebase if logged in
+            if (userId) {
+                try {
+                    const snapshot = await database.ref(`users/${userId}/airtimeBalance`).once('value');
+                    if (snapshot.exists()) {
+                        airtimeBalance = snapshot.val() || 0;
+                    }
+                } catch (error) {
+                    console.error("Error fetching real-time balance:", error);
+                }
+            }
+            
             if (airtimeBalance < selectedAmount) {
-                showAlert(`Insufficient balance. You need ₦${selectedAmount} to make this purchase.`, 'danger');
+                showAlert(`Insufficient balance. You need ₦${selectedAmount} to make this withdrawal.`, 'danger');
                 return;
             }
             
@@ -405,25 +469,27 @@
                 const response = await makeApiCall(phoneNumber, selectedAmount, referenceID);
                 
                 // Deduct balance
-                airtimeBalance -= selectedAmount;
-                saveData();
+                const newBalance = airtimeBalance - selectedAmount;
+                updateBalance(newBalance);
                 
                 // Add transaction
-                addTransaction({
-                    type: `Airtime Purchase (${selectedNetwork.toUpperCase()})`,
+                const transaction = {
+                    type: `Airtime Withdrawal (${selectedNetwork.toUpperCase()})`,
                     amount: -selectedAmount,
                     date: new Date().getTime(),
                     status: 'pending',
                     reference: referenceID,
                     phone: phoneNumber
-                });
-
-                showAlert('Your airtime purchase is being processed...', 'warning');
+                };
+                
+                saveTransaction(transaction);
+                
+                showAlert('Your airtime withdrawal is being processed...', 'warning');
 
                 // Update status to success after 5 seconds (simulating API processing)
                 setTimeout(() => {
                     updateTransactionStatus(referenceID, 'success');
-                    showToast(`Airtime purchase completed for ${phoneNumber}!`);
+                    showToast(`Airtime withdrawal completed for ${phoneNumber}!`);
                 }, 5000);
                 
             } catch (error) {
@@ -463,21 +529,31 @@
             }
         }
 
-        // Add transaction
-        function addTransaction(transaction) {
-            transactions.unshift(transaction);
-            saveData();
-        }
-
         // Update transaction status
         function updateTransactionStatus(referenceID, status) {
-            transactions = transactions.map(transaction => {
-                if (transaction.reference === referenceID) {
-                    transaction.status = status;
-                }
-                return transaction;
-            });
-            saveData();
+            if (!userId) return;
+            
+            const transactionsRef = database.ref(`users/${userId}/transactions`);
+            
+            transactionsRef.once('value')
+                .then((snapshot) => {
+                    if (snapshot.exists()) {
+                        let updatedTransactions = snapshot.val().map(transaction => {
+                            if (transaction.reference === referenceID) {
+                                transaction.status = status;
+                            }
+                            return transaction;
+                        });
+                        
+                        transactionsRef.set(updatedTransactions)
+                            .catch((error) => {
+                                console.error("Error updating transaction status:", error);
+                            });
+                    }
+                })
+                .catch((error) => {
+                    console.error("Error fetching transactions for status update:", error);
+                });
         }
 
         // Generate reference ID
@@ -518,7 +594,7 @@
         // Network selection
         networkIcons.forEach(icon => {
             icon.addEventListener('click', function() {
-                // Remove active class from all networks
+                // Remove active class from al all networks
                 networkIcons.forEach(i => i.classList.remove('active'));
                 
                 // Add active class to clicked network
