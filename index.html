@@ -22,42 +22,137 @@
       color: #333;
       overflow-x: hidden;
       padding-bottom: 70px; /* Space for bottom nav */
+      font-family: Arial, sans-serif;
     }
     .container {
       max-width: 1200px;
       margin: 0 auto;
       padding: 20px;
     }
+
     /* Floating Search Bar (Home Only) */
     .floating-search {
-      position: fixed;
-      top: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 80%;
-      max-width: 400px;
-      z-index: 1000;
-    }
+    position: relative;
+    max-width: 600px;
+    width: 100%;
+    margin: 20px auto;
+    padding: 0 15px; /* adds some side padding on small screens */
+    box-sizing: border-box;
+}
+
+.search-bar {
+    display: flex;
+    align-items: center;
+    background: white;
+    border-radius: 30px;
+    padding: 10px 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.search-bar i {
+    color: #666;
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+.search-bar input {
+    border: none;
+    flex: 1;
+    font-size: 16px;
+    outline: none;
+    padding: 5px 0;
+}
+
+/* Suggestions container */
+.suggestions-container {
+    position: absolute;
+    top: 100%;
+    left: 17px;
+    right: 17px;
+    background: white;
+    border-radius: 22px;
+    margin-top: 5px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    max-height: 300px;
+    overflow-y: auto;
+    display: none;
+}
+/* Styling for individual suggestions */
+.autocomplete-suggestion {
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+    cursor: pointer;
+    border-bottom: 2px solid #f0f0f0;
+}
+
+.autocomplete-suggestion:hover {
+    background-color: #f9f9f9;
+}
+
+.autocomplete-suggestion img {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    object-fit: cover;
+    margin-right: 15px;
+}
+
+.autocomplete-suggestion .game-info {
+    flex: 1;
+}
+
+.autocomplete-suggestion .game-name {
+    font-weight: bold;
+    display: block;
+}
+
+.autocomplete-suggestion .game-category {
+    font-size: 12px;
+    color: #666;
+}
+
+.autocomplete-suggestion .play-btn {
+    background: #4a90e2;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    padding: 5px 15px;
+    cursor: pointer;
+}
+
+.no-results {
+    padding: 15px;
+    text-align: center;
+    color: #666;
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
     .search-bar {
-      display: flex;
-      align-items: center;
-      background: rgba(255, 255, 255, 0.9);
-      border-radius: 25px;
-      padding: 10px 15px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-      width: 100%;
+        padding: 8px 15px;
     }
+    
     .search-bar input {
-      border: none;
-      background: transparent;
-      width: 100%;
-      padding: 5px;
-      outline: none;
+        font-size: 14px;
     }
-    .search-bar i {
-      color: #555;
-      margin-right: 10px;
+    
+    .autocomplete-suggestion {
+        padding: 8px 10px;
     }
+    
+    .autocomplete-suggestion img {
+        width: 35px;
+        height: 35px;
+        margin-right: 10px;
+    }
+    
+    .autocomplete-suggestion .play-btn {
+        padding: 4px 10px;
+        font-size: 12px;
+    }
+
     /* Bottom Navigation - Reduced Height & Smaller Icons */
     .bottom-nav {
       position: fixed;
@@ -657,19 +752,17 @@
 
   <button id="refresh-button"><i class="fas fa-sync-alt"></i></button>
 
-<!-- Floating Search Bar (Home Only) -->
+<!-- Updated HTML without a search button -->
 <div class="floating-search" id="floating-search">
-    <form action="search.html" method="GET" class="search-bar">
-        <i class="fas fa-search"></i>
+    <div class="search-bar">
+        <i class="fas fa-search" id="search-icon"></i>
         <input 
             type="text" 
-            name="query" 
+            id="floating-search-input" 
             placeholder="Search games..." 
-            required
-            onclick="window.location.href='search.html'"
         >
-        <button type="submit" style="display: none;"></button> <!-- Hidden submit button to allow Enter key submission -->
-    </form>
+    </div>
+    <div id="floating-suggestions" class="suggestions-container"></div>
 </div>
 
   <!-- Main Content Container -->
@@ -1365,19 +1458,133 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 });
 </script>
+
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const searchInput = document.querySelector('.search-bar input');
+    // Game data
+    const games = [
+        { 
+            name: "Truth or Dare", 
+            url: "truth.html", 
+            icon: "https://i.postimg.cc/zfv3jnNr/truth.jpg", 
+            category: "Party Game",
+            plays: 4823,
+            liked: 987
+        },
+        { 
+            name: "Memory Card", 
+            url: "memory.html", 
+            icon: "https://i.postimg.cc/hvXFjbH2/memory.jpg", 
+            category: "Brain Game",
+            plays: 3254,
+            liked: 654
+        },
+        { 
+            name: "Tic Tac Toe", 
+            url: "tic-tac-toe.html", 
+            icon: "https://i.postimg.cc/CL3qTdQn/images-12.jpg", 
+            category: "Strategy",
+            plays: 7854,
+            liked: 1523
+        },
+        { 
+            name: "Whack Mole", 
+            url: "whack.html", 
+            icon: "https://i.postimg.cc/tJtT7bVC/IMG-20250226-WA0077.jpg",
+            category: "Arcade",
+            plays: 5642,
+            liked: 1245
+        },
+        { 
+            name: "Bubble Shoot", 
+            url: "iframe-bubble.html", 
+            icon: "https://i.postimg.cc/xC0Pd8QM/Screenshot-20250316-221515.jpg",
+            category: "Arcade",
+            plays: 5642,
+            liked: 1245
+        }
+    ];
+
+    // DOM Elements
+    const searchInput = document.getElementById('floating-search-input');
+    const searchIcon = document.getElementById('search-icon');
+    const suggestionsContainer = document.getElementById('floating-suggestions');
+
+    // Search function
+    function performSearch() {
+        const query = searchInput.value.toLowerCase();
         
-        // Navigate to search page when input is clicked
-        searchInput.addEventListener('click', function(e) {
-            window.location.href = 'search.html';
-        });
+        // Clear previous results
+        suggestionsContainer.innerHTML = '';
         
-        // Prevent the click from submitting the form right away
-        searchInput.addEventListener('mousedown', function(e) {
-            e.preventDefault();
-        });
+        // Don't search if query is empty
+        if (query.length === 0) {
+            suggestionsContainer.style.display = 'none';
+            return;
+        }
+        
+        // Filter games
+        const filteredGames = games.filter(game => 
+            game.name.toLowerCase().includes(query) || 
+            game.category.toLowerCase().includes(query)
+        );
+        
+        // Display results
+        if (filteredGames.length > 0) {
+            suggestionsContainer.style.display = 'block';
+            
+            filteredGames.forEach(game => {
+                const suggestionItem = document.createElement('div');
+                suggestionItem.classList.add('autocomplete-suggestion');
+                suggestionItem.innerHTML = `
+                    <img src="${game.icon}" alt="${game.name} icon">
+                    <div class="game-info">
+                        <span class="game-name">${game.name}</span>
+                        <span class="game-category">${game.category}</span>
+                    </div>
+                    <button class="play-btn">Play</button>
+                `;
+                
+                suggestionItem.addEventListener('click', function() {
+                    window.location.href = game.url;
+                });
+                
+                suggestionsContainer.appendChild(suggestionItem);
+            });
+        } else {
+            suggestionsContainer.style.display = 'block';
+            const noResults = document.createElement('div');
+            noResults.classList.add('no-results');
+            noResults.textContent = 'No games found';
+            suggestionsContainer.appendChild(noResults);
+        }
+    }
+
+    // Event Listeners
+
+    // Trigger search when clicking the search icon
+    searchIcon.addEventListener('click', performSearch);
+    
+    // Real-time filtering on input
+    searchInput.addEventListener('input', performSearch);
+    
+    // Enter key support
+    searchInput.addEventListener('keypress', function(event) {
+        if (event.key === 'Enter') {
+            performSearch();
+            const suggestions = suggestionsContainer.querySelectorAll('.autocomplete-suggestion');
+            if (suggestions.length === 1) {
+                suggestions[0].click();
+            }
+        }
+    });
+    
+    // Close suggestions when clicking outside
+    document.addEventListener('click', function(event) {
+        if (!suggestionsContainer.contains(event.target) && 
+            event.target !== searchInput && 
+            event.target !== searchIcon) {
+            suggestionsContainer.style.display = 'none';
+        }
     });
 </script>
 </body>
