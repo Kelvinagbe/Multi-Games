@@ -515,6 +515,14 @@
                 formData.append('amount', amount.toString());
                 formData.append('reference', reference);
 
+                const response = await fetch(`https://sabuss.com/vtu/api/buy/${API_KEY}`, {
+                method: 'POST',
+                body: formData
+            });
+            
+            const data = await response.json();
+            return data;
+
                 // For demo purposes, we'll simulate a successful API call
                 await new Promise(resolve => setTimeout(resolve, 1500));
                 
