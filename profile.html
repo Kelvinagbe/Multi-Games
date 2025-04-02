@@ -1339,6 +1339,54 @@ input:checked + .toggle-slider:before {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 </style>
+
+<style>
+/* Modal Container */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+    justify-content: center;
+    align-items: center;
+}
+
+/* Modal Content Box */
+.modal-content {
+    width: 93%; /* Adjust width as needed */
+    max-width: 1000px; /* Set a maximum width */
+    height: 68vh; /* Adjust height to fit screen */
+    background: white;
+    border-radius: 30px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Full-size iframe inside the modal */
+#withdrawIframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+/* Close Button */
+.close {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 25px;
+    cursor: pointer;
+    color: black;
+    background: rgba(255, 255, 255, 0.8);
+    padding: 5px 10px;
+    border-radius: 50%;
+}
+</style>
 </head>
 <body>
     <!-- Existing content from previous document -->
@@ -1434,6 +1482,14 @@ input:checked + .toggle-slider:before {
             </form>
         </div>
     </div>
+
+<div id="withdrawModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <iframe id="withdrawIframe" src="withdrawal.html" width="100%" height="500px"></iframe>
+    </div>
+</div>
+
 
     <!-- Forgot Password Modal -->
     <div id="forgot-password-modal" class="modal">
@@ -1699,38 +1755,6 @@ import {
     updateDoc
 } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
 
-// Constants
-const WITHDRAWAL_API_KEY = '2K6DSZdbL57EWYJNI4f31cX0O9PHQ8MFGaVCAUBReT7345D80Jea5bbEGkLfBFvAj9C';
-const MINIMUM_WITHDRAWAL = 50; // Naira
-const MAXIMUM_WITHDRAWAL = 500; // Naira
-const DAILY_WITHDRAWAL_LIMIT = 1000; // Naira
-const DAILY_REWARD = 0; // Naira
-const WITHDRAWAL_PIN = '5678'; // Hidden PIN
-
-// Error Codes for Withdrawal
-const WithdrawalErrorCodes = {
-    INSUFFICIENT_BALANCE: 'INSUFFICIENT_BALANCE',
-    BELOW_MINIMUM: 'BELOW_MINIMUM',
-    ABOVE_MAXIMUM: 'ABOVE_MAXIMUM',
-    DAILY_LIMIT_EXCEEDED: 'DAILY_LIMIT_EXCEEDED',
-    INVALID_PHONE: 'INVALID_PHONE',
-    NETWORK_ERROR: 'NETWORK_ERROR',
-    INVALID_NETWORK: 'INVALID_NETWORK',
-    UNKNOWN_ERROR: 'UNKNOWN_ERROR'
-};
-
-// Error Messages Mapping
-const WithdrawalErrorMessages = {
-    [WithdrawalErrorCodes.INSUFFICIENT_BALANCE]: 'Sorry, you have insufficient balance for this withdrawal.',
-    [WithdrawalErrorCodes.BELOW_MINIMUM]: `Minimum withdrawal is ₦${MINIMUM_WITHDRAWAL}.`,
-    [WithdrawalErrorCodes.ABOVE_MAXIMUM]: `Maximum single withdrawal is ₦${MAXIMUM_WITHDRAWAL}.`,
-    [WithdrawalErrorCodes.DAILY_LIMIT_EXCEEDED]: `You have exceeded the daily withdrawal limit of ₦${DAILY_WITHDRAWAL_LIMIT}.`,
-    [WithdrawalErrorCodes.INVALID_PHONE]: 'Please enter a valid 11-digit phone number.',
-    [WithdrawalErrorCodes.NETWORK_ERROR]: 'Network error. Please check your internet connection.',
-    [WithdrawalErrorCodes.INVALID_NETWORK]: 'Invalid network selected.',
-    [WithdrawalErrorCodes.UNKNOWN_ERROR]: 'An unexpected error occurred. Please try again later.'
-};
-
 // Firebase Configuration
 const firebaseConfig = {
     apiKey: "AIzaSyBw1uA-kNKOZEufWKZ9AMBxvRGHNGF1lkA",
@@ -1761,12 +1785,11 @@ const loginForm = document.getElementById('login-form');
 const loginErrorEl = document.getElementById('login-error');
 const googleLoginBtn = document.getElementById('google-login');
 const facebookLoginBtn = document.getElementById('facebook-login');
-const withdrawBtn = document.querySelector('.withdraw-btn');
 const updateAppBtn = document.getElementById('update-app');
 const notification = document.getElementById('notification');
 const achievementModal = document.getElementById("achievementModal");
 const achievementBtn = document.getElementById("achievementBtn");
-const closeBtn = document.querySelector(".close"); // Assuming you have a close button
+const closeBtn = document.querySelector(".close");
 const referralCodeEl = document.getElementById('referral-code');
 
 // State Variables
@@ -1776,7 +1799,6 @@ let lastClaim = 0;
 let transactions = [];
 let selectedNetwork = 'mtn';
 let selectedAmount = 50;
-let withdrawalModalInstance = null;
 
 // Utility Functions
 function showLoading() {
@@ -1831,35 +1853,7 @@ function showAlert(message, type = 'info') {
 }
 
 function generateReference() {
-    return `WD-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-}
-
-// Helper function to calculate daily withdrawals
-function calculateDailyWithdrawals(transactions) {
-    const today = new Date();
-    const startOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-    
-    return transactions
-        .filter(transaction => 
-            transaction.type.includes('Withdrawal') && 
-            transaction.date >= startOfDay.getTime() &&
-            transaction.status !== 'failed'
-        )
-        .reduce((total, transaction) => total + Math.abs(transaction.amount), 0);
-}
-
-// Helper function to determine withdrawal error code
-function determineWithdrawalErrorCode(error) {
-    // You can add more specific error handling based on different types of errors
-    if (error.code === 'INSUFFICIENT_FUNDS') {
-        return WithdrawalErrorCodes.INSUFFICIENT_BALANCE;
-    }
-    
-    if (error.message && error.message.includes('network')) {
-        return WithdrawalErrorCodes.NETWORK_ERROR;
-    }
-    
-    return WithdrawalErrorCodes.UNKNOWN_ERROR;
+    return `TX-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 }
 
 // Firebase User Data Management
@@ -1883,7 +1877,7 @@ async function initUserData(uid) {
         
         if (!firestoreDoc.exists()) {
             // Create the Firestore document for this user
-            await updateDoc(firestoreUserRef, {
+            await setDoc(firestoreUserRef, {
                 balance: 0,
                 lastWithdrawal: 0,
                 created: Date.now()
@@ -1932,189 +1926,6 @@ function updateTransactionHistory(newTransactions) {
     transactionHistoryEl.innerHTML = transactionsHtml;
 }
 
-// Display error message in withdrawal modal
-function showWithdrawalModalError(errorMessage) {
-    if (withdrawalModalInstance) {
-        const errorMessageEl = withdrawalModalInstance.querySelector('#errorMessage');
-        if (errorMessageEl) {
-            errorMessageEl.textContent = errorMessage;
-            errorMessageEl.style.display = 'block';
-            errorMessageEl.style.color = '#f44336';
-            errorMessageEl.style.backgroundColor = '#ffebee';
-            errorMessageEl.style.padding = '10px';
-            errorMessageEl.style.marginBottom = '15px';
-            errorMessageEl.style.borderRadius = '5px';
-            errorMessageEl.style.fontWeight = 'bold';
-            errorMessageEl.style.textAlign = 'center';
-        }
-    }
-}
-
-// Clear error message in withdrawal modal
-function clearWithdrawalModalError() {
-    if (withdrawalModalInstance) {
-        const errorMessageEl = withdrawalModalInstance.querySelector('#errorMessage');
-        if (errorMessageEl) {
-            errorMessageEl.textContent = '';
-            errorMessageEl.style.display = 'none';
-        }
-    }
-}
-
-// Integrated Withdrawal Processing Function (combines both approaches)
-async function processWithdrawal(phoneNumber, amount, network) {
-    // Clear any previous error messages
-    clearWithdrawalModalError();
-    
-    // Comprehensive validation
-    if (!currentUser) {
-        showWithdrawalModalError('Please log in first');
-        return false;
-    }
-    
-    // Validate phone number
-    if (!phoneNumber || !/^0[7-9]\d{9}$/.test(phoneNumber)) {
-        showWithdrawalModalError(WithdrawalErrorMessages[WithdrawalErrorCodes.INVALID_PHONE]);
-        return false;
-    }
-    
-    // Check if user has the minimum balance required for any withdrawal
-    if (airtimeBalance < MINIMUM_WITHDRAWAL) {
-        showWithdrawalModalError(WithdrawalErrorMessages[WithdrawalErrorCodes.INSUFFICIENT_BALANCE]);
-        return false;
-    }
-    
-    // Validate amount
-    if (amount < MINIMUM_WITHDRAWAL) {
-        showWithdrawalModalError(WithdrawalErrorMessages[WithdrawalErrorCodes.BELOW_MINIMUM]);
-        return false;
-    }
-    
-    if (amount > MAXIMUM_WITHDRAWAL) {
-        showWithdrawalModalError(WithdrawalErrorMessages[WithdrawalErrorCodes.ABOVE_MAXIMUM]);
-        return false;
-    }
-    
-    // Additional check if user has enough for the selected amount
-    if (amount > airtimeBalance) {
-        showWithdrawalModalError(WithdrawalErrorMessages[WithdrawalErrorCodes.INSUFFICIENT_BALANCE]);
-        return false;
-    }
-    
-    // Validate network
-    const validNetworks = ['mtn', 'airtel', 'glo', '9mobile'];
-    if (!validNetworks.includes(network)) {
-        showWithdrawalModalError(WithdrawalErrorMessages[WithdrawalErrorCodes.INVALID_NETWORK]);
-        return false;
-    }
-    
-    try {
-        showLoading();
-        
-        // Double validation with Firestore (as required by the second script)
-        const firestoreUserRef = doc(firestore, "users", currentUser.uid);
-        const firestoreDoc = await getDoc(firestoreUserRef);
-        
-        if (!firestoreDoc.exists()) {
-            throw new Error("User data not found in Firestore");
-        }
-        
-        const firestoreBalance = firestoreDoc.data().balance || 0;
-        
-        // Validate balance in both places
-        if (amount > firestoreBalance) {
-            showWithdrawalModalError(WithdrawalErrorMessages[WithdrawalErrorCodes.INSUFFICIENT_BALANCE]);
-            hideLoading();
-            return false;
-        }
-        
-        // Check daily withdrawal limit
-        const dailyWithdrawals = calculateDailyWithdrawals(transactions);
-        if (dailyWithdrawals + amount > DAILY_WITHDRAWAL_LIMIT) {
-            showWithdrawalModalError(WithdrawalErrorMessages[WithdrawalErrorCodes.DAILY_LIMIT_EXCEEDED]);
-            hideLoading();
-            return false;
-        }
-        
-        // Make API call - FIX: Corrected the API URL format
-        const response = await makeWithdrawalApiCall(phoneNumber, amount, network);
-        const referenceID = response.reference || generateReference();
-        
-        // Update local balance
-        airtimeBalance -= amount;
-        
-        // Add transaction to Firebase Realtime Database
-        const transactionRef = ref(database, `users/${currentUser.uid}/transactions`);
-        const newTransactionRef = push(transactionRef);
-        await set(newTransactionRef, {
-            type: `Airtime Withdrawal (${network.toUpperCase()})`,
-            amount: -amount,
-            date: Date.now(),
-            status: 'pending',
-            reference: referenceID,
-            phone: phoneNumber,
-            network: network
-        });
-        
-        // Update user balance in Firebase Realtime Database
-        const userRef = ref(database, `users/${currentUser.uid}`);
-        await update(userRef, {
-            airtimeBalance: airtimeBalance
-        });
-        
-        // Update Firestore balance as well
-        await updateDoc(firestoreUserRef, {
-            balance: firestoreBalance - amount,
-            lastWithdrawal: Date.now()
-        });
-        
-        showAlert('Withdrawal processed successfully', 'success');
-        return true;
-    } catch (error) {
-        console.error('Withdrawal processing error:', error);
-        
-        // Determine appropriate error message
-        const errorCode = determineWithdrawalErrorCode(error);
-        const errorMessage = WithdrawalErrorMessages[errorCode] || WithdrawalErrorMessages[WithdrawalErrorCodes.UNKNOWN_ERROR];
-        
-        // Show error in the modal instead of an alert
-        showWithdrawalModalError(errorMessage);
-        return false;
-    } finally {
-        hideLoading();
-    }
-}
-
-// Withdrawal API Call - FIX: Corrected the API URL construction
-async function makeWithdrawalApiCall(phoneNumber, amount, network) {
-    try {
-        // FIX: Proper URL construction using concatenation instead of template literal
-        const response = await fetch(`https://sabuss.com/vtu/api/buy/${WITHDRAWAL_API_KEY}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${WITHDRAWAL_API_KEY}`
-            },
-            body: JSON.stringify({
-                phone: phoneNumber,
-                amount: amount,
-                network: network,
-                webhook_url: 'https://multi-games-a2561.firebaseapp.com/webhook/airtime' // FIX: Added webhook URL
-            })
-        });
-        
-        if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.message || 'Withdrawal API call failed');
-        }
-        
-        return await response.json();
-    } catch (error) {
-        console.error('Withdrawal error:', error);
-        throw error;
-    }
-}
-
 // Profile Update and Authentication
 async function updateProfileInfo(user) {
     try {
@@ -2132,7 +1943,7 @@ async function updateProfileInfo(user) {
                 email: user.email,
                 airtimeBalance: 0,
                 createdAt: new Date().toISOString(),
-                transactions: [] // FIX: Initialize transactions array
+                transactions: [] // Initialize transactions array
             });
         }
         
@@ -2150,18 +1961,18 @@ async function updateProfileInfo(user) {
             userEmailEl.textContent = user.email || 'Elite Gamer';
         }
 
-// Update the referral code display
-if (referralCodeEl) {
-    if (userData.referralCode) {
-        referralCodeEl.textContent = userData.referralCode;
-    } else {
-        referralCodeEl.textContent = 'No referral code';
-    }
-}
+        // Update the referral code display
+        if (referralCodeEl) {
+            if (userData.referralCode) {
+                referralCodeEl.textContent = userData.referralCode;
+            } else {
+                referralCodeEl.textContent = 'No referral code';
+            }
+        }
 
         // Update avatar
         if (avatarEl) {
-            avatarEl.src = user.photoURL || '/api/placeholder/120/120';
+            avatarEl.src = user.photoURL || 'https://i.postimg.cc/gJZr2MPG/images-20.jpg';
         }
 
         // Update auth action button
@@ -2182,14 +1993,14 @@ if (referralCodeEl) {
             walletBalanceEl.textContent = `Wallet: ₦${airtimeBalance}`;
         }
 
-// Update referral count
-if (userData.referrals !== undefined) {
-    const referralCountEl = document.getElementById('referral-count');
-    if (referralCountEl) {
-        referralCountEl.textContent = userData.referrals;
-        console.log("Updated referral count to:", userData.referrals);
-    }
-}
+        // Update referral count
+        if (userData.referrals !== undefined) {
+            const referralCountEl = document.getElementById('referral-count');
+            if (referralCountEl) {
+                referralCountEl.textContent = userData.referrals;
+                console.log("Updated referral count to:", userData.referrals);
+            }
+        }
 
         // Update transactions
         if (userData.transactions) {
@@ -2215,241 +2026,8 @@ if (userData.referrals !== undefined) {
     }
 }
 
-// Create Withdrawal Modal
-function createWithdrawalModal() {
-    // Create withdrawal modal
-    const withdrawalModal = document.createElement('div');
-    withdrawalModal.className = 'withdrawal-modal';
-    withdrawalModal.innerHTML = `
-        <div class="withdrawal-modal-content">
-            <span class="close-btn">&times;</span>
-            <h2>Withdraw Airtime</h2>
-            <div class="network-selection">
-                <div class="network-icons">
-                    <div class="network-icon active" data-network="mtn">
-                        <img src="https://i.postimg.cc/26qX1XXT/Rounded-20250313-203346.png" alt="MTN">
-                        <div class="network-name">Mtn</div>
-                    </div>
-                    <div class="network-icon" data-network="airtel">
-                        <img src="https://i.postimg.cc/NFc7QJhK/Rounded-20250313-203547.png" alt="Airtel">
-                        <div class="network-name">Airtel</div>
-                    </div>
-                    <div class="network-icon" data-network="glo">
-                        <img src="https://i.postimg.cc/6qfVqrwY/Rounded-20250313-203607.png" alt="Glo">
-                        <div class="network-name">Glo</div>
-                    </div>
-                    <div class="network-icon" data-network="9mobile">
-                        <img src="https://i.postimg.cc/SQ6fgh8C/Rounded-20250313-203622.png" alt="9mobile">
-                        <div class="network-name">9mobile</div>
-                    </div>
-                </div>
-            </div>
-            <div class="withdrawal-form">
-        <input type="tel" id="withdrawal-phone" placeholder="Phone Number" maxlength="11">
-                <div class="amount-options">
-                    <div class="amount-option active" data-amount="50">₦50</div>
-                    <div class="amount-option" data-amount="100">₦100</div>
-                    <div class="amount-option" data-amount="200">₦200</div>
-                    <div class="amount-option" data-amount="500">₦500</div>
-                </div>
-                <div id="errorMessage" class="error-message"></div>
-                <button id="confirm-withdrawal-btn">Withdraw</button>
-            </div>
-        </div>
-    `;
-    
-    // Add CSS for error message (if not already added)
-    if (!document.getElementById('withdrawal-error-style')) {
-        const style = document.createElement('style');
-        style.id = 'withdrawal-error-style';
-        style.textContent = `
-            .error-message {
-                display: none;
-                color: #f44336;
-                background-color: #ffebee;
-                padding: 10px;
-                margin-bottom: 15px;
-                border-radius: 5px;
-                font-weight: bold;
-                text-align: center;
-            }
-            
-            .withdrawal-modal {
-                position: fixed;
-                top: 0;
-                left: 0;
-                right: 0;
-                bottom: 0;
-                background-color: rgba(0, 0, 0, 0.7);
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                z-index: 9999;
-            }
-            
-            .withdrawal-modal-content {
-                background-color: white;
-                padding: 20px;
-                border-radius: 10px;
-                max-width: 90%;
-                width: 400px;
-                position: relative;
-            }
-        `;
-        document.head.appendChild(style);
-    }
-    
-    document.body.appendChild(withdrawalModal);
-    withdrawalModalInstance = withdrawalModal;
-    
-    // Network selection
-    const networkIcons = withdrawalModal.querySelectorAll('.network-icon');
-    networkIcons.forEach(icon => {
-        icon.addEventListener('click', () => {
-            networkIcons.forEach(el => el.classList.remove('active'));
-            icon.classList.add('active');
-            selectedNetwork = icon.dataset.network;
-            // Clear any error messages when network is changed
-            clearWithdrawalModalError();
-        });
-    });
-    
-    // Amount selection
-    const amountOptions = withdrawalModal.querySelectorAll('.amount-option');
-    amountOptions.forEach(option => {
-        option.addEventListener('click', () => {
-            amountOptions.forEach(el => el.classList.remove('active'));
-            option.classList.add('active');
-            selectedAmount = parseInt(option.dataset.amount);
-            // Clear any error messages when amount is changed
-            clearWithdrawalModalError();
-        });
-    });
-    
-    // Phone input change
-    const phoneInput = withdrawalModal.querySelector('#withdrawal-phone');
-    phoneInput.addEventListener('input', () => {
-        // Clear any error messages when phone number is changed
-        clearWithdrawalModalError();
-    });
-    
-    // Confirm Withdrawal
-    const confirmBtn = withdrawalModal.querySelector('#confirm-withdrawal-btn');
-    
-    confirmBtn.addEventListener('click', async () => {
-        const phoneNumber = phoneInput.value.trim();
-        
-        // Process withdrawal and only close modal if successful
-        const success = await processWithdrawal(phoneNumber, selectedAmount, selectedNetwork);
-        
-        if (success) {
-            // Close modal only if withdrawal was successful
-            document.body.removeChild(withdrawalModal);
-            withdrawalModalInstance = null;
-        }
-    });
-    
-    // Close modal functionality
-    const closeBtn = withdrawalModal.querySelector('.close-btn');
-    closeBtn.addEventListener('click', () => {
-        document.body.removeChild(withdrawalModal);
-        withdrawalModalInstance = null;
-    });
-    
-    return withdrawalModal;
-}
-
-// Add webhook handler function (NEW)
-function setupWebhookHandler() {
-    // This function would normally be on the server side, but we can prepare for it
-    // When implementing, move this to your server-side code
-    const handleWebhook = async (webhookData) => {
-        try {
-            // Validate webhook data
-            if (!webhookData || !webhookData.reference || !webhookData.status) {
-                console.error('Invalid webhook data received');
-                return { success: false, message: 'Invalid webhook data' };
-            }
-            
-            // Find all transactions with this reference ID
-            const allUsersRef = ref(database, 'users');
-            const allUsersSnapshot = await get(allUsersRef);
-            
-            if (!allUsersSnapshot.exists()) {
-                return { success: false, message: 'No users found' };
-            }
-            
-            const allUsers = allUsersSnapshot.val();
-            let updated = false;
-            
-            // Loop through all users to find transaction with matching reference
-            for (const userId in allUsers) {
-                const userData = allUsers[userId];
-                if (!userData.transactions) continue;
-                
-                const transactions = userData.transactions;
-                let transactionKey = null;
-                
-                // Find transaction with matching reference
-                for (const tKey in transactions) {
-                    if (transactions[tKey].reference === webhookData.reference) {
-                        transactionKey = tKey;
-                        break;
-                    }
-                }
-                
-                if (transactionKey) {
-                    // Update transaction status
-                    const transactionRef = ref(database, `users/${userId}/transactions/${transactionKey}`);
-                    await update(transactionRef, {
-                        status: webhookData.status
-                    });
-                    
-                    updated = true;
-                    
-                    // If transaction failed, refund user
-                    if (webhookData.status === 'failed') {
-                        const refundAmount = Math.abs(transactions[transactionKey].amount);
-                        const userRef = ref(database, `users/${userId}`);
-                        const userBalance = userData.airtimeBalance || 0;
-                        
-                        await update(userRef, {
-                            airtimeBalance: userBalance + refundAmount
-                        });
-                        
-                        // Also update Firestore
-                        const firestoreUserRef = doc(firestore, "users", userId);
-                        const firestoreDoc = await getDoc(firestoreUserRef);
-                        
-                        if (firestoreDoc.exists()) {
-                            const firestoreBalance = firestoreDoc.data().balance || 0;
-                            await updateDoc(firestoreUserRef, {
-                                balance: firestoreBalance + refundAmount
-                            });
-                        }
-                    }
-                    
-                    break;
-                }
-            }
-            
-            return { success: updated, message: updated ? 'Transaction updated' : 'Transaction not found' };
-        } catch (error) {
-            console.error('Error handling webhook:', error);
-            return { success: false, message: 'Error processing webhook' };
-        }
-    };
-    
-    // For frontend code, this is just a placeholder
-    // Your actual webhook endpoint would be on your server
-    console.log('Webhook handler setup complete');
-}
-
-// Event Listeners
-document.addEventListener('DOMContentLoaded', () => {
-    // Setup webhook handler
-    setupWebhookHandler();
-    
+// Document Ready Function
+document.addEventListener('DOMContentLoaded', function() {
     // Login form
     if (loginForm) {
         loginForm.addEventListener('submit', async (e) => {
@@ -2501,26 +2079,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Withdrawal Button Event Listener
-    if (withdrawBtn) {
-        withdrawBtn.addEventListener('click', () => {
-            if (!currentUser) {
-                showLoginModal();
-                return;
-            }
-            
-            // Check if the user has the minimum required balance before showing the withdrawal modal
-            if (airtimeBalance < MINIMUM_WITHDRAWAL) {
-                // Show a prominent alert instead of a subtle one at the bottom
-                showAlert(WithdrawalErrorMessages[WithdrawalErrorCodes.INSUFFICIENT_BALANCE], 'error');
-                return;
-            }
-            
-            // Create and show withdrawal modal
-            createWithdrawalModal();
-        });
-    }
-
     // Connect Gaming Account Button
     if (authActionBtn) {
         authActionBtn.addEventListener('click', () => {
@@ -2536,6 +2094,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 // If no user, show login modal
                 showLoginModal();
             }
+        });
+    }
+
+    // Achievement Modal
+    if (achievementBtn && achievementModal) {
+        achievementBtn.addEventListener('click', () => {
+            achievementModal.style.display = 'block';
+        });
+    }
+
+    if (closeBtn && achievementModal) {
+        closeBtn.addEventListener('click', () => {
+            achievementModal.style.display = 'none';
         });
     }
 
@@ -2751,6 +2322,30 @@ function openEmailClient() {
   window.location.href = "mailto:multigames0000@gmail.com?subject=i have issues%20with%20Multigames%20apk";
   return false;
 }
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    // Get the withdraw button and modal
+    const withdrawButton = document.querySelector(".withdraw-btn");
+    const withdrawModal = document.getElementById("withdrawModal");
+
+    // Add click event listener to the withdraw button
+    withdrawButton.addEventListener("click", function() {
+        withdrawModal.style.display = "flex"; // Show the modal
+    });
+
+    // Close modal when clicking the close button
+    document.querySelector(".close").addEventListener("click", function() {
+        withdrawModal.style.display = "none"; // Hide the modal
+    });
+
+    // Close modal when clicking outside the content
+    window.addEventListener("click", function(event) {
+        if (event.target === withdrawModal) {
+            withdrawModal.style.display = "none";
+        }
+    });
+});
 </script>
 </body>
 </html>
