@@ -1462,47 +1462,199 @@ document.addEventListener("DOMContentLoaded", function() {
 <script>
     // Game data
     const games = [
-        { 
-            name: "Truth or Dare", 
-            url: "truth.html", 
-            icon: "https://i.postimg.cc/zfv3jnNr/truth.jpg", 
-            category: "Party Game",
-            plays: 4823,
-            liked: 987
-        },
-        { 
-            name: "Memory Card", 
-            url: "memory.html", 
-            icon: "https://i.postimg.cc/hvXFjbH2/memory.jpg", 
-            category: "Brain Game",
-            plays: 3254,
-            liked: 654
-        },
-        { 
-            name: "Tic Tac Toe", 
-            url: "tic-tac-toe.html", 
-            icon: "https://i.postimg.cc/CL3qTdQn/images-12.jpg", 
-            category: "Strategy",
-            plays: 7854,
-            liked: 1523
-        },
-        { 
-            name: "Whack Mole", 
-            url: "whack.html", 
-            icon: "https://i.postimg.cc/tJtT7bVC/IMG-20250226-WA0077.jpg",
-            category: "Arcade",
-            plays: 5642,
-            liked: 1245
-        },
-        { 
-            name: "Bubble Shoot", 
-            url: "iframe-bubble.html", 
-            icon: "https://i.postimg.cc/xC0Pd8QM/Screenshot-20250316-221515.jpg",
-            category: "Arcade",
-            plays: 5642,
-            liked: 1245
-        }
-    ];
+    { 
+        name: "Truth or Dare", 
+        url: "truth.html", 
+        icon: "https://i.postimg.cc/zfv3jnNr/truth.jpg", 
+        category: "Party Game",
+        plays: 4823,
+        liked: 987
+    },
+    { 
+        name: "Memory Card", 
+        url: "memory.html", 
+        icon: "https://i.postimg.cc/hvXFjbH2/memory.jpg", 
+        category: "Brain Game",
+        plays: 3254,
+        liked: 654
+    },
+    { 
+        name: "Tic Tac Toe", 
+        url: "tic-tac-toe.html", 
+        icon: "https://i.postimg.cc/CL3qTdQn/images-12.jpg", 
+        category: "Strategy",
+        plays: 7854,
+        liked: 1523
+    },
+    { 
+        name: "Whack Mole", 
+        url: "whack.html", 
+        icon: "https://i.postimg.cc/tJtT7bVC/IMG-20250226-WA0077.jpg",
+        category: "Arcade",
+        plays: 5642,
+        liked: 1245
+    },
+    { 
+        name: "Bubble Shoot", 
+        url: "iframe-bubble.html", 
+        icon: "https://i.postimg.cc/xC0Pd8QM/Screenshot-20250316-221515.jpg",
+        category: "Arcade",
+        plays: 5642,
+        liked: 1245
+    },
+    { 
+        name: "Macthman Warrior", 
+        url: "iframe-warrior.html", 
+        icon: "https://i.postimg.cc/HLjWry4C/icon.webp",
+        category: "Action",
+        plays: 3000,
+        liked: 300
+    },
+    { 
+        name: "Moto X3M Christmas", 
+        url: "iframe-moto-X3M.html", 
+        icon: "https://www.play1024.com/cy/icon/Moto_X3M_Christmas.png",
+        category: "Racing",
+        plays: 6000,
+        liked: 600
+    },
+    { 
+        name: "Ludo Legend", 
+        url: "iframe-ludo-legend.html", 
+        icon: "https://www.afantaigame.com/Ludo_Legend/180x180.png",
+        category: "Board Game",
+        plays: 6000,
+        liked: 600
+    },
+    { 
+        name: "Bike Rush 3D", 
+        url: "iframe-bike-rush.html", 
+        icon: "https://i.postimg.cc/qvKCPhMn/Screenshot-20250401-122939.jpg",
+        category: "Racing",
+        plays: 6000,
+        liked: 600
+    },
+    { 
+        name: "Boat Race", 
+        url: "iframe-boat-race.html", 
+        icon: "https://ali.iningame.com/cy/sdk/icon/Boat_Race.png",
+        category: "Sports",
+        plays: 6000,
+        liked: 600
+    },
+    { 
+        name: "Subway Surfers Halloween", 
+        url: "iframe-subway.html", 
+        icon: "https://i.postimg.cc/MTbmT5k9/Halloween-Icon-Logo-Subway-Surfers-purple.jpg",
+        category: "Runner",
+        plays: 10000,
+        liked: 1000
+    },
+    { 
+        name: "Pubg Mobile", 
+        url: "iframe-pubg.html", 
+        icon: "https://www.nmgtianshugame.com/Pubg_Mobile_Online/bg.jpg",
+        category: "Battle Royale",
+        plays: 8000,
+        liked: 800
+    },
+    { 
+        name: "Pixel Shooter", 
+        url: "iframe-pixel.html", 
+        icon: "https://i.postimg.cc/tCW2rTBL/images-17.jpg",
+        category: "Shooter",
+        plays: 8000,
+        liked: 800
+    },
+    { 
+        name: "Relic Run Away", 
+        url: "iframe-runaway.html", 
+        icon: "https://i.postimg.cc/mk6S7rmq/Screenshot-20250315-140235.jpg",
+        category: "Adventure",
+        plays: 8000,
+        liked: 800
+    },
+    { 
+        name: "Hunter Assassin", 
+        url: "iframe-hunter.html", 
+        icon: "https://i.postimg.cc/G2QX6HVH/Screenshot-20250316-013311.jpg",
+        category: "Action",
+        plays: 25000,
+        liked: 2500
+    },
+    { 
+        name: "Squid Survival", 
+        url: "iframe-squidsurvival.html", 
+        icon: "https://ali.iningame.com/cy/sdk/icon/Squid_Survival.png",
+        category: "Survival",
+        plays: 25000,
+        liked: 2500
+    },
+    { 
+        name: "Piano Music Tiles", 
+        url: "iframe-pianotiles.html", 
+        icon: "https://i.postimg.cc/tTHkCqMK/splash-1.webp",
+        category: "Music",
+        plays: 25000,
+        liked: 2500
+    },
+    { 
+        name: "Sniper Simulator", 
+        url: "iframe-snipersimulator.html", 
+        icon: "https://i.postimg.cc/HsZKLmzn/images-18.jpg",
+        category: "Simulator",
+        plays: 1800,
+        liked: 250
+    },
+    { 
+        name: "Wild Hunt Hunting", 
+        url: "iframe-wildhunt.html", 
+        icon: "https://i.postimg.cc/Kcs2jCm9/Wild-Hunt-Hunting-Games-3-D.png",
+        category: "Hunting",
+        plays: 1800,
+        liked: 250
+    },
+    { 
+        name: "Egg Super Adventure", 
+        url: "iframe-eggadventure.html", 
+        icon: "https://i.postimg.cc/brCPxBXR/Screenshot-20250326-024432.jpg",
+        category: "Adventure",
+        plays: 1000,
+        liked: 200
+    },
+    { 
+        name: "Rac Simulator 1", 
+        url: "iframe-racesimulator-1.html", 
+        icon: "https://www.fatfishgame.com/Rac_Simulator_1/adapter/logo.png",
+        category: "Racing Simulator",
+        plays: 1800,
+        liked: 250
+    },
+    { 
+        name: "Smash Colors Music Ball", 
+        url: "iframe-musicball.html", 
+        icon: "https://www.hnyigegame.com/Smash_Colors_Music_Ball/game/logo.png",
+        category: "Puzzle",
+        plays: 1000,
+        liked: 200
+    },
+    { 
+        name: "Subway Surfers Holiday", 
+        url: "iframe-subway-surfers-holiday.html", 
+        icon: "https://ali.iningame.com/cy/sdk/icon/Subway_Surfers_Holiday.png",
+        category: "Runner",
+        plays: 1800,
+        liked: 250
+    },
+    { 
+        name: "ORV Racing", 
+        url: "iframe-ORV-Racing.html", 
+        icon: "https://ali.iningame.com/cy/sdk/icon/ORV_Racing.png",
+        category: "Racing",
+        plays: 1000,
+        liked: 200
+    }
+];
 
     // DOM Elements
     const searchInput = document.getElementById('floating-search-input');
