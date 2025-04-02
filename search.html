@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Modern Game Search</title>
+  <style>
+    :root {
+      --primary-green: #4CAF50;
+      --primary-light: #81C784;
+      --primary-dark: #388E3C;
+      --accent-green: #A5D6A7;
+      --text-primary: #212121;
+      --text-secondary: #757575;
+      --background: #F5F5F5;
+      --card-bg: #FFFFFF;
+      --hover-bg: #E8F5E9;
+    }
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    body {
+      background-color: var(--background);
+      color: var(--text-primary);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+    
+    .nav-container {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      z-index: 100;
+    }
+    
+    .home-button {
+      display: flex;
+      align-items: center;
+      background-color: white;
+      color: var(--primary-green);
+      text-decoration: none;
+      padding: 8px 16px;
+      border-radius: 50px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+    
+    .home-button:hover {
+      background-color: var(--primary-green);
+      color: white;
+      box-shadow: 0 4px 12px rgba(76, 175, 80, 0.25);
+      transform: translateY(-2px);
+    }
+    
+    .home-button i {
+      margin-right: 8px;
+    }
+    
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    
+    .header h1 {
+      color: var(--primary-dark);
+      font-size: 2.2rem;
+      margin-bottom: 10px;
+    }
+    
+    .header p {
+      color: var(--text-secondary);
+      font-size: 1rem;
+    }
+    
+    .search-container {
+      width: 100%;
+      max-width: 500px;
+      position: relative;
+      margin-bottom: 40px;
+    }
+    
+    .search-bar {
+      position: relative;
+      width: 100%;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      border-radius: 50px;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+    
+    .search-bar:focus-within {
+      box-shadow: 0 6px 16px rgba(76, 175, 80, 0.25);
+      transform: translateY(-2px);
+    }
+    
+    .search-icon {
+      position: absolute;
+      left: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--primary-green);
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .search-bar input {
+      width: 100%;
+      padding: 16px 20px 16px 50px;
+      font-size: 1rem;
+      border: 2px solid transparent;
+      border-radius: 50px;
+      outline: none;
+      transition: all 0.3s ease;
+    }
+    
+    .search-bar input:focus {
+      border-color: var(--primary-green);
+    }
+    
+    .search-bar input::placeholder {
+      color: var(--text-secondary);
+      opacity: 0.7;
+    }
+    
+    .autocomplete-suggestions {
+      position: absolute;
+      top: calc(100% + 10px);
+      left: 0;
+      right: 0;
+      background: var(--card-bg);
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+      z-index: 10;
+      max-height: 320px;
+      overflow-y: auto;
+      padding: 10px;
+      transition: all 0.3s ease;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-10px);
+    }
+    
+    .autocomplete-suggestions.active {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+    
+    .autocomplete-suggestion {
+      display: flex;
+      align-items: center;
+      padding: 12px 16px;
+      cursor: pointer;
+      border-radius: 8px;
+      transition: all 0.2s ease;
+      margin-bottom: 5px;
+    }
+    
+    .autocomplete-suggestion:last-child {
+      margin-bottom: 0;
+    }
+    
+    .autocomplete-suggestion img {
+      width: 32px;
+      height: 32px;
+      margin-right: 12px;
+      border-radius: 8px;
+      object-fit: cover;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    .autocomplete-suggestion .game-info {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+    
+    .autocomplete-suggestion .game-name {
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 2px;
+    }
+    
+    .autocomplete-suggestion .game-category {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+    
+    .autocomplete-suggestion .play-btn {
+      background-color: var(--primary-green);
+      color: white;
+      border: none;
+      border-radius: 50px;
+      padding: 6px 12px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    
+    .autocomplete-suggestion .play-btn:hover {
+      background-color: var(--primary-dark);
+    }
+    
+    .autocomplete-suggestion:hover {
+      background: var(--hover-bg);
+    }
+    
+    .game-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 20px;
+      width: 100%;
+      max-width: 800px;
+    }
+    
+    .game-card {
+      background-color: var(--card-bg);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      transition: all 0.3s ease;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .game-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 16px rgba(76, 175, 80, 0.2);
+    }
+    
+    .game-card .game-image {
+      width: 100%;
+      aspect-ratio: 1;
+      object-fit: cover;
+      border-bottom: 3px solid var(--primary-light);
+    }
+    
+    .game-card .game-details {
+      padding: 15px;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+    
+    .game-card .game-name {
+      font-weight: 600;
+      font-size: 1rem;
+      margin-bottom: 5px;
+      color: var(--text-primary);
+    }
+    
+    .game-card .game-category {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      margin-bottom: 12px;
+    }
+    
+    .game-card .game-stats {
+      display: flex;
+      align-items: center;
+      margin-top: auto;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+    
+    .game-card .game-stats .stat {
+      display: flex;
+      align-items: center;
+      margin-right: 10px;
+    }
+    
+    .game-card .game-stats .stat i {
+      margin-right: 4px;
+      font-size: 0.75rem;
+    }
+    
+    .section-title {
+      width: 100%;
+      max-width: 800px;
+      margin-bottom: 20px;
+      color: var(--primary-dark);
+      font-size: 1.4rem;
+      font-weight: 600;
+    }
+    
+    /* For the search icon */
+    .material-icons {
+      font-family: 'Material Icons';
+      font-weight: normal;
+      font-style: normal;
+      font-size: 24px;
+      display: inline-block;
+      line-height: 1;
+      text-transform: none;
+      letter-spacing: normal;
+      word-wrap: normal;
+      white-space: nowrap;
+      direction: ltr;
+    }
+
+    /* Scrollbar styling */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    
+    ::-webkit-scrollbar-track {
+      background: var(--background);
+      border-radius: 10px;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+      background: var(--primary-light);
+      border-radius: 10px;
+    }
+    
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--primary-green);
+    }
+
+    @media (max-width: 768px) {
+      .game-grid {
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 15px;
+      }
+      
+      .header h1 {
+        font-size: 1.8rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .search-container {
+        max-width: 100%;
+      }
+      
+      .game-grid {
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+        gap: 12px;
+      }
+    }
+  </style>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body>
+  <!-- Navigation & Header -->
+  <div class="nav-container">
+    <a href="index.html" class="home-button">
+      <i class="fas fa-home"></i>
+      <span>Home</span>
+    </a>
+  </div>
+  
+  <!-- Header -->
+  <div class="header">
+    <h1>Game Portal</h1>
+    <p>Find your favorite games and play instantly</p>
+  </div>
+  
+  <!-- Search Bar Container -->
+  <div class="search-container">
+    <div class="search-bar">
+      <div class="search-icon">
+        <i class="fas fa-search"></i>
+      </div>
+      <input type="text" id="game-search" placeholder="Search games...">
+    </div>
+    <div id="suggestions" class="autocomplete-suggestions"></div>
+  </div>
+  
+  <!-- Popular Games Section -->
+  <h2 class="section-title">Popular Games</h2>
+  <div class="game-grid" id="popular-games">
+    <!-- Game cards will be populated here -->
+  </div>
+
+  <script>
+    // Enhanced array of game objects with name, URL, icon path, category and stats
+    const games = [
+      { 
+        name: "Truth or Dare", 
+        url: "truth.html", 
+        icon: "https://i.postimg.cc/zfv3jnNr/truth.jpg", 
+        category: "Party Game",
+        plays: 4823,
+        liked: 987
+      },
+      { 
+        name: "Memory Card", 
+        url: "memory.html", 
+        icon: "https://i.postimg.cc/hvXFjbH2/memory.jpg", 
+        category: "Brain Game",
+        plays: 3254,
+        liked: 654
+      },
+      { 
+        name: "Tic Tac Toe", 
+        url: "tic-tac-toe.html", 
+        icon: "https://i.postimg.cc/CL3qTdQn/images-12.jpg", 
+        category: "Strategy",
+        plays: 7854,
+        liked: 1523
+      },
+      { 
+        name: "Whack Mole", 
+        url: "whack.html", 
+        icon: "https://i.postimg.cc/tJtT7bVC/IMG-20250226-WA0077.jpg",
+        category: "Arcade",
+        plays: 5642,
+        liked: 1245
+      }
+      // Add additional games here
+    ];
+
+    const searchInput = document.getElementById('game-search');
+    const suggestionsDiv = document.getElementById('suggestions');
+    const popularGamesDiv = document.getElementById('popular-games');
+
+    // Function to generate game cards for popular games section
+    function populateGameGrid() {
+      // Sort games by plays to show most popular first
+      const sortedGames = [...games].sort((a, b) => b.plays - a.plays);
+      
+      popularGamesDiv.innerHTML = '';
+      
+      sortedGames.forEach(game => {
+        const gameCard = document.createElement('div');
+        gameCard.classList.add('game-card');
+        gameCard.innerHTML = `
+          <img src="${game.icon}" alt="${game.name}" class="game-image">
+          <div class="game-details">
+            <div class="game-name">${game.name}</div>
+            <div class="game-category">${game.category}</div>
+            <div class="game-stats">
+              <div class="stat"><i class="fas fa-play"></i> ${game.plays.toLocaleString()}</div>
+              <div class="stat"><i class="fas fa-heart"></i> ${game.liked.toLocaleString()}</div>
+            </div>
+          </div>
+        `;
+        gameCard.addEventListener('click', function() {
+          window.location.href = game.url;
+        });
+        popularGamesDiv.appendChild(gameCard);
+      });
+    }
+
+    // Call the function to populate the game grid on page load
+    populateGameGrid();
+
+    // Listen for input events on the search bar
+    searchInput.addEventListener('input', function() {
+      const query = this.value.toLowerCase();
+      suggestionsDiv.innerHTML = '';
+      
+      if (query.length === 0) {
+        suggestionsDiv.classList.remove('active');
+        return; // Do not display suggestions if the input is empty
+      }
+      
+      // Filter games based on the query
+      const filteredGames = games.filter(game => 
+        game.name.toLowerCase().includes(query) || 
+        game.category.toLowerCase().includes(query)
+      );
+      
+      if (filteredGames.length > 0) {
+        suggestionsDiv.classList.add('active');
+        
+        // Display each matching game as a suggestion with its icon
+        filteredGames.forEach(game => {
+          const suggestionItem = document.createElement('div');
+          suggestionItem.classList.add('autocomplete-suggestion');
+          suggestionItem.innerHTML = `
+            <img src="${game.icon}" alt="${game.name} icon">
+            <div class="game-info">
+              <span class="game-name">${game.name}</span>
+              <span class="game-category">${game.category}</span>
+            </div>
+            <button class="play-btn">Play</button>
+          `;
+          suggestionItem.addEventListener('click', function() {
+            // Redirect to the game page when the suggestion is clicked
+            window.location.href = game.url;
+          });
+          suggestionsDiv.appendChild(suggestionItem);
+        });
+      } else {
+        suggestionsDiv.classList.remove('active');
+      }
+    });
+
+    // Close suggestions when clicking outside
+    document.addEventListener('click', function(event) {
+      if (!suggestionsDiv.contains(event.target) && event.target !== searchInput) {
+        suggestionsDiv.classList.remove('active');
+      }
+    });
+
+    // Optionally handle the Enter key (e.g., select the first suggestion)
+    searchInput.addEventListener('keydown', function(event) {
+      if (event.key === 'Enter') {
+        const firstSuggestion = suggestionsDiv.querySelector('.autocomplete-suggestion');
+        if (firstSuggestion) {
+          firstSuggestion.click();
+        }
+      }
+    });
+
+    // Show suggestions when focus on search input
+    searchInput.addEventListener('focus', function() {
+      if (this.value.length > 0) {
+        suggestionsDiv.classList.add('active');
+      }
+    });
+  </script>
+</body>
+</html>

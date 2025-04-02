@@ -657,13 +657,20 @@
 
   <button id="refresh-button"><i class="fas fa-sync-alt"></i></button>
 
-  <!-- Floating Search Bar (Home Only) -->
-  <div class="floating-search" id="floating-search">
-      <div class="search-bar">
-          <i class="fas fa-search"></i>
-          <input type="text" placeholder="Search games...">
-      </div>
-  </div>
+<!-- Floating Search Bar (Home Only) -->
+<div class="floating-search" id="floating-search">
+    <form action="search.html" method="GET" class="search-bar">
+        <i class="fas fa-search"></i>
+        <input 
+            type="text" 
+            name="query" 
+            placeholder="Search games..." 
+            required
+            onclick="window.location.href='search.html'"
+        >
+        <button type="submit" style="display: none;"></button> <!-- Hidden submit button to allow Enter key submission -->
+    </form>
+</div>
 
   <!-- Main Content Container -->
   <div class="container main-content" id="main-content">
@@ -1357,6 +1364,21 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 });
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.querySelector('.search-bar input');
+        
+        // Navigate to search page when input is clicked
+        searchInput.addEventListener('click', function(e) {
+            window.location.href = 'search.html';
+        });
+        
+        // Prevent the click from submitting the form right away
+        searchInput.addEventListener('mousedown', function(e) {
+            e.preventDefault();
+        });
+    });
 </script>
 </body>
 </html>
