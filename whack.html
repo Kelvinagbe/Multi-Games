@@ -884,27 +884,108 @@
             }, { once: true });
         });
     </script>
-
 <script>
-    // Define game details (change per game)
-    const gameName = "Whack Mole"; // Change this for each game
+  // --- Configuration ---
+  const MIN_PLAY_TIME = 3 * 60 * 1000; // 3 minutes in milliseconds
 
-    // Retrieve existing played games or initialize an empty array
-    let playedGames = JSON.parse(localStorage.getItem("playedGames")) || [];
-
-    // Remove game if already exists to avoid duplicates
-    playedGames = playedGames.filter(game => game !== gameName);
-
-    // Add new game at the beginning (most recent first)
-    playedGames.unshift(gameName);
-
-    // Keep only the last 4 games
-    if (playedGames.length > 4) {
-        playedGames.pop();
+  // --- Helper Functions for Daily Reset ---
+  // Returns today's 6 AM as a Date object.
+  function getTodaySixAM() {
+    const now = new Date();
+    return new Date(now.getFullYear(), now.getMonth(), now.getDate(), 6, 0, 0, 0);
+  }
+  // Returns yesterday's 6 AM.
+  function getYesterdaySixAM() {
+    return new Date(getTodaySixAM().getTime() - 24 * 60 * 60 * 1000);
+  }
+  // Resets stored played sessions if the last reset was before the current 6 AM threshold.
+  function resetPlayedGamesIfNeeded() {
+    const now = new Date();
+    const todaySixAM = getTodaySixAM();
+    let lastReset = localStorage.getItem('playedGamesLastReset');
+    if (!lastReset) {
+      const initialReset = now < todaySixAM ? getYesterdaySixAM() : todaySixAM;
+      localStorage.setItem('playedGamesLastReset', initialReset.toISOString());
+      localStorage.setItem('playedGames', JSON.stringify([]));
+      return;
     }
+    const lastResetTime = new Date(lastReset);
+    if (now >= todaySixAM && lastResetTime < todaySixAM) {
+      localStorage.setItem('playedGames', JSON.stringify([]));
+      localStorage.setItem('playedGamesLastReset', todaySixAM.toISOString());
+    } else if (now < todaySixAM && lastResetTime < getYesterdaySixAM()) {
+      localStorage.setItem('playedGames', JSON.stringify([]));
+      localStorage.setItem('playedGamesLastReset', getYesterdaySixAM().toISOString());
+    }
+  }
 
-    // Save updated list back to localStorage
+  // --- Function to Record a Game Session ---
+  // This function saves a session (with game name, duration, and timestamp) into localStorage.
+  function recordGameSession(gameName, duration) {
+    resetPlayedGamesIfNeeded();
+    let playedGames = JSON.parse(localStorage.getItem("playedGames")) || [];
+    playedGames.push({
+      gameName: gameName,
+      duration: duration,
+      timestamp: new Date().toISOString()
+    });
     localStorage.setItem("playedGames", JSON.stringify(playedGames));
+    console.log(`Recorded session for "${gameName}" with duration ${duration}ms`);
+  }
+
+  // --- Play Time Tracking ---
+  let playTimeInterval;
+  let sessionStartTime = null;
+  let sessionRecorded = false;
+
+  // Call this function when the game starts.
+  function startGameTimer() {
+    sessionRecorded = false;
+    sessionStartTime = Date.now();
+    playTimeInterval = setInterval(() => {
+      const elapsed = Date.now() - sessionStartTime;
+      // (Optional) Update your game UI timer here.
+      console.log("Elapsed play time: " + elapsed + "ms");
+
+      // Automatically stop and record once MIN_PLAY_TIME is reached.
+      if (elapsed >= MIN_PLAY_TIME && !sessionRecorded) {
+        stopGameTimerAutomatically("YourGameName");
+        sessionRecorded = true;
+      }
+    }, 1000); // update every second
+  }
+
+  // This function is automatically called when the timer reaches MIN_PLAY_TIME.
+  function stopGameTimerAutomatically(gameName) {
+    clearInterval(playTimeInterval);
+    // We record exactly MIN_PLAY_TIME (3 minutes) regardless of any extra time played.
+    console.log("Session complete. Recorded play time: " + MIN_PLAY_TIME + "ms");
+    recordGameSession(gameName, MIN_PLAY_TIME);
+    sessionStartTime = null;
+  }
+
+  // Call this function when the game ends manually (before reaching 3 minutes).
+  // If the session hasn’t yet reached 3 minutes, it won’t record any session.
+  function stopGameTimer(gameName) {
+    clearInterval(playTimeInterval);
+    const elapsed = Date.now() - sessionStartTime;
+    console.log("Session ended manually. Total play time: " + elapsed + "ms");
+    // Only record if the session qualifies.
+    if (elapsed >= MIN_PLAY_TIME && !sessionRecorded) {
+      recordGameSession(gameName, MIN_PLAY_TIME);
+      sessionRecorded = true;
+    } else if (elapsed < MIN_PLAY_TIME) {
+      console.log("Session did not reach the minimum required play time.");
+    }
+    sessionStartTime = null;
+  }
+
+  // --- Example Usage ---
+  // When the game starts, call:
+  //    startGameTimer();
+  // When the game ends (or the user navigates away), call:
+  //    stopGameTimer("YourGameName");
+  // If the player continues to play, the timer will automatically stop and record once 3 minutes is reached.
 </script>
 </body>
 </html>
