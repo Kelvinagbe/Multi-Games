@@ -38,7 +38,7 @@
             width: 45px;
             height: 45px;
             border-radius: 50%;
-            background-color: #166534; /* Dark green by default */
+            background-color: #166533; /* Dark green by default */
             position: absolute;
             top: 20px;
             right: 20px;
@@ -57,7 +57,7 @@
         }
         
         .power-icon {
-            width: 40px;
+             width: 40px;
             height: 40px;
             position: relative;
             display: flex;
@@ -124,8 +124,58 @@
             z-index: 2000;
         }
     </style>
+<!-- Add these CSS styles to your <head> section -->
+<style>
+  /* Styles for the alert box */
+  #gameAlert {
+    display: none;
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #ffcc00;
+    color: #333;
+    padding: 10px 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    z-index: 1000;
+    font-weight: bold;
+    text-align: center;
+  }
+
+  /* Styles for the progress bar container */
+  #progressBarContainer {
+    width: 100%;
+    height: 20px;
+    background-color: #eee;
+    border-radius: 10px;
+    margin: 20px 0;
+    overflow: hidden;
+  }
+
+  /* Styles for the progress bar itself */
+  #progressBar {
+    width: 0%;
+    height: 100%;
+    background-color: #4CAF50;
+    transition: width 0.5s ease;
+  }
+
+  #gameStatus {
+    font-weight: bold;
+    margin: 10px 0;
+    text-align: center;
+  }
+</style>
 </head>
 <body>
+<!-- Add these HTML elements where you want them to appear in your page -->
+<div id="gameAlert"></div>
+<div id="progressBarContainer">
+  <div id="progressBar"></div>
+</div>
+<div id="gameStatus">Loading game...</div>
+
     <div class="game-iframe-container">
         <iframe src="https://ooppgame.com/relicrunway/index.html" allowfullscreen></iframe>
     </div>
@@ -296,25 +346,212 @@
     </script>
 
 <script>
-    // Define game details (change per game)
-    const gameName = "Relic Runaway"; // Change this for each game
+// --- Configuration ---
+const MIN_PLAY_TIME = 3 * 60 * 1000; // 3 minutes in milliseconds
+const ALERT_INTERVAL = 60 * 1000; // 1 minute in milliseconds
+const GAME_NAME = "Whack-a-Mole"; // Change this to match your game's name
+const INITIAL_ALERT_DURATION = 3000; // 3 seconds for initial game alert
+const COMPLETION_ALERT_DURATION = 2000; // 2 seconds for completion alert
 
-    // Retrieve existing played games or initialize an empty array
-    let playedGames = JSON.parse(localStorage.getItem("playedGames")) || [];
+// --- Helper Functions for Daily Reset ---
+function getTodaySixAM() {
+  const now = new Date();
+  return new Date(now.getFullYear(), now.getMonth(), now.getDate(), 6, 0, 0, 0);
+}
 
-    // Remove game if already exists to avoid duplicates
-    playedGames = playedGames.filter(game => game !== gameName);
+function getYesterdaySixAM() {
+  return new Date(getTodaySixAM().getTime() - 24 * 60 * 60 * 1000);
+}
 
-    // Add new game at the beginning (most recent first)
-    playedGames.unshift(gameName);
+function resetPlayedGamesIfNeeded() {
+  const now = new Date();
+  const todaySixAM = getTodaySixAM();
+  let lastReset = localStorage.getItem('playedGamesLastReset');
+  if (!lastReset) {
+    const initialReset = now < todaySixAM ? getYesterdaySixAM() : todaySixAM;
+    localStorage.setItem('playedGamesLastReset', initialReset.toISOString());
+    localStorage.setItem('playedGames', JSON.stringify([]));
+    return;
+  }
+  const lastResetTime = new Date(lastReset);
+  if (now >= todaySixAM && lastResetTime < todaySixAM) {
+    localStorage.setItem('playedGames', JSON.stringify([]));
+    localStorage.setItem('playedGamesLastReset', todaySixAM.toISOString());
+  } else if (now < todaySixAM && lastResetTime < getYesterdaySixAM()) {
+    localStorage.setItem('playedGames', JSON.stringify([]));
+    localStorage.setItem('playedGamesLastReset', getYesterdaySixAM().toISOString());
+  }
+}
 
-    // Keep only the last 4 games
-    if (playedGames.length > 4) {
-        playedGames.pop();
+// Check if this game has already been played today
+function hasGameBeenPlayedToday() {
+  resetPlayedGamesIfNeeded(); // Ensure we have fresh data
+  
+  const playedGames = JSON.parse(localStorage.getItem("playedGames")) || [];
+  
+  return playedGames.some(game => game.gameName === GAME_NAME);
+}
+
+// --- Function to Record a Game Session ---
+function recordGameSession(gameName, duration) {
+  resetPlayedGamesIfNeeded();
+  let playedGames = JSON.parse(localStorage.getItem("playedGames")) || [];
+  playedGames.push({
+    gameName: gameName,
+    duration: duration,
+    timestamp: new Date().toISOString()
+  });
+  localStorage.setItem("playedGames", JSON.stringify(playedGames));
+  console.log(`Recorded session for "${gameName}" with duration ${duration}ms`);
+  
+  // Display feedback to user
+  document.getElementById("gameStatus").innerText = `Game completed and recorded!`;
+  
+  // Only show completion alert if this was a freshly completed game (not on reentry)
+  if (!sessionRecorded) {
+    showGameAlert(`Game session recorded: ${gameName}`, COMPLETION_ALERT_DURATION);
+  }
+  
+  // Hide progress bar when completed
+  document.getElementById("progressBarContainer").style.display = "none";
+}
+
+// --- Play Time Tracking ---
+let playTimeInterval;
+let sessionStartTime = null;
+let sessionRecorded = false;
+let alertCounter = 0;
+let gameFirstStart = true;
+
+function startGameTimer() {
+  // Check if game has already been played today
+  if (hasGameBeenPlayedToday()) {
+    console.log("Game has already been played today.");
+    document.getElementById("gameStatus").innerText = "You've already played this game today. Come back tomorrow after 6 AM!";
+    document.getElementById("progressBarContainer").style.display = "none";
+    sessionRecorded = true; // Mark as recorded to prevent alerts on reentry
+    return;
+  }
+  
+  // Don't start if already running
+  if (sessionStartTime !== null) {
+    console.log("Game timer already running");
+    return;
+  }
+  
+  // Make sure progress bar is visible
+  document.getElementById("progressBarContainer").style.display = "block";
+  document.getElementById("gameStatus").innerText = "Game in progress...";
+  
+  // Only show the start alert if this is the first time starting the game
+  if (gameFirstStart) {
+    showGameAlert("Game started!", INITIAL_ALERT_DURATION);
+    gameFirstStart = false;
+  }
+  
+  sessionRecorded = false;
+  sessionStartTime = Date.now();
+  alertCounter = 0;
+  updateProgressBar(0);
+
+  playTimeInterval = setInterval(() => {
+    const elapsed = Date.now() - sessionStartTime;
+    const percentComplete = Math.min(elapsed / MIN_PLAY_TIME * 100, 100);
+    updateProgressBar(percentComplete);
+
+    console.log("Elapsed play time: " + elapsed + "ms");
+
+    // Show alert every minute
+    if (elapsed >= (alertCounter + 1) * ALERT_INTERVAL) {
+      showGameAlert(`You have played for ${alertCounter + 1} minute(s)!`, INITIAL_ALERT_DURATION);
+      alertCounter++;
     }
 
-    // Save updated list back to localStorage
-    localStorage.setItem("playedGames", JSON.stringify(playedGames));
+    if (elapsed >= MIN_PLAY_TIME && !sessionRecorded) {
+      stopGameTimerAutomatically(GAME_NAME);
+      sessionRecorded = true;
+    }
+  }, 1000);
+}
+
+function stopGameTimerAutomatically(gameName) {
+  clearInterval(playTimeInterval);
+  console.log("Session complete. Recorded play time: " + MIN_PLAY_TIME + "ms");
+  recordGameSession(gameName, MIN_PLAY_TIME);
+  sessionStartTime = null;
+  updateProgressBar(100);
+}
+
+function stopGameTimer() {
+  if (sessionStartTime === null) {
+    console.log("No game session to stop");
+    return;
+  }
+  
+  clearInterval(playTimeInterval);
+  const elapsed = Date.now() - sessionStartTime;
+  console.log("Session ended manually. Total play time: " + elapsed + "ms");
+
+  if (elapsed >= MIN_PLAY_TIME && !sessionRecorded) {
+    recordGameSession(GAME_NAME, MIN_PLAY_TIME);
+    sessionRecorded = true;
+  } else if (elapsed < MIN_PLAY_TIME) {
+    const timeNeeded = Math.ceil((MIN_PLAY_TIME - elapsed) / 1000);
+    document.getElementById("gameStatus").innerText = `Game stopped. Needed ${timeNeeded} more seconds to record.`;
+    console.log("Session did not reach the minimum required play time.");
+  }
+  sessionStartTime = null;
+}
+
+function updateProgressBar(percentage) {
+  document.getElementById("progressBar").style.width = percentage + "%";
+}
+
+function showGameAlert(message, duration) {
+  let alertBox = document.getElementById("gameAlert");
+  alertBox.innerText = message;
+  alertBox.style.display = "block";
+  setTimeout(() => {
+    alertBox.style.display = "none";
+  }, duration);
+}
+
+// Initialize on page load
+function initialize() {
+  resetPlayedGamesIfNeeded();
+  
+  // Check if the game has already been played today
+  if (hasGameBeenPlayedToday()) {
+    document.getElementById("gameStatus").innerText = "You've already played this game today. Come back tomorrow after 6 AM!";
+    document.getElementById("progressBarContainer").style.display = "none";
+    sessionRecorded = true; // Mark as recorded to prevent alerts on reentry
+  } else {
+    const playedGames = JSON.parse(localStorage.getItem("playedGames")) || [];
+    if (playedGames.length > 0) {
+      const lastGame = playedGames[playedGames.length - 1];
+      const lastGameDate = new Date(lastGame.timestamp);
+      document.getElementById("gameStatus").innerText = 
+        `Last played: ${lastGame.gameName} on ${lastGameDate.toLocaleDateString()} at ${lastGameDate.toLocaleTimeString()}`;
+    }
+    
+    // Start the timer after a short delay to ensure everything is loaded
+    setTimeout(startGameTimer, 500);
+  }
+}
+
+// Auto-start the game timer when the page loads
+window.addEventListener('load', initialize);
+
+// Optional: Add event handler for when user tries to leave the page
+window.addEventListener('beforeunload', function(e) {
+  if (sessionStartTime !== null && !sessionRecorded) {
+    // Attempt to save progress if they've been playing
+    const elapsed = Date.now() - sessionStartTime;
+    if (elapsed >= MIN_PLAY_TIME) {
+      recordGameSession(GAME_NAME, MIN_PLAY_TIME);
+    }
+  }
+});
 </script>
 </body>
 </html>

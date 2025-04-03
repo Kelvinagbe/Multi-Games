@@ -944,6 +944,8 @@
 const MIN_PLAY_TIME = 3 * 60 * 1000; // 3 minutes in milliseconds
 const ALERT_INTERVAL = 60 * 1000; // 1 minute in milliseconds
 const GAME_NAME = "Whack-a-Mole"; // Change this to match your game's name
+const INITIAL_ALERT_DURATION = 3000; // 3 seconds for initial game alert
+const COMPLETION_ALERT_DURATION = 2000; // 2 seconds for completion alert
 
 // --- Helper Functions for Daily Reset ---
 function getTodaySixAM() {
@@ -998,7 +1000,11 @@ function recordGameSession(gameName, duration) {
   
   // Display feedback to user
   document.getElementById("gameStatus").innerText = `Game completed and recorded!`;
-  showGameAlert(`Game session recorded: ${gameName}`);
+  
+  // Only show completion alert if this was a freshly completed game (not on reentry)
+  if (!sessionRecorded) {
+    showGameAlert(`Game session recorded: ${gameName}`, COMPLETION_ALERT_DURATION);
+  }
   
   // Hide progress bar when completed
   document.getElementById("progressBarContainer").style.display = "none";
@@ -1009,6 +1015,7 @@ let playTimeInterval;
 let sessionStartTime = null;
 let sessionRecorded = false;
 let alertCounter = 0;
+let gameFirstStart = true;
 
 function startGameTimer() {
   // Check if game has already been played today
@@ -1016,6 +1023,7 @@ function startGameTimer() {
     console.log("Game has already been played today.");
     document.getElementById("gameStatus").innerText = "You've already played this game today. Come back tomorrow after 6 AM!";
     document.getElementById("progressBarContainer").style.display = "none";
+    sessionRecorded = true; // Mark as recorded to prevent alerts on reentry
     return;
   }
   
@@ -1028,7 +1036,12 @@ function startGameTimer() {
   // Make sure progress bar is visible
   document.getElementById("progressBarContainer").style.display = "block";
   document.getElementById("gameStatus").innerText = "Game in progress...";
-  showGameAlert("Game started!");
+  
+  // Only show the start alert if this is the first time starting the game
+  if (gameFirstStart) {
+    showGameAlert("Game started!", INITIAL_ALERT_DURATION);
+    gameFirstStart = false;
+  }
   
   sessionRecorded = false;
   sessionStartTime = Date.now();
@@ -1044,7 +1057,7 @@ function startGameTimer() {
 
     // Show alert every minute
     if (elapsed >= (alertCounter + 1) * ALERT_INTERVAL) {
-      showGameAlert(`You have played for ${alertCounter + 1} minute(s)!`);
+      showGameAlert(`You have played for ${alertCounter + 1} minute(s)!`, INITIAL_ALERT_DURATION);
       alertCounter++;
     }
 
@@ -1088,13 +1101,13 @@ function updateProgressBar(percentage) {
   document.getElementById("progressBar").style.width = percentage + "%";
 }
 
-function showGameAlert(message) {
+function showGameAlert(message, duration) {
   let alertBox = document.getElementById("gameAlert");
   alertBox.innerText = message;
   alertBox.style.display = "block";
   setTimeout(() => {
     alertBox.style.display = "none";
-  }, 3000);
+  }, duration);
 }
 
 // Initialize on page load
@@ -1105,6 +1118,7 @@ function initialize() {
   if (hasGameBeenPlayedToday()) {
     document.getElementById("gameStatus").innerText = "You've already played this game today. Come back tomorrow after 6 AM!";
     document.getElementById("progressBarContainer").style.display = "none";
+    sessionRecorded = true; // Mark as recorded to prevent alerts on reentry
   } else {
     const playedGames = JSON.parse(localStorage.getItem("playedGames")) || [];
     if (playedGames.length > 0) {
