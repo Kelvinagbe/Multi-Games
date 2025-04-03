@@ -32,7 +32,7 @@ body {
 }
 
 .container {
-    max-width: 500px;
+    max-width: 800px;
     margin: 0 auto;
     padding: 15px;
     background-color: #fff;
@@ -500,6 +500,26 @@ header {
     box-shadow: 0 0 15px rgba(76, 175, 80, 0.25);
 }
 </style>
+<style>
+.game-instructions {
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #f8f9fa;
+    border-left: 4px solid var(--primary-color);
+    border-radius: 5px;
+    font-size: 14px;
+    color: #333;
+}
+
+.game-instructions ul {
+    margin: 5px 0 0;
+    padding-left: 20px;
+}
+
+.game-instructions li {
+    list-style-type: disc;
+}
+</style>
 <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 </head>
 <body>
@@ -515,7 +535,7 @@ header {
         <div class="card" style="margin-bottom: 30px;">
             <div class="daily-reward-card">
                 <div class="reward-info">
-                    <div class="reward-amount">₦4</div>
+                    <div class="reward-amount">₦1</div>
                     <b>Complete reCAPTCHA to claim</b>
                     <div class="reward-status">Daily Reward: <span id="daily-reward-status">Loading...</span></div>
                     <div id="countdown-display" class="countdown-display">
@@ -531,12 +551,13 @@ header {
         <div id="recaptcha-container" style="display: flex; justify-content: center; margin-bottom: 20px;">
             <div class="g-recaptcha" data-sitekey="6LfANf0qAAAAALmlg5u3HnW00PtLEEkKMV-ulglv" data-callback="enableClaimButton"></div>
         </div>
-        
+
+  
         <!-- NEW SECTION: Game Quest Card -->
         <div class="card" style="margin-bottom: 30px;">
             <div class="daily-reward-card">
                 <div class="reward-info">
-                    <div class="reward-amount">₦10</div>
+                    <div class="reward-amount">₦3</div>
                     <b>Play 3 Games Quest</b>
                     <div class="reward-status">Quest Status: <span id="quest-status">Incomplete</span></div>
                     
@@ -546,15 +567,26 @@ header {
                     </div>
                     <div id="games-progress">Games Played: <span id="games-played-count">0</span>/3</div>
                     
+            
+<!-- HTML for game instructions -->
+<div class="game-instructions">
+    <b>Games to play to get reward:</b>
+    <ul>
+        <li>Whack Mole</li>
+        <li>Subway Surfers Halloween</li>
+        <li>Relic Runner Away</li>
+    </ul>
+</div>
                     <div id="game-timer-display" class="countdown-display hidden">
                         Next game in: <span id="game-countdown-timer">03:00</span>
                     </div>
                 </div>
+
                
                 <button id="claim-quest-btn" class="btn btn-primary hidden">Claim Quest Reward</button>
             </div>
         </div>
-        
+
         <div class="card">
             <div class="transactions-header">
                 <div class="card-title">Recent Transactions</div>
@@ -577,409 +609,418 @@ header {
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
     <script>
   // ----- Firebase Initialization -----
-  const firebaseConfig = {
-      apiKey: "AIzaSyBw1uA-kNKOZEufWKZ9AMBxvRGHNGF1lkA",
-      authDomain: "multi-games-a2561.firebaseapp.com",
-      databaseURL: "https://multi-games-a2561-default-rtdb.firebaseio.com",
-      projectId: "multi-games-a2561",
-      storageBucket: "multi-games-a2561.appspot.com",
-      messagingSenderId: "150551898066",
-      appId: "1:150551898066:web:4e8fb185f2321ba4140a0b",
-      measurementId: "G-PB8Y87E6XV"
-  };
-  firebase.initializeApp(firebaseConfig);
-  const auth = firebase.auth();
-  const database = firebase.database();
+const firebaseConfig = {
+    apiKey: "AIzaSyBw1uA-kNKOZEufWKZ9AMBxvRGHNGF1lkA",
+    authDomain: "multi-games-a2561.firebaseapp.com",
+    databaseURL: "https://multi-games-a2561-default-rtdb.firebaseio.com",
+    projectId: "multi-games-a2561",
+    storageBucket: "multi-games-a2561.appspot.com",
+    messagingSenderId: "150551898066",
+    appId: "1:150551898066:web:4e8fb185f2321ba4140a0b",
+    measurementId: "G-PB8Y87E6XV"
+};
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const database = firebase.database();
 
-  // ----- Global Constants and Variables -----
-  const API_KEY = '2K6vAj9C';
-  const DAILY_REWARD = 4;       // Naira for daily reward
-  const QUEST_REWARD = 10;      // Naira for quest reward
-  const GAME_COOLDOWN = 3 * 60 * 1000;  // 3 minutes cooldown (if used)
-  const MIN_PLAY_TIME = 3 * 60 * 1000;  // 3 minutes required per valid game session
+// ----- Global Constants and Variables -----
+const API_KEY = '2K6DSZdbL57EWYJNI4f31cX0O9PHQ8MFGaVCAUBReT7345D80Jea5bbEGkLfBFvAj9C';
+const DAILY_REWARD = 1;       // Naira for daily reward
+const QUEST_REWARD = 3;      // Naira for quest reward
+const GAME_COOLDOWN = 3 * 60 * 1000;  // 3 minutes cooldown (if used)
+const MIN_PLAY_TIME = 3 * 60 * 1000;  // 3 minutes required per valid game session
 
-  let userId = null;
-  let airtimeBalance = 0;
-  let lastClaim = 0;
-  let transactions = [];
-  let lastQuestClaim = 0;
-  let lastGamePlayed = 0;
-  let gamesPlayedToday = 0; // Will be determined by valid game sessions from localStorage
+let userId = null;
+let airtimeBalance = 0;
+let lastClaim = 0;
+let transactions = [];
+let lastQuestClaim = 0;
+let lastGamePlayed = 0;
+let gamesPlayedToday = 0; // Will be determined by valid game sessions from localStorage
+let captchaValidated = false; // Added this variable that was missing in the original code
 
-  // ----- DOM Elements -----
-  const claimBtn = document.getElementById('claim-btn');
-  const countdownDisplay = document.getElementById('countdown-display');
-  const countdownTimer = document.getElementById('countdown-timer');
-  const dailyRewardStatus = document.getElementById('daily-reward-status');
-  const alertContainer = document.getElementById('alert-container');
-  const transactionHistory = document.getElementById('transaction-history');
-  const recaptchaContainer = document.getElementById('recaptcha-container');
-  // Quest Elements
-  const questStatus = document.getElementById('quest-status');
-  const gamesPlayedCount = document.getElementById('games-played-count');
-  const questProgressBar = document.getElementById('quest-progress-bar');
-  const gameTimerDisplay = document.getElementById('game-timer-display');
-  const gameCountdownTimer = document.getElementById('game-countdown-timer');
-  const claimQuestBtn = document.getElementById('claim-quest-btn');
+// ----- DOM Elements -----
+const claimBtn = document.getElementById('claim-btn');
+const countdownDisplay = document.getElementById('countdown-display');
+const countdownTimer = document.getElementById('countdown-timer');
+const dailyRewardStatus = document.getElementById('daily-reward-status');
+const alertContainer = document.getElementById('alert-container');
+const transactionHistory = document.getElementById('transaction-history');
+const recaptchaContainer = document.getElementById('recaptcha-container');
+// Quest Elements
+const questStatus = document.getElementById('quest-status');
+const gamesPlayedCount = document.getElementById('games-played-count');
+const questProgressBar = document.getElementById('quest-progress-bar');
+const gameTimerDisplay = document.getElementById('game-timer-display');
+const gameCountdownTimer = document.getElementById('game-countdown-timer');
+const claimQuestBtn = document.getElementById('claim-quest-btn');
 
-  // ----- Firebase Data Functions -----
-  function initUserData(uid) {
-      const userRef = database.ref(`users/${uid}`);
-      userRef.get().then((snapshot) => {
-          if (!snapshot.exists()) {
-              userRef.set({
-                  airtimeBalance: 0,
-                  lastClaim: 0,
-                  transactions: [],
-                  lastQuestClaim: 0
-              });
-          }
-      }).catch((error) => {
-          console.error("Error checking user data:", error);
-      });
-  }
+// ----- Firebase Data Functions -----
+function initUserData(uid) {
+    const userRef = database.ref(`users/${uid}`);
+    userRef.get().then((snapshot) => {
+        if (!snapshot.exists()) {
+            userRef.set({
+                airtimeBalance: 0,
+                lastClaim: 0,
+                transactions: [],
+                lastQuestClaim: 0
+            });
+        }
+    }).catch((error) => {
+        console.error("Error checking user data:", error);
+    });
+}
 
-  function syncFromFirebase(uid) {
-      const userRef = database.ref(`users/${uid}`);
-      userRef.on('value', (snapshot) => {
-          const data = snapshot.val() || {};
-          airtimeBalance = data.airtimeBalance || 0;
-          lastClaim = data.lastClaim || 0;
-          transactions = data.transactions || [];
-          lastQuestClaim = data.lastQuestClaim || 0;
-          
-          updateTransactionHistory();
-          checkDailyReward();
-          checkForPlayedGames();
-          updateQuestProgressBar();
-      });
-  }
+function syncFromFirebase(uid) {
+    const userRef = database.ref(`users/${uid}`);
+    userRef.on('value', (snapshot) => {
+        const data = snapshot.val() || {};
+        airtimeBalance = data.airtimeBalance || 0;
+        lastClaim = data.lastClaim || 0;
+        transactions = data.transactions || [];
+        lastQuestClaim = data.lastQuestClaim || 0;
+        
+        updateTransactionHistory();
+        checkDailyReward();
+        checkForPlayedGames();
+        updateQuestProgressBar();
+    });
+}
 
-  function syncToFirebase(uid) {
-      if (!uid) return;
-      const userRef = database.ref(`users/${uid}`);
-      userRef.update({
-          airtimeBalance: airtimeBalance,
-          lastClaim: lastClaim,
-          transactions: transactions,
-          lastQuestClaim: lastQuestClaim
-      });
-  }
+function syncToFirebase(uid) {
+    if (!uid) return;
+    const userRef = database.ref(`users/${uid}`);
+    userRef.update({
+        airtimeBalance: airtimeBalance,
+        lastClaim: lastClaim,
+        transactions: transactions,
+        lastQuestClaim: lastQuestClaim
+    });
+}
 
-  function addTransaction(transaction) {
-      transactions.unshift(transaction);
-      syncToFirebase(userId);
-      updateTransactionHistory();
-  }
+function addTransaction(transaction) {
+    transactions.unshift(transaction);
+    syncToFirebase(userId);
+    updateTransactionHistory();
+}
 
-  function updateTransactionHistory() {
-      if (!transactionHistory) return;
-      if (transactions.length === 0) {
-          transactionHistory.innerHTML = `<div class="transaction-item" style="text-align: center; color: #888;">No transactions yet</div>`;
-          return;
-      }
-      transactionHistory.innerHTML = '';
-      transactions.slice(0, 3).forEach(transaction => {
-          const date = new Date(transaction.date);
-          const formattedDate = `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
-          const statusClass = transaction.status === 'success' ? 'success' :
-                                transaction.status === 'pending' ? 'pending' :
-                                transaction.status === 'reversed' ? 'reversed' : 'failed';
-          transactionHistory.innerHTML += `
-              <div class="transaction-item">
-                  <div class="transaction-info">
-                      <div class="transaction-title">${transaction.type}</div>
-                      <div class="transaction-date">${formattedDate}</div>
-                      ${transaction.phone ? `<div class="transaction-phone">${transaction.phone}</div>` : ''}
-                      ${transaction.reference ? `<div class="transaction-reference">Ref: ${transaction.reference}</div>` : ''}
-                  </div>
-                  <div class="transaction-amount ${transaction.amount > 0 ? 'credit' : 'debit'}">
-                      ${transaction.amount > 0 ? '+' : ''}₦${Math.abs(transaction.amount)}
-                  </div>
-                  <div class="transaction-status ${statusClass}">${transaction.status}</div>
-              </div>
-          `;
-      });
-  }
+function updateTransactionHistory() {
+    if (!transactionHistory) return;
+    if (transactions.length === 0) {
+        transactionHistory.innerHTML = `<div class="transaction-item" style="text-align: center; color: #888;">No transactions yet</div>`;
+        return;
+    }
+    transactionHistory.innerHTML = '';
+    transactions.slice(0, 3).forEach(transaction => {
+        const date = new Date(transaction.date);
+        const formattedDate = `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
+        const statusClass = transaction.status === 'success' ? 'success' :
+                              transaction.status === 'pending' ? 'pending' :
+                              transaction.status === 'reversed' ? 'reversed' : 'failed';
+        transactionHistory.innerHTML += `
+            <div class="transaction-item">
+                <div class="transaction-info">
+                    <div class="transaction-title">${transaction.type}</div>
+                    <div class="transaction-date">${formattedDate}</div>
+                    ${transaction.phone ? `<div class="transaction-phone">${transaction.phone}</div>` : ''}
+                    ${transaction.reference ? `<div class="transaction-reference">Ref: ${transaction.reference}</div>` : ''}
+                </div>
+                <div class="transaction-amount ${transaction.amount > 0 ? 'credit' : 'debit'}">
+                    ${transaction.amount > 0 ? '+' : ''}₦${Math.abs(transaction.amount)}
+                </div>
+                <div class="transaction-status ${statusClass}">${transaction.status}</div>
+            </div>
+        `;
+    });
+}
 
-  function showAlert(message, type) {
-      if (!alertContainer) return;
-      alertContainer.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
-      alertContainer.classList.remove('hidden');
-      setTimeout(() => { alertContainer.classList.add('hidden'); }, 3000);
-  }
+function showAlert(message, type) {
+    if (!alertContainer) return;
+    alertContainer.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
+    alertContainer.classList.remove('hidden');
+    setTimeout(() => { alertContainer.classList.add('hidden'); }, 3000);
+}
 
-  // ----- DAILY REWARD LOGIC -----
-  function checkDailyReward() {
-      if (!dailyRewardStatus || !claimBtn || !countdownDisplay) return;
-      const now = new Date().getTime();
-      const twentyFourHours = 24 * 60 * 60 * 1000;
-      if (now - lastClaim >= twentyFourHours) {
-          dailyRewardStatus.textContent = 'Available';
-          countdownDisplay.style.display = 'none';
-          recaptchaContainer.style.display = 'flex';
-      } else {
-          dailyRewardStatus.textContent = 'Claimed for today';
-          claimBtn.classList.add('hidden');
-          countdownDisplay.style.display = 'block';
-          recaptchaContainer.style.display = 'none';
-          startMainRewardCountdown(lastClaim);
-      }
-  }
+// ----- DAILY REWARD LOGIC -----
+function checkDailyReward() {
+    if (!dailyRewardStatus || !claimBtn || !countdownDisplay) return;
+    const now = new Date().getTime();
+    const twentyFourHours = 24 * 60 * 60 * 1000;
+    if (now - lastClaim >= twentyFourHours) {
+        dailyRewardStatus.textContent = 'Available';
+        countdownDisplay.style.display = 'none';
+        recaptchaContainer.style.display = 'flex';
+    } else {
+        dailyRewardStatus.textContent = 'Claimed for today';
+        claimBtn.classList.add('hidden');
+        countdownDisplay.style.display = 'block';
+        recaptchaContainer.style.display = 'none';
+        startMainRewardCountdown(lastClaim);
+    }
+}
 
-  function startMainRewardCountdown(lastClaimTime) {
-      if (!countdownTimer) return;
-      const targetTime = lastClaimTime + (24 * 60 * 60 * 1000);
-      const updateCountdown = () => {
-          const now = new Date().getTime();
-          const timeRemaining = targetTime - now;
-          if (timeRemaining <= 0) {
-              countdownTimer.textContent = "00:00:00";
-              checkDailyReward();
-              clearInterval(countdownInterval);
-              return;
-          }
-          const hours = Math.floor(timeRemaining / (1000 * 60 * 60));
-          const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
-          const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
-          countdownTimer.textContent = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-      };
-      updateCountdown();
-      const countdownInterval = setInterval(updateCountdown, 1000);
-      window.addEventListener('beforeunload', () => clearInterval(countdownInterval));
-  }
+function startMainRewardCountdown(lastClaimTime) {
+    if (!countdownTimer) return;
+    const targetTime = lastClaimTime + (24 * 60 * 60 * 1000);
+    const updateCountdown = () => {
+        const now = new Date().getTime();
+        const timeRemaining = targetTime - now;
+        if (timeRemaining <= 0) {
+            countdownTimer.textContent = "00:00:00";
+            checkDailyReward();
+            clearInterval(countdownInterval);
+            return;
+        }
+        const hours = Math.floor(timeRemaining / (1000 * 60 * 60));
+        const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
+        countdownTimer.textContent = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+    };
+    updateCountdown();
+    const countdownInterval = setInterval(updateCountdown, 1000);
+    window.addEventListener('beforeunload', () => clearInterval(countdownInterval));
+}
 
-  function claimDailyReward() {
-      if (!userId) {
-          showAlert('Please login to claim your daily reward', 'warning');
-          return;
-      }
-      if (!captchaValidated) {
-          showAlert('Please complete the reCAPTCHA first', 'warning');
-          return;
-      }
-      const now = new Date().getTime();
-      airtimeBalance += DAILY_REWARD;
-      lastClaim = now;
-      syncToFirebase(userId);
-      addTransaction({
-          type: 'Daily Reward Claimed',
-          amount: DAILY_REWARD,
-          date: now,
-          status: 'success'
-      });
-      checkDailyReward();
-      showAlert(`Daily reward of ₦${DAILY_REWARD} claimed successfully!`, 'success');
-      claimBtn.classList.add('hidden');
-      recaptchaContainer.style.display = 'none';
-      captchaValidated = false;
-  }
+function claimDailyReward() {
+    if (!userId) {
+        showAlert('Please login to claim your daily reward', 'warning');
+        return;
+    }
+    if (!captchaValidated) {
+        showAlert('Please complete the reCAPTCHA first', 'warning');
+        return;
+    }
+    const now = new Date().getTime();
+    airtimeBalance += DAILY_REWARD;
+    lastClaim = now;
+    syncToFirebase(userId);
+    addTransaction({
+        type: 'Daily Reward Claimed',
+        amount: DAILY_REWARD,
+        date: now,
+        status: 'success'
+    });
+    checkDailyReward();
+    showAlert(`Daily reward of ₦${DAILY_REWARD} claimed successfully!`, 'success');
+    claimBtn.classList.add('hidden');
+    recaptchaContainer.style.display = 'none';
+    captchaValidated = false;
+}
 
-  function enableClaimButton() {
-      captchaValidated = true;
-      claimBtn.disabled = false;
-      claimBtn.classList.remove('hidden');
-      claimBtn.addEventListener('click', function(event) {
-          event.preventDefault();
-          claimDailyReward();
-      });
-  }
+function enableClaimButton() {
+    captchaValidated = true;
+    claimBtn.disabled = false;
+    claimBtn.classList.remove('hidden');
+    claimBtn.addEventListener('click', function(event) {
+        event.preventDefault();
+        claimDailyReward();
+    });
+}
 
-  // ----- GAME QUEST AND PLAY SESSION TRACKING -----
-  // These functions use localStorage to track valid game sessions (each lasting at least 3 minutes)
-  // and automatically reset the sessions at 6 AM daily.
+// ----- GAME QUEST AND PLAY SESSION TRACKING -----
+// These functions use localStorage to track valid game sessions (each lasting at least 3 minutes)
+// and automatically reset the sessions at 6 AM daily.
 
-  function getTodaySixAM() {
-      const now = new Date();
-      return new Date(now.getFullYear(), now.getMonth(), now.getDate(), 6, 0, 0, 0);
-  }
+function getTodaySixAM() {
+    const now = new Date();
+    return new Date(now.getFullYear(), now.getMonth(), now.getDate(), 6, 0, 0, 0);
+}
 
-  function getYesterdaySixAM() {
-      return new Date(getTodaySixAM().getTime() - 24 * 60 * 60 * 1000);
-  }
+function getYesterdaySixAM() {
+    return new Date(getTodaySixAM().getTime() - 24 * 60 * 60 * 1000);
+}
 
-  // Reset stored played game sessions if the last reset was before today’s (or yesterday’s) 6 AM.
-  function resetPlayedGamesIfNeeded() {
-      const now = new Date();
-      const todaySixAM = getTodaySixAM();
-      let lastReset = localStorage.getItem('playedGamesLastReset');
-      if (!lastReset) {
-          const initialReset = now < todaySixAM ? getYesterdaySixAM() : todaySixAM;
-          localStorage.setItem('playedGamesLastReset', initialReset.toISOString());
-          localStorage.setItem('playedGames', JSON.stringify([]));
-          return;
-      }
-      const lastResetTime = new Date(lastReset);
-      if (now >= todaySixAM && lastResetTime < todaySixAM) {
-          localStorage.setItem('playedGames', JSON.stringify([]));
-          localStorage.setItem('playedGamesLastReset', todaySixAM.toISOString());
-      } else if (now < todaySixAM && lastResetTime < getYesterdaySixAM()) {
-          localStorage.setItem('playedGames', JSON.stringify([]));
-          localStorage.setItem('playedGamesLastReset', getYesterdaySixAM().toISOString());
-      }
-  }
+// Reset stored played game sessions if the last reset was before today's (or yesterday's) 6 AM.
+function resetPlayedGamesIfNeeded() {
+    const now = new Date();
+    const todaySixAM = getTodaySixAM();
+    let lastReset = localStorage.getItem('playedGamesLastReset');
+    if (!lastReset) {
+        const initialReset = now < todaySixAM ? getYesterdaySixAM() : todaySixAM;
+        localStorage.setItem('playedGamesLastReset', initialReset.toISOString());
+        localStorage.setItem('playedGames', JSON.stringify([]));
+        return;
+    }
+    const lastResetTime = new Date(lastReset);
+    if (now >= todaySixAM && lastResetTime < todaySixAM) {
+        localStorage.setItem('playedGames', JSON.stringify([]));
+        localStorage.setItem('playedGamesLastReset', todaySixAM.toISOString());
+    } else if (now < todaySixAM && lastResetTime < getYesterdaySixAM()) {
+        localStorage.setItem('playedGames', JSON.stringify([]));
+        localStorage.setItem('playedGamesLastReset', getYesterdaySixAM().toISOString());
+    }
+}
 
-  // Check localStorage for played game sessions that lasted at least MIN_PLAY_TIME
-  function checkForPlayedGames() {
-      resetPlayedGamesIfNeeded();
-      const playedGames = JSON.parse(localStorage.getItem("playedGames")) || [];
-      const validGames = playedGames.filter(game => game.duration >= MIN_PLAY_TIME);
-      gamesPlayedToday = validGames.length;
-      if (gamesPlayedCount) {
-          gamesPlayedCount.textContent = gamesPlayedToday;
-      }
-      updateQuestProgressBar();
-      if (gamesPlayedToday >= 3) {
-          questStatus.textContent = 'Complete! Claim Your Reward';
-          questStatus.style.color = '#4CAF50';
-          claimQuestBtn.classList.remove('hidden');
-      } else {
-          questStatus.textContent = 'In Progress';
-          questStatus.style.color = '#FFC107';
-          claimQuestBtn.classList.add('hidden');
-      }
-  }
+// Check localStorage for played game sessions that lasted at least MIN_PLAY_TIME
+function checkForPlayedGames() {
+    resetPlayedGamesIfNeeded();
+    const playedGames = JSON.parse(localStorage.getItem("playedGames")) || [];
+    const validGames = playedGames.filter(game => game.duration >= MIN_PLAY_TIME);
+    gamesPlayedToday = validGames.length;
+    if (gamesPlayedCount) {
+        gamesPlayedCount.textContent = gamesPlayedToday;
+    }
+    updateQuestProgressBar();
+    if (gamesPlayedToday >= 3) {
+        questStatus.textContent = 'Complete! Claim Your Reward';
+        questStatus.style.color = '#4CAF50';
+        claimQuestBtn.classList.remove('hidden');
+    } else {
+        questStatus.textContent = 'In Progress';
+        questStatus.style.color = '#FFC107';
+        claimQuestBtn.classList.add('hidden');
+    }
+}
 
-  function updateQuestProgressBar() {
-      if (!questProgressBar) return;
-      const progressPercentage = Math.min(100, (gamesPlayedToday / 3) * 100);
-      questProgressBar.style.width = `${progressPercentage}%`;
-  }
+function updateQuestProgressBar() {
+    if (!questProgressBar) return;
+    const progressPercentage = Math.min(100, (gamesPlayedToday / 3) * 100);
+    questProgressBar.style.width = `${progressPercentage}%`;
+}
 
-  // This function should be called by each game when a session qualifies (i.e. played for at least 3 minutes).
-  function recordGameSession(gameName, duration) {
-      resetPlayedGamesIfNeeded();
-      let playedGames = JSON.parse(localStorage.getItem("playedGames")) || [];
-      playedGames.push({
-          gameName: gameName,
-          duration: duration,
-          timestamp: new Date().toISOString()
-      });
-      localStorage.setItem("playedGames", JSON.stringify(playedGames));
-      checkForPlayedGames();
-  }
+// This function should be called by each game when a session qualifies (i.e. played for at least 3 minutes).
+function recordGameSession(gameName, duration) {
+    resetPlayedGamesIfNeeded();
+    let playedGames = JSON.parse(localStorage.getItem("playedGames")) || [];
+    playedGames.push({
+        gameName: gameName,
+        duration: duration,
+        timestamp: new Date().toISOString()
+    });
+    localStorage.setItem("playedGames", JSON.stringify(playedGames));
+    checkForPlayedGames();
+}
 
-  // (Optional) If you need to enforce a cooldown between sessions on the same game:
-  function checkGameCooldown() {
-      if (!gameTimerDisplay || !gameCountdownTimer) return;
-      const now = new Date().getTime();
-      const cooldownRemaining = GAME_COOLDOWN - (now - lastGamePlayed);
-      if (cooldownRemaining > 0 && lastGamePlayed > 0) {
-          gameTimerDisplay.classList.remove('hidden');
-          startGameCooldownTimer(lastGamePlayed);
-      } else {
-          gameTimerDisplay.classList.add('hidden');
-      }
-  }
+// (Optional) If you need to enforce a cooldown between sessions on the same game:
+function checkGameCooldown() {
+    if (!gameTimerDisplay || !gameCountdownTimer) return;
+    const now = new Date().getTime();
+    const cooldownRemaining = GAME_COOLDOWN - (now - lastGamePlayed);
+    if (cooldownRemaining > 0 && lastGamePlayed > 0) {
+        gameTimerDisplay.classList.remove('hidden');
+        startGameCooldownTimer(lastGamePlayed);
+    } else {
+        gameTimerDisplay.classList.add('hidden');
+    }
+}
 
-  function startGameCooldownTimer(lastPlayTime) {
-      if (!gameCountdownTimer) return;
-      const targetTime = lastPlayTime + GAME_COOLDOWN;
-      const updateGameCountdown = () => {
-          const now = new Date().getTime();
-          const timeRemaining = targetTime - now;
-          if (timeRemaining <= 0) {
-              gameCountdownTimer.textContent = "00:00";
-              gameTimerDisplay.classList.add('hidden');
-              clearInterval(gameCooldownInterval);
-              return;
-          }
-          const minutes = Math.floor(timeRemaining / (1000 * 60));
-          const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
-          gameCountdownTimer.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-      };
-      updateGameCountdown();
-      const gameCooldownInterval = setInterval(updateGameCountdown, 1000);
-      window.addEventListener('beforeunload', () => clearInterval(gameCooldownInterval));
-  }
+function startGameCooldownTimer(lastPlayTime) {
+    if (!gameCountdownTimer) return;
+    const targetTime = lastPlayTime + GAME_COOLDOWN;
+    const updateGameCountdown = () => {
+        const now = new Date().getTime();
+        const timeRemaining = targetTime - now;
+        if (timeRemaining <= 0) {
+            gameCountdownTimer.textContent = "00:00";
+            gameTimerDisplay.classList.add('hidden');
+            clearInterval(gameCooldownInterval);
+            return;
+        }
+        const minutes = Math.floor(timeRemaining / (1000 * 60));
+        const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
+        gameCountdownTimer.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+    };
+    updateGameCountdown();
+    const gameCooldownInterval = setInterval(updateGameCountdown, 1000);
+    window.addEventListener('beforeunload', () => clearInterval(gameCooldownInterval));
+}
 
-  function claimQuestReward() {
-      if (!userId) {
-          showAlert('Please login to claim your quest reward', 'warning');
-          return;
-      }
-      if (gamesPlayedToday < 3) {
-          showAlert('You need to play 3 games to claim this reward', 'warning');
-          return;
-      }
-      const now = new Date().getTime();
-      airtimeBalance += QUEST_REWARD;
-      lastQuestClaim = now;
-      // Clear recorded game sessions after claiming reward
-      localStorage.setItem("playedGames", JSON.stringify([]));
-      localStorage.setItem("playedGamesLastReset", getTodaySixAM().toISOString());
-      syncToFirebase(userId);
-      addTransaction({
-          type: 'Game Quest Reward',
-          amount: QUEST_REWARD,
-          date: now,
-          status: 'success'
-      });
-      checkForPlayedGames();
-      showAlert(`Quest reward of ₦${QUEST_REWARD} claimed successfully!`, 'success');
-  }
+function claimQuestReward() {
+    if (!userId) {
+        showAlert('Please login to claim your quest reward', 'warning');
+        return;
+    }
+    if (gamesPlayedToday < 3) {
+        showAlert('You need to play 3 games to claim this reward', 'warning');
+        return;
+    }
+    const now = new Date().getTime();
+    airtimeBalance += QUEST_REWARD;
+    lastQuestClaim = now;
+    // Clear recorded game sessions after claiming reward
+    localStorage.setItem("playedGames", JSON.stringify([]));
+    localStorage.setItem("playedGamesLastReset", getTodaySixAM().toISOString());
+    syncToFirebase(userId);
+    addTransaction({
+        type: 'Game Quest Reward',
+        amount: QUEST_REWARD,
+        date: now,
+        status: 'success'
+    });
+    checkForPlayedGames();
+    showAlert(`Quest reward of ₦${QUEST_REWARD} claimed successfully!`, 'success');
+}
 
-  // ----- Firebase Auth Listener -----
-  auth.onAuthStateChanged((user) => {
-      if (user) {
-          userId = user.uid;
-          initUserData(userId);
-          syncFromFirebase(userId);
-          document.getElementById('sign-out-btn').classList.remove('hidden');
-      } else {
-          userId = null;
-          airtimeBalance = 0;
-          lastClaim = 0;
-          transactions = [];
-          document.getElementById('sign-out-btn').classList.add('hidden');
-      }
-  });
+// ----- Firebase Auth Listener -----
+auth.onAuthStateChanged((user) => {
+    if (user) {
+        userId = user.uid;
+        initUserData(userId);
+        syncFromFirebase(userId);
+        document.getElementById('sign-out-btn').classList.remove('hidden');
+    } else {
+        userId = null;
+        airtimeBalance = 0;
+        lastClaim = 0;
+        transactions = [];
+        document.getElementById('sign-out-btn').classList.add('hidden');
+    }
+});
 
-  // ----- Event Listeners and Initial Checks -----
-  // Check for played games periodically (every 5 seconds)
-  setInterval(checkForPlayedGames, 5000);
+// ----- Event Listeners and Initial Checks -----
+// Check for played games periodically (every 5 seconds)
+setInterval(checkForPlayedGames, 5000);
 
-  // Network selection
-  document.querySelectorAll('.network-icon').forEach(icon => {
-      icon.addEventListener('click', function() {
-          document.querySelectorAll('.network-icon').forEach(n => n.classList.remove('active'));
-          this.classList.add('active');
-          selectedNetwork = this.getAttribute('data-network');
-          selectedPlanId = this.getAttribute('data-plan');
-      });
-  });
+// Network selection
+document.querySelectorAll('.network-icon').forEach(icon => {
+    icon.addEventListener('click', function() {
+        document.querySelectorAll('.network-icon').forEach(n => n.classList.remove('active'));
+        this.classList.add('active');
+        selectedNetwork = this.getAttribute('data-network');
+        selectedPlanId = this.getAttribute('data-plan');
+    });
+});
 
-  // Amount selection
-  document.querySelectorAll('.amount-option').forEach(option => {
-      option.addEventListener('click', function() {
-          document.querySelectorAll('.amount-option').forEach(o => o.classList.remove('active'));
-          this.classList.add('active');
-          selectedAmount = parseInt(this.getAttribute('data-amount'));
-      });
-  });
+// Amount selection
+document.querySelectorAll('.amount-option').forEach(option => {
+    option.addEventListener('click', function() {
+        document.querySelectorAll('.amount-option').forEach(o => o.classList.remove('active'));
+        this.classList.add('active');
+        selectedAmount = parseInt(this.getAttribute('data-amount'));
+    });
+});
 
-  // Sign out button
-  const signOutBtn = document.getElementById('sign-out-btn');
-  if (signOutBtn) {
-      signOutBtn.addEventListener('click', function() {
-          auth.signOut().then(() => {
-              showAlert('Signed out successfully', 'success');
-          }).catch((error) => {
-              console.error('Error signing out:', error);
-              showAlert('Error signing out', 'danger');
-          });
-      });
-  }
+// Sign out button
+const signOutBtn = document.getElementById('sign-out-btn');
+if (signOutBtn) {
+    signOutBtn.addEventListener('click', function() {
+        auth.signOut().then(() => {
+            showAlert('Signed out successfully', 'success');
+        }).catch((error) => {
+            console.error('Error signing out:', error);
+            showAlert('Error signing out', 'danger');
+        });
+    });
+}
 
-  // Initial sync and played game check on DOM load
-  window.addEventListener('DOMContentLoaded', () => {
-      if (auth.currentUser) {
-          userId = auth.currentUser.uid;
-          initUserData(userId);
-          syncFromFirebase(userId);
-      }
-      checkForPlayedGames();
-  });
+// Quest claim button event listener - THIS IS THE KEY ADDITION
+if (claimQuestBtn) {
+    claimQuestBtn.addEventListener('click', function(event) {
+        event.preventDefault();
+        claimQuestReward();
+    });
+}
+
+// Initial sync and played game check on DOM load
+window.addEventListener('DOMContentLoaded', () => {
+    if (auth.currentUser) {
+        userId = auth.currentUser.uid;
+        initUserData(userId);
+        syncFromFirebase(userId);
+    }
+    checkForPlayedGames();
+});
 </script>
 </body>
 </html>
