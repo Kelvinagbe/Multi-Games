@@ -520,6 +520,27 @@ header {
     list-style-type: disc;
 }
 </style>
+<style>
+.countdown-container {
+    text-align: center;
+    margin-top: 10px;
+    padding: 8px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+}
+
+.countdown-timer {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #495057;
+    display: block;
+    margin-top: 5px;
+}
+
+.hidden {
+    display: none;
+}
+</style>
 <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 </head>
 <body>
@@ -566,6 +587,11 @@ header {
                         <div id="quest-progress-bar" class="progress-bar" style="height: 20px; width: 0%; background-color: var(--primary-color); border-radius: 5px; transition: width 0.3s ease;"></div>
                     </div>
                     <div id="games-progress">Games Played: <span id="games-played-count">0</span>/3</div>
+
+<div id="quest-countdown-display" class="countdown-container hidden">
+    <p>Next quest reward available in:</p>
+    <span id="quest-countdown-timer" class="countdown-timer">24:00:00</span>
+</div>
                     
             
 <!-- HTML for game instructions -->
@@ -625,50 +651,57 @@ const database = firebase.database();
 
 // ----- Global Constants and Variables -----
 const API_KEY = '2K6DSZdbL57EWYJNI4f31cX0O9PHQ8MFGaVCAUBReT7345D80Jea5bbEGkLfBFvAj9C';
-const DAILY_REWARD = 1;       // Naira for daily reward
-const QUEST_REWARD = 3;      // Naira for quest reward
-const GAME_COOLDOWN = 3 * 60 * 1000;  // 3 minutes cooldown (if used)
+const DAILY_REWARD = 1;
+const QUEST_REWARD = 3;
 const MIN_PLAY_TIME = 3 * 60 * 1000;  // 3 minutes required per valid game session
+const QUEST_COOLDOWN = 24 * 60 * 60 * 1000; // 24 hours cooldown for quest reward
 
-let userId = null;
-let airtimeBalance = 0;
-let lastClaim = 0;
-let transactions = [];
-let lastQuestClaim = 0;
-let lastGamePlayed = 0;
-let gamesPlayedToday = 0; // Will be determined by valid game sessions from localStorage
-let captchaValidated = false; // Added this variable that was missing in the original code
+let userData = {
+    userId: null,
+    airtimeBalance: 0,
+    lastClaim: 0,
+    transactions: [],
+    lastQuestClaim: 0,
+    gamesPlayedToday: 0,
+    isProcessingClaim: false,  // Lock to prevent double claims
+    isProcessingQuestClaim: false  // Lock for quest claims
+};
+
+let userLoggedIn = false;
+let captchaValidated = false;
 
 // ----- DOM Elements -----
-const claimBtn = document.getElementById('claim-btn');
-const countdownDisplay = document.getElementById('countdown-display');
-const countdownTimer = document.getElementById('countdown-timer');
-const dailyRewardStatus = document.getElementById('daily-reward-status');
-const alertContainer = document.getElementById('alert-container');
-const transactionHistory = document.getElementById('transaction-history');
-const recaptchaContainer = document.getElementById('recaptcha-container');
-// Quest Elements
-const questStatus = document.getElementById('quest-status');
-const gamesPlayedCount = document.getElementById('games-played-count');
-const questProgressBar = document.getElementById('quest-progress-bar');
-const gameTimerDisplay = document.getElementById('game-timer-display');
-const gameCountdownTimer = document.getElementById('game-countdown-timer');
-const claimQuestBtn = document.getElementById('claim-quest-btn');
+const elements = {
+    claimBtn: document.getElementById('claim-btn'),
+    countdownDisplay: document.getElementById('countdown-display'),
+    countdownTimer: document.getElementById('countdown-timer'),
+    dailyRewardStatus: document.getElementById('daily-reward-status'),
+    alertContainer: document.getElementById('alert-container'),
+    transactionHistory: document.getElementById('transaction-history'),
+    recaptchaContainer: document.getElementById('recaptcha-container'),
+    questStatus: document.getElementById('quest-status'),
+    gamesPlayedCount: document.getElementById('games-played-count'),
+    questProgressBar: document.getElementById('quest-progress-bar'),
+    claimQuestBtn: document.getElementById('claim-quest-btn'),
+    questCountdownDisplay: document.getElementById('quest-countdown-display'),
+    questCountdownTimer: document.getElementById('quest-countdown-timer'),
+    signOutBtn: document.getElementById('sign-out-btn')
+};
 
 // ----- Firebase Data Functions -----
 function initUserData(uid) {
     const userRef = database.ref(`users/${uid}`);
-    userRef.get().then((snapshot) => {
+    return userRef.get().then((snapshot) => {
         if (!snapshot.exists()) {
-            userRef.set({
+            return userRef.set({
                 airtimeBalance: 0,
                 lastClaim: 0,
                 transactions: [],
-                lastQuestClaim: 0
+                lastQuestClaim: 0,
+                playedGames: [],
+                playedGamesLastReset: new Date().toISOString()
             });
         }
-    }).catch((error) => {
-        console.error("Error checking user data:", error);
     });
 }
 
@@ -676,49 +709,85 @@ function syncFromFirebase(uid) {
     const userRef = database.ref(`users/${uid}`);
     userRef.on('value', (snapshot) => {
         const data = snapshot.val() || {};
-        airtimeBalance = data.airtimeBalance || 0;
-        lastClaim = data.lastClaim || 0;
-        transactions = data.transactions || [];
-        lastQuestClaim = data.lastQuestClaim || 0;
         
+        // Update user data with server values
+        userData.airtimeBalance = data.airtimeBalance || 0;
+        userData.lastClaim = data.lastClaim || 0;
+        userData.transactions = data.transactions || [];
+        userData.lastQuestClaim = data.lastQuestClaim || 0;
+        
+        // Sync played games from Firebase with server timestamp validation
+        if (data.playedGames) {
+            localStorage.setItem('playedGames', JSON.stringify(data.playedGames));
+        }
+        if (data.playedGamesLastReset) {
+            localStorage.setItem('playedGamesLastReset', data.playedGamesLastReset);
+        }
+        
+        // Release claim locks in case they were stuck
+        userData.isProcessingClaim = false;
+        userData.isProcessingQuestClaim = false;
+        
+        // Update UI based on synced data
         updateTransactionHistory();
         checkDailyReward();
         checkForPlayedGames();
-        updateQuestProgressBar();
+        checkQuestCooldown();
     });
 }
 
-function syncToFirebase(uid) {
-    if (!uid) return;
+function syncToFirebase(uid, updateData = {}) {
+    if (!uid) return Promise.reject('No user ID');
+    
     const userRef = database.ref(`users/${uid}`);
-    userRef.update({
-        airtimeBalance: airtimeBalance,
-        lastClaim: lastClaim,
-        transactions: transactions,
-        lastQuestClaim: lastQuestClaim
+    
+    // Get current played games data from localStorage to sync back
+    const playedGames = JSON.parse(localStorage.getItem('playedGames')) || [];
+    const playedGamesLastReset = localStorage.getItem('playedGamesLastReset') || new Date().toISOString();
+    
+    // Merge with any data updates passed in
+    const dataToSync = {
+        airtimeBalance: userData.airtimeBalance,
+        lastClaim: userData.lastClaim,
+        transactions: userData.transactions,
+        lastQuestClaim: userData.lastQuestClaim,
+        playedGames: playedGames,
+        playedGamesLastReset: playedGamesLastReset,
+        ...updateData
+    };
+    
+    // Use server timestamp for enhanced security
+    return userRef.update({
+        ...dataToSync,
+        lastUpdated: firebase.database.ServerValue.TIMESTAMP
     });
 }
 
 function addTransaction(transaction) {
-    transactions.unshift(transaction);
-    syncToFirebase(userId);
+    userData.transactions.unshift(transaction);
+    if (userData.userId) {
+        syncToFirebase(userData.userId);
+    }
     updateTransactionHistory();
 }
 
 function updateTransactionHistory() {
-    if (!transactionHistory) return;
-    if (transactions.length === 0) {
-        transactionHistory.innerHTML = `<div class="transaction-item" style="text-align: center; color: #888;">No transactions yet</div>`;
+    if (!elements.transactionHistory) return;
+    
+    if (userData.transactions.length === 0) {
+        elements.transactionHistory.innerHTML = `<div class="transaction-item" style="text-align: center; color: #888;">No transactions yet</div>`;
         return;
     }
-    transactionHistory.innerHTML = '';
-    transactions.slice(0, 3).forEach(transaction => {
+    
+    elements.transactionHistory.innerHTML = '';
+    userData.transactions.slice(0, 3).forEach(transaction => {
         const date = new Date(transaction.date);
         const formattedDate = `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
         const statusClass = transaction.status === 'success' ? 'success' :
-                              transaction.status === 'pending' ? 'pending' :
-                              transaction.status === 'reversed' ? 'reversed' : 'failed';
-        transactionHistory.innerHTML += `
+                           transaction.status === 'pending' ? 'pending' :
+                           transaction.status === 'reversed' ? 'reversed' : 'failed';
+        
+        elements.transactionHistory.innerHTML += `
             <div class="transaction-item">
                 <div class="transaction-info">
                     <div class="transaction-title">${transaction.type}</div>
@@ -736,92 +805,134 @@ function updateTransactionHistory() {
 }
 
 function showAlert(message, type) {
-    if (!alertContainer) return;
-    alertContainer.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
-    alertContainer.classList.remove('hidden');
-    setTimeout(() => { alertContainer.classList.add('hidden'); }, 3000);
+    if (!elements.alertContainer) return;
+    elements.alertContainer.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
+    elements.alertContainer.classList.remove('hidden');
+    setTimeout(() => { elements.alertContainer.classList.add('hidden'); }, 3000);
 }
 
 // ----- DAILY REWARD LOGIC -----
 function checkDailyReward() {
-    if (!dailyRewardStatus || !claimBtn || !countdownDisplay) return;
+    if (!elements.dailyRewardStatus || !elements.claimBtn || !elements.countdownDisplay) return;
+    
     const now = new Date().getTime();
     const twentyFourHours = 24 * 60 * 60 * 1000;
-    if (now - lastClaim >= twentyFourHours) {
-        dailyRewardStatus.textContent = 'Available';
-        countdownDisplay.style.display = 'none';
-        recaptchaContainer.style.display = 'flex';
+    
+    if (now - userData.lastClaim >= twentyFourHours) {
+        elements.dailyRewardStatus.textContent = 'Available';
+        elements.countdownDisplay.style.display = 'none';
+        elements.recaptchaContainer.style.display = 'flex';
     } else {
-        dailyRewardStatus.textContent = 'Claimed for today';
-        claimBtn.classList.add('hidden');
-        countdownDisplay.style.display = 'block';
-        recaptchaContainer.style.display = 'none';
-        startMainRewardCountdown(lastClaim);
+        elements.dailyRewardStatus.textContent = 'Claimed for today';
+        elements.claimBtn.classList.add('hidden');
+        elements.countdownDisplay.style.display = 'block';
+        elements.recaptchaContainer.style.display = 'none';
+        startMainRewardCountdown(userData.lastClaim);
     }
 }
 
 function startMainRewardCountdown(lastClaimTime) {
-    if (!countdownTimer) return;
+    if (!elements.countdownTimer) return;
+    
     const targetTime = lastClaimTime + (24 * 60 * 60 * 1000);
+    
     const updateCountdown = () => {
         const now = new Date().getTime();
         const timeRemaining = targetTime - now;
+        
         if (timeRemaining <= 0) {
-            countdownTimer.textContent = "00:00:00";
+            elements.countdownTimer.textContent = "00:00:00";
             checkDailyReward();
             clearInterval(countdownInterval);
             return;
         }
+        
         const hours = Math.floor(timeRemaining / (1000 * 60 * 60));
         const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
         const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
-        countdownTimer.textContent = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+        elements.countdownTimer.textContent = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
     };
+    
     updateCountdown();
     const countdownInterval = setInterval(updateCountdown, 1000);
     window.addEventListener('beforeunload', () => clearInterval(countdownInterval));
 }
 
-function claimDailyReward() {
-    if (!userId) {
+async function claimDailyReward() {
+    // Check prerequisites
+    if (!userLoggedIn || !userData.userId) {
         showAlert('Please login to claim your daily reward', 'warning');
         return;
     }
+    
     if (!captchaValidated) {
         showAlert('Please complete the reCAPTCHA first', 'warning');
         return;
     }
-    const now = new Date().getTime();
-    airtimeBalance += DAILY_REWARD;
-    lastClaim = now;
-    syncToFirebase(userId);
-    addTransaction({
-        type: 'Daily Reward Claimed',
-        amount: DAILY_REWARD,
-        date: now,
-        status: 'success'
-    });
-    checkDailyReward();
-    showAlert(`Daily reward of ₦${DAILY_REWARD} claimed successfully!`, 'success');
-    claimBtn.classList.add('hidden');
-    recaptchaContainer.style.display = 'none';
-    captchaValidated = false;
+    
+    // Prevent double claims
+    if (userData.isProcessingClaim) {
+        showAlert('Processing previous claim, please wait...', 'warning');
+        return;
+    }
+    
+    userData.isProcessingClaim = true;
+    
+    try {
+        // Double-check with server that reward is available
+        const userRef = database.ref(`users/${userData.userId}`);
+        const snapshot = await userRef.once('value');
+        const serverData = snapshot.val() || {};
+        const now = new Date().getTime();
+        
+        if (now - (serverData.lastClaim || 0) < 24 * 60 * 60 * 1000) {
+            showAlert('Daily reward already claimed', 'warning');
+            userData.isProcessingClaim = false;
+            return;
+        }
+        
+        // Update balance and claim time atomically on server
+        await syncToFirebase(userData.userId, {
+            airtimeBalance: (serverData.airtimeBalance || 0) + DAILY_REWARD,
+            lastClaim: now,
+            transactions: [
+                {
+                    type: 'Daily Reward Claimed',
+                    amount: DAILY_REWARD,
+                    date: now,
+                    status: 'success'
+                },
+                ...(serverData.transactions || [])
+            ]
+        });
+        
+        // Update local data
+        userData.airtimeBalance += DAILY_REWARD;
+        userData.lastClaim = now;
+        
+        showAlert(`Daily reward of ₦${DAILY_REWARD} claimed successfully!`, 'success');
+        
+        // Update UI
+        elements.claimBtn.classList.add('hidden');
+        elements.recaptchaContainer.style.display = 'none';
+        captchaValidated = false;
+        checkDailyReward();
+        
+    } catch (error) {
+        console.error("Error claiming daily reward:", error);
+        showAlert('Error claiming reward. Please try again.', 'danger');
+    } finally {
+        userData.isProcessingClaim = false;
+    }
 }
 
 function enableClaimButton() {
     captchaValidated = true;
-    claimBtn.disabled = false;
-    claimBtn.classList.remove('hidden');
-    claimBtn.addEventListener('click', function(event) {
-        event.preventDefault();
-        claimDailyReward();
-    });
+    elements.claimBtn.disabled = false;
+    elements.claimBtn.classList.remove('hidden');
 }
 
-// ----- GAME QUEST AND PLAY SESSION TRACKING -----
-// These functions use localStorage to track valid game sessions (each lasting at least 3 minutes)
-// and automatically reset the sessions at 6 AM daily.
-
+// ----- GAME QUEST LOGIC -----
 function getTodaySixAM() {
     const now = new Date();
     return new Date(now.getFullYear(), now.getMonth(), now.getDate(), 6, 0, 0, 0);
@@ -831,195 +942,341 @@ function getYesterdaySixAM() {
     return new Date(getTodaySixAM().getTime() - 24 * 60 * 60 * 1000);
 }
 
-// Reset stored played game sessions if the last reset was before today's (or yesterday's) 6 AM.
+// Reset game tracking if needed, respecting quest cooldown
 function resetPlayedGamesIfNeeded() {
-    const now = new Date();
-    const todaySixAM = getTodaySixAM();
-    let lastReset = localStorage.getItem('playedGamesLastReset');
-    if (!lastReset) {
-        const initialReset = now < todaySixAM ? getYesterdaySixAM() : todaySixAM;
-        localStorage.setItem('playedGamesLastReset', initialReset.toISOString());
-        localStorage.setItem('playedGames', JSON.stringify([]));
+    const now = new Date().getTime();
+    
+    // Don't reset if quest is on cooldown
+    if (now - userData.lastQuestClaim < QUEST_COOLDOWN) {
         return;
     }
+    
+    const todaySixAM = getTodaySixAM();
+    let lastReset = localStorage.getItem('playedGamesLastReset');
+    
+    if (!lastReset) {
+        const initialReset = now < todaySixAM.getTime() ? getYesterdaySixAM() : todaySixAM;
+        localStorage.setItem('playedGamesLastReset', initialReset.toISOString());
+        localStorage.setItem('playedGames', JSON.stringify([]));
+        
+        if (userData.userId) {
+            syncToFirebase(userData.userId);
+        }
+        return;
+    }
+    
     const lastResetTime = new Date(lastReset);
-    if (now >= todaySixAM && lastResetTime < todaySixAM) {
+    if (now >= todaySixAM.getTime() && lastResetTime < todaySixAM) {
         localStorage.setItem('playedGames', JSON.stringify([]));
         localStorage.setItem('playedGamesLastReset', todaySixAM.toISOString());
-    } else if (now < todaySixAM && lastResetTime < getYesterdaySixAM()) {
+        if (userData.userId) {
+            syncToFirebase(userData.userId);
+        }
+    } else if (now < todaySixAM.getTime() && lastResetTime < getYesterdaySixAM()) {
         localStorage.setItem('playedGames', JSON.stringify([]));
         localStorage.setItem('playedGamesLastReset', getYesterdaySixAM().toISOString());
+        if (userData.userId) {
+            syncToFirebase(userData.userId);
+        }
     }
 }
 
-// Check localStorage for played game sessions that lasted at least MIN_PLAY_TIME
 function checkForPlayedGames() {
     resetPlayedGamesIfNeeded();
+    
     const playedGames = JSON.parse(localStorage.getItem("playedGames")) || [];
     const validGames = playedGames.filter(game => game.duration >= MIN_PLAY_TIME);
-    gamesPlayedToday = validGames.length;
-    if (gamesPlayedCount) {
-        gamesPlayedCount.textContent = gamesPlayedToday;
+    
+    userData.gamesPlayedToday = validGames.length;
+    
+    if (elements.gamesPlayedCount) {
+        elements.gamesPlayedCount.textContent = userData.gamesPlayedToday;
     }
+    
     updateQuestProgressBar();
-    if (gamesPlayedToday >= 3) {
-        questStatus.textContent = 'Complete! Claim Your Reward';
-        questStatus.style.color = '#4CAF50';
-        claimQuestBtn.classList.remove('hidden');
+    checkQuestStatus();
+}
+
+function checkQuestCooldown() {
+    if (!elements.questStatus || !elements.claimQuestBtn || !elements.questCountdownDisplay) return;
+    
+    const now = new Date().getTime();
+    const cooldownRemaining = QUEST_COOLDOWN - (now - userData.lastQuestClaim);
+    
+    if (cooldownRemaining > 0 && userData.lastQuestClaim > 0) {
+        // Quest is on cooldown
+        elements.questStatus.textContent = 'On Cooldown';
+        elements.questStatus.style.color = '#888';
+        elements.claimQuestBtn.classList.add('hidden');
+        elements.questCountdownDisplay.classList.remove('hidden');
+        startQuestCountdown(userData.lastQuestClaim);
     } else {
-        questStatus.textContent = 'In Progress';
-        questStatus.style.color = '#FFC107';
-        claimQuestBtn.classList.add('hidden');
+        // No quest cooldown
+        elements.questCountdownDisplay.classList.add('hidden');
+        checkQuestStatus();
+    }
+}
+
+function startQuestCountdown(lastQuestClaimTime) {
+    if (!elements.questCountdownTimer) return;
+    
+    const targetTime = lastQuestClaimTime + QUEST_COOLDOWN;
+    
+    const updateQuestCountdown = () => {
+        const now = new Date().getTime();
+        const timeRemaining = targetTime - now;
+        
+        if (timeRemaining <= 0) {
+            elements.questCountdownTimer.textContent = "00:00:00";
+            checkQuestCooldown();
+            clearInterval(questCountdownInterval);
+            return;
+        }
+        
+        const hours = Math.floor(timeRemaining / (1000 * 60 * 60));
+        const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
+        elements.questCountdownTimer.textContent = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+    };
+    
+    updateQuestCountdown();
+    const questCountdownInterval = setInterval(updateQuestCountdown, 1000);
+    window.addEventListener('beforeunload', () => clearInterval(questCountdownInterval));
+}
+
+function checkQuestStatus() {
+    if (!elements.questStatus || !elements.claimQuestBtn) return;
+    
+    // First check if quest is on cooldown
+    const now = new Date().getTime();
+    if (now - userData.lastQuestClaim < QUEST_COOLDOWN) {
+        return; // Let the cooldown function handle this state
+    }
+    
+    // Quest is not on cooldown, check completion status
+    if (userData.gamesPlayedToday >= 3) {
+        elements.questStatus.textContent = userLoggedIn ? 'Complete! Claim Your Reward' : 'Complete! Login to claim reward';
+        elements.questStatus.style.color = '#4CAF50';
+        elements.claimQuestBtn.classList.toggle('hidden', !userLoggedIn);
+    } else {
+        elements.questStatus.textContent = 'In Progress';
+        elements.questStatus.style.color = '#FFC107';
+        elements.claimQuestBtn.classList.add('hidden');
     }
 }
 
 function updateQuestProgressBar() {
-    if (!questProgressBar) return;
-    const progressPercentage = Math.min(100, (gamesPlayedToday / 3) * 100);
-    questProgressBar.style.width = `${progressPercentage}%`;
+    if (!elements.questProgressBar) return;
+    const progressPercentage = Math.min(100, (userData.gamesPlayedToday / 3) * 100);
+    elements.questProgressBar.style.width = `${progressPercentage}%`;
 }
 
-// This function should be called by each game when a session qualifies (i.e. played for at least 3 minutes).
+// Record a valid game session
 function recordGameSession(gameName, duration) {
-    resetPlayedGamesIfNeeded();
     let playedGames = JSON.parse(localStorage.getItem("playedGames")) || [];
+    
     playedGames.push({
         gameName: gameName,
         duration: duration,
         timestamp: new Date().toISOString()
     });
+    
     localStorage.setItem("playedGames", JSON.stringify(playedGames));
+    
+    // Sync to Firebase
+    if (userData.userId) {
+        syncToFirebase(userData.userId);
+    }
+    
     checkForPlayedGames();
 }
 
-// (Optional) If you need to enforce a cooldown between sessions on the same game:
-function checkGameCooldown() {
-    if (!gameTimerDisplay || !gameCountdownTimer) return;
-    const now = new Date().getTime();
-    const cooldownRemaining = GAME_COOLDOWN - (now - lastGamePlayed);
-    if (cooldownRemaining > 0 && lastGamePlayed > 0) {
-        gameTimerDisplay.classList.remove('hidden');
-        startGameCooldownTimer(lastGamePlayed);
-    } else {
-        gameTimerDisplay.classList.add('hidden');
-    }
-}
-
-function startGameCooldownTimer(lastPlayTime) {
-    if (!gameCountdownTimer) return;
-    const targetTime = lastPlayTime + GAME_COOLDOWN;
-    const updateGameCountdown = () => {
-        const now = new Date().getTime();
-        const timeRemaining = targetTime - now;
-        if (timeRemaining <= 0) {
-            gameCountdownTimer.textContent = "00:00";
-            gameTimerDisplay.classList.add('hidden');
-            clearInterval(gameCooldownInterval);
-            return;
-        }
-        const minutes = Math.floor(timeRemaining / (1000 * 60));
-        const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
-        gameCountdownTimer.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-    };
-    updateGameCountdown();
-    const gameCooldownInterval = setInterval(updateGameCountdown, 1000);
-    window.addEventListener('beforeunload', () => clearInterval(gameCooldownInterval));
-}
-
-function claimQuestReward() {
-    if (!userId) {
+// Claim quest reward with server verification
+async function claimQuestReward() {
+    // Check prerequisites
+    if (!userLoggedIn || !userData.userId) {
         showAlert('Please login to claim your quest reward', 'warning');
         return;
     }
-    if (gamesPlayedToday < 3) {
+    
+    if (userData.gamesPlayedToday < 3) {
         showAlert('You need to play 3 games to claim this reward', 'warning');
         return;
     }
-    const now = new Date().getTime();
-    airtimeBalance += QUEST_REWARD;
-    lastQuestClaim = now;
-    // Clear recorded game sessions after claiming reward
-    localStorage.setItem("playedGames", JSON.stringify([]));
-    localStorage.setItem("playedGamesLastReset", getTodaySixAM().toISOString());
-    syncToFirebase(userId);
-    addTransaction({
-        type: 'Game Quest Reward',
-        amount: QUEST_REWARD,
-        date: now,
-        status: 'success'
-    });
-    checkForPlayedGames();
-    showAlert(`Quest reward of ₦${QUEST_REWARD} claimed successfully!`, 'success');
+    
+    // Prevent double claims
+    if (userData.isProcessingQuestClaim) {
+        showAlert('Processing your claim, please wait...', 'warning');
+        return;
+    }
+    
+    userData.isProcessingQuestClaim = true;
+    
+    try {
+        // Verify with server that reward is available
+        const userRef = database.ref(`users/${userData.userId}`);
+        const snapshot = await userRef.once('value');
+        const serverData = snapshot.val() || {};
+        const now = new Date().getTime();
+        
+        // Check cooldown from server data
+        if (now - (serverData.lastQuestClaim || 0) < QUEST_COOLDOWN) {
+            showAlert('Quest reward is on cooldown', 'warning');
+            userData.isProcessingQuestClaim = false;
+            return;
+        }
+        
+        // Verify games played count from server
+        const serverGames = serverData.playedGames || [];
+        const validServerGames = serverGames.filter(game => game.duration >= MIN_PLAY_TIME);
+        
+        if (validServerGames.length < 3) {
+            showAlert('Server verification failed: Not enough valid games played', 'warning');
+            userData.isProcessingQuestClaim = false;
+            checkForPlayedGames(); // Sync with server's game count
+            return;
+        }
+        
+        // Process reward atomically on server
+        await syncToFirebase(userData.userId, {
+            airtimeBalance: (serverData.airtimeBalance || 0) + QUEST_REWARD,
+            lastQuestClaim: now,
+            // Don't reset games - they'll remain until cooldown is over
+            transactions: [
+                {
+                    type: 'Game Quest Reward',
+                    amount: QUEST_REWARD,
+                    date: now,
+                    status: 'success'
+                },
+                ...(serverData.transactions || [])
+            ]
+        });
+        
+        // Update local data
+        userData.airtimeBalance += QUEST_REWARD;
+        userData.lastQuestClaim = now;
+        
+        showAlert(`Quest reward of ₦${QUEST_REWARD} claimed successfully!`, 'success');
+        
+        // Update UI to show cooldown
+        checkQuestCooldown();
+        
+    } catch (error) {
+        console.error("Error claiming quest reward:", error);
+        showAlert('Error claiming quest reward. Please try again.', 'danger');
+    } finally {
+        userData.isProcessingQuestClaim = false;
+    }
 }
 
-// ----- Firebase Auth Listener -----
-auth.onAuthStateChanged((user) => {
-    if (user) {
-        userId = user.uid;
-        initUserData(userId);
-        syncFromFirebase(userId);
-        document.getElementById('sign-out-btn').classList.remove('hidden');
-    } else {
-        userId = null;
-        airtimeBalance = 0;
-        lastClaim = 0;
-        transactions = [];
-        document.getElementById('sign-out-btn').classList.add('hidden');
+// ----- Event Listeners -----
+// Set up event listeners once DOM is loaded
+function setupEventListeners() {
+    // Claim button for daily reward
+    if (elements.claimBtn) {
+        elements.claimBtn.addEventListener('click', (event) => {
+            event.preventDefault();
+            claimDailyReward();
+        });
     }
-});
-
-// ----- Event Listeners and Initial Checks -----
-// Check for played games periodically (every 5 seconds)
-setInterval(checkForPlayedGames, 5000);
-
-// Network selection
-document.querySelectorAll('.network-icon').forEach(icon => {
-    icon.addEventListener('click', function() {
-        document.querySelectorAll('.network-icon').forEach(n => n.classList.remove('active'));
-        this.classList.add('active');
-        selectedNetwork = this.getAttribute('data-network');
-        selectedPlanId = this.getAttribute('data-plan');
+    
+    // Quest claim button
+    if (elements.claimQuestBtn) {
+        elements.claimQuestBtn.addEventListener('click', (event) => {
+            event.preventDefault();
+            claimQuestReward();
+        });
+    }
+    
+    // Sign out button
+    if (elements.signOutBtn) {
+        elements.signOutBtn.addEventListener('click', () => {
+            auth.signOut().then(() => {
+                showAlert('Signed out successfully', 'success');
+            }).catch((error) => {
+                console.error('Error signing out:', error);
+                showAlert('Error signing out', 'danger');
+            });
+        });
+    }
+    
+    // Network selection
+    document.querySelectorAll('.network-icon').forEach(icon => {
+        icon.addEventListener('click', function() {
+            document.querySelectorAll('.network-icon').forEach(n => n.classList.remove('active'));
+            this.classList.add('active');
+            window.selectedNetwork = this.getAttribute('data-network');
+            window.selectedPlanId = this.getAttribute('data-plan');
+        });
     });
-});
-
-// Amount selection
-document.querySelectorAll('.amount-option').forEach(option => {
-    option.addEventListener('click', function() {
-        document.querySelectorAll('.amount-option').forEach(o => o.classList.remove('active'));
-        this.classList.add('active');
-        selectedAmount = parseInt(this.getAttribute('data-amount'));
-    });
-});
-
-// Sign out button
-const signOutBtn = document.getElementById('sign-out-btn');
-if (signOutBtn) {
-    signOutBtn.addEventListener('click', function() {
-        auth.signOut().then(() => {
-            showAlert('Signed out successfully', 'success');
-        }).catch((error) => {
-            console.error('Error signing out:', error);
-            showAlert('Error signing out', 'danger');
+    
+    // Amount selection
+    document.querySelectorAll('.amount-option').forEach(option => {
+        option.addEventListener('click', function() {
+            document.querySelectorAll('.amount-option').forEach(o => o.classList.remove('active'));
+            this.classList.add('active');
+            window.selectedAmount = parseInt(this.getAttribute('data-amount'));
         });
     });
 }
 
-// Quest claim button event listener - THIS IS THE KEY ADDITION
-if (claimQuestBtn) {
-    claimQuestBtn.addEventListener('click', function(event) {
-        event.preventDefault();
-        claimQuestReward();
-    });
-}
-
-// Initial sync and played game check on DOM load
-window.addEventListener('DOMContentLoaded', () => {
-    if (auth.currentUser) {
-        userId = auth.currentUser.uid;
-        initUserData(userId);
-        syncFromFirebase(userId);
+// ----- Authentication State Handler -----
+auth.onAuthStateChanged((user) => {
+    if (user) {
+        userData.userId = user.uid;
+        userLoggedIn = true;
+        
+        // Initialize and sync data
+        initUserData(userData.userId).then(() => {
+            syncFromFirebase(userData.userId);
+        });
+        
+        if (elements.signOutBtn) {
+            elements.signOutBtn.classList.remove('hidden');
+        }
+    } else {
+        userData.userId = null;
+        userLoggedIn = false;
+        userData.airtimeBalance = 0;
+        userData.lastClaim = 0;
+        userData.transactions = [];
+        userData.lastQuestClaim = 0;
+        
+        if (elements.signOutBtn) {
+            elements.signOutBtn.classList.add('hidden');
+        }
+        
+        if (elements.claimQuestBtn) {
+            elements.claimQuestBtn.classList.add('hidden');
+        }
+        
+        // Still check played games for UI updates
+        checkForPlayedGames();
+        checkQuestStatus();
     }
+});
+
+// ----- Initialization -----
+window.addEventListener('DOMContentLoaded', () => {
+    setupEventListeners();
+    
+    // Check for played games and quest status
     checkForPlayedGames();
+    checkQuestCooldown();
+    
+    // Set up timers for periodic checks (with reduced frequency)
+    setInterval(checkForPlayedGames, 10000);  // 10 seconds instead of 5
+    setInterval(checkQuestCooldown, 10000);
+    
+    // Initialize with current user if available
+    if (auth.currentUser) {
+        userData.userId = auth.currentUser.uid;
+        userLoggedIn = true;
+        initUserData(userData.userId).then(() => {
+            syncFromFirebase(userData.userId);
+        });
+    }
 });
 </script>
 </body>
