@@ -541,6 +541,217 @@ header {
     display: none;
 }
 </style>
+<style>
+  
+.spin-box-card {
+      background-color: white;
+      border-radius: 23px;
+      padding: 28px 24px;
+      margin: 30px auto;
+      max-width: 400px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08), 0 0 5px rgba(76, 175, 80, 0.1);
+      border: 2px solid rgba(76, 175, 80, 0.2);
+      transition: transform 0.2s ease;
+      text-align: center;
+      letter-spacing: 0.2px;
+    }
+
+    .spin-box-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12), 0 0 7px rgba(76, 175, 80, 0.15);
+    }
+
+    .spin-box-header {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+
+    .spin-icon {
+      font-size: 24px;
+      margin-right: 10px;
+    }
+
+    .spin-title {
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--primary-color);
+      letter-spacing: 0.5px;
+    }
+
+    .spin-box-content {
+      padding: 10px 0;
+    }
+
+    .reward-banner {
+      background-color: rgba(76, 175, 80, 0.1);
+      border-radius: 15px;
+      padding: 12px 18px;
+      margin-bottom: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .reward-banner span {
+      color: var(--primary-color);
+      font-weight: 600;
+      letter-spacing: 0.4px;
+      font-size: 15px;
+    }
+
+    .reward-text {
+      font-size: 16px;
+      line-height: 1.6;
+      margin-bottom: 24px;
+      color: #444;
+      padding: 0 15px;
+    }
+
+    .sparkle {
+      display: inline-block;
+      animation: sparkle 1.5s infinite alternate;
+      color: var(--secondary-color);
+      margin: 0 5px;
+    }
+
+    @keyframes sparkle {
+      0% { opacity: 0.6; transform: scale(0.8); }
+      100% { opacity: 1; transform: scale(1.1); }
+    }
+
+    .spin-button {
+      background: linear-gradient(to right, var(--primary-color), #2E7D32);
+      border: none;
+      color: white;
+      padding: 15px 30px;
+      font-size: 18px;
+      border-radius: 30px;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .spin-button:hover {
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.25);
+    }
+
+    .spin-button:active {
+      transform: translateY(1px);
+    }
+
+    .spin-button::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(to right, transparent, rgba(255,255,255,0.3), transparent);
+      animation: shine 2s infinite;
+    }
+
+    @keyframes shine {
+      0% { left: -100%; }
+      50%, 100% { left: 100%; }
+    }
+
+    .bonus-icon {
+      margin-right: 8px;
+      font-size: 20px;
+    }
+
+    /* Modal Styles */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.7);
+      animation: fadeIn 0.3s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .modal-content {
+  position: relative;
+  background-color: #fff;
+  margin: 2% auto;
+  padding: 0;
+  width: 70%;       /* Manually set width */
+  max-width: 900px; /* Set maximum width */
+  border-radius: 15px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+  overflow: hidden;
+  animation: slideIn 0.4s ease-in-out;
+}
+
+/* Adjust for smaller devices */
+@media (max-width: 768px) {
+  .modal-content {
+    width: 95%;       /* Increase width to nearly full-screen on smaller devices */
+    max-width: 100%;  /* Allow full-width if needed */
+  }
+
+    @keyframes slideIn {
+      from { transform: translateY(-50px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .modal-header {
+      position: relative;
+      padding: 12px 15px;
+      background-color: var(--primary-color);
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-title {
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    .close-btn {
+      color: white;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+      background: none;
+      border: none;
+      padding: 0 5px;
+      line-height: 1;
+    }
+
+    .close-btn:hover {
+      transform: scale(1.1);
+    }
+
+    .modal-body {
+      width: 100%;
+      height: 80vh;
+      max-height: 500px;
+     max-width: 700px;
+    }
+
+    .modal-body iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+  </style>
+</style>
 <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 </head>
 <body>
@@ -572,6 +783,40 @@ header {
         <div id="recaptcha-container" style="display: flex; justify-content: center; margin-bottom: 20px;">
             <div class="g-recaptcha" data-sitekey="6LfANf0qAAAAALmlg5u3HnW00PtLEEkKMV-ulglv" data-callback="enableClaimButton"></div>
         </div>
+
+<!-- Spin Box Card -->
+  <div class="spin-box-card">
+    <div class="spin-box-header">
+      <div class="spin-icon">🎁</div>
+      <div class="spin-title">Bonus Reward</div>
+    </div>
+    <div class="spin-box-content">
+      <div class="reward-banner">
+        <span>✨Daily Spin Reward!✨</span>
+      </div>
+      <p class="reward-text">
+        Tap the Spin Box below to spin and win extra bonuses.
+        SPIN FEES: Included
+        <span class="sparkle">✨</span>
+      </p>
+      <button id="spinBoxBtn" class="spin-button">
+        <span class="bonus-icon">🎯</span>Spin Box
+      </button>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div id="spinModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="modal-title">🎁 Bonus Rewards</div>
+        <button class="close-btn" id="closeModal">❌</button>
+      </div>
+      <div class="modal-body">
+        <iframe id="spinFrame" src="spin.html"></iframe>
+      </div>
+    </div>
+  </div>
 
   
         <!-- NEW SECTION: Game Quest Card -->
@@ -1279,5 +1524,44 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 });
 </script>
+<script>
+    // Get modal elements
+    const modal = document.getElementById('spinModal');
+    const closeBtn = document.getElementById('closeModal');
+    const spinBtn = document.getElementById('spinBoxBtn');
+    const spinFrame = document.getElementById('spinFrame');
+
+    // Open modal when spin button is clicked
+    spinBtn.addEventListener('click', function() {
+      // Add animation for button
+      this.innerHTML = '<span class="bonus-icon">🎉</span>Spinning...';
+      
+      // Show modal with slight delay for button animation
+      setTimeout(() => {
+        modal.style.display = 'block';
+        // Reset button text after modal appears
+        this.innerHTML = '<span class="bonus-icon">🎯</span>Spin Box';
+      }, 500);
+    });
+
+    // Close modal when X button is clicked
+    closeBtn.addEventListener('click', function() {
+      modal.style.display = 'none';
+    });
+
+    // Close modal when clicking outside of it
+    window.addEventListener('click', function(event) {
+      if (event.target === modal) {
+        modal.style.display = 'none';
+      }
+    });
+
+    // Handle escape key press to close modal
+    window.addEventListener('keydown', function(event) {
+      if (event.key === 'Escape' && modal.style.display === 'block') {
+        modal.style.display = 'none';
+      }
+    });
+  </script>
 </body>
 </html>

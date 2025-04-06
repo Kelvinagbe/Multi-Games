@@ -1,0 +1,1300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi Games - Daily Spin</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+    --primary-color: #2ecc71;
+    --primary-dark: #27ae60;
+    --secondary-color: #3498db;
+    --text-color: #2c3e50;
+    --light-color: #ecf0f1;
+    --danger-color: #e74c3c;
+    --warning-color: #f39c12;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: #ffff;
+    color: var(--text-color);
+    min-height: 0vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0px;
+}
+
+.container {
+    width: 100%;
+    max-width: 700px;
+    background-color: white;
+    border-radius: 0px;
+    box-shadow: 0 0px 0px rgba(0, 0, 0, 0);
+    overflow: hidden;
+    position: relative;
+}
+
+
+.header h1 {
+    font-size: 24px;
+    margin-bottom: 5px;
+}
+
+.user-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    background-color: var(--light-color);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.balance {
+    display: flex;
+    align-items: center;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.balance i {
+    margin-right: 8px;
+    color: var(--primary-color);
+}
+
+.timer {
+    display: flex;
+    align-items: center;
+    font-size: 16px;
+}
+
+.timer i {
+    margin-right: 8px;
+    color: var(--warning-color);
+}
+
+/* Fixed spin container and arrow positioning */
+.spin-container {
+    position: relative;
+    width: 100%;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.spin-wheel {
+    position: relative;
+    width: 250px;
+    height: 250px;
+    margin: 20px auto 0; /* Added top margin to accommodate the arrow */
+    border-radius: 50%;
+    border: 10px solid var(--primary-color);
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+    background-color: white;
+    transition: transform 3s ease-out;
+}
+
+/* Fixed arrow positioning */
+.spin-arrow {
+    position: absolute;
+    top: 20px; /* Position it at the top of the container */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 15px solid transparent;
+    border-right: 15px solid transparent;
+    border-top: 30px solid var(--primary-dark);
+    z-index: 3;
+}
+
+.spin-item {
+    position: absolute;
+    width: 50%;
+    height: 50%;
+    transform-origin: right bottom;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 18px;
+    color: var(--text-color);
+}
+
+.spin-item:nth-child(odd) {
+    background-color: rgba(46, 204, 113, 0.1);
+}
+
+.spin-item:nth-child(even) {
+    background-color: rgba(46, 204, 113, 0.2);
+}
+
+.spin-center {
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: var(--primary-color);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    z-index: 2;
+}
+
+.spin-btn {
+    margin-top: 40px;
+    padding: 12px 40px;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 50px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 4px 10px rgba(46, 204, 113, 0.3);
+}
+
+.spin-btn:hover {
+    background-color: var(--primary-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(46, 204, 113, 0.4);
+}
+
+.spin-btn:disabled {
+    background-color: #95a5a6;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.spin-btn i {
+    margin-right: 10px;
+}
+
+.prize-popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s;
+}
+
+.prize-popup.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.prize-content {
+    background-color: white;
+    padding: 30px;
+    border-radius: 20px;
+    text-align: center;
+    max-width: 90%;
+    width: 350px;
+    transform: scale(0.8);
+    transition: transform 0.3s;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.prize-popup.active .prize-content {
+    transform: scale(1);
+}
+
+.prize-icon {
+    font-size: 60px;
+    color: var(--primary-color);
+    margin-bottom: 20px;
+}
+
+.prize-title {
+    font-size: 24px;
+    margin-bottom: 10px;
+    color: var(--text-color);
+}
+
+.prize-message {
+    font-size: 16px;
+    margin-bottom: 20px;
+    color: #7f8c8d;
+}
+
+.prize-amount {
+    font-size: 40px;
+    color: var(--primary-color);
+    font-weight: bold;
+    margin: 15px 0;
+}
+
+.prize-btn {
+    padding: 12px 30px;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 50px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-top: 15px;
+}
+
+.prize-btn:hover {
+    background-color: var(--primary-dark);
+}
+
+.toast {
+    position: fixed;
+    top: 30px;
+    right: 30px;
+    background-color: white;
+    padding: 15px 25px;
+    border-radius: 10px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    transform: translateX(150%);
+    transition: transform 0.3s ease;
+    z-index: 1000;
+}
+
+.toast.success {
+    border-left: 5px solid var(--primary-color);
+}
+
+.toast.error {
+    border-left: 5px solid var(--danger-color);
+}
+
+.toast.show {
+    transform: translateX(0);
+}
+
+.toast-icon {
+    margin-right: 15px;
+    font-size: 20px;
+}
+
+.toast.success .toast-icon {
+    color: var(--primary-color);
+}
+
+.toast.error .toast-icon {
+    color: var(--danger-color);
+}
+
+.toast-message {
+    font-size: 14px;
+    color: var(--text-color);
+}
+
+.login-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 200;
+}
+
+.login-container {
+    background-color: white;
+    padding: 30px;
+    border-radius: 20px;
+    width: 90%;
+    max-width: 400px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.login-title {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: var(--primary-color);
+    text-align: center;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 14px;
+    color: var(--text-color);
+}
+
+.form-group input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: border 0.3s;
+}
+
+.form-group input:focus {
+    border-color: var(--primary-color);
+    outline: none;
+}
+
+.auth-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.auth-button {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.auth-button.login {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.auth-button.register {
+    background-color: var(--light-color);
+    color: var(--text-color);
+}
+
+.auth-button:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
+}
+
+.welcome-popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s;
+}
+
+.welcome-popup.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.welcome-content {
+    background-color: white;
+    padding: 30px;
+    border-radius: 20px;
+    text-align: center;
+    max-width: 90%;
+    width: 400px;
+    transform: scale(0.8);
+    transition: transform 0.3s;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.welcome-popup.active .welcome-content {
+    transform: scale(1);
+}
+
+.welcome-icon {
+    font-size: 60px;
+    color: var(--primary-color);
+    margin-bottom: 20px;
+}
+
+.welcome-title {
+    font-size: 24px;
+    margin-bottom: 15px;
+    color: var(--text-color);
+}
+
+.welcome-text {
+    font-size: 16px;
+    margin-bottom: 10px;
+    color: #7f8c8d;
+    text-align: left;
+}
+
+.welcome-steps {
+    text-align: left;
+    margin: 20px 0;
+}
+
+.welcome-step {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.step-number {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: var(--primary-color);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 15px;
+    font-weight: bold;
+}
+
+.step-text {
+    font-size: 14px;
+    color: var(--text-color);
+}
+
+.welcome-btn {
+    padding: 12px 30px;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 50px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-top: 15px;
+}
+
+.welcome-btn:hover {
+    background-color: var(--primary-dark);
+}
+
+@media (max-width: 480px) {
+    .container {
+        border-radius: 15px;
+    }
+
+    .spin-wheel {
+        width: 200px;
+        height: 200px;
+    }
+
+    .spin-item {
+        font-size: 16px;
+    }
+
+    .spin-btn {
+        padding: 10px 30px;
+    }
+    
+    /* Adjust arrow for smaller screens */
+    .spin-arrow {
+        border-left: 12px solid transparent;
+        border-right: 12px solid transparent;
+        border-top: 24px solid var(--primary-dark);
+    }
+}
+    </style>
+</head>
+<body>
+    <!-- Login Overlay -->
+    <div class="login-overlay" id="loginOverlay">
+        <div class="login-container">
+            <h2 class="login-title">Multi Games</h2>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" placeholder="Enter your email">
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" placeholder="Enter your password">
+            </div>
+            <div class="auth-buttons">
+                <button class="auth-button login" id="loginBtn">Login</button>
+                <button class="auth-button register" id="registerBtn">Register</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Welcome Popup for First-time Users -->
+    <div class="welcome-popup" id="welcomePopup">
+        <div class="welcome-content">
+            <div class="welcome-icon">
+                <i class="fas fa-gift"></i>
+            </div>
+            <h2 class="welcome-title">Welcome to Daily Spin!</h2>
+            <p class="welcome-text">Get a chance to win amazing rewards every day with our Daily Spin feature.</p>
+            
+            <div class="welcome-steps">
+                <div class="welcome-step">
+                    <div class="step-number">1</div>
+                    <div class="step-text">Click the SPIN button to start</div>
+                </div>
+                <div class="welcome-step">
+                    <div class="step-number">2</div>
+                    <div class="step-text">₦2 will be deducted from your balance</div>
+                </div>
+                <div class="welcome-step">
+                    <div class="step-number">3</div>
+                    <div class="step-text">Claim your prize instantly</div>
+                </div>
+                <div class="welcome-step">
+                    <div class="step-number">4</div>
+                    <div class="step-text">Come back tomorrow for another spin!</div>
+                </div>
+            </div>
+            
+            <button class="welcome-btn" id="welcomeBtn">Got it!</button>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container">
+       
+        <div class="user-info">
+            <div class="balance">
+                <i class="fas fa-coins"></i>
+                <span id="userBalance">₦0.00</span>
+            </div>
+            <div class="timer">
+                <i class="far fa-clock"></i>
+                <span id="nextSpin">Loading...</span>
+            </div>
+        </div>
+        
+        <div class="spin-container">
+               <div class="spin-arrow"></div>
+            <div class="spin-wheel" id="spinWheel">
+                <!-- Spin items will be dynamically generated -->
+                           <div class="spin-center">
+                    <i class="fas fa-sync-alt"></i>
+                </div>
+            </div>
+            
+            <button class="spin-btn" id="spinButton">
+                <i class="fas fa-sync-alt"></i>
+                SPIN (₦2)
+            </button>
+        </div>
+    </div>
+    
+    <!-- Prize Popup -->
+    <div class="prize-popup" id="prizePopup">
+        <div class="prize-content">
+            <div class="prize-icon">
+                <i class="fas fa-trophy"></i>
+            </div>
+            <h2 class="prize-title">Congratulations!</h2>
+            <p class="prize-message">You have won</p>
+            <div class="prize-amount" id="prizeAmount">₦0</div>
+            <button class="prize-btn" id="claimBtn">Claim Now</button>
+        </div>
+    </div>
+    
+    <!-- Toast Message -->
+    <div class="toast" id="toast">
+        <div class="toast-icon">
+            <i class="fas fa-check-circle"></i>
+        </div>
+        <div class="toast-message" id="toastMessage">This is a toast message</div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+    
+    <script>
+        // ----- Firebase Initialization -----
+const firebaseConfig = {
+    apiKey: "AIzaSyBw1uA-kNKOZEufWKZ9AMBxvRGHNGF1lkA",
+    authDomain: "multi-games-a2561.firebaseapp.com",
+    databaseURL: "https://multi-games-a2561-default-rtdb.firebaseio.com",
+    projectId: "multi-games-a2561",
+    storageBucket: "multi-games-a2561.appspot.com",
+    messagingSenderId: "150551898066",
+    appId: "1:150551898066:web:4e8fb185f2321ba4140a0b",
+    measurementId: "G-PB8Y87E6XV"
+};
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const database = firebase.database();
+
+// ----- DOM Elements -----
+const spinWheel = document.getElementById('spinWheel');
+const spinButton = document.getElementById('spinButton');
+const userBalanceElement = document.getElementById('userBalance');
+const nextSpinElement = document.getElementById('nextSpin');
+const prizePopup = document.getElementById('prizePopup');
+const prizeAmountElement = document.getElementById('prizeAmount');
+const claimButton = document.getElementById('claimBtn');
+const toast = document.getElementById('toast');
+const toastMessage = document.getElementById('toastMessage');
+const loginOverlay = document.getElementById('loginOverlay');
+const loginBtn = document.getElementById('loginBtn');
+const registerBtn = document.getElementById('registerBtn');
+const emailInput = document.getElementById('email');
+const passwordInput = document.getElementById('password');
+const welcomePopup = document.getElementById('welcomePopup');
+const welcomeBtn = document.getElementById('welcomeBtn');
+
+// ----- Spin Values -----
+const spinValues = [1, 2, 3, 10, 15, 30, 3];
+let spinPattern = [2, 0, 2, 1]; // Repeating pattern as requested
+let currentPatternIndex = 0;
+let lastSpinTime = null;
+let canSpin = false;
+let isFirstTimeUser = false;
+let isSpinning = false;
+let currentUser = null;
+let userRef = null; // Reference to user data in Firebase
+
+// ----- Initialize App -----
+document.addEventListener('DOMContentLoaded', function() {
+    initializeApp();
+});
+
+function initializeApp() {
+    createSpinWheel();
+    setupAuthListeners();
+    setupEventListeners();
+}
+
+// ----- Authentication Functions -----
+function setupAuthListeners() {
+    auth.onAuthStateChanged(user => {
+        if (user) {
+            currentUser = user;
+            userRef = database.ref('users/' + user.uid);
+            loginOverlay.style.display = 'none';
+            loadUserData(user.uid);
+            
+            // Set up real-time listener for balance updates
+            setupBalanceListener(user.uid);
+        } else {
+            loginOverlay.style.display = 'flex';
+            currentUser = null;
+            userRef = null;
+            resetUI();
+            
+            // Clear any existing listeners
+            if (userRef) {
+                userRef.off();
+            }
+        }
+    });
+}
+
+function setupBalanceListener(userId) {
+    // Listen for regular balance changes in real-time
+    database.ref('users/' + userId + '/balance').on('value', snapshot => {
+        if (snapshot.exists()) {
+            const balance = snapshot.val();
+            userBalanceElement.textContent = `₦${balance.toFixed(2)}`;
+        }
+    });
+    
+    // Listen for Airtime balance changes in real-time
+    database.ref('users/' + userId + '/airtimeBalance').on('value', snapshot => {
+        if (snapshot.exists()) {
+            const airtimeBalance = snapshot.val();
+            userBalanceElement.textContent = `₦${airtimeBalance.toFixed(2)}`;
+        }
+    });
+}
+
+function login() {
+    const email = emailInput.value.trim();
+    const password = passwordInput.value.trim();
+    
+    if (!email || !password) {
+        showToast('Please enter both email and password', 'error');
+        return;
+    }
+    
+    // Disable login button during authentication
+    loginBtn.disabled = true;
+    
+    auth.signInWithEmailAndPassword(email, password)
+        .then(() => {
+            showToast('Login successful!', 'success');
+            emailInput.value = '';
+            passwordInput.value = '';
+        })
+        .catch(error => {
+            showToast(`Login failed: ${error.message}`, 'error');
+        })
+        .finally(() => {
+            loginBtn.disabled = false;
+        });
+}
+
+function register() {
+    const email = emailInput.value.trim();
+    const password = passwordInput.value.trim();
+    
+    if (!email || !password) {
+        showToast('Please enter both email and password', 'error');
+        return;
+    }
+    
+    if (password.length < 6) {
+        showToast('Password should be at least 6 characters', 'error');
+        return;
+    }
+    
+    // Disable register button during authentication
+    registerBtn.disabled = true;
+    
+    auth.createUserWithEmailAndPassword(email, password)
+        .then((userCredential) => {
+            const user = userCredential.user;
+            
+            // Initialize user data in database with transaction to ensure atomicity
+            const userRef = database.ref('users/' + user.uid);
+            userRef.transaction((currentData) => {
+                // Only initialize if data doesn't exist
+                if (currentData === null) {
+                    return {
+                        email: email,
+                        balance: 100, // Starting balance
+                        airtimeBalance: 100, // Starting airtime balance
+                        lastSpinTime: null,
+                        spinCount: 0,
+                        isFirstTime: true,
+                        createdAt: firebase.database.ServerValue.TIMESTAMP
+                    };
+                }
+                // If data exists, don't modify it
+                return currentData;
+            })
+            .then(() => {
+                showToast('Registration successful!', 'success');
+                emailInput.value = '';
+                passwordInput.value = '';
+            })
+            .catch(error => {
+                showToast(`Error initializing user data: ${error.message}`, 'error');
+            });
+        })
+        .catch(error => {
+            showToast(`Registration failed: ${error.message}`, 'error');
+        })
+        .finally(() => {
+            registerBtn.disabled = false;
+        });
+}
+
+function logout() {
+    auth.signOut()
+        .then(() => {
+            showToast('Logged out successfully', 'success');
+        })
+        .catch(error => {
+            showToast(`Logout failed: ${error.message}`, 'error');
+        });
+}
+
+// ----- User Data Functions -----
+function loadUserData(userId) {
+    // Create a reference to prevent race conditions
+    const userRef = database.ref('users/' + userId);
+    
+    userRef.once('value')
+        .then(snapshot => {
+            if (snapshot.exists()) {
+                const userData = snapshot.val();
+                updateUI(userData);
+                
+                // Check if first time user
+                if (userData.isFirstTime) {
+                    isFirstTimeUser = true;
+                    showWelcomePopup();
+                    
+                    // Update isFirstTime to false
+                    userRef.update({
+                        isFirstTime: false
+                    });
+                }
+                
+                checkSpinEligibility(userData);
+            } else {
+                showToast('User data not found', 'error');
+            }
+        })
+        .catch(error => {
+            showToast(`Error loading user data: ${error.message}`, 'error');
+        });
+}
+
+function updateUI(userData) {
+    // Update with airtimeBalance if it exists, otherwise use regular balance
+    if (userData.airtimeBalance !== undefined) {
+        userBalanceElement.textContent = `₦${userData.airtimeBalance.toFixed(2)}`;
+    } else {
+        userBalanceElement.textContent = `₦${userData.balance.toFixed(2)}`;
+    }
+    
+    if (userData.lastSpinTime) {
+        updateNextSpinTime(userData.lastSpinTime);
+    } else {
+        nextSpinElement.textContent = 'Available Now';
+        canSpin = true;
+        spinButton.disabled = false;
+    }
+}
+
+function resetUI() {
+    userBalanceElement.textContent = '₦0.00';
+    nextSpinElement.textContent = 'Login Required';
+    spinButton.disabled = true;
+}
+
+function checkSpinEligibility(userData) {
+    if (!userData.lastSpinTime) {
+        canSpin = true;
+        spinButton.disabled = false;
+        return;
+    }
+    
+    const lastSpin = new Date(userData.lastSpinTime);
+    const now = new Date();
+    const nextSpinTime = new Date(lastSpin);
+    nextSpinTime.setHours(nextSpinTime.getHours() + 24); // 24 hours cooldown
+    
+    if (now >= nextSpinTime) {
+        canSpin = true;
+        spinButton.disabled = false;
+        nextSpinElement.textContent = 'Available Now';
+    } else {
+        canSpin = false;
+        spinButton.disabled = true;
+        updateNextSpinTime(userData.lastSpinTime);
+        
+        // Set timer to enable spin button when cooldown ends
+        const timeUntilNextSpin = nextSpinTime - now;
+        setTimeout(() => {
+            if (currentUser) { // Make sure user is still logged in
+                canSpin = true;
+                spinButton.disabled = false;
+                nextSpinElement.textContent = 'Available Now';
+            }
+        }, timeUntilNextSpin);
+    }
+}
+
+function updateNextSpinTime(lastSpinTime) {
+    const lastSpin = new Date(lastSpinTime);
+    const nextSpinTime = new Date(lastSpin);
+    nextSpinTime.setHours(nextSpinTime.getHours() + 24); // 24 hours cooldown
+    
+    const now = new Date();
+    const timeRemaining = nextSpinTime - now;
+    
+    if (timeRemaining <= 0) {
+        nextSpinElement.textContent = 'Available Now';
+        canSpin = true;
+        spinButton.disabled = false;
+        return;
+    }
+    
+    // Calculate hours, minutes, seconds
+    const hours = Math.floor(timeRemaining / (1000 * 60 * 60));
+    const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
+    
+    nextSpinElement.textContent = `${hours}h ${minutes}m ${seconds}s`;
+    
+    // Update countdown every second
+    setTimeout(() => {
+        if (currentUser) {
+            updateNextSpinTime(lastSpinTime);
+        }
+    }, 1000);
+}
+
+// ----- Spin Wheel Functions -----
+function createSpinWheel() {
+    spinWheel.innerHTML = ''; // Clear existing items
+    
+    const numItems = spinValues.length;
+    const anglePerItem = 360 / numItems;
+    
+    // Create spin items
+    for (let i = 0; i < numItems; i++) {
+        const spinItem = document.createElement('div');
+        spinItem.className = 'spin-item';
+        
+        // Calculate position
+        const angle = i * anglePerItem;
+        spinItem.style.transform = `rotate(${angle}deg) skewY(-${90 - anglePerItem}deg)`;
+        
+        // Calculate text rotation to keep it upright
+        const textEl = document.createElement('span');
+        textEl.textContent = `₦${spinValues[i]}`;
+        textEl.style.transform = `skewY(${90 - anglePerItem}deg) rotate(${anglePerItem / 2}deg)`;
+        
+        spinItem.innerHTML = '';
+        spinItem.appendChild(textEl);
+        
+        // Add alternating colors
+        spinItem.classList.add(i % 2 === 0 ? 'light' : 'dark');
+        
+        spinWheel.appendChild(spinItem);
+    }
+    
+    // Add center and arrow
+    const spinCenter = document.createElement('div');
+    spinCenter.className = 'spin-center';
+    spinCenter.innerHTML = '<i class="fas fa-sync-alt"></i>';
+    
+    const spinArrow = document.createElement('div');
+    spinArrow.className = 'spin-arrow';
+    
+    spinWheel.appendChild(spinCenter);
+    spinWheel.appendChild(spinArrow);
+}
+
+function spin() {
+    if (!canSpin || isSpinning || !currentUser) {
+        return;
+    }
+    
+    // Lock UI first to prevent double-spins
+    isSpinning = true;
+    spinButton.disabled = true;
+    
+    // Get user data with transaction to ensure atomic read
+    database.ref('users/' + currentUser.uid).transaction((userData) => {
+        if (userData === null) return null;
+        
+        // Check if user has enough balance in airtimeBalance first, then regular balance
+        let useAirtimeBalance = userData.airtimeBalance !== undefined && userData.airtimeBalance >= 2;
+        
+        if (!useAirtimeBalance && userData.balance < 2) {
+            // Transaction will be aborted by returning undefined
+            return;
+        }
+        
+        // Check if user is eligible to spin (24-hour cooldown)
+        if (userData.lastSpinTime) {
+            const lastSpin = new Date(userData.lastSpinTime);
+            const now = new Date();
+            const nextAllowedSpin = new Date(lastSpin);
+            nextAllowedSpin.setHours(nextAllowedSpin.getHours() + 24);
+            
+            if (now < nextAllowedSpin) {
+                // Not eligible yet, abort transaction
+                return;
+            }
+        }
+        
+        // All checks passed, update user data
+        if (useAirtimeBalance) {
+            userData.airtimeBalance = (userData.airtimeBalance || 0) - 2; // Deduct 2 from airtime balance
+        } else {
+            userData.balance = (userData.balance || 0) - 2; // Deduct 2 from regular balance
+        }
+        
+        userData.lastSpinTime = firebase.database.ServerValue.TIMESTAMP;
+        userData.spinCount = (userData.spinCount || 0) + 1;
+        
+        return userData;
+    }).then((result) => {
+        if (result.committed) {
+            // Transaction was committed successfully
+            const userData = result.snapshot.val();
+            
+            if (userData) {
+                // Get the prize based on pattern
+                const prize = determineSpinPrize();
+                animateSpin(prize);
+            }
+        } else {
+            // Transaction was aborted
+            isSpinning = false;
+            spinButton.disabled = !canSpin;
+            showToast('Insufficient balance or not eligible to spin yet', 'error');
+        }
+    }).catch(error => {
+        isSpinning = false;
+        spinButton.disabled = !canSpin;
+        showToast(`Error during spin: ${error.message}`, 'error');
+    });
+}
+
+function determineSpinPrize() {
+    // Get the next prize from the pattern
+    const prizeIndex = spinPattern[currentPatternIndex];
+    
+    // Update pattern index for next spin
+    currentPatternIndex = (currentPatternIndex + 1) % spinPattern.length;
+    
+    return spinValues[prizeIndex] || spinValues[0];
+}
+
+function animateSpin(prize) {
+    // Find the index of the prize in the spinValues array
+    const prizeIndex = spinValues.indexOf(prize);
+    
+    if (prizeIndex === -1) {
+        showToast('Error determining prize', 'error');
+        isSpinning = false;
+        spinButton.disabled = !canSpin;
+        return;
+    }
+    
+    // Calculate the rotation needed to land on the prize
+    const numItems = spinValues.length;
+    const anglePerItem = 360 / numItems;
+    
+    // Calculate target angle (add extra rotations for effect)
+    const baseAngle = 360 * 5; // 5 full rotations for effect
+    const targetAngle = baseAngle + (anglePerItem * prizeIndex) + (anglePerItem / 2);
+    
+    // Add random small offset for realistic effect
+    const finalAngle = targetAngle + (Math.random() * (anglePerItem * 0.5) - (anglePerItem * 0.25));
+    
+    // Apply animation
+    spinWheel.style.transition = 'transform 4s cubic-bezier(0.17, 0.67, 0.83, 0.67)';
+    spinWheel.style.transform = `rotate(${finalAngle}deg)`;
+    
+    // Play spin sound if available
+    playSound('spin');
+    
+    // Wait for animation to finish
+    setTimeout(() => {
+        // Reset wheel state
+        spinWheel.style.transition = 'none';
+        const normalizedAngle = finalAngle % 360;
+        spinWheel.style.transform = `rotate(${normalizedAngle}deg)`;
+        
+        // Update user balance with the prize
+        creditPrize(prize);
+        
+        // Show prize popup
+        showPrizePopup(prize);
+        
+        // Reset spinning state
+        isSpinning = false;
+    }, 4000); // Match the animation duration
+}
+
+function creditPrize(amount) {
+    if (!currentUser) return;
+    
+    // First check if airtimeBalance exists for this user
+    database.ref('users/' + currentUser.uid + '/airtimeBalance').once('value')
+        .then(snapshot => {
+            // If airtimeBalance exists, credit prize there
+            if (snapshot.exists()) {
+                return database.ref('users/' + currentUser.uid + '/airtimeBalance').transaction((currentBalance) => {
+                    return (currentBalance || 0) + amount;
+                });
+            } else {
+                // Otherwise credit regular balance
+                return database.ref('users/' + currentUser.uid + '/balance').transaction((currentBalance) => {
+                    return (currentBalance || 0) + amount;
+                });
+            }
+        })
+        .then((result) => {
+            if (result.committed) {
+                // Update UI
+                const newBalance = result.snapshot.val();
+                userBalanceElement.textContent = `₦${newBalance.toFixed(2)}`;
+                
+                // Log win in history
+                logWinHistory(amount);
+            }
+        })
+        .catch(error => {
+            showToast(`Error crediting prize: ${error.message}`, 'error');
+        });
+}
+
+function logWinHistory(amount) {
+    if (!currentUser) return;
+    
+    // Add to user's win history
+    const winRef = database.ref('users/' + currentUser.uid + '/winHistory').push();
+    winRef.set({
+        amount: amount,
+        timestamp: firebase.database.ServerValue.TIMESTAMP
+    });
+    
+    // Optional: Add to global leaderboard if significant win
+    if (amount >= 10) {
+        const leaderboardRef = database.ref('leaderboard').push();
+        leaderboardRef.set({
+            userId: currentUser.uid,
+            amount: amount,
+            timestamp: firebase.database.ServerValue.TIMESTAMP
+        });
+    }
+    
+    // If we're using airtime, log in airtime history as well
+    database.ref('users/' + currentUser.uid + '/airtimeBalance').once('value')
+        .then(snapshot => {
+            if (snapshot.exists()) {
+                const airtimeHistoryRef = database.ref('users/' + currentUser.uid + '/airtimeHistory').push();
+                airtimeHistoryRef.set({
+                    amount: amount,
+                    timestamp: firebase.database.ServerValue.TIMESTAMP
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Error logging to airtime history:', error);
+        });
+}
+
+// ----- UI Functions -----
+function showPrizePopup(amount) {
+    prizeAmountElement.textContent = `₦${amount}`;
+    prizePopup.classList.add('show');
+    playSound('win');
+}
+
+function closePrizePopup() {
+    prizePopup.classList.remove('show');
+}
+
+function showWelcomePopup() {
+    welcomePopup.classList.add('show');
+}
+
+function closeWelcomePopup() {
+    welcomePopup.classList.remove('show');
+}
+
+function showToast(message, type = 'info') {
+    toastMessage.textContent = message;
+    toast.className = `toast ${type}`;
+    
+    // Show toast
+    toast.classList.add('show');
+    
+    // Auto hide after 3 seconds
+    setTimeout(() => {
+        toast.classList.remove('show');
+    }, 3000);
+}
+
+function playSound(soundType) {
+    // Implementation for sound effects
+    // Can be expanded later
+    try {
+        const sound = new Audio(`sounds/${soundType}.mp3`);
+        sound.play().catch(e => {
+            // Silently fail if audio can't play
+            console.log('Sound play error:', e);
+        });
+    } catch (error) {
+        // Silently fail if audio not supported
+    }
+}
+
+// ----- Event Listeners -----
+function setupEventListeners() {
+    // Spin button
+    spinButton.addEventListener('click', () => {
+        if (canSpin && !isSpinning && currentUser) {
+            spin();
+        } else if (!currentUser) {
+            showToast('Please log in to spin', 'error');
+        } else if (!canSpin) {
+            showToast('You need to wait for your next spin', 'error');
+        }
+    });
+    
+    // Login button
+    loginBtn.addEventListener('click', login);
+    
+    // Register button
+    registerBtn.addEventListener('click', register);
+    
+    // Claim prize button
+    claimBtn.addEventListener('click', () => {
+        closePrizePopup();
+        showToast('Prize claimed successfully!', 'success');
+    });
+    
+    // Welcome popup button
+    welcomeBtn.addEventListener('click', closeWelcomePopup);
+    
+    // Enter key for login
+    passwordInput.addEventListener('keyup', (event) => {
+        if (event.key === 'Enter') {
+            login();
+        }
+    });
+    
+    // Add logout functionality (if you have a logout button)
+    const logoutBtn = document.getElementById('logoutBtn');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', logout);
+    }
+}
+
+// ----- Security Functions -----
+function validateEmail(email) {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(String(email).toLowerCase());
+}
+
+function sanitizeInput(input) {
+    // Simple sanitization
+    return String(input).replace(/[<>]/g, '');
+}
+
+// ----- Network Status -----
+window.addEventListener('online', () => {
+    showToast('Back online', 'success');
+    if (currentUser) {
+        // Refresh user data
+        loadUserData(currentUser.uid);
+    }
+});
+
+window.addEventListener('offline', () => {
+    showToast('No internet connection', 'error');
+});
+
+// Initialize app when script loads
+window.addEventListener('load', initializeApp);
+</script>
+</body>
+</html>
