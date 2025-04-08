@@ -289,26 +289,31 @@
     </form>
   </div>
 
-  <!-- Global script for recaptcha callback -->
-<script>
-  // Global variable to track recaptcha verification
-let recaptchaVerified = false;
-
-function recaptchaCallback() {
-  recaptchaVerified = true;
-  updateRegisterButton();
-}
-
-function updateRegisterButton() {
-  const termsChecked = document.getElementById('terms-checkbox').checked;
-  const registerBtn = document.getElementById('register-btn');
   
-  registerBtn.disabled = !(termsChecked && recaptchaVerified);
-}
+  <!-- Global script for recaptcha callback -->
+  <script>
+    // Global variable to track recaptcha verification
+    let recaptchaVerified = false;
+    
+    function recaptchaCallback() {
+      recaptchaVerified = true;
+      updateRegisterButton();
+    }
+    
+    function updateRegisterButton() {
+      const termsChecked = document.getElementById('terms-checkbox').checked;
+      const registerBtn = document.getElementById('register-btn');
+      
+      registerBtn.disabled = !(termsChecked && recaptchaVerified);
+    }
+    
+    // Ensure checkbox changes also update button state
+    document.addEventListener('DOMContentLoaded', function() {
+      document.getElementById('terms-checkbox').addEventListener('change', updateRegisterButton);
+    });
+  </script>
 
-document.addEventListener('DOMContentLoaded', function() {
-  // Initialize event listeners
-  document.getElementById('terms-checkbox').addEventListener('change', updateRegisterButton);
+<script>
   
   // Import Firebase modules and initialize app
   import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
