@@ -389,49 +389,58 @@
       return params.get("ref") || null;
     }
 
-    // FIXED Function to track referral usage
-// Replace your current trackReferral function with this implementation:
-
-// Function to track referral usage
-async function trackReferral(referralCode) {
-  if (!referralCode) return;
-  
-  try {
-    console.log("Tracking referral code:", referralCode);
-    
-    // First check if the referral code exists
-    const dbRef = ref(database);
-    const codeSnapshot = await get(child(dbRef, `referralCodes/${referralCode}`));
-    
-    if (codeSnapshot.exists()) {
-      // Get the user ID of the referrer
-      const referrerId = codeSnapshot.val().userId;
-      console.log("Referrer ID found:", referrerId);
+    // Function to track referral usage
+    async function trackReferral(referralCode) {
+      if (!referralCode) return;
       
-      // Reference to the referrer's referrals count
-      const referralsRef = ref(database, `users/${referrerId}/referrals`);
-      
-      // Get current referrals count
-      const referralsSnapshot = await get(referralsRef);
-      
-      // If referrals field exists, increment it, otherwise set it to 1
-      let newCount = 1;
-      if (referralsSnapshot.exists()) {
-        newCount = referralsSnapshot.val() + 1;
+      try {
+        console.log("Tracking referral code:", referralCode);
+        
+        // First check if the referral code exists
+        const dbRef = ref(database);
+        const codeSnapshot = await get(child(dbRef, `referralCodes/${referralCode}`));
+        
+        if (codeSnapshot.exists()) {
+          // Get the user ID of the referrer
+          const referrerId = codeSnapshot.val().userId;
+          console.log("Referrer ID found:", referrerId);
+          
+          // Reference to the referrer's referrals count
+          const referralsRef = ref(database, `users/${referrerId}/referrals`);
+          
+          // Get current referrals count
+          const referralsSnapshot = await get(referralsRef);
+          
+          // If referrals field exists, increment it, otherwise set it to 1
+          let newCount = 1;
+          if (referralsSnapshot.exists()) {
+            newCount = referralsSnapshot.val() + 1;
+          }
+          
+          console.log("Current referrals:", referralsSnapshot.val(), "New count:", newCount);
+          
+          // Update referrals count
+          await set(referralsRef, newCount);
+          console.log("Referral tracked successfully. New count:", newCount);
+        } else {
+          console.log("Invalid referral code:", referralCode);
+        }
+      } catch (error) {
+        console.error("Error tracking referral:", error.message);
       }
-      
-      console.log("Current referrals:", referralsSnapshot.val(), "New count:", newCount);
-      
-      // Update referrals count
-      await set(referralsRef, newCount);
-      console.log("Referral tracked successfully. New count:", newCount);
-    } else {
-      console.log("Invalid referral code:", referralCode);
     }
-  } catch (error) {
-    console.error("Error tracking referral:", error.message);
-  }
-}
+    
+    // Function to log user data to console for debug purposes
+    function logUserData(uid, userData) {
+      console.log("User data saved for UID:", uid);
+      console.log("Name:", userData.name);
+      console.log("Email:", userData.email);
+      console.log("Referral Code:", userData.referralCode);
+      console.log("Referred By:", userData.referredBy || "None");
+      console.log("Date Joined:", userData.dateJoined);
+      console.log("Referrals:", userData.referrals);
+    }
+
     // Registration form submission handler
     document.getElementById('register-form').addEventListener('submit', async function (e) {
       e.preventDefault();
@@ -501,24 +510,40 @@ async function trackReferral(referralCode) {
           displayName: name
         });
 
-        // Prepare user data including referral details
+        // Current date in ISO format for consistency
+        const currentDate = new Date().toISOString();
+
+        // Prepare user data including all required fields
         const userData = {
           name: name,
           email: email,
           referralCode: userReferralCode,
           referredBy: referralUsed || null,
-          dateJoined: new Date().toISOString(),
-          referrals: 0 // Initialize referrals count to 0
+          dateJoined: currentDate,
+          referrals: 0, // Initialize referrals count to 0
+          signupMethod: "email"
         };
 
         // Save the referral code mapping for this user
         await set(ref(database, `referralCodes/${userReferralCode}`), { 
           userId: user.uid,
-          created: new Date().toISOString()
+          created: currentDate
         });
 
         // Save user data in Firebase
-        await set(ref(database, `users/${user.uid}`), userData);
+        const userRef = ref(database, `users/${user.uid}`);
+        await set(userRef, userData);
+        
+        // Log user data for debugging
+        logUserData(user.uid, userData);
+
+        // Verify that user data was saved correctly
+        const savedUserSnapshot = await get(userRef);
+        if (savedUserSnapshot.exists()) {
+          console.log("User data verified in database:", savedUserSnapshot.val());
+        } else {
+          console.error("Failed to verify user data in database");
+        }
 
         // If a referral code was used, track it
         if (referralUsed) {
@@ -567,14 +592,15 @@ async function trackReferral(referralCode) {
           // Generate a referral code for this new Google user
           const userReferralCode = await generateReferralCode();
           const referralUsed = document.getElementById('manual-referral').value.trim() || getReferralCodeFromURL();
+          const currentDate = new Date().toISOString();
           
-          // Save user data
+          // Save user data with all required fields
           const userData = {
             name: user.displayName || "User",
             email: user.email,
             referralCode: userReferralCode,
             referredBy: referralUsed || null,
-            dateJoined: new Date().toISOString(),
+            dateJoined: currentDate,
             signupMethod: "google",
             referrals: 0 // Initialize referrals count to 0
           };
@@ -582,11 +608,23 @@ async function trackReferral(referralCode) {
           // Save the referral code mapping
           await set(ref(database, `referralCodes/${userReferralCode}`), { 
             userId: user.uid,
-            created: new Date().toISOString()
+            created: currentDate
           });
           
           // Save user data in Firebase
-          await set(ref(database, `users/${user.uid}`), userData);
+          const userRef = ref(database, `users/${user.uid}`);
+          await set(userRef, userData);
+          
+          // Log user data for debugging
+          logUserData(user.uid, userData);
+          
+          // Verify that user data was saved correctly
+          const savedUserSnapshot = await get(userRef);
+          if (savedUserSnapshot.exists()) {
+            console.log("Google user data verified in database:", savedUserSnapshot.val());
+          } else {
+            console.error("Failed to verify Google user data in database");
+          }
           
           // Track referral if applicable
           if (referralUsed) {
