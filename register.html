@@ -292,27 +292,25 @@
   <!-- Global script for recaptcha callback -->
 <script>
   // Global variable to track recaptcha verification
-  let recaptchaVerified = false;
-  
-  function recaptchaCallback() {
-    recaptchaVerified = true;
-    updateRegisterButton();
-  }
-  
-  function updateRegisterButton() {
-    const termsChecked = document.getElementById('terms-checkbox').checked;
-    const registerBtn = document.getElementById('register-btn');
-    
-    registerBtn.disabled = !(termsChecked && recaptchaVerified);
-  }
-  
-  // Ensure checkbox changes also update button state
-  document.addEventListener('DOMContentLoaded', function() {
-    document.getElementById('terms-checkbox').addEventListener('change', updateRegisterButton);
-  });
-</script>
+let recaptchaVerified = false;
 
-<script type="module">
+function recaptchaCallback() {
+  recaptchaVerified = true;
+  updateRegisterButton();
+}
+
+function updateRegisterButton() {
+  const termsChecked = document.getElementById('terms-checkbox').checked;
+  const registerBtn = document.getElementById('register-btn');
+  
+  registerBtn.disabled = !(termsChecked && recaptchaVerified);
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  // Initialize event listeners
+  document.getElementById('terms-checkbox').addEventListener('change', updateRegisterButton);
+  
+  // Import Firebase modules and initialize app
   import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
   import { getAuth, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, updateProfile } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
   import { getDatabase, ref, set, get, child, update } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-database.js";
@@ -440,207 +438,236 @@
     console.log("Status:", userData.status);
   }
 
-  // Registration form submission handler
-  document.getElementById('register-form').addEventListener('submit', async function (e) {
-    e.preventDefault();
-    
-    setLoading(true);
-
-    const name = document.getElementById('register-name').value.trim();
-    const email = document.getElementById('register-email').value.trim();
-    const password = document.getElementById('register-password').value;
-    const confirmPassword = document.getElementById('register-confirm-password').value;
-    const manualReferral = document.getElementById('manual-referral').value.trim();
-    
-    // Validation
-    if (!name) {
-      showError("Please enter your name");
-      setLoading(false);
-      return;
-    }
-    
-    if (!email) {
-      showError("Please enter your email address");
-      setLoading(false);
-      return;
-    }
-    
-    // Basic email validation
-    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailPattern.test(email)) {
-      showError("Please enter a valid email address");
-      setLoading(false);
-      return;
-    }
-
-    // Basic password validation
-    if (password !== confirmPassword) {
-      showError("Passwords don't match");
-      setLoading(false);
-      return;
-    }
-    
-    if (password.length < 6) {
-      showError("Password should be at least 6 characters");
-      setLoading(false);
-      return;
-    }
-    
-    // ReCAPTCHA validation
-    if (!recaptchaVerified) {
-      showError("Please verify that you are not a robot");
-      setLoading(false);
-      return;
-    }
-
-    try {
-      // Generate a unique referral code for this new user
-      const userReferralCode = await generateReferralCode();
-
-      // Determine the referral code to use: manual input takes precedence over URL parameter
-      const referralUsed = manualReferral || getReferralCodeFromURL();
-
-      // Create user with email and password
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
+  // Form references - support both form IDs
+  const registerForm = document.getElementById('register-form') || document.getElementById('registerForm');
+  
+  if (registerForm) {
+    // Registration form submission handler
+    registerForm.addEventListener('submit', async function (e) {
+      e.preventDefault();
       
-      // Update the user's display name
-      await updateProfile(user, {
-        displayName: name
-      });
-
-      // Current date in ISO format for consistency
-      const currentDate = new Date().toISOString();
-
-      // Prepare user data in the new format
-      const userData = {
-        name: name || "null",
-        email: email || "null",
-        lastLogin: currentDate,
-        dateJoined: currentDate,
-        status: "active"
-      };
-
-      // Save the referral code mapping for this user
-      await set(ref(database, `referralCodes/${userReferralCode}`), { 
-        userId: user.uid,
-        created: currentDate
-      });
-
-      // Save user data in Firebase
-      const userRef = ref(database, `users/${user.uid}`);
-      await set(userRef, userData);
+      setLoading(true);
+  
+      // Get form inputs - support both input IDs
+      const nameInput = document.getElementById('register-name') || document.getElementById('name');
+      const emailInput = document.getElementById('register-email') || document.getElementById('email');
+      const passwordInput = document.getElementById('register-password') || document.getElementById('password');
+      const confirmPasswordInput = document.getElementById('register-confirm-password');
       
-      // Log user data for debugging
-      logUserData(user.uid, userData);
-
-      // Verify that user data was saved correctly
-      const savedUserSnapshot = await get(userRef);
-      if (savedUserSnapshot.exists()) {
-        console.log("User data verified in database:", savedUserSnapshot.val());
-      } else {
-        console.error("Failed to verify user data in database");
-      }
-
-      // If a referral code was used, track it
-      if (referralUsed) {
-        await trackReferral(referralUsed);
-      }
-
-      // Redirect to profile page after registration
-      window.location.href = 'profile.html';
-    } catch (error) {
-      console.error("Registration error:", error);
+      const name = nameInput.value.trim();
+      const email = emailInput.value.trim();
+      const password = passwordInput.value;
+      const confirmPassword = confirmPasswordInput ? confirmPasswordInput.value : password;
+      const manualReferral = document.getElementById('manual-referral') ? 
+        document.getElementById('manual-referral').value.trim() : null;
       
-      if (error.code === 'auth/email-already-in-use') {
-        showError("This email is already registered. Please use another email or log in.");
-      } else if (error.code === 'auth/invalid-email') {
-        showError("Please enter a valid email address.");
-      } else if (error.code === 'auth/weak-password') {
-        showError("Password is too weak. Please use a stronger password.");
-      } else {
-        showError("Registration failed: " + error.message);
+      // Validation
+      if (!name) {
+        showError("Please enter your name");
+        setLoading(false);
+        return;
       }
       
-      setLoading(false);
-    }
-  });
-
-  // Google Sign-up handler
-  document.getElementById('google-register').addEventListener('click', async function() {
-    if (!document.getElementById('terms-checkbox').checked) {
-      showError("You must accept the Terms and Conditions");
-      return;
-    }
-    
-    if (!recaptchaVerified) {
-      showError("Please verify that you are not a robot");
-      return;
-    }
-    
-    setLoading(true);
-    
-    try {
-      const result = await signInWithPopup(auth, googleProvider);
-      const user = result.user;
-      const isNewUser = result._tokenResponse.isNewUser;
-      const currentDate = new Date().toISOString();
+      if (!email) {
+        showError("Please enter your email address");
+        setLoading(false);
+        return;
+      }
       
-      if (isNewUser) {
-        // Generate a referral code for this new Google user
+      // Basic email validation
+      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailPattern.test(email)) {
+        showError("Please enter a valid email address");
+        setLoading(false);
+        return;
+      }
+  
+      // Basic password validation
+      if (password !== confirmPassword) {
+        showError("Passwords don't match");
+        setLoading(false);
+        return;
+      }
+      
+      if (password.length < 6) {
+        showError("Password should be at least 6 characters");
+        setLoading(false);
+        return;
+      }
+      
+      // ReCAPTCHA validation if enabled
+      if (document.querySelector('.g-recaptcha') && !recaptchaVerified) {
+        showError("Please verify that you are not a robot");
+        setLoading(false);
+        return;
+      }
+  
+      try {
+        // Generate a unique referral code for this new user
         const userReferralCode = await generateReferralCode();
-        const referralUsed = document.getElementById('manual-referral').value.trim() || getReferralCodeFromURL();
+  
+        // Determine the referral code to use: manual input takes precedence over URL parameter
+        const referralUsed = manualReferral || getReferralCodeFromURL();
+  
+        // Create user with email and password
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
         
-        // Save user data with the new format
+        // Update the user's display name
+        await updateProfile(user, {
+          displayName: name
+        });
+  
+        // Current date in ISO format for consistency
+        const currentDate = new Date().toISOString();
+  
+        // Prepare user data in the new format
         const userData = {
-          name: user.displayName || "null",
-          email: user.email || "null",
+          name: name || "Unnamed User",
+          email: email || "null",
           lastLogin: currentDate,
           dateJoined: currentDate,
           status: "active"
         };
-        
-        // Save the referral code mapping
+  
+        // Save the referral code mapping for this user
         await set(ref(database, `referralCodes/${userReferralCode}`), { 
           userId: user.uid,
           created: currentDate
         });
-        
+  
         // Save user data in Firebase
         const userRef = ref(database, `users/${user.uid}`);
         await set(userRef, userData);
         
         // Log user data for debugging
         logUserData(user.uid, userData);
-        
+  
         // Verify that user data was saved correctly
         const savedUserSnapshot = await get(userRef);
         if (savedUserSnapshot.exists()) {
-          console.log("Google user data verified in database:", savedUserSnapshot.val());
+          console.log("User data verified in database:", savedUserSnapshot.val());
         } else {
-          console.error("Failed to verify Google user data in database");
+          console.error("Failed to verify user data in database");
         }
-        
-        // Track referral if applicable
+  
+        // If a referral code was used, track it
         if (referralUsed) {
           await trackReferral(referralUsed);
         }
-      } else {
-        // Update last login for existing users
-        const userRef = ref(database, `users/${user.uid}`);
-        await update(userRef, {
-          lastLogin: currentDate
-        });
+  
+        // Show success message
+        alert("Registration successful and user data saved.");
+        
+        // Reset form if needed
+        registerForm.reset();
+        
+        // Redirect to profile page after registration
+        window.location.href = 'profile.html';
+      } catch (error) {
+        console.error("Registration error:", error);
+        
+        if (error.code === 'auth/email-already-in-use') {
+          showError("This email is already registered. Please use another email or log in.");
+        } else if (error.code === 'auth/invalid-email') {
+          showError("Please enter a valid email address.");
+        } else if (error.code === 'auth/weak-password') {
+          showError("Password is too weak. Please use a stronger password.");
+        } else {
+          showError("Registration failed: " + error.message);
+        }
+        
+        setLoading(false);
+      }
+    });
+  }
+
+  // Google Sign-up handler
+  const googleRegisterBtn = document.getElementById('google-register');
+  if (googleRegisterBtn) {
+    googleRegisterBtn.addEventListener('click', async function() {
+      // Check terms checkbox if exists
+      const termsCheckbox = document.getElementById('terms-checkbox');
+      if (termsCheckbox && !termsCheckbox.checked) {
+        showError("You must accept the Terms and Conditions");
+        return;
       }
       
-      // Redirect to profile page
-      window.location.href = 'profile.html';
-    } catch (error) {
-      console.error("Google sign-up error:", error);
-      showError("Google sign-up failed. Please try again.");
-      setLoading(false);
-    }
-  });
+      // Check recaptcha if exists
+      if (document.querySelector('.g-recaptcha') && !recaptchaVerified) {
+        showError("Please verify that you are not a robot");
+        return;
+      }
+      
+      setLoading(true);
+      
+      try {
+        const result = await signInWithPopup(auth, googleProvider);
+        const user = result.user;
+        const isNewUser = result._tokenResponse.isNewUser;
+        const currentDate = new Date().toISOString();
+        
+        if (isNewUser) {
+          // Generate a referral code for this new Google user
+          const userReferralCode = await generateReferralCode();
+          const manualReferralInput = document.getElementById('manual-referral');
+          const referralUsed = manualReferralInput ? manualReferralInput.value.trim() : null || getReferralCodeFromURL();
+          
+          // Save user data with the new format
+          const userData = {
+            name: user.displayName || "Unnamed User",
+            email: user.email || "null",
+            lastLogin: currentDate,
+            dateJoined: currentDate,
+            status: "active"
+          };
+          
+          // Save the referral code mapping
+          await set(ref(database, `referralCodes/${userReferralCode}`), { 
+            userId: user.uid,
+            created: currentDate
+          });
+          
+          // Save user data in Firebase
+          const userRef = ref(database, `users/${user.uid}`);
+          await set(userRef, userData);
+          
+          // Log user data for debugging
+          logUserData(user.uid, userData);
+          
+          // Verify that user data was saved correctly
+          const savedUserSnapshot = await get(userRef);
+          if (savedUserSnapshot.exists()) {
+            console.log("Google user data verified in database:", savedUserSnapshot.val());
+          } else {
+            console.error("Failed to verify Google user data in database");
+          }
+          
+          // Track referral if applicable
+          if (referralUsed) {
+            await trackReferral(referralUsed);
+          }
+        } else {
+          // Update last login for existing users
+          const userRef = ref(database, `users/${user.uid}`);
+          await update(userRef, {
+            lastLogin: currentDate
+          });
+        }
+        
+        // Show success message
+        alert("Google sign-in successful!");
+        
+        // Redirect to profile page
+        window.location.href = 'profile.html';
+      } catch (error) {
+        console.error("Google sign-up error:", error);
+        showError("Google sign-up failed. Please try again.");
+        setLoading(false);
+      }
+    });
+  }
+});
 </script>
 </body>
 </html>
