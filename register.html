@@ -1,620 +1,728 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Register - Multi Games</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
-  <style>
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
-
-    body {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        min-height: 100vh;
-        background-color: #f5f5f5;
-    }
-
-    .register-container {
-        width: 100%;
-        max-width: 320px;
-        padding: 30px;
-        background-color: white;
-        border-radius: 40px;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
-    }
-
-    .register-header {
-        text-align: center;
-        margin-bottom: 20px;
-    }
-
-    .register-header h2 {
-        color: #2a9d51;
-        margin-bottom: 5px;
-    }
-
-    .register-header p {
-        color: #666;
-        font-size: 14px;
-    }
-
-    .register-form input {
-        width: 100%;
-        padding: 12px 15px;
-        margin-bottom: 10px;
-        border: 3px solid #ddd;
-        border-radius: 25px;
-        font-size: 14px;
-        transition: border 0.3s;
-    }
-
-    .register-form input:focus {
-        border-color: #2a9d51;
-        outline: none;
-    }
-
-    .register-btn {
-        width: 100%;
-        padding: 12px;
-        background-color: #2a9d51;
-        color: white;
-        border: none;
-        border-radius: 25px;
-        font-size: 16px;
-        cursor: pointer;
-        transition: background-color 0.3s;
-    }
-
-    .register-btn:hover {
-        background-color: #238944;
-    }
-
-    .register-btn:disabled {
-        background-color: #aaa;
-        cursor: not-allowed;
-    }
-
-    .or-divider {
-        display: flex;
-        align-items: center;
-        margin: 15px 0;
-        color: #777;
-        font-size: 14px;
-    }
-
-    .or-divider::before, .or-divider::after {
-        content: "";
-        flex: 1;
-        height: 1px;
-        background-color: #ddd;
-    }
-
-    .or-divider::before {
-        margin-right: 10px;
-    }
-
-    .or-divider::after {
-        margin-left: 10px;
-    }
-
-    .social-login {
-        margin-bottom: 15px;
-    }
-
-    .social-btn {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 100%;
-        padding: 12px;
-        background-color: white;
-        border: 3px solid #ddd;
-        border-radius: 25px;
-        font-size: 14px;
-        cursor: pointer;
-        transition: background-color 0.3s;
-    }
-
-    .social-btn i {
-        margin-right: 10px;
-        font-size: 18px;
-    }
-
-    .social-btn:hover {
-        background-color: #f5f5f5;
-    }
-
-    #google-login i {
-        color: #DB4437;
-    }
-
-    .login-prompt {
-        text-align: center;
-        margin-top: 15px;
-        font-size: 14px;
-        color: #666;
-    }
-
-    .login-prompt a {
-        color: #2a9d51;
-        text-decoration: none;
-        font-weight: 600;
-    }
-
-    .login-prompt a:hover {
-        text-decoration: underline;
-    }
-
-    #error-message {
-        color: #e74c3c;
-        margin-bottom: 10px;
-        font-size: 14px;
-        text-align: center;
-        display: none;
-    }
-
-    .checkbox-container {
-        display: flex;
-        align-items: flex-start;
-        margin-bottom: 10px;
-    }
-
-    .checkbox-container input {
-        width: auto;
-        margin: 3px 10px 0 0;
-        cursor: pointer;
-    }
-
-    .checkbox-container label {
-        font-size: 14px;
-        color: #666;
-        cursor: pointer;
-    }
-
-    .checkbox-container a {
-        color: #2a9d51;
-        text-decoration: none;
-    }
-
-    .checkbox-container a:hover {
-        text-decoration: underline;
-    }
-
-    .recaptcha-container {
-        display: flex;
-        justify-content: center;
-        margin: 15px 0;
-    }
-    
-    .loading-spinner {
-        display: none;
-        width: 20px;
-        height: 20px;
-        border: 3px solid rgba(255,255,255,.3);
-        border-radius: 50%;
-        border-top-color: #fff;
-        animation: spin 1s ease-in-out infinite;
-        margin-left: 10px;
-    }
-    
-    @keyframes spin {
-        to { transform: rotate(360deg); }
-    }
-
-    /* New styles for registering message */
-    .registering-message {
-        display: none;
-        text-align: center;
-        padding: 15px;
-        background-color: rgba(42, 157, 81, 0.1);
-        border-radius: 25px;
-        margin-bottom: 20px;
-        color: #2a9d51;
-        font-weight: 600;
-        position: relative;
-        border: 2px solid #2a9d51;
-    }
-
-    .pulse {
-        animation: pulse-animation 2s infinite;
-    }
-
-    @keyframes pulse-animation {
-        0% {
-            opacity: 1;
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Multi Games</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <style>
+        .bg-gaming {
+            background: linear-gradient(to right, #1a8d44, #2a9d51);
         }
-        50% {
-            opacity: 0.5;
+        .card-shadow {
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
         }
-        100% {
-            opacity: 1;
+        .password-requirements {
+            font-size: 0.75rem;
+            color: #6b7280;
         }
-    }
-  </style>
+        .requirement {
+            display: flex;
+            align-items: center;
+            margin-bottom: 2px;
+        }
+        .requirement-icon {
+            margin-right: 5px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: #d1d5db;
+        }
+        .requirement-met .requirement-icon {
+            background-color: #10b981;
+        }
+        
+        /* Loading animation */
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+            margin-left: 10px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Registering message animation */
+        .pulse {
+            animation: pulse-animation 2s infinite;
+        }
+
+        @keyframes pulse-animation {
+            0% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+        
+        /* Focus and hover states */
+        input:focus {
+            border-color: #2a9d51 !important;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(42, 157, 81, 0.2);
+        }
+    </style>
 </head>
-<body>
-  <div class="register-container">
-    <div class="register-header">
-      <h2>Join Multi Games</h2>
-      <p>Create an account to start playing and tracking your progress</p>
-    </div>
-    
-    <!-- New registering message element -->
-    <div id="registering-message" class="registering-message pulse">
-      <i class="fas fa-circle-notch fa-spin"></i> Creating your account...
-    </div>
-    
-    <form class="register-form" id="register-form">
-      <div id="error-message"></div>
-      <input type="text" id="register-name" placeholder="Full name" required>
-      <input type="email" id="register-email" placeholder="Email address" required>
-      <input type="password" id="register-password" placeholder="Password" required>
-      <input type="password" id="register-confirm-password" placeholder="Confirm password" required>
-      <input type="text" id="manual-referral" placeholder="Referral code (optional)">
-      
-      <div class="checkbox-container">
-        <input type="checkbox" id="terms-checkbox" required>
-        <label for="terms-checkbox">I accept the <a href="#" id="terms-link">Terms and Conditions</a> and <a href="#" id="privacy-link">Privacy Policy</a></label>
-      </div>
-      
-      <div class="recaptcha-container">
-        <div class="g-recaptcha" data-sitekey="6LcUC_0qAAAAAO9Aa5ydOLmbp2_ymtNJlj9v3ZfF" data-callback="recaptchaCallback"></div>
-      </div>
-      
-      <button type="submit" id="register-btn" class="register-btn" disabled>
-        Create Account
-        <span class="loading-spinner" id="loading-spinner"></span>
-      </button>
-      
-      <div class="or-divider">or</div>
-      
-      <div class="social-login">
-        <div class="social-btn" id="google-register">
-          <i class="fab fa-google"></i>
-          <span>Sign up with Google</span>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md w-full bg-white rounded-xl card-shadow p-8">
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-gray-800 mb-2">Create Account</h1>
+            <p class="text-gray-600">Join Multi Games to start playing</p>
         </div>
-      </div>
-      
-      <div class="login-prompt">
-        Already have an account? <a href="profile.html" id="login-link">Log in</a>
-      </div>
-    </form>
-  </div>
 
-  <!-- Global script for recaptcha callback -->
-  <script>
-    // Global variable to track recaptcha verification
-    let recaptchaVerified = false;
-    
-    function recaptchaCallback() {
-      recaptchaVerified = true;
-      updateRegisterButton();
-    }
-    
-    function updateRegisterButton() {
-      const termsChecked = document.getElementById('terms-checkbox').checked;
-      const registerBtn = document.getElementById('register-btn');
-      
-      registerBtn.disabled = !(termsChecked && recaptchaVerified);
-    }
-    
-    // Ensure checkbox changes also update button state
-    document.addEventListener('DOMContentLoaded', function() {
-      document.getElementById('terms-checkbox').addEventListener('change', updateRegisterButton);
+        <div id="status-message" class="hidden mb-4 p-4 rounded-md"></div>
+        
+        <!-- Registration Message (initially hidden) -->
+        <div id="registering-message" class="hidden mb-6 p-4 text-center bg-green-50 rounded-md text-green-700 pulse">
+            <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-green-700 inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            Creating your account...
+        </div>
+
+        <!-- Registration Form -->
+        <form id="registerForm" class="space-y-4">
+            <!-- Full Name -->
+            <div>
+                <label for="fullname" class="block text-sm font-medium text-gray-700">Full Name</label>
+                <input type="text" id="fullname" name="fullname" required 
+                       class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500">
+            </div>
+            
+            <!-- Username -->
+            <div>
+                <label for="username" class="block text-sm font-medium text-gray-700">Username</label>
+                <input type="text" id="username" name="username" required 
+                       class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500">
+            </div>
+
+            <!-- Email -->
+            <div>
+                <label for="email" class="block text-sm font-medium text-gray-700">Email address</label>
+                <input type="email" id="email" name="email" required 
+                       class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500">
+            </div>
+
+            <!-- Password -->
+            <div>
+                <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+                <input type="password" id="password" name="password" required 
+                       class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500">
+                
+                <!-- Password Requirements -->
+                <div class="password-requirements mt-2">
+                    <div class="requirement" id="req-length">
+                        <span class="requirement-icon"></span>
+                        <span>At least 8 characters</span>
+                    </div>
+                    <div class="requirement" id="req-uppercase">
+                        <span class="requirement-icon"></span>
+                        <span>At least 1 uppercase letter</span>
+                    </div>
+                    <div class="requirement" id="req-lowercase">
+                        <span class="requirement-icon"></span>
+                        <span>At least 1 lowercase letter</span>
+                    </div>
+                    <div class="requirement" id="req-number">
+                        <span class="requirement-icon"></span>
+                        <span>At least 1 number</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Confirm Password -->
+            <div>
+                <label for="confirmPassword" class="block text-sm font-medium text-gray-700">Confirm Password</label>
+                <input type="password" id="confirmPassword" name="confirmPassword" required 
+                       class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500">
+            </div>
+            
+            <!-- Referral Code -->
+            <div>
+                <label for="referralCode" class="block text-sm font-medium text-gray-700">Referral Code (Optional)</label>
+                <input type="text" id="referralCode" name="referralCode" 
+                       class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500">
+            </div>
+            
+            <!-- reCAPTCHA -->
+            <div class="flex justify-center mt-2">
+                <div class="g-recaptcha" data-sitekey="6LcUC_0qAAAAAO9Aa5ydOLmbp2_ymtNJlj9v3ZfF" data-callback="enableSubmit"></div>
+            </div>
+
+            <!-- Terms and Conditions -->
+            <div class="flex items-start">
+                <div class="flex items-center h-5">
+                    <input id="terms" name="terms" type="checkbox" required
+                           class="focus:ring-green-500 h-4 w-4 text-green-600 border-gray-300 rounded">
+                </div>
+                <div class="ml-3 text-sm">
+                    <label for="terms" class="font-medium text-gray-700">
+                        I agree to the <a href="#" class="text-green-600 hover:text-green-500">Terms of Service</a> and <a href="#" class="text-green-600 hover:text-green-500">Privacy Policy</a>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Submit Button -->
+            <div>
+                <button type="submit" id="register-btn" disabled
+                        class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gaming hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                    Create Account
+                    <span id="loading-spinner" class="loading-spinner hidden"></span>
+                </button>
+            </div>
+        </form>
+        
+        <!-- Google Sign-up Button -->
+        <div class="mt-4">
+            <div class="relative">
+                <div class="absolute inset-0 flex items-center">
+                    <div class="w-full border-t border-gray-300"></div>
+                </div>
+                <div class="relative flex justify-center text-sm">
+                    <span class="px-2 bg-white text-gray-500">Or continue with</span>
+                </div>
+            </div>
+            
+            <div class="mt-4">
+                <button type="button" id="google-sign-up" 
+                        class="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                    <svg class="h-5 w-5 mr-2" viewBox="0 0 24 24" width="24" height="24">
+                        <g transform="matrix(1, 0, 0, 1, 27.009001, -39.238998)">
+                            <path fill="#4285F4" d="M -3.264 51.509 C -3.264 50.719 -3.334 49.969 -3.454 49.239 L -14.754 49.239 L -14.754 53.749 L -8.284 53.749 C -8.574 55.229 -9.424 56.479 -10.684 57.329 L -10.684 60.329 L -6.824 60.329 C -4.564 58.239 -3.264 55.159 -3.264 51.509 Z"/>
+                            <path fill="#34A853" d="M -14.754 63.239 C -11.514 63.239 -8.804 62.159 -6.824 60.329 L -10.684 57.329 C -11.764 58.049 -13.134 58.489 -14.754 58.489 C -17.884 58.489 -20.534 56.379 -21.484 53.529 L -25.464 53.529 L -25.464 56.619 C -23.494 60.539 -19.444 63.239 -14.754 63.239 Z"/>
+                            <path fill="#FBBC05" d="M -21.484 53.529 C -21.734 52.809 -21.864 52.039 -21.864 51.239 C -21.864 50.439 -21.724 49.669 -21.484 48.949 L -21.484 45.859 L -25.464 45.859 C -26.284 47.479 -26.754 49.299 -26.754 51.239 C -26.754 53.179 -26.284 54.999 -25.464 56.619 L -21.484 53.529 Z"/>
+                            <path fill="#EA4335" d="M -14.754 43.989 C -12.984 43.989 -11.404 44.599 -10.154 45.789 L -6.734 42.369 C -8.804 40.429 -11.514 39.239 -14.754 39.239 C -19.444 39.239 -23.494 41.939 -25.464 45.859 L -21.484 48.949 C -20.534 46.099 -17.884 43.989 -14.754 43.989 Z"/>
+                        </g>
+                    </svg>
+                    Sign up with Google
+                </button>
+            </div>
+        </div>
+
+        <!-- Verification Instructions (initially hidden) -->
+        <div id="verification-instructions" class="hidden mt-6 p-4 bg-green-50 rounded-md text-green-700 text-sm">
+            <p class="font-medium mb-2">Verify your email address</p>
+            <p>We've sent a verification email to <span id="user-email" class="font-bold"></span>.</p>
+            <p class="mt-2">Please check your inbox and click the verification link to activate your account.</p>
+            <button id="resend-email" class="mt-3 text-green-700 underline hover:text-green-500">Resend verification email</button>
+        </div>
+
+        <!-- Login Link -->
+        <div class="mt-6 text-center">
+            <p class="text-sm text-gray-600">
+                Already have an account? 
+                <a href="login.html" class="font-medium text-green-600 hover:text-green-500">
+                    Sign in
+                </a>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Firebase Configuration
+const firebaseConfig = {
+    apiKey: "AIzaSyBw1uA-kNKOZEufWKZ9AMBxvRGHNGF1lkA",
+    authDomain: "multi-games-a2561.firebaseapp.com",
+    projectId: "multi-games-a2561",
+    storageBucket: "multi-games-a2561.appspot.com",
+    messagingSenderId: "150551898066",
+    appId: "1:150551898066:web:4e8fb185f2321ba4140a0b",
+    measurementId: "G-PB8Y87E6XV",
+    databaseURL: "https://multi-games-a2561-default-rtdb.firebaseio.com"
+};
+
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.firestore();
+const rtdb = firebase.database();
+
+// Global reCAPTCHA verification flag
+let recaptchaVerified = false;
+let recaptchaWidget;
+
+// Function to render the reCAPTCHA widget
+window.onload = function() {
+    // Render reCAPTCHA when page loads
+    recaptchaWidget = grecaptcha.render('g-recaptcha', {
+        'sitekey': '6LcUC_0qAAAAAO9Aa5ydOLmbp2_ymtNJlj9v3ZfF',
+        'callback': enableSubmit,
+        'expired-callback': recaptchaExpired
     });
-  </script>
+};
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
-    import { getAuth, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, updateProfile } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
-    import { getDatabase, ref, set, get, child, update } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-database.js";
-
-    // Your Firebase configuration
-    const firebaseConfig = {
-      apiKey: "AIzaSyBw1uA-kNKOZEufWKZ9AMBxvRGHNGF1lkA",
-      authDomain: "multi-games-a2561.firebaseapp.com",
-      projectId: "multi-games-a2561",
-      storageBucket: "multi-games-a2561.appspot.com",
-      messagingSenderId: "150551898066",
-      appId: "1:150551898066:web:4e8fb185f2321ba4140a0b",
-      measurementId: "G-PB8Y87E6XV",
-      databaseURL: "https://multi-games-a2561-default-rtdb.firebaseio.com"
-    };
-
-    // Initialize Firebase
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const database = getDatabase(app);
-    const googleProvider = new GoogleAuthProvider();
-
-    // Function to show error messages
-    function showError(message) {
-      const errorElement = document.getElementById('error-message');
-      errorElement.textContent = message;
-      errorElement.style.display = "block";
-      
-      // Hide the error after 5 seconds
-      setTimeout(() => {
-        errorElement.style.display = "none";
-      }, 5000);
-    }
-
-    // Function to show loading state
-    function setLoading(isLoading) {
-      const spinner = document.getElementById('loading-spinner');
-      const registerBtn = document.getElementById('register-btn');
-      const registeringMessage = document.getElementById('registering-message');
-      
-      if (isLoading) {
-        spinner.style.display = 'inline-block';
-        registerBtn.disabled = true;
-        registeringMessage.style.display = 'block';
-      } else {
-        spinner.style.display = 'none';
-        registeringMessage.style.display = 'none';
-        updateRegisterButton();
-      }
-    }
-
-    // Function to generate a unique referral code
-    async function generateReferralCode() {
-      let code;
-      let exists = true;
-      
-      try {
-        while (exists) {
-          code = "GMR" + Math.random().toString(36).substring(2, 8).toUpperCase();
-          const dbRef = ref(database);
-          const snapshot = await get(child(dbRef, `referralCodes/${code}`));
-          exists = snapshot.exists();
-        }
-        return code;
-      } catch (error) {
-        console.error("Error generating referral code:", error);
-        return "GMR" + Math.random().toString(36).substring(2, 8).toUpperCase();
-      }
-    }
-
-    // Function to capture referral code from URL
-    function getReferralCodeFromURL() {
-      const params = new URLSearchParams(window.location.search);
-      return params.get("ref") || null;
-    }
-
-    // FIXED Function to track referral usage
-// Replace your current trackReferral function with this implementation:
-
-// Function to track referral usage
-async function trackReferral(referralCode) {
-  if (!referralCode) return;
-  
-  try {
-    console.log("Tracking referral code:", referralCode);
-    
-    // First check if the referral code exists
-    const dbRef = ref(database);
-    const codeSnapshot = await get(child(dbRef, `referralCodes/${referralCode}`));
-    
-    if (codeSnapshot.exists()) {
-      // Get the user ID of the referrer
-      const referrerId = codeSnapshot.val().userId;
-      console.log("Referrer ID found:", referrerId);
-      
-      // Reference to the referrer's referrals count
-      const referralsRef = ref(database, `users/${referrerId}/referrals`);
-      
-      // Get current referrals count
-      const referralsSnapshot = await get(referralsRef);
-      
-      // If referrals field exists, increment it, otherwise set it to 1
-      let newCount = 1;
-      if (referralsSnapshot.exists()) {
-        newCount = referralsSnapshot.val() + 1;
-      }
-      
-      console.log("Current referrals:", referralsSnapshot.val(), "New count:", newCount);
-      
-      // Update referrals count
-      await set(referralsRef, newCount);
-      console.log("Referral tracked successfully. New count:", newCount);
-    } else {
-      console.log("Invalid referral code:", referralCode);
-    }
-  } catch (error) {
-    console.error("Error tracking referral:", error.message);
-  }
+// Enable submit button when reCAPTCHA is verified
+function enableSubmit() {
+    recaptchaVerified = true;
+    updateSubmitButton();
 }
 
-// Registration form submission handler
-document.getElementById('register-form').addEventListener('submit', async function (e) {
-  e.preventDefault();
-  
-  setLoading(true);
+// Handle reCAPTCHA expiration
+function recaptchaExpired() {
+    recaptchaVerified = false;
+    updateSubmitButton();
+    showNotification('reCAPTCHA verification expired. Please verify again.', 'warning');
+}
 
-  const name = document.getElementById('register-name').value.trim();
-  const email = document.getElementById('register-email').value.trim();
-  const password = document.getElementById('register-password').value;
-  const confirmPassword = document.getElementById('register-confirm-password').value;
-  const manualReferral = document.getElementById('manual-referral').value.trim();
-  
-  // Validation
-  if (!name) {
-    showError("Please enter your name");
-    setLoading(false);
-    return;
-  }
-  
-  if (!email) {
-    showError("Please enter your email address");
-    setLoading(false);
-    return;
-  }
-  
-  // Basic email validation
-  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailPattern.test(email)) {
-    showError("Please enter a valid email address");
-    setLoading(false);
-    return;
-  }
-
-  // Basic password validation
-  if (password !== confirmPassword) {
-    showError("Passwords don't match");
-    setLoading(false);
-    return;
-  }
-  
-  if (password.length < 6) {
-    showError("Password should be at least 6 characters");
-    setLoading(false);
-    return;
-  }
-  
-  // ReCAPTCHA validation
-  if (!recaptchaVerified) {
-    showError("Please verify that you are not a robot");
-    setLoading(false);
-    return;
-  }
-
-  try {
-    // Generate a unique referral code for this new user
-    const userReferralCode = await generateReferralCode();
-
-    // Determine the referral code to use: manual input takes precedence over URL parameter
-    const referralUsed = manualReferral || getReferralCodeFromURL();
-
-    // Create user with email and password
-    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-    const user = userCredential.user;
+// Update submit button based on terms checkbox and reCAPTCHA
+function updateSubmitButton() {
+    const termsChecked = document.getElementById('terms').checked;
+    const registerBtn = document.getElementById('register-btn');
     
-    // Update the user's display name
-    await updateProfile(user, {
-      displayName: name
-    });
+    registerBtn.disabled = !(termsChecked && recaptchaVerified);
+}
 
-    // Prepare user data including all required fields as per Firebase rules
-    const userData = {
-      name: name,
-      email: email,
-      referralCode: userReferralCode,
-      referredBy: referralUsed || null,
-      dateJoined: new Date().toISOString(),
-      referrals: 0, // Initialize referrals count to 0
-      airtimeBalance: 0, // Initialize airtime balance to 0
-      airtimeScore: 0, // Initialize airtime score to 0
-      monthlyAirtime: 0, // Initialize monthly airtime to 0
-      weeklyAirtime: 0, // Initialize weekly airtime to 0
-      airtimeHistory: {}, // Initialize empty airtime history
-      playedGames: {}  // Initialize empty played games
-    };
+// Terms checkbox event listener
+document.getElementById('terms').addEventListener('change', updateSubmitButton);
 
-    // Save the referral code mapping for this user
-    await set(ref(database, `referralCodes/${userReferralCode}`), { 
-      userId: user.uid,
-      created: new Date().toISOString()
-    });
+// Password validation
+const password = document.getElementById('password');
+const confirmPassword = document.getElementById('confirmPassword');
 
-    // Save user data in Firebase
-    await set(ref(database, `users/${user.uid}`), userData);
+password.addEventListener('input', validatePassword);
 
-    // If a referral code was used, track it
-    if (referralUsed) {
-      await trackReferral(referralUsed);
-    }
-
-    // Redirect to profile page after registration
-    window.location.href = 'profile.html';
-  } catch (error) {
-    console.error("Registration error:", error);
+function validatePassword() {
+    const value = password.value;
     
-    if (error.code === 'auth/email-already-in-use') {
-      showError("This email is already registered. Please use another email or log in.");
-    } else if (error.code === 'auth/invalid-email') {
-      showError("Please enter a valid email address.");
-    } else if (error.code === 'auth/weak-password') {
-      showError("Password is too weak. Please use a stronger password.");
+    // Check requirements
+    const hasLength = value.length >= 8;
+    const hasUppercase = /[A-Z]/.test(value);
+    const hasLowercase = /[a-z]/.test(value);
+    const hasNumber = /[0-9]/.test(value);
+    
+    // Update UI
+    updateRequirement('req-length', hasLength);
+    updateRequirement('req-uppercase', hasUppercase);
+    updateRequirement('req-lowercase', hasLowercase);
+    updateRequirement('req-number', hasNumber);
+    
+    return hasLength && hasUppercase && hasLowercase && hasNumber;
+}
+
+function updateRequirement(id, isMet) {
+    const element = document.getElementById(id);
+    if (isMet) {
+        element.classList.add('requirement-met');
     } else {
-      showError("Registration failed: " + error.message);
+        element.classList.remove('requirement-met');
+    }
+}
+
+// Helper functions
+function showNotification(message, type = 'error') {
+    const statusMessage = document.getElementById('status-message');
+    statusMessage.textContent = message;
+    statusMessage.classList.remove('hidden', 'bg-green-100', 'text-green-700', 'bg-red-100', 'text-red-700', 'bg-yellow-100', 'text-yellow-700');
+    
+    switch(type) {
+        case 'success':
+            statusMessage.classList.add('bg-green-100', 'text-green-700');
+            break;
+        case 'error':
+            statusMessage.classList.add('bg-red-100', 'text-red-700');
+            break;
+        case 'warning':
+            statusMessage.classList.add('bg-yellow-100', 'text-yellow-700');
+            break;
     }
     
-    setLoading(false);
-  }
+    // Auto-hide after 5 seconds
+    setTimeout(() => {
+        statusMessage.classList.add('hidden');
+    }, 5000);
+}
+
+function setLoading(isLoading) {
+    const spinner = document.getElementById('loading-spinner');
+    const registerBtn = document.getElementById('register-btn');
+    const registeringMessage = document.getElementById('registering-message');
+    const registerForm = document.getElementById('registerForm');
+    
+    if (isLoading) {
+        spinner.classList.remove('hidden');
+        registerBtn.disabled = true;
+        registeringMessage.classList.remove('hidden');
+        registerForm.classList.add('opacity-50');
+    } else {
+        spinner.classList.add('hidden');
+        registeringMessage.classList.add('hidden');
+        registerForm.classList.remove('opacity-50');
+        updateSubmitButton();
+    }
+}
+
+// Generate a unique referral code
+async function generateReferralCode() {
+    let code;
+    let exists = true;
+    
+    try {
+        while (exists) {
+            code = "GMR" + Math.random().toString(36).substring(2, 8).toUpperCase();
+            const snapshot = await rtdb.ref(`referralCodes/${code}`).get();
+            exists = snapshot.exists();
+        }
+        return code;
+    } catch (error) {
+        console.error("Error generating referral code:", error);
+        return "GMR" + Math.random().toString(36).substring(2, 8).toUpperCase();
+    }
+}
+
+// Get referral code from URL
+function getReferralCodeFromURL() {
+    const params = new URLSearchParams(window.location.search);
+    return params.get("ref") || null;
+}
+
+// Track referral usage
+async function trackReferral(referralCode) {
+    if (!referralCode) return;
+    
+    try {
+        console.log("Tracking referral code:", referralCode);
+        
+        // Check if the referral code exists
+        const codeSnapshot = await rtdb.ref(`referralCodes/${referralCode}`).get();
+        
+        if (codeSnapshot.exists()) {
+            // Get the user ID of the referrer
+            const referrerId = codeSnapshot.val().userId;
+            console.log("Referrer ID found:", referrerId);
+            
+            // Reference to the referrer's referrals count
+            const referralsRef = rtdb.ref(`users/${referrerId}/referrals`);
+            
+            // Get current referrals count
+            const referralsSnapshot = await referralsRef.get();
+            
+            // If referrals field exists, increment it, otherwise set it to 1
+            let newCount = 1;
+            if (referralsSnapshot.exists()) {
+                newCount = referralsSnapshot.val() + 1;
+            }
+            
+            console.log("Current referrals:", referralsSnapshot.val(), "New count:", newCount);
+            
+            // Update referrals count
+            await referralsRef.set(newCount);
+            console.log("Referral tracked successfully. New count:", newCount);
+        } else {
+            console.log("Invalid referral code:", referralCode);
+        }
+    } catch (error) {
+        console.error("Error tracking referral:", error.message);
+    }
+}
+
+// Create user record in databases
+async function createUserRecord(user, fullname, username, referralUsed, userReferralCode) {
+    try {
+        // Save the referral code mapping for this user
+        await rtdb.ref(`referralCodes/${userReferralCode}`).set({ 
+            userId: user.uid,
+            created: new Date().toISOString()
+        });
+        
+        // Prepare user data including all required fields
+        const userData = {
+            name: fullname || user.displayName || "User",
+            username: username || user.displayName || "User" + Math.floor(Math.random() * 10000),
+            email: user.email,
+            referralCode: userReferralCode,
+            referredBy: referralUsed || null,
+            dateJoined: new Date().toISOString(),
+            signupMethod: username ? "email" : "google",
+            referrals: 0,
+            airtimeBalance: 0,
+            airtimeScore: 0,
+            monthlyAirtime: 0,
+            weeklyAirtime: 0,
+            airtimeHistory: {},
+            playedGames: {},
+            verified: user.emailVerified
+        };
+        
+        // Save user data in both Firestore and Realtime Database
+        await db.collection('users').doc(user.uid).set(userData);
+        await rtdb.ref(`users/${user.uid}`).set(userData);
+        
+        // If a referral code was used, track it
+        if (referralUsed) {
+            await trackReferral(referralUsed);
+        }
+        
+        return true;
+    } catch (error) {
+        console.error("Error creating user record:", error);
+        throw error;
+    }
+}
+
+// Handle account redirect after verification
+function handlePostRegistration(user, isEmail = true) {
+    if (isEmail) {
+        // For email registration, show verification instructions
+        document.getElementById('registerForm').classList.add('hidden');
+        document.getElementById('verification-instructions').classList.remove('hidden');
+        document.getElementById('google-sign-up').parentElement.parentElement.classList.add('hidden');
+        document.getElementById('user-email').textContent = user.email;
+    } else {
+        // For Google sign-in, redirect to profile page
+        showNotification('Account created successfully! Redirecting...', 'success');
+        setTimeout(() => {
+            window.location.href = 'profile.html';
+        }, 1500);
+    }
+}
+
+// Form submission
+document.getElementById('registerForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    // Get form values
+    const fullname = document.getElementById('fullname').value.trim();
+    const username = document.getElementById('username').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
+    const manualReferral = document.getElementById('referralCode').value.trim();
+    const terms = document.getElementById('terms').checked;
+    
+    // Validate form
+    if (!fullname) {
+        showNotification('Please enter your full name.');
+        return;
+    }
+    
+    if (!username) {
+        showNotification('Please enter a username.');
+        return;
+    }
+    
+    if (!validatePassword()) {
+        showNotification('Please meet all password requirements.');
+        return;
+    }
+    
+    if (password !== confirmPassword) {
+        showNotification('Passwords do not match.');
+        return;
+    }
+    
+    if (!terms) {
+        showNotification('You must agree to the Terms of Service and Privacy Policy.');
+        return;
+    }
+    
+    if (!recaptchaVerified) {
+        showNotification('Please verify that you are not a robot.');
+        return;
+    }
+    
+    // Show loading state
+    setLoading(true);
+    
+    try {
+        // Generate a unique referral code for this new user
+        const userReferralCode = await generateReferralCode();
+        
+        // Determine the referral code to use: manual input takes precedence over URL parameter
+        const referralUsed = manualReferral || getReferralCodeFromURL();
+        
+        // Create user
+        const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+        const user = userCredential.user;
+        
+        // Set user display name
+        await user.updateProfile({
+            displayName: username
+        });
+        
+        // Create user record in databases
+        await createUserRecord(user, fullname, username, referralUsed, userReferralCode);
+        
+        // Send verification email
+        await user.sendEmailVerification();
+        
+        // Show verification instructions
+        handlePostRegistration(user, true);
+        
+        // Clear form
+        document.getElementById('registerForm').reset();
+        
+        // Reset reCAPTCHA
+        grecaptcha.reset(recaptchaWidget);
+        recaptchaVerified = false;
+        
+    } catch (error) {
+        // Handle errors
+        let errorMessage;
+        
+        switch(error.code) {
+            case 'auth/email-already-in-use':
+                errorMessage = 'This email is already registered.';
+                break;
+            case 'auth/invalid-email':
+                errorMessage = 'Please enter a valid email address.';
+                break;
+            case 'auth/weak-password':
+                errorMessage = 'Password is too weak.';
+                break;
+            default:
+                errorMessage = 'Registration error: ' + error.message;
+        }
+        
+        showNotification(errorMessage);
+        
+        // Reset reCAPTCHA on error
+        grecaptcha.reset(recaptchaWidget);
+        recaptchaVerified = false;
+        updateSubmitButton();
+        
+    } finally {
+        // Reset loading state
+        setLoading(false);
+    }
 });
 
-// Google Sign-up handler
-document.getElementById('google-register').addEventListener('click', async function() {
-  if (!document.getElementById('terms-checkbox').checked) {
-    showError("You must accept the Terms and Conditions");
-    return;
-  }
-  
-  if (!recaptchaVerified) {
-    showError("Please verify that you are not a robot");
-    return;
-  }
-  
-  setLoading(true);
-  
-  try {
-    const result = await signInWithPopup(auth, googleProvider);
-    const user = result.user;
-    const isNewUser = result._tokenResponse.isNewUser;
-    
-    if (isNewUser) {
-      // Generate a referral code for this new Google user
-      const userReferralCode = await generateReferralCode();
-      const referralUsed = document.getElementById('manual-referral').value.trim() || getReferralCodeFromURL();
-      
-      // Save user data with all required fields
-      const userData = {
-        name: user.displayName || "User",
-        email: user.email,
-        referralCode: userReferralCode,
-        referredBy: referralUsed || null,
-        dateJoined: new Date().toISOString(),
-        signupMethod: "google",
-        referrals: 0, // Initialize referrals count to 0
-        airtimeBalance: 0, // Initialize airtime balance to 0
-        airtimeScore: 0, // Initialize airtime score to 0
-        monthlyAirtime: 0, // Initialize monthly airtime to 0
-        weeklyAirtime: 0, // Initialize weekly airtime to 0
-        airtimeHistory: {}, // Initialize empty airtime history
-        playedGames: {}  // Initialize empty played games
-      };
-      
-      // Save the referral code mapping
-      await set(ref(database, `referralCodes/${userReferralCode}`), { 
-        userId: user.uid,
-        created: new Date().toISOString()
-      });
-      
-      // Save user data in Firebase
-      await set(ref(database, `users/${user.uid}`), userData);
-      
-      // Track referral if applicable
-      if (referralUsed) {
-        await trackReferral(referralUsed);
-      }
+// Google Sign-up
+document.getElementById('google-sign-up').addEventListener('click', async function() {
+    if (!document.getElementById('terms').checked) {
+        showNotification("You must accept the Terms and Conditions");
+        return;
     }
     
-    // Redirect to profile page
-    window.location.href = 'profile.html';
-  } catch (error) {
-    console.error("Google sign-up error:", error);
-    showError("Google sign-up failed. Please try again.");
-    setLoading(false);
-  }
+    if (!recaptchaVerified) {
+        showNotification("Please verify that you are not a robot");
+        return;
+    }
+    
+    setLoading(true);
+    
+    try {
+        const provider = new firebase.auth.GoogleAuthProvider();
+        // Add scopes to request additional permissions if needed
+        provider.addScope('profile');
+        provider.addScope('email');
+        
+        const result = await auth.signInWithPopup(provider);
+        const user = result.user;
+        
+        // Check if this is a new user
+        const userDoc = await db.collection('users').doc(user.uid).get();
+        const isNewUser = !userDoc.exists;
+        
+        if (isNewUser) {
+            // Generate a referral code for this new Google user
+            const userReferralCode = await generateReferralCode();
+            const referralUsed = document.getElementById('referralCode').value.trim() || getReferralCodeFromURL();
+            
+            // Create user record
+            await createUserRecord(user, null, null, referralUsed, userReferralCode);
+            
+            // Handle post-registration for Google sign-up
+            handlePostRegistration(user, false);
+        } else {
+            // User already exists, redirect to profile
+            showNotification('Signed in successfully! Redirecting...', 'success');
+            setTimeout(() => {
+                window.location.href = 'profile.html';
+            }, 1500);
+        }
+    } catch (error) {
+        console.error("Google sign-up error:", error);
+        let errorMessage = "Google sign-up failed.";
+        
+        if (error.code === 'auth/popup-closed-by-user') {
+            errorMessage = "Sign-up canceled. You closed the Google login window.";
+        } else if (error.code === 'auth/popup-blocked') {
+            errorMessage = "Pop-up blocked. Please enable pop-ups for this site.";
+        } else if (error.code === 'auth/account-exists-with-different-credential') {
+            errorMessage = "An account already exists with the same email address but different sign-in credentials.";
+        }
+        
+        showNotification(errorMessage);
+        
+        // Reset reCAPTCHA on error
+        grecaptcha.reset(recaptchaWidget);
+        recaptchaVerified = false;
+        updateSubmitButton();
+    } finally {
+        setLoading(false);
+    }
 });
-</script>
+
+// Resend verification email
+document.getElementById('resend-email').addEventListener('click', async function() {
+    const user = auth.currentUser;
+    
+    if (user) {
+        try {
+            setLoading(true);
+            await user.sendEmailVerification();
+            showNotification('Verification email resent! Please check your inbox.', 'success');
+        } catch (error) {
+            showNotification('Error sending verification email: ' + error.message);
+        } finally {
+            setLoading(false);
+        }
+    } else {
+        showNotification('Please sign in again to resend the verification email.', 'warning');
+        setTimeout(() => {
+            window.location.href = 'login.html';
+        }, 2000);
+    }
+});
+
+// Prefill referral code from URL if available
+window.addEventListener('DOMContentLoaded', function() {
+    const referralCode = getReferralCodeFromURL();
+    if (referralCode) {
+        document.getElementById('referralCode').value = referralCode;
+    }
+});
+
+// Check auth state on page load
+auth.onAuthStateChanged(function(user) {
+    const loadingElement = document.getElementById('loading-spinner');
+    
+    // Only show loader when we're actually performing an operation
+    if (!loadingElement.classList.contains('hidden')) {
+        return; // If we're already in a loading state, don't interfere
+    }
+    
+    if (user) {
+        // Check if user is verified
+        if (user.emailVerified) {
+            // User is verified, redirect to profile
+            window.location.href = 'profile.html';
+        } else if (document.getElementById('verification-instructions').classList.contains('hidden')) {
+            // User needs to verify, but we're not showing instructions yet
+            // (meaning they've just landed back on this page)
+            document.getElementById('user-email').textContent = user.email;
+            document.getElementById('registerForm').classList.add('hidden');
+            document.getElementById('verification-instructions').classList.remove('hidden');
+            document.getElementById('google-sign-up').parentElement.parentElement.classList.add('hidden');
+        }
+    }
+});
+    </script>
 </body>
 </html>
