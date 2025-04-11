@@ -1386,6 +1386,34 @@ input:checked + .toggle-slider:before {
     padding: 5px 10px;
     border-radius: 50%;
 }
+
+/* Alert Styles */
+.alert {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9999;
+    padding: 16px 24px;
+    border-radius: 12px;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+    font-size: 15px;
+    font-weight: bold;
+    color: white;
+    animation: fadeSlide 0.3s ease;
+    max-width: 90%;
+    text-align: center;
+    line-height: 1.4;
+}
+
+.alert-success { background-color: #28a745; }
+.alert-error { background-color: #e74c3c; }
+.alert-info { background-color: #3498db; }
+
+@keyframes fadeSlide {
+    from { opacity: 0; transform: translateX(-50%) translateY(-20px); }
+    to { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
 </style>
 </head>
 <body>
@@ -2345,6 +2373,53 @@ document.addEventListener("DOMContentLoaded", function() {
             withdrawModal.style.display = "none";
         }
     });
+});
+</script>
+<script>
+    // Show styled alert
+function showAlert(message, type = 'info') {
+    const alertEl = document.createElement('div');
+    alertEl.className = `alert alert-${type}`;
+    alertEl.textContent = message;
+    document.body.appendChild(alertEl);
+    setTimeout(() => alertEl.remove(), 4000);
+}
+
+// Check user's status in Realtime DB
+async function checkUserStatus(uid) {
+    try {
+        const userRef = ref(database, `users/${uid}`);
+        const snapshot = await get(userRef);
+        const userData = snapshot.val();
+
+        if (!userData || !userData.status) return;
+
+        const status = userData.status.toLowerCase();
+
+        if (status === 'suspended') {
+            showAlert('You have been suspended', 'error');
+            setTimeout(() => {
+                signOut(auth).then(() => location.reload());
+            }, 4000);
+        } else if (status === 'blocked') {
+            showAlert('You have been blocked', 'error');
+            setTimeout(() => {
+                signOut(auth).then(() => location.reload());
+            }, 1000);
+        }
+    } catch (error) {
+        console.error("Error checking status:", error);
+    }
+}
+
+// Auth check with status enforcement
+onAuthStateChanged(auth, (user) => {
+    if (user) {
+        updateProfileInfo(user);
+        checkUserStatus(user.uid); // NEW: status check
+    } else {
+        showLoginModal();
+    }
 });
 </script>
 </body>
