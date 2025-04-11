@@ -10,29 +10,73 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
   <style>
     :root {
-      --primary: #2e7d32;
-  --primary-light: #60ad5e;
-  --primary-dark: #005005;
-  --secondary: #e8f5e9;
+  --primary: #33ff33;
+  --primary-light: #7fff7f;
+  --primary-dark: #00cc00;
+  --background: #0a0a0a;
+  --container-bg: rgba(0, 0, 0, 0.7);
   --white: #ffffff;
-  --gray: #f5f5f5;
-  --dark-gray: #333333;
-  --error: #f44336;
-  --success: #4caf50;
+  --gray: #333333;
+  --dark-gray: #111111;
+  --error: #ff3333;
+  --success: #33ff33;
+  --accent-cyan: #00ffff;
+  --accent-magenta: #ff00ff;
 }
 
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: 'Courier New', monospace;
 }
 
 body {
-  background-color: var(--gray);
-  color: var(--dark-gray);
+  background-color: var(--background);
+  color: var(--primary);
   font-size: 15px;
   line-height: 1.5;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Background grid effect */
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    linear-gradient(rgba(51, 255, 51, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(51, 255, 51, 0.05) 1px, transparent 1px);
+  background-size: 20px 20px;
+  z-index: -2;
+}
+
+/* Background vignette effect */
+body::after {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle, transparent 30%, var(--background) 100%);
+  z-index: -1;
+}
+
+/* Floating binary code effect */
+@keyframes float {
+  0% {
+    transform: translateY(100vh);
+    opacity: 0.4;
+  }
+  100% {
+    transform: translateY(-100px);
+    opacity: 0;
+  }
 }
 
 .container {
@@ -43,43 +87,107 @@ body {
 }
 
 header {
-  background-color: var(--primary);
-  color: var(--white);
+  background-color: var(--container-bg);
+  color: var(--primary);
   padding: 15px 20px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0 20px rgba(51, 255, 51, 0.3);
   margin-bottom: 25px;
-  border-radius: 0 0 15px 15px;
+  border-radius: 8px;
+  border: 2px solid var(--primary);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+header:hover {
+  box-shadow: 0 0 30px rgba(51, 255, 51, 0.5);
+  transform: translateY(-2px);
+}
+
+header::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    45deg,
+    transparent 0%,
+    rgba(51, 255, 51, 0.05) 50%,
+    transparent 100%
+  );
+  animation: glint 3s infinite ease-in-out;
+  transform: rotate(-45deg);
+  z-index: 0;
+}
+
+@keyframes glint {
+  0% {
+    left: -50%;
+  }
+  100% {
+    left: 100%;
+  }
 }
 
 h1 {
   font-size: 24px;
   font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  position: relative;
+  z-index: 1;
 }
 
 h2 {
   font-size: 20px;
   font-weight: 500;
   margin-bottom: 15px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
 h3 {
   font-size: 16px;
   font-weight: 500;
   margin-bottom: 10px;
+  letter-spacing: 0.5px;
 }
 
 .card {
-  background-color: var(--white);
-  border-radius: 15px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  background-color: var(--container-bg);
+  border: 2px solid var(--primary);
+  border-radius: 8px;
+  box-shadow: 0 0 20px rgba(51, 255, 51, 0.3);
   padding: 20px;
   margin-bottom: 20px;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
 }
 
 .card:hover {
+  box-shadow: 0 0 30px rgba(51, 255, 51, 0.5);
   transform: translateY(-3px);
-  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.08);
+}
+
+.card::after {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    45deg,
+    transparent 0%,
+    rgba(51, 255, 51, 0.05) 50%,
+    transparent 100%
+  );
+  animation: glint 4s infinite ease-in-out;
+  transform: rotate(-45deg);
+  z-index: 0;
 }
 
 .login-card {
@@ -89,23 +197,27 @@ h3 {
 
 .input-group {
   margin-bottom: 16px;
+  position: relative;
+  z-index: 1;
 }
 
 input, select, textarea {
   width: 100%;
   padding: 10px 16px;
-  border: 1px solid #ddd;
-  border-radius: 12px;
+  border: 1px solid var(--primary);
+  border-radius: 8px;
   font-size: 15px;
   transition: all 0.3s ease;
-  background-color: var(--gray);
+  background-color: rgba(0, 0, 0, 0.5);
+  color: var(--primary);
+  box-shadow: 0 0 5px rgba(51, 255, 51, 0.2);
 }
 
 input:focus, select:focus, textarea:focus {
-  border-color: var(--primary);
+  border-color: var(--primary-light);
   outline: none;
-  box-shadow: 0 0 0 2px rgba(46, 125, 50, 0.15);
-  background-color: var(--white);
+  box-shadow: 0 0 10px rgba(51, 255, 51, 0.4);
+  background-color: rgba(0, 0, 0, 0.7);
 }
 
 label {
@@ -114,25 +226,53 @@ label {
   font-weight: 500;
   font-size: 14px;
   padding-left: 4px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
 }
 
 button {
-  background-color: var(--primary);
-  color: var(--white);
-  border: none;
+  background-color: transparent;
+  color: var(--primary);
+  border: 1px solid var(--primary);
   padding: 10px 18px;
-  border-radius: 12px;
+  border-radius: 8px;
   cursor: pointer;
   font-size: 14px;
   transition: all 0.3s ease;
   font-weight: 500;
-  letter-spacing: 0.3px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  font-family: 'Courier New', monospace;
+  position: relative;
+  overflow: hidden;
 }
 
 button:hover {
-  background-color: var(--primary-dark);
+  background-color: rgba(51, 255, 51, 0.2);
   transform: translateY(-2px);
-  box-shadow: 0 3px 8px rgba(0, 80, 5, 0.2);
+  box-shadow: 0 0 15px rgba(51, 255, 51, 0.4);
+}
+
+button:active {
+  transform: scale(0.98);
+}
+
+button::after {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    45deg,
+    transparent 0%,
+    rgba(51, 255, 51, 0.2) 50%,
+    transparent 100%
+  );
+  animation: glint 2s infinite ease-in-out;
+  transform: rotate(-45deg);
+  z-index: -1;
 }
 
 button.secondary {
@@ -142,47 +282,76 @@ button.secondary {
 }
 
 button.secondary:hover {
-  background-color: var(--secondary);
-  box-shadow: 0 3px 8px rgba(46, 125, 50, 0.1);
+  background-color: rgba(51, 255, 51, 0.1);
+  box-shadow: 0 0 15px rgba(51, 255, 51, 0.3);
 }
 
 .alert {
   padding: 12px 16px;
-  border-radius: 12px;
+  border-radius: 8px;
   margin-bottom: 16px;
   display: none;
   font-size: 14px;
+  border: 1px solid var(--primary);
+  position: relative;
+  overflow: hidden;
+}
+
+.alert::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    rgba(51, 255, 51, 0.1) 50%,
+    transparent 100%
+  );
+  animation: scan 2s infinite linear;
+  z-index: 0;
+}
+
+@keyframes scan {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
 }
 
 .alert-error {
-  background-color: #ffebee;
+  background-color: rgba(255, 0, 0, 0.2);
   color: var(--error);
-  border: 1px solid #ffcdd2;
+  border: 1px solid var(--error);
 }
 
 .alert-success {
-  background-color: #e8f5e9;
+  background-color: rgba(0, 255, 0, 0.1);
   color: var(--success);
-  border: 1px solid #c8e6c9;
+  border: 1px solid var(--success);
 }
 
 .user-card {
   border-left: 3px solid var(--primary);
   margin-bottom: 15px;
   position: relative;
-  border-radius: 0 15px 15px 0;
+  border-radius: 0 8px 8px 0;
 }
 
 .user-card h3 {
   margin-bottom: 8px;
-  color: var(--primary-dark);
+  color: var(--primary);
   display: flex;
   align-items: center;
 }
 
 .user-card h3 .user-id {
   font-size: 13px;
-  color: #666;
+  color: rgba(51, 255, 51, 0.7);
   margin-left: 8px;
   font-weight: normal;
 }
@@ -192,6 +361,8 @@ button.secondary:hover {
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   gap: 12px;
   margin-bottom: 12px;
+  position: relative;
+  z-index: 1;
 }
 
 .user-field {
@@ -200,8 +371,10 @@ button.secondary:hover {
 
 .field-name {
   font-weight: 500;
-  color: #666;
+  color: rgba(51, 255, 51, 0.8);
   font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .field-value {
@@ -213,6 +386,8 @@ button.secondary:hover {
   display: flex;
   gap: 10px;
   margin-top: 16px;
+  position: relative;
+  z-index: 1;
 }
 
 .loading {
@@ -223,7 +398,7 @@ button.secondary:hover {
 }
 
 .spinner {
-  border: 3px solid rgba(0, 0, 0, 0.1);
+  border: 3px solid rgba(51, 255, 51, 0.1);
   border-radius: 50%;
   border-top: 3px solid var(--primary);
   width: 24px;
@@ -239,20 +414,24 @@ button.secondary:hover {
 .status-badge {
   display: inline-block;
   padding: 6px 10px;
-  border-radius: 12px;
+  border-radius: 8px;
   font-size: 11px;
-  margin-left:  10px;
+  margin-left: 10px;
   font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .badge-active {
-  background-color: #e8f5e9;
-  color: #2e7d32;
+  background-color: rgba(0, 255, 0, 0.1);
+  color: var(--success);
+  border: 1px solid var(--success);
 }
 
 .badge-inactive {
-  background-color: #ffebee;
-  color: #c62828;
+  background-color: rgba(255, 0, 0, 0.1);
+  color: var(--error);
+  border: 1px solid var(--error);
 }
 
 .user-actions {
@@ -279,30 +458,34 @@ button.secondary:hover {
 .tabs {
   display: flex;
   margin-bottom: 20px;
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid var(--primary);
   overflow: hidden;
-  border-radius: 12px 12px 0 0;
-  background-color: var(--white);
+  border-radius: 8px 8px 0 0;
+  background-color: var(--container-bg);
   padding: 4px;
 }
 
 .tab {
   padding: 8px 16px;
   cursor: pointer;
-  border-radius: 10px;
+  border-radius: 6px;
   transition: all 0.3s ease;
   margin: 4px;
   font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .tab:hover {
-  background-color: var(--secondary);
+  background-color: rgba(51, 255, 51, 0.1);
+  box-shadow: 0 0 10px rgba(51, 255, 51, 0.2);
 }
 
 .tab.active {
-  background-color: var(--primary);
-  color: var(--white);
+  background-color: rgba(51, 255, 51, 0.2);
+  color: var(--primary);
   font-weight: 500;
+  box-shadow: 0 0 15px rgba(51, 255, 51, 0.3);
 }
 
 .tab-content {
@@ -326,7 +509,7 @@ button.secondary:hover {
 }
 
 .search-bar input {
-  flex: 3; /* Extended search bar */
+  flex: 3;
 }
 
 .search-bar button {
@@ -342,47 +525,75 @@ button.secondary:hover {
 
 .stat-card {
   padding: 16px;
-  border-radius: 15px;
-  background-color: var(--white);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  border-radius: 8px;
+  background-color: var(--container-bg);
+  border: 1px solid var(--primary);
+  box-shadow: 0 0 15px rgba(51, 255, 51, 0.2);
   text-align: center;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
 }
 
 .stat-card:hover {
   transform: translateY(-3px);
-  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 0 25px rgba(51, 255, 51, 0.4);
+  border-color: var(--primary-light);
+}
+
+.stat-card::after {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    45deg,
+    transparent 0%,
+    rgba(51, 255, 51, 0.05) 50%,
+    transparent 100%
+  );
+  animation: glint 3s infinite ease-in-out;
+  transform: rotate(-45deg);
+  z-index: 0;
 }
 
 .stat-card h3 {
   font-size: 14px;
-  color: #666;
+  color: rgba(51, 255, 51, 0.8);
   margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  position: relative;
+  z-index: 1;
 }
 
 .stat-card .value {
   font-size: 26px;
   font-weight: 500;
   color: var(--primary);
+  position: relative;
+  z-index: 1;
 }
 
 .airtime-history {
   margin-top: 16px;
   padding-top: 16px;
-  border-top: 1px solid #eee;
+  border-top: 1px solid rgba(51, 255, 51, 0.3);
 }
 
 .history-item {
   display: flex;
   justify-content: space-between;
   padding: 10px 12px;
-  border-radius: 10px;
+  border-radius: 6px;
   margin-bottom: 6px;
   transition: background-color 0.3s ease;
 }
 
 .history-item:hover {
-  background-color: var(--gray);
+  background-color: rgba(51, 255, 51, 0.1);
 }
 
 .history-amount {
@@ -391,7 +602,7 @@ button.secondary:hover {
 }
 
 .history-date {
-  color: #777;
+  color: rgba(51, 255, 51, 0.7);
   font-size: 13px;
 }
 
@@ -432,7 +643,7 @@ button.secondary:hover {
   right: 0;
   width: 50%;
   height: 2px;
-  background-color: #ddd;
+  background-color: rgba(51, 255, 51, 0.3);
 }
 
 .progress-step:not(:first-child):before {
@@ -442,7 +653,7 @@ button.secondary:hover {
   left: 0;
   width: 50%;
   height: 2px;
-  background-color: #ddd;
+  background-color: rgba(51, 255, 51, 0.3);
 }
 
 .progress-step.completed:after,
@@ -459,10 +670,11 @@ button.secondary:hover {
   width: 18px;
   height: 18px;
   border-radius: 50%;
-  background-color: #ddd;
+  background-color: rgba(51, 255, 51, 0.2);
   display: inline-block;
   margin-bottom: 6px;
   transition: all 0.3s ease;
+  border: 1px solid var(--primary);
 }
 
 .progress-step.completed .step-indicator {
@@ -472,12 +684,14 @@ button.secondary:hover {
 .progress-step.active .step-indicator {
   background-color: var(--primary);
   transform: scale(1.1);
-  box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.15);
+  box-shadow: 0 0 0 3px rgba(51, 255, 51, 0.2);
 }
 
 .progress-step-label {
   font-size: 12px;
-  color: #777;
+  color: rgba(51, 255, 51, 0.7);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .progress-step.active .progress-step-label {
@@ -489,7 +703,7 @@ button.secondary:hover {
   color: var(--success);
 }
 
-/* Added styles for better responsiveness */
+/* Responsive styles */
 @media screen and (max-width: 768px) {
   .user-info {
     grid-template-columns: 1fr;
@@ -508,14 +722,15 @@ button.secondary:hover {
   }
 }
 
-/* Additional refinements */
+/* Dropdown menu with cyberpunk styling */
 .dropdown-menu {
   width: auto;
   min-width: 150px;
   padding: 6px 0;
-  border-radius: 10px;
-  background-color: var(--white);
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  background-color: var(--container-bg);
+  border: 1px solid var(--primary);
+  box-shadow: 0 0 15px rgba(51, 255, 51, 0.3);
   position: absolute;
   z-index: 100;
 }
@@ -528,35 +743,38 @@ button.secondary:hover {
 }
 
 .dropdown-item:hover {
-  background-color: var(--secondary);
+  background-color: rgba(51, 255, 51, 0.1);
 }
 
-/* Submenu buttons - reduced size */
+/* Reduced size submenu buttons */
 .submenu-button {
   padding: 6px 12px;
   font-size: 13px;
-  border-radius: 8px;
+  border-radius: 6px;
 }
 
-/* Table styles refinement */
+/* Cyberpunk-styled tables */
 table {
   width: 100%;
   border-collapse: collapse;
   margin-bottom: 20px;
+  border: 1px solid var(--primary);
 }
 
 th, td {
   padding: 10px 12px;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid rgba(51, 255, 51, 0.3);
   font-size: 14px;
   text-align: left;
 }
 
 th {
   font-weight: 500;
-  color: #666;
-  background-color: var(--gray);
+  color: rgba(51, 255, 51, 0.9);
+  background-color: rgba(0, 0, 0, 0.4);
   font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 tr:last-child td {
@@ -564,10 +782,10 @@ tr:last-child td {
 }
 
 tr:hover {
-  background-color: var(--gray);
+  background-color: rgba(51, 255, 51, 0.05);
 }
 
-/* Pagination styles */
+/* Cyberpunk pagination */
 .pagination {
   display: flex;
   justify-content: center;
@@ -585,25 +803,49 @@ tr:hover {
   cursor: pointer;
   font-size: 13px;
   transition: all 0.2s ease;
+  border: 1px solid var(--primary);
 }
 
 .page-item:hover {
-  background-color: var(--secondary);
+  background-color: rgba(51, 255, 51, 0.1);
+  box-shadow: 0 0 10px rgba(51, 255, 51, 0.2);
 }
 
 .page-item.active {
-  background-color: var(--primary);
-  color: var(--white);
+  background-color: rgba(51, 255, 51, 0.2);
+  color: var(--primary);
+  border-color: var(--primary-light);
+  box-shadow: 0 0 10px rgba(51, 255, 51, 0.3);
 }
 
+/* Cyberpunk styled security alerts */
 .security-alert {
-  background-color: #fff;
-  border-left: 5px solid #f44336;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  background-color: var(--container-bg);
+  border-left: 5px solid var(--error);
+  box-shadow: 0 0 15px rgba(255, 51, 51, 0.3);
   padding: 20px;
   margin-bottom: 20px;
   border-radius: 8px;
   transition: all 0.3s ease-in-out;
+  position: relative;
+  overflow: hidden;
+}
+
+.security-alert::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    rgba(255, 51, 51, 0.05) 50%,
+    transparent 100%
+  );
+  animation: scan 3s infinite linear;
+  z-index: 0;
 }
 
 .alert-header {
@@ -612,549 +854,228 @@ tr:hover {
   justify-content: space-between;
   margin-bottom: 15px;
   font-weight: 600;
-  color: #333;
+  color: var(--primary);
+  position: relative;
+  z-index: 1;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
 .alert-header i {
-  color: #f44336;
+  color: var(--error);
   margin-right: 10px;
 }
 
 .alert-time {
   font-size: 0.9em;
-  color: #777;
+  color: rgba(51, 255, 51, 0.7);
 }
 
 .alert-details {
   margin-bottom: 15px;
+  position: relative;
+  z-index: 1;
 }
 
 .alert-field {
   margin-bottom: 8px;
-  color: #555;
+  color: rgba(51, 255, 51, 0.9);
 }
 
 .alert-field strong {
-  color: #222;
+  color: var(--primary);
 }
 
 .alert-actions {
   text-align: right;
+  position: relative;
+  z-index: 1;
 }
 
 .dismiss-alert {
-  background-color: #4caf50;
-  color: white;
-  border: none;
+  background-color: transparent;
+  color: var(--primary);
+  border: 1px solid var(--primary);
   padding: 8px 16px;
   font-size: 14px;
-  border-radius: 4px;
+  border-radius: 6px;
   cursor: pointer;
-  transition: background-color 0.2s ease-in-out;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .dismiss-alert:hover {
-  background-color: #388e3c;
+  background-color: rgba(51, 255, 51, 0.1);
+  box-shadow: 0 0 15px rgba(51, 255, 51, 0.3);
 }
 
 .error-message {
-  color: #d32f2f;
+  color: var(--error);
   font-style: italic;
 }
 
 .high-alert {
-  border-left-color: #e53935;
+  border-left-color: #ff3333;
+  box-shadow: 0 0 15px rgba(255, 51, 51, 0.3);
+}
+
+.high-alert::after {
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    rgba(255, 51, 51, 0.05) 50%,
+    transparent 100%
+  );
 }
 
 .medium-alert {
-  border-left-color: #ff9800;
+  border-left-color: #ff9900;
+  box-shadow: 0 0 15px rgba(255, 153, 0, 0.3);
+}
+
+.medium-alert::after {
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    rgba(255, 153, 0, 0.05) 50%,
+    transparent 100%
+  );
 }
 
 .low-alert {
-  border-left-color: #03a9f4;
+  border-left-color: #33ccff;
+  box-shadow: 0 0 15px rgba(51, 204, 255, 0.3);
 }
 
-/* Green Theme CSS for Device Info Card */
-/* Device Management Modal CSS - Enhanced Version */
-
-/* Modal Base Style */
-#deviceManagementModal {
-  display: none;
-  position: fixed;
-  z-index: 1000;
-  right: 15px;
-  top: 15px;
-  width: 320px; /* Compact width */
-  box-shadow: 0 6px 16px rgba(0,0,0,0.18);
-  border-radius: 8px;
-  overflow: hidden;
-  transition: all 0.3s ease;
-  animation: slideIn 0.4s ease-out;
+.low-alert::after {
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    rgba(51, 204, 255, 0.05) 50%,
+    transparent 100%
+  );
 }
 
-/* Modal Content */
-.modal-content {
-  background-color: #fff;
-  border-radius: 8px;
-  padding: 0;
-  position: relative;
-  text-align: center; /* Center align all text content */
-}
 
-/* Modal Header */
-.modal-content h2 {
-  margin: 0;
-  padding: 14px 16px;
-  background: linear-gradient(135deg, #2e9a4f, #1e7e34); /* Changed blue to green */
-  color: white;
-  font-size: 16px;
-  font-weight: 500;
-  border-radius: 8px 8px 0 0;
-  display: flex;
-  align-items: center;
-  justify-content: center; /* Center the heading */
-  gap: 8px;
-}
+        .bg-grid {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 255, 0, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 0, 0.05) 1px, transparent 1px);
+            background-size: 20px 20px;
+            z-index: -1;
+        }
 
-.modal-content h2 i {
-  font-size: 18px;
-  color: #e8f5e9; /* Lighter green for icons */
-}
+        .bg-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, transparent 30%, #0a0a0a 100%);
+            z-index: -1;
+        }
 
-/* Close Button */
-.close-modal {
-  position: absolute;
-  right: 12px;
-  top: 10px;
-  color: white;
-  font-size: 20px;
-  cursor: pointer;
-  transition: all 0.2s;
-  opacity: 0.8;
-}
+        .floating-elements {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
 
-.close-modal:hover {
-  transform: scale(1.1);
-  opacity: 1;
-}
+        .floating-element {
+            position: absolute;
+            font-size: 14px;
+            opacity: 0.4;
+            animation: float 20s linear infinite;
+        }
 
-/* Devices List Container */
-.devices-list {
-  max-height: 250px;
-  overflow-y: auto;
-  padding: 8px 0;
-}
+        @keyframes float {
+            0% {
+                transform: translateY(100vh);
+            }
+            100% {
+                transform: translateY(-100px);
+            }
+        }
 
-/* Individual Device Items */
-.device-item {
-  padding: 12px 16px;
-  border-bottom: 1px solid #eaeaea;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  transition: background-color 0.2s;
-}
+        
+        .terminal-line {
+            text-align: left;
+            margin: 8px 0;
+            height: 18px;
+            overflow: hidden;
+        }
 
-.device-item:hover {
-  background-color: #f9fdf9; /* Very light green on hover */
-}
+        .hidden {
+            display: none;
+        }
 
-.device-item:last-child {
-  border-bottom: none;
-}
+        .blink {
+            animation: blink-animation 1s steps(2, start) infinite;
+        }
 
-.device-item i {
-  color: #2e9a4f; /* Changed to green */
-  font-size: 15px;
-}
-
-.device-info {
-  flex: 1;
-  text-align: left; /* Keep device info left-aligned for readability */
-  margin-left: 8px; /* Added margin to device info */
-}
-
-.device-name {
-  font-weight: 600;
-  margin-bottom: 4px;
-  font-size: 14px;
-  color: #1a1a1a;
-  letter-spacing: 0.2px;
-}
-
-.device-details {
-  font-size: 11px;
-  color: #666;
-  line-height: 1.4;
-  font-weight: 400;
-  letter-spacing: 0.1px;
-}
-
-/* Redesigned action buttons */
-.device-actions {
-  display: flex;
-  gap: 6px;
-}
-
-.device-actions button {
-  background-color: #8B0000;
-  border: none;
-  border-radius: 4px;
-  padding: 5px 10px;
-  font-size: 11px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-}
-
-.device-actions button:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 2px 5px rgba(0,0,0,0.12);
-}
-
-.device-actions button.edit {
-  color: #fff;
-  background-color: #8b0000; /* Dark red for edit button */
-  font-weight: 600;
-  letter-spacing: 0.3px;
-}
-
-.device-actions button.remove {
-  color: #fff;
-  background-color: #8b0000; /* Dark red for remove button */
-  font-weight: 600;
-  letter-spacing: 0.3px;
-}
-
-/* Loading State */
-.loading {
-  padding: 20px;
-  text-align: center;
-  color: #777;
-  font-size: 13px;
-}
-
-.loading i {
-  animation: spin 1.2s linear infinite;
-  color: #2e9a4f; /* Changed to green */
-  font-size: 18px;
-  margin-bottom: 8px;
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-/* Animation */
-@keyframes slideIn {
-  from {
-    opacity: 0;
-    transform: translateY(-15px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* Scrollbar Styling */
-.devices-list::-webkit-scrollbar {
-  width: 4px;
-}
-
-.devices-list::-webkit-scrollbar-track {
-  background: #f1f1f1;
-  border-radius: 8px;
-}
-
-.devices-list::-webkit-scrollbar-thumb {
-  background: #c1c1c1;
-  border-radius: 8px;
-}
-
-.devices-list::-webkit-scrollbar-thumb:hover {
-  background: #2e9a4f; /* Changed to green on hover */
-}
-
-/* Empty state message */
-.empty-state {
-  padding: 20px;
-  text-align: center;
-  color: #777;
-}
-
-.empty-state i {
-  font-size: 24px;
-  color: #2e9a4f; /* Green */
-  margin-bottom: 8px;
-}
-
-/* Add new device button */
-.add-device-btn {
-  display: block;
-  margin: 10px auto 15px;
-  background-color: #2e9a4f; /* Green */
-  color: white;
-  border: none;
-  border-radius: 20px;
-  padding: 8px 16px;
-  font-size: 13px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.add-device-btn:hover {
-  background-color: #1e7e34;
-  transform: translateY(-1px);
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-}
-
-/* For when you want to show the modal */
-#deviceManagementModal.show {
-  display: block;
-}
-
-/* Media query for smaller screens */
-@media screen and (max-width: 480px) {
-  #deviceManagementModal {
-    width: calc(100% - 30px);
-    right: 15px;
-  }
-  
-  /* Ensure buttons remain usable on small screens */
-  .device-actions button {
-    padding: 6px 10px;
-    font-size: 11px;
-  }
-}
-
-/* Security Logs Modal CSS */
-
-/* Modal Base Style */
-#securityLogsModal {
-  display: none;
-  position: fixed;
-  z-index: 1000;
-  right: 15px;
-  top: 15px;
-  width: 320px; /* Compact width */
-  box-shadow: 0 6px 16px rgba(0,0,0,0.18);
-  border-radius: 8px;
-  overflow: hidden;
-  transition: all 0.3s ease;
-  animation: slideIn 0.4s ease-out;
-}
-
-/* Modal Content */
-#securityLogsModal .modal-content {
-  background-color: #fff;
-  border-radius: 8px;
-  padding: 0;
-  position: relative;
-  text-align: center; /* Center align all text content */
-}
-
-/* Modal Header */
-#securityLogsModal .modal-content h2 {
-  margin: 0;
-  padding: 14px 16px;
-  background: linear-gradient(135deg, #2e9a4f, #1e7e34); /* Green gradient background */
-  color: white;
-  font-size: 16px;
-  font-weight: 500;
-  border-radius: 8px 8px 0 0;
-  display: flex;
-  align-items: center;
-  justify-content: center; /* Center the heading */
-  gap: 8px;
-}
-
-#securityLogsModal .modal-content h2 i {
-  font-size: 18px;
-  color: #e8f5e9; /* Lighter green for icons */
-}
-
-/* Close Button */
-#securityLogsModal .close-modal {
-  position: absolute;
-  right: 12px;
-  top: 10px;
-  color: white;
-  font-size: 20px;
-  cursor: pointer;
-  transition: all 0.2s;
-  opacity: 0.8;
-}
-
-#securityLogsModal .close-modal:hover {
-  transform: scale(1.1);
-  opacity: 1;
-}
-
-/* Security Logs List Container */
-#securityLogsList {
-  max-height: 250px;
-  overflow-y: auto;
-  padding: 8px 0;
-}
-
-/* Individual Security Log Items */
-.security-log-item {
-  padding: 12px 16px;
-  border-bottom: 1px solid #eaeaea;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  transition: background-color 0.2s;
-  text-align: left;
-}
-
-.security-log-item:hover {
-  background-color: #f9fdf9; /* Very light green on hover */
-}
-
-.security-log-item:last-child {
-  border-bottom: none;
-}
-
-.security-log-item i {
-  color: #2e9a4f; /* Green */
-  font-size: 15px;
-}
-
-.log-info {
-  flex: 1;
-  text-align: left;
-  margin-left: 8px;
-}
-
-.log-title {
-  font-weight: 600;
-  margin-bottom: 4px;
-  font-size: 14px;
-  color: #1a1a1a;
-  letter-spacing: 0.2px;
-}
-
-.log-details {
-  font-size: 11px;
-  color: #666;
-  line-height: 1.4;
-  font-weight: 400;
-  letter-spacing: 0.1px;
-}
-
-.log-timestamp {
-  font-size: 10px;
-  color: #999;
-  margin-top: 4px;
-}
-
-/* Loading State */
-#securityLogsList .loading {
-  padding: 20px;
-  text-align: center;
-  color: #777;
-  font-size: 13px;
-}
-
-.loading i {
-  animation: spin 1.2s linear infinite;
-  color: #2e9a4f; /* Green */
-  font-size: 18px;
-  margin-bottom: 8px;
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-/* Animation */
-@keyframes slideIn {
-  from {
-    opacity: 0;
-    transform: translateY(-15px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* Scrollbar Styling */
-#securityLogsList::-webkit-scrollbar {
-  width: 4px;
-}
-
-#securityLogsList::-webkit-scrollbar-track {
-  background: #f1f1f1;
-  border-radius: 8px;
-}
-
-#securityLogsList::-webkit-scrollbar-thumb {
-  background: #c1c1c1;
-  border-radius: 8px;
-}
-
-#securityLogsList::-webkit-scrollbar-thumb:hover {
-  background: #2e9a4f; /* Green on hover */
-}
-
-/* Empty state message */
-.empty-state {
-  padding: 20px;
-  text-align: center;
-  color: #777;
-}
-
-.empty-state i {
-  font-size: 24px;
-  color: #2e9a4f; /* Green */
-  margin-bottom: 8px;
-}
-
-/* For when you want to show the modal */
-#securityLogsModal.show {
-  display: block;
-}
-
-/* Media query for smaller screens */
-@media screen and (max-width: 480px) {
-  #securityLogsModal {
-    width: calc(100% - 30px);
-    right: 15px;
-  }
-}
-
-.logout-btn {
-  background-color: #4caf50;
-  color: white;
-  padding: 10px 16px;
-  font-size: 14px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background-color 0.2s ease-in-out;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  margin-left: auto;
-}
-
-.logout-btn:hover {
-  background-color: #388e3c;
+        
+        .glitch::before,
+        .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+        }
+        
+        .glitch::before {
+            animation: glitch-effect 3s infinite;
+            color: #ff00ff;
+            clip: rect(44px, 450px, 56px, 0);
+            left: 2px;
+        }
+        
+        .glitch::after {
+            animation: glitch-effect 2s infinite;
+            color: #00ffff;
+            clip: rect(44px, 450px, 56px, 0);
+            left: -2px;
+        }
+        
+button#themeSwitcher:hover {
+  background-color: rgba(51, 255, 51, 0.1);
+  box-shadow: 0 0 15px rgba(51, 255, 51, 0.5);
 }
   </style>
 </head>
 <body>
+<div class="bg-grid"></div>
+    <div class="bg-overlay"></div>
+    <div class="floating-elements" id="floating-elements"></div>
+    
   <header>
     <div class="container">
       <h1><i class="fas fa-shield-alt"></i> Admin Dashboard</h1>
-<button onclick="switchTheme()" style="float: right; margin-top: -35px; margin-left: -20px; background: transparent; border: 1px solid white; color: white; padding: 6px 12px; border-radius: 6px; cursor: pointer;">
+<button id="themeSwitcher" style="
+  background: transparent;
+  color: #33ff33;
+  border: 1px solid #33ff33;
+  padding: 10px 16px;
+  border-radius: 6px;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 0 10px rgba(51, 255, 51, 0.3);
+">
   Switch Theme
 </button>
     </div>
@@ -1307,7 +1228,7 @@ tr:hover {
       </div>
 
 <div id="notificationsTab" class="tab-content">
-  <iframe src="notification%20admin.html" style="width: 100%; height: 1000px; border: none;"></iframe>
+  <iframe src="notification%20admin%20phonk.html" style="width: 100%; height: 1000px; border: none;"></iframe>
 </div>
     </div>
   </div>
@@ -2809,7 +2730,103 @@ window.addEventListener('click', function(event) {
   }
 });
 </script>
+
+    <script>
+        // Generate floating code-like elements
+        const floatingContainer = document.getElementById('floating-elements');
+        const codeChars = '01ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!@#$%^&*()_+{}[]|:;"<>,.?/~`';
+        
+        for (let i = 0; i < 50; i++) {
+            const element = document.createElement('div');
+            element.className = 'floating-element';
+            
+            // Create random code snippet
+            let codeSnippet = '';
+            for (let j = 0; j < Math.random() * 20 + 5; j++) {
+                codeSnippet += codeChars.charAt(Math.floor(Math.random() * codeChars.length));
+            }
+            
+            element.innerText = codeSnippet;
+            
+            // Random position and timing
+            element.style.left = `${Math.random() * 100}%`;
+            element.style.animationDuration = `${Math.random() * 15 + 5}s`;
+            element.style.animationDelay = `${Math.random() * 5}s`;
+            
+            floatingContainer.appendChild(element);
+        }
+        
+        // Show entry notification
+        setTimeout(function() {
+            const entryNotification = document.getElementById('entry-notification');
+            entryNotification.classList.add('active');
+            
+            // Hide entry notification after 5 seconds
+            setTimeout(function() {
+                entryNotification.classList.remove('active');
+            }, 5000);
+        }, 1000);
+
+        // Handle click counter
+        const container = document.getElementById('main-container');
+        const errorMessage = document.getElementById('error-message');
+        const loader = document.getElementById('loader');
+        const terminalOutput = document.getElementById('terminal-output');
+        
+        let clickCount = 0;
+        const requiredClicks = 15;
+        
+        container.addEventListener('click', function() {
+            clickCount++;
+            
+            // Show different messages based on click count, but only at specific thresholds
+            if (clickCount === requiredClicks) {
+                // Access granted
+                errorMessage.innerHTML = "<span class='glitch' data-text='Access Granted'>Access Granted</span>";
+                terminalOutput.classList.remove('hidden');
+                terminalOutput.innerHTML = "Initiating admin protocols... <span class='blink'>_</span>";
+                loader.style.display = 'block';
+                
+                // Simulate loading then redirect
+                setTimeout(function() {
+                    terminalOutput.innerHTML = "Loading admin interface... <span class='blink'>_</span>";
+                    
+                    // Show alert box after 3 seconds
+                    setTimeout(function() {
+                        const alertBox = document.getElementById('alert-box');
+                        alertBox.classList.add('active');
+                        
+                        document.getElementById('alert-btn').addEventListener('click', function() {
+                            window.location.href = 'admin.html';
+                        });
+                    }, 3000);
+                    
+                    setTimeout(function() {
+                        terminalOutput.innerHTML = "Redirecting to secure environment... <span class='blink'>_</span>";
+                    }, 1500);
+                }, 1500);
+            }
+        });
+
+        // No random terminal activity in the background until access is granted
+    </script>
 <script>
+  // Attach faster tap response using pointerdown
+  document.addEventListener("DOMContentLoaded", function () {
+    const themeBtn = document.getElementById("themeSwitcher");
+    if (themeBtn) {
+      themeBtn.addEventListener("pointerdown", switchTheme);
+    }
+
+    // Auto-switch to preferred theme
+    const preferred = localStorage.getItem("admin-theme");
+    if (preferred === "phonk" && !location.href.includes("admin-phonk")) {
+      location.href = "admin-phonk.html";
+    } else if (preferred === "default" && !location.href.includes("admin.html")) {
+      location.href = "admin.html";
+    }
+  });
+
   function switchTheme() {
     if (location.href.includes("admin-phonk")) {
       localStorage.setItem("admin-theme", "default");
@@ -2819,15 +2836,6 @@ window.addEventListener('click', function(event) {
       location.href = "admin-phonk.html";
     }
   }
-
-  window.onload = function () {
-    const preferred = localStorage.getItem("admin-theme");
-    if (preferred === "phonk" && !location.href.includes("admin-phonk")) {
-      location.href = "admin-phonk.html";
-    } else if (preferred === "default" && !location.href.includes("admin.html")) {
-      location.href = "admin.html";
-    }
-  };
 </script>
 </body>
 </html>
