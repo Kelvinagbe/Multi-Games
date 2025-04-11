@@ -1415,6 +1415,83 @@ input:checked + .toggle-slider:before {
     to { opacity: 1; transform: translateX(-50%) translateY(0); }
         }
 </style>
+    <script>
+        // Show styled alert
+function showAlert(message, type = 'info') {
+    const alertEl = document.createElement('div');
+    alertEl.className = `alert alert-${type}`;
+    alertEl.textContent = message;
+    
+    // Position the alert at the top of the page
+    alertEl.style.position = 'fixed';
+    alertEl.style.top = '20px';
+    alertEl.style.left = '50%';
+    alertEl.style.transform = 'translateX(-50%)';
+    
+    document.body.appendChild(alertEl);
+    
+    // Fade in animation
+    alertEl.style.opacity = '0';
+    setTimeout(() => {
+        alertEl.style.opacity = '1';
+    }, 10);
+    
+    // Remove after specified duration
+    setTimeout(() => {
+        alertEl.style.opacity = '0';
+        setTimeout(() => alertEl.remove(), 300);
+    }, type === 'error' ? 4000 : 2000);
+}
+
+// Check user's status in Realtime DB and handle immediate logout
+async function checkUserStatus(uid) {
+    try {
+        const userRef = ref(database, `users/${uid}/status`);
+        const snapshot = await get(userRef);
+        const status = snapshot.val();
+
+        if (!status) {
+            // If status is not set, assume active
+            showAlert('Your account is active', 'success');
+            return;
+        }
+
+        const statusValue = status.toLowerCase();
+
+        switch(statusValue) {
+            case 'active':
+                showAlert('Your account is active', 'success');
+                break;
+            case 'suspended':
+                showAlert('Your account has been suspended', 'error');
+                // Immediate logout for suspended user
+                signOut(auth).then(() => location.reload());
+                break;
+            case 'blocked':
+                showAlert('Your account has been blocked', 'error');
+                // Immediate logout for blocked user
+                signOut(auth).then(() => location.reload());
+                break;
+            default:
+                showAlert(`Account status: ${status}`, 'info');
+        }
+    } catch (error) {
+        console.error("Error checking status:", error);
+        showAlert('Error checking account status', 'warning');
+    }
+}
+
+// Auth check with status enforcement
+onAuthStateChanged(auth, (user) => {
+    if (user) {
+        updateProfileInfo(user);
+        // Check status immediately
+        checkUserStatus(user.uid);
+    } else {
+        showLoginModal();
+    }
+});
+    </script>
 </head>
 <body>
     <!-- Existing content from previous document -->
