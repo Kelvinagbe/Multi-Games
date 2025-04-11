@@ -8,9 +8,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-       
-        
-     :root {
+        :root {
             --primary: #3B82F6;
             --success: #10B981;
             --warning: #F59E0B;
@@ -37,68 +35,71 @@
             background-color: #f5f5f5;
             color: var(--text-dark);
             line-height: 1.5;
+            font-size: 14px;
         }
 
         .container {
-            max-width: 1200px;
+            width: 100%;
+            max-width: 1000px;
             margin: 0 auto;
-            padding: 20px;
+            padding: 0.75rem;
         }
 
         header {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 30px;
+            margin-bottom: 1rem;
             background-color: white;
-            padding: 15px 20px;
-            border-radius: 10px;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
             box-shadow: var(--shadow-sm);
         }
 
         h1 {
-            font-size: 24px;
+            font-size: 1.25rem;
             font-weight: 600;
-        }
-
-        .main-content {
-            display: grid;
-            grid-template-columns: 2fr 3fr;
-            gap: 20px;
         }
 
         .panel {
             background-color: white;
-            border-radius: 10px;
+            border-radius: 18px;
             box-shadow: var(--shadow-sm);
-            padding: 20px;
+            padding: 1rem;
         }
 
         .panel-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
             border-bottom: 1px solid var(--light);
         }
 
         .panel-title {
-            font-size: 18px;
+            font-size: 1rem;
             font-weight: 600;
         }
 
         .btn {
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
             background-color: var(--primary);
             color: white;
-            padding: 8px 16px;
-            border-radius: 6px;
-            font-size: 14px;
+            padding: 0.4rem 0.75rem;
+            border-radius: 16px;
+            font-size: 0.8rem;
             font-weight: 500;
             cursor: pointer;
             border: none;
             transition: background-color 0.2s;
+        }
+
+        .btn svg {
+            width: 14px;
+            height: 14px;
+            margin-right: 4px;
         }
 
         .btn:hover {
@@ -130,13 +131,13 @@
         }
 
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 1rem;
         }
 
         label {
             display: block;
-            margin-bottom: 8px;
-            font-size: 14px;
+            margin-bottom: 0.4rem;
+            font-size: 0.85rem;
             font-weight: 500;
         }
 
@@ -144,28 +145,28 @@
         textarea,
         select {
             width: 100%;
-            padding: 10px;
+            padding: 0.5rem;
             border: 1px solid #E5E7EB;
-            border-radius: 6px;
+            border-radius: 10px;
             font-family: 'Inter', sans-serif;
-            font-size: 14px;
+            font-size: 0.85rem;
         }
 
         textarea {
-            min-height: 120px;
+            min-height: 100px;
             resize: vertical;
         }
 
         .notification-list {
             list-style: none;
-            max-height: 600px;
+            max-height: 500px;
             overflow-y: auto;
         }
 
         .notification-item {
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 15px;
+            padding: 0.75rem;
+            border-radius: 6px;
+            margin-bottom: 0.75rem;
             background-color: var(--light);
             cursor: pointer;
             transition: transform 0.2s, box-shadow 0.2s;
@@ -183,18 +184,18 @@
         .notification-header {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 8px;
+            margin-bottom: 0.4rem;
         }
 
         .notification-title {
             font-weight: 600;
-            font-size: 16px;
+            font-size: 0.9rem;
         }
 
         .notification-type {
-            font-size: 12px;
-            padding: 2px 8px;
-            border-radius: 12px;
+            font-size: 0.7rem;
+            padding: 1px 6px;
+            border-radius: 10px;
             color: white;
         }
 
@@ -219,9 +220,9 @@
         }
 
         .notification-message {
-            font-size: 14px;
+            font-size: 0.85rem;
             color: var(--text-muted);
-            margin-bottom: 8px;
+            margin-bottom: 0.4rem;
             overflow: hidden;
             text-overflow: ellipsis;
             display: -webkit-box;
@@ -230,37 +231,37 @@
         }
 
         .notification-time {
-            font-size: 12px;
+            font-size: 0.75rem;
             color: var(--text-muted);
             text-align: right;
         }
 
         .actions {
             display: flex;
-            gap: 10px;
-            margin-top: 20px;
+            gap: 0.5rem;
+            margin-top: 1rem;
         }
 
         .preview-container {
-            margin-top: 30px;
+            margin-top: 1.5rem;
             border-top: 1px solid var(--light);
-            padding-top: 20px;
+            padding-top: 1rem;
         }
 
         .preview-title {
-            font-size: 16px;
+            font-size: 0.9rem;
             font-weight: 600;
-            margin-bottom: 15px;
+            margin-bottom: 0.75rem;
         }
 
         .notification-preview {
             background-color: white;
             border-radius: 10px;
-            padding: 14px 16px;
+            padding: 0.75rem;
             box-shadow: var(--shadow-md);
             position: relative;
             overflow: hidden;
-            max-width: 320px;
+            max-width: 280px;
         }
 
         .preview-icon {
@@ -268,7 +269,7 @@
             left: 0;
             top: 0;
             bottom: 0;
-            width: 4px;
+            width: 3px;
         }
 
         .preview-content {
@@ -280,10 +281,10 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 28px;
-            height: 28px;
+            width: 24px;
+            height: 24px;
             border-radius: 50%;
-            margin-right: 12px;
+            margin-right: 8px;
             flex-shrink: 0;
         }
 
@@ -338,23 +339,24 @@
 
         .preview-title-text {
             font-weight: 600;
-            font-size: 14px;
+            font-size: 0.85rem;
             color: var(--text-dark);
-            margin: 0 0 4px 0;
+            margin: 0 0 3px 0;
         }
 
         .preview-message-text {
-            font-size: 13px;
-            line-height: 1.5;
+            font-size: 0.8rem;
+            line-height: 1.4;
             color: var(--text-muted);
             margin: 0;
         }
 
         .status-message {
-            margin-top: 10px;
-            padding: 10px;
-            border-radius: 6px;
+            margin-top: 0.5rem;
+            padding: 0.5rem;
+            border-radius: 4px;
             text-align: center;
+            font-size: 0.8rem;
         }
 
         .status-success {
@@ -375,7 +377,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background-color: rgba(0, 0, 0, 0.0);
+            background-color: rgba(0, 0, 0, 0.1);
             z-index: 1000;
             justify-content: center;
             align-items: center;
@@ -387,9 +389,9 @@
 
         .modal {
             background-color: white;
-            border-radius: 10px;
-            max-width: 800px;
-            width: 90%;
+            border-radius: 8px;
+            max-width: 600px;
+            width: 95%;
             max-height: 90vh;
             overflow-y: auto;
             box-shadow: var(--shadow-lg);
@@ -399,19 +401,19 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 15px 20px;
+            padding: 0.75rem 1rem;
             border-bottom: 1px solid var(--light);
         }
 
         .modal-title {
-            font-size: 18px;
+            font-size: 1rem;
             font-weight: 600;
         }
 
         .modal-close {
             background: none;
             border: none;
-            font-size: 24px;
+            font-size: 1.25rem;
             cursor: pointer;
             color: var(--text-muted);
         }
@@ -419,39 +421,77 @@
         .row {
             display: flex;
             flex-wrap: wrap;
-            padding: 20px;
+            padding: 1rem;
+            gap: 1rem;
         }
 
         .col-left {
             flex: 1;
-            min-width: 300px;
-            padding-right: 20px;
+            min-width: 250px;
         }
 
         .col-right {
             flex: 1;
-            min-width: 300px;
+            min-width: 250px;
         }
 
         .modal-footer {
             display: flex;
             justify-content: flex-end;
-            padding: 15px 20px;
+            padding: 0.75rem 1rem;
             border-top: 1px solid var(--light);
         }
 
         .modal-footer button {
-            margin-left: 10px;
+            margin-left: 0.5rem;
         }
 
-        @media (max-width: 768px) {
-            .col-left, .col-right {
-                flex: 100%;
-                padding-right: 0;
+        @media (max-width: 640px) {
+            .container {
+                padding: 0.5rem;
             }
             
-            .col-right {
-                margin-top: 20px;
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            header h1 {
+                margin-bottom: 0.5rem;
+            }
+            
+            .panel-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .panel-header .btn {
+                margin-top: 0.5rem;
+            }
+            
+            .panel-header .btn:first-of-type {
+                margin-top: 0.75rem;
+            }
+            
+            .modal {
+                width: 95%;
+                max-height: 85vh;
+            }
+            
+            .notification-preview {
+                max-width: 100%;
+            }
+        }
+
+        @media (min-width: 641px) and (max-width: 768px) {
+            .panel-header {
+                align-items: flex-start;
+            }
+            
+            .panel-header .btn-container {
+                display: flex;
+                margin-top: 0.5rem;
+                gap: 0.5rem;
             }
         }
     </style>
@@ -469,30 +509,31 @@
         <div class="panel">
             <div class="panel-header">
                 <h2 class="panel-title">Notification Messages</h2>
-           
-          <button id="create-btn" class="btn btn-success" style="margin-right: 10px;">
-    <svg xmlns="http://www.w3.org/2000/svg" width="5" height="5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: 5px;">
-        <line x1="12" y1="5" x2="12" y2="19"></line>
-        <line x1="5" y1="12" x2="19" y2="12"></line>
-    </svg>
-    Create New
-</button>
-<button id="refresh-btn" class="btn">
-    <svg xmlns="http://www.w3.org/2000/svg" width="5" height="5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: 5px;">
-        <path d="M23 4v6h-6"></path>
-        <path d="M1 20v-6h6"></path>
-        <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
-    </svg>
-    Refresh
-</button>
-</div>
+                <div class="btn-container">
+                    <button id="create-btn" class="btn btn-success" style="margin-right: 8px;">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                        </svg>
+                        Create New
+                    </button>
+                    <button id="refresh-btn" class="btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M23 4v6h-6"></path>
+                            <path d="M1 20v-6h6"></path>
+                            <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                        </svg>
+                        Refresh
+                    </button>
+                </div>
+            </div>
                       
-          <div>
-  
-            <ul id="notification-list" class="notification-list">
-                <!-- Notifications will be loaded here -->
-                <div id="loading-notifications">Loading notifications...</div>
-            </ul>
+            <div>
+                <ul id="notification-list" class="notification-list">
+                    <!-- Notifications will be loaded here -->
+                    <div id="loading-notifications">Loading notifications...</div>
+                </ul>
+            </div>
         </div>
 
         <!-- Edit/Create Modal -->
@@ -534,7 +575,7 @@
                                 <div class="preview-icon"></div>
                                 <div class="preview-content">
                                     <div class="preview-symbol">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                             <circle cx="12" cy="12" r="10"></circle>
                                             <line x1="12" y1="8" x2="12" y2="16"></line>
                                             <line x1="8" y1="12" x2="16" y2="12"></line>
@@ -565,7 +606,7 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
     <script>
-        // Firebase configuration - use your existing config
+         // Firebase configuration - use your existing config
 const firebaseConfig = {
     apiKey: "AIzaSyBw1uA-kNKOZEufWKZ9AMBxvRGHNGF1lkA",
     authDomain: "multi-games-a2561.firebaseapp.com",
@@ -618,7 +659,7 @@ auth.onAuthStateChanged(user => {
                 if (snapshot.exists()) {
                     // User is admin
                     adminStatus.innerHTML = `
-                        <span>Welcome, Admin</span>
+                        <span style="margin-right: 10px;">Welcome, Admin</span>
                         <button class="btn btn-danger" id="logout-btn">Logout</button>
                     `;
                     document.getElementById('logout-btn').addEventListener('click', () => {
@@ -766,19 +807,19 @@ function updatePreview() {
     let symbol = '';
     switch(typeSelect.value) {
         case 'success':
-            symbol = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>';
+            symbol = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>';
             break;
         case 'warning':
-            symbol = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>';
+            symbol = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>';
             break;
         case 'error':
-            symbol = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>';
+            symbol = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>';
             break;
         case 'info':
-            symbol = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>';
+            symbol = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>';
             break;
         default: // primary
-            symbol = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>';
+            symbol = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>';
             break;
     }
     
@@ -804,23 +845,44 @@ function saveNotification(e) {
         e.preventDefault();
     }
     
+    console.log('Save notification function called');
+    
     const id = notificationIdInput.value;
     const title = titleInput.value.trim();
     const message = messageInput.value.trim();
     const type = typeSelect.value;
     const timestamp = Date.now();
     
+    console.log('Notification data:', { id, title, message, type, timestamp });
+    
     // Validate inputs
     if (!title) {
-        showStatus('Please enter a notification title.', 'error');
+        showStatus('Title is required', 'error');
         return;
     }
     
     if (!message) {
-        showStatus('Please enter a notification message.', 'error');
+        showStatus('Message is required', 'error');
         return;
     }
     
+    // Show loading status
+    showStatus('Saving notification...', 'info');
+    
+    let notificationRef;
+    let operation;
+    
+    if (id) {
+        // Update existing notification
+        notificationRef = popInRef.child(id);
+        operation = 'update';
+    } else {
+        // Create new notification
+        notificationRef = popInRef.push();
+        operation = 'create';
+    }
+    
+    // Notification data
     const notificationData = {
         title,
         message,
@@ -828,101 +890,77 @@ function saveNotification(e) {
         timestamp
     };
     
-    // Show loading status
-    showStatus('Saving notification...', 'info');
+    // Save to Firebase
+    console.log(`Saving notification to Firebase (${operation}):`, notificationData);
     
-    if (id) {
-        // Update existing notification
-        popInRef.child(id).update(notificationData)
-            .then(() => {
-                showStatus('Notification updated successfully!');
-                closeModal();
-                loadNotifications();
-            })
-            .catch(error => {
-                console.error('Error updating notification:', error);
-                showStatus('Error updating notification. Please try again.', 'error');
-            });
-    } else {
-        // Create new notification
-        popInRef.push(notificationData)
-            .then(() => {
-                showStatus('Notification created successfully!');
-                closeModal();
-                loadNotifications();
-            })
-            .catch(error => {
-                console.error('Error creating notification:', error);
-                showStatus('Error creating notification. Please try again.', 'error');
-            });
-    }
+    notificationRef.set(notificationData)
+        .then(() => {
+            console.log(`Notification ${operation} successful`);
+            showStatus(`Notification ${operation === 'create' ? 'created' : 'updated'} successfully`);
+            closeModal();
+            loadNotifications();
+        })
+        .catch(error => {
+            console.error(`Error ${operation}ing notification:`, error);
+            showStatus(`Error ${operation}ing notification. Please try again.`, 'error');
+        });
 }
 
 // Delete notification
 function deleteNotification() {
     const id = notificationIdInput.value;
     
-    if (!id) return;
-    
-    if (confirm('Are you sure you want to delete this notification? This action cannot be undone.')) {
-        // Show loading status
-        showStatus('Deleting notification...', 'info');
-        
-        popInRef.child(id).remove()
-            .then(() => {
-                showStatus('Notification deleted successfully!');
-                closeModal();
-                loadNotifications();
-            })
-            .catch(error => {
-                console.error('Error deleting notification:', error);
-                showStatus('Error deleting notification. Please try again.', 'error');
-            });
+    if (!id) {
+        showStatus('No notification selected for deletion', 'error');
+        return;
     }
+    
+    // Confirm deletion
+    if (!confirm('Are you sure you want to delete this notification?')) {
+        return;
+    }
+    
+    // Show loading status
+    showStatus('Deleting notification...', 'info');
+    
+    // Delete from Firebase
+    popInRef.child(id).remove()
+        .then(() => {
+            showStatus('Notification deleted successfully');
+            closeModal();
+            loadNotifications();
+        })
+        .catch(error => {
+            console.error('Error deleting notification:', error);
+            showStatus('Error deleting notification. Please try again.', 'error');
+        });
 }
 
-// Event listeners
+// Event Listeners
 document.addEventListener('DOMContentLoaded', () => {
-    // Add direct event listener to save button
-    saveBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        saveNotification();
-    });
+    // Form input event listeners for live preview
+    titleInput.addEventListener('input', updatePreview);
+    messageInput.addEventListener('input', updatePreview);
+    typeSelect.addEventListener('change', updatePreview);
     
     // Form submission
-    notificationForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        saveNotification();
-    });
+    notificationForm.addEventListener('submit', saveNotification);
     
-    // Create new notification button
+    // Direct save button event listener (in case form submission doesn't work)
+    saveBtn.addEventListener('click', saveNotification);
+    
+    // Button event listeners
     createBtn.addEventListener('click', () => {
         resetForm();
         openModal();
     });
     
-    // Delete button
-    deleteBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        deleteNotification();
-    });
+    refreshBtn.addEventListener('click', loadNotifications);
     
-    // Refresh button
-    refreshBtn.addEventListener('click', () => {
-        loadNotifications();
-        showStatus('Notifications refreshed!', 'info');
-    });
+    deleteBtn.addEventListener('click', deleteNotification);
     
-    // Cancel button
-    cancelBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        closeModal();
-    });
-    
-    // Close modal
-    closeModalBtn.addEventListener('click', () => {
-        closeModal();
-    });
+    cancelBtn.addEventListener('click', closeModal);
+    closeModalBtn.addEventListener('click', closeModal);
     
     // Close modal when clicking outside
     window.addEventListener('click', (e) => {
@@ -931,14 +969,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
     
-    // Live preview updates
-    titleInput.addEventListener('input', updatePreview);
-    messageInput.addEventListener('input', updatePreview);
-    typeSelect.addEventListener('change', updatePreview);
-    
     // Initialize preview
     updatePreview();
 });
-</script>
-</body>
+    </script>
+ </body>
 </html>
