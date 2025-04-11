@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Check</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Courier New', monospace;
+            background-color: #0a0a0a;
+            color: #33ff33;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .bg-grid {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 255, 0, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 0, 0.05) 1px, transparent 1px);
+            background-size: 20px 20px;
+            z-index: -1;
+        }
+
+        .bg-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, transparent 30%, #0a0a0a 100%);
+            z-index: -1;
+        }
+
+        .floating-elements {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .floating-element {
+            position: absolute;
+            font-size: 14px;
+            opacity: 0.4;
+            animation: float 20s linear infinite;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh);
+            }
+            100% {
+                transform: translateY(-100px);
+            }
+        }
+
+        .container {
+            background-color: rgba(0, 0, 0, 0.7);
+            border: 2px solid #33ff33;
+            border-radius: 8px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 0 20px rgba(51, 255, 51, 0.3);
+            max-width: 500px;
+            width: 90%;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .container:hover {
+            box-shadow: 0 0 30px rgba(51, 255, 51, 0.5);
+            transform: scale(1.02);
+        }
+        
+        .container:active {
+            transform: scale(0.98);
+        }
+
+        h1 {
+            margin-top: 0;
+            font-size: 24px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .error-message {
+            font-size: 18px;
+            margin: 20px 0;
+            transition: all 0.3s ease;
+        }
+        
+        .container:hover .error-message {
+            text-shadow: 0 0 10px rgba(51, 255, 51, 0.7);
+        }
+
+        .btn {
+            background-color: transparent;
+            border: 1px solid #33ff33;
+            color: #33ff33;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            transition: all 0.3s;
+            margin-top: 20px;
+        }
+
+        .btn:hover {
+            background-color: rgba(51, 255, 51, 0.2);
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        .security-icons {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+        }
+
+        .icon {
+            font-size: 24px;
+            transition: transform 0.3s ease;
+        }
+        
+        .container:hover .icon {
+            animation: pulse 1.5s infinite alternate;
+        }
+        
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1.2);
+                opacity: 0.8;
+            }
+        }
+
+        .status-bar {
+            height: 30px;
+            border: 1px solid #33ff33;
+            margin-top: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .status-text {
+            position: absolute;
+            top: 5px;
+            left: 0;
+            right: 0;
+            z-index: 2;
+            font-size: 14px;
+        }
+
+        .status-fill {
+            height: 100%;
+            width: 0%;
+            background-color: rgba(51, 255, 51, 0.3);
+            transition: width 0.5s;
+        }
+
+        .loader {
+            display: none;
+            margin: 20px auto;
+            border: 4px solid rgba(51, 255, 51, 0.1);
+            border-radius: 50%;
+            border-top: 4px solid #33ff33;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .terminal-line {
+            text-align: left;
+            margin: 8px 0;
+            height: 18px;
+            overflow: hidden;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .blink {
+            animation: blink-animation 1s steps(2, start) infinite;
+        }
+
+        .alert-box {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            background-color: rgba(0, 0, 0, 0.9);
+            border: 2px solid #33ff33;
+            border-radius: 8px;
+            padding: 20px;
+            width: 300px;
+            z-index: 100;
+            text-align: center;
+            box-shadow: 0 0 30px rgba(51, 255, 51, 0.6);
+            opacity: 0;
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        .alert-box.active {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+        }
+        
+        .alert-title {
+            font-size: 20px;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        .alert-content {
+            margin-bottom: 15px;
+        }
+        
+        .alert-btn {
+            background-color: rgba(51, 255, 51, 0.2);
+            border: 1px solid #33ff33;
+            color: #33ff33;
+            padding: 8px 15px;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        
+        .alert-btn:hover {
+            background-color: rgba(51, 255, 51, 0.4);
+        }
+        
+        .glitch {
+            position: relative;
+        }
+        
+        .glitch::before,
+        .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+        }
+        
+        .glitch::before {
+            animation: glitch-effect 3s infinite;
+            color: #ff00ff;
+            clip: rect(44px, 450px, 56px, 0);
+            left: 2px;
+        }
+        
+        .glitch::after {
+            animation: glitch-effect 2s infinite;
+            color: #00ffff;
+            clip: rect(44px, 450px, 56px, 0);
+            left: -2px;
+        }
+        
+        .entry-notification {
+            position: fixed;
+            top: 20px;
+            right: -350px;
+            background-color: rgba(0, 0, 0, 0.9);
+            border-left: 3px solid #33ff33;
+            padding: 15px;
+            width: 300px;
+            z-index: 100;
+            box-shadow: 0 0 20px rgba(51, 255, 51, 0.4);
+            transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+            font-family: 'Courier New', monospace;
+            color: #33ff33;
+        }
+        
+        .entry-notification.active {
+            right: 20px;
+        }
+        
+        .entry-icon {
+            font-size: 24px;
+            margin-bottom: 10px;
+            animation: pulse 1.5s infinite alternate;
+        }
+        
+        .entry-title {
+            font-size: 18px;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .entry-message {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-grid"></div>
+    <div class="bg-overlay"></div>
+    <div class="floating-elements" id="floating-elements"></div>
+    
+    <div class="container" id="main-container">
+        <h1>Security Alert</h1>
+        <div class="security-icons">
+            <div class="icon">🚧</div>
+            <div class="icon">🚧</div>
+            <div class="icon">🚧</div>
+        </div>
+        <div class="error-message" id="error-message">
+            Oops! You've visited the wrong place.<br>
+            Please recheck the link and try again.
+        </div>
+        <div class="terminal-line hidden" id="terminal-output"></div>
+        <div class="loader" id="loader"></div>
+    </div>
+    
+    <div class="alert-box" id="alert-box">
+        <div class="alert-title glitch" data-text="Security Breach">Security Breach</div>
+        <div class="alert-content">Unauthorized access detected. System security compromised.</div>
+        <button class="alert-btn" id="alert-btn">Continue to Admin Panel</button>
+    </div>
+    
+    <div class="entry-notification" id="entry-notification">
+        <div class="entry-icon">🔍</div>
+        <div class="entry-title">System Scan</div>
+        <div class="entry-message">Validating security protocols...</div>
+    </div>
+
+    <script>
+        // Generate floating code-like elements
+        const floatingContainer = document.getElementById('floating-elements');
+        const codeChars = '01ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!@#$%^&*()_+{}[]|:;"<>,.?/~`';
+        
+        for (let i = 0; i < 50; i++) {
+            const element = document.createElement('div');
+            element.className = 'floating-element';
+            
+            // Create random code snippet
+            let codeSnippet = '';
+            for (let j = 0; j < Math.random() * 20 + 5; j++) {
+                codeSnippet += codeChars.charAt(Math.floor(Math.random() * codeChars.length));
+            }
+            
+            element.innerText = codeSnippet;
+            
+            // Random position and timing
+            element.style.left = `${Math.random() * 100}%`;
+            element.style.animationDuration = `${Math.random() * 15 + 5}s`;
+            element.style.animationDelay = `${Math.random() * 5}s`;
+            
+            floatingContainer.appendChild(element);
+        }
+        
+        // Show entry notification
+        setTimeout(function() {
+            const entryNotification = document.getElementById('entry-notification');
+            entryNotification.classList.add('active');
+            
+            // Hide entry notification after 5 seconds
+            setTimeout(function() {
+                entryNotification.classList.remove('active');
+            }, 5000);
+        }, 1000);
+
+        // Handle click counter
+        const container = document.getElementById('main-container');
+        const errorMessage = document.getElementById('error-message');
+        const loader = document.getElementById('loader');
+        const terminalOutput = document.getElementById('terminal-output');
+        
+        let clickCount = 0;
+        const requiredClicks = 15;
+        
+        container.addEventListener('click', function() {
+            clickCount++;
+            
+            // Show different messages based on click count, but only at specific thresholds
+            if (clickCount === requiredClicks) {
+                // Access granted
+                errorMessage.innerHTML = "<span class='glitch' data-text='Access Granted'>Access Granted</span>";
+                terminalOutput.classList.remove('hidden');
+                terminalOutput.innerHTML = "Initiating admin protocols... <span class='blink'>_</span>";
+                loader.style.display = 'block';
+                
+                // Simulate loading then redirect
+                setTimeout(function() {
+                    terminalOutput.innerHTML = "Loading admin interface... <span class='blink'>_</span>";
+                    
+                    // Show alert box after 3 seconds
+                    setTimeout(function() {
+                        const alertBox = document.getElementById('alert-box');
+                        alertBox.classList.add('active');
+                        
+                        document.getElementById('alert-btn').addEventListener('click', function() {
+                            window.location.href = 'admin.html';
+                        });
+                    }, 3000);
+                    
+                    setTimeout(function() {
+                        terminalOutput.innerHTML = "Redirecting to secure environment... <span class='blink'>_</span>";
+                    }, 1500);
+                }, 1500);
+            }
+        });
+
+        // No random terminal activity in the background until access is granted
+    </script>
+</body>
+</html>
