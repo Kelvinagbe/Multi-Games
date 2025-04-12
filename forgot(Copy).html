@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forgot Password - Multi Games</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <!-- Add reCAPTCHA v2 script (explicit rendering) -->
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <style>
+        .bg-gaming {
+            background: linear-gradient(to right, #4a00e0, #8e2de2);
+        }
+        .card-shadow {
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+        .recaptcha-terms {
+            font-size: 12px;
+            color: #6b7280;
+            text-align: center;
+            margin-top: 8px;
+        }
+        .recaptcha-container {
+            display: flex;
+            justify-content: center;
+            margin: 15px 0;
+        }
+        /* Add button state styles */
+        .btn-disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        #timer {
+            font-size: 14px;
+            text-align: center;
+            margin-top: 8px;
+            color: #6b7280;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md w-full bg-white rounded-xl card-shadow p-8">
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-gray-800 mb-2">Reset Password</h1>
+            <p class="text-gray-600">Enter your email to receive a password reset link</p>
+        </div>
+
+        <div id="status-message" class="hidden mb-4 p-4 rounded-md"></div>
+
+        <form id="resetForm" class="space-y-6">
+            <div>
+                <label for="email" class="block text-sm font-medium text-gray-700">Email address</label>
+                <input type="email" id="email" name="email" required 
+                       class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+            </div>
+
+            <!-- reCAPTCHA container - visible checkbox -->
+            <div class="recaptcha-container">
+                <div id="recaptcha-checkbox"></div>
+            </div>
+            
+            <div id="timer" class="hidden"></div>
+
+            <div>
+                <button type="submit" id="submit-button" disabled
+                        class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gaming hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 btn-disabled">
+                    Complete CAPTCHA to Continue
+                </button>
+            </div>
+            
+            <!-- reCAPTCHA terms text -->
+            <div class="recaptcha-terms">
+                This site is protected by reCAPTCHA and the Google
+                <a href="https://policies.google.com/privacy" target="_blank">Privacy Policy</a> and
+                <a href="https://policies.google.com/terms" target="_blank">Terms of Service</a> apply.
+            </div>
+        </form>
+
+        <div class="mt-6 text-center">
+            <a href="login.html" class="text-sm font-medium text-indigo-600 hover:text-indigo-500">
+                Return to login
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBw1uA-kNKOZEufWKZ9AMBxvRGHNGF1lkA",
+            authDomain: "multi-games-a2561.firebaseapp.com",
+            projectId: "multi-games-a2561",
+            storageBucket: "multi-games-a2561.appspot.com",
+            messagingSenderId: "150551898066",
+            appId: "1:150551898066:web:4e8fb185f2321ba4140a0b",
+            measurementId: "G-PB8Y87E6XV",
+            databaseURL: "https://multi-games-a2561-default-rtdb.firebaseio.com"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+
+        // Global variables
+        let captchaVerified = false;
+        let cooldownActive = false;
+        const cooldownTime = 60000; // 60 seconds cooldown
+        let cooldownTimer = null;
+        let remainingTime = 0;
+        
+        // DOM elements
+        const submitButton = document.getElementById('submit-button');
+        const statusMessage = document.getElementById('status-message');
+        const timerElement = document.getElementById('timer');
+        const emailInput = document.getElementById('email');
+        
+        // Render reCAPTCHA
+        window.onload = function() {
+            grecaptcha.render('recaptcha-checkbox', {
+                'sitekey': '6Lf8PhUrAAAAAH45WQCqy6wNKtU_Bgh5ZFaryDEn',
+                'callback': onCaptchaVerified,
+                'expired-callback': onCaptchaExpired
+            });
+        };
+        
+        // Called when CAPTCHA is successfully verified
+        function onCaptchaVerified() {
+            captchaVerified = true;
+            submitButton.textContent = 'Send Reset Link';
+            submitButton.classList.remove('btn-disabled');
+            submitButton.disabled = false;
+        }
+        
+        // Called when CAPTCHA expires
+        function onCaptchaExpired() {
+            captchaVerified = false;
+            submitButton.textContent = 'Complete CAPTCHA to Continue';
+            submitButton.classList.add('btn-disabled');
+            submitButton.disabled = true;
+        }
+        
+        // Start cooldown timer
+        function startCooldown() {
+            cooldownActive = true;
+            remainingTime = cooldownTime / 1000;
+            
+            submitButton.textContent = 'Try Again Later';
+            submitButton.disabled = true;
+            submitButton.classList.add('btn-disabled');
+            
+            timerElement.classList.remove('hidden');
+            timerElement.textContent = `Please wait ${remainingTime} seconds before trying again.`;
+            
+            cooldownTimer = setInterval(function() {
+                remainingTime--;
+                timerElement.textContent = `Please wait ${remainingTime} seconds before trying again.`;
+                
+                if (remainingTime <= 0) {
+                    clearInterval(cooldownTimer);
+                    cooldownActive = false;
+                    timerElement.classList.add('hidden');
+                    
+                    // Reset CAPTCHA
+                    grecaptcha.reset();
+                    
+                    submitButton.textContent = 'Complete CAPTCHA to Continue';
+                    submitButton.disabled = true;
+                }
+            }, 1000);
+        }
+
+        // Handle form submission
+        document.getElementById('resetForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // If cooldown is active, don't process the form
+            if (cooldownActive) {
+                return;
+            }
+            
+            // Double check that CAPTCHA is verified
+            if (!captchaVerified) {
+                statusMessage.textContent = 'Please complete the CAPTCHA verification first.';
+                statusMessage.classList.remove('hidden', 'bg-green-100', 'text-green-700');
+                statusMessage.classList.add('bg-red-100', 'text-red-700');
+                return;
+            }
+            
+            const email = emailInput.value;
+            
+            // Disable button and show loading state
+            submitButton.textContent = 'Sending...';
+            submitButton.disabled = true;
+            submitButton.classList.add('btn-disabled');
+            
+            // Send password reset email
+            firebase.auth().sendPasswordResetEmail(email)
+                .then(() => {
+                    // Success
+                    statusMessage.textContent = 'Password reset link sent! Check your email inbox.';
+                    statusMessage.classList.remove('hidden', 'bg-red-100', 'text-red-700');
+                    statusMessage.classList.add('bg-green-100', 'text-green-700');
+                    emailInput.value = '';
+                    
+                    // Start cooldown to prevent spam
+                    startCooldown();
+                    
+                    // Reset CAPTCHA state
+                    captchaVerified = false;
+                })
+                .catch((error) => {
+                    // Error
+                    let errorMessage;
+                    
+                    switch(error.code) {
+                        case 'auth/user-not-found':
+                            errorMessage = 'User not found.';
+                            break;
+                        case 'auth/invalid-email':
+                            errorMessage = 'Please enter a valid email address.';
+                            break;
+                        default:
+                            errorMessage = 'Error: ' + error.message;
+                    }
+                    
+                    statusMessage.textContent = errorMessage;
+                    statusMessage.classList.remove('hidden', 'bg-green-100', 'text-green-700');
+                    statusMessage.classList.add('bg-red-100', 'text-red-700');
+                    
+                    // Start cooldown even on error to prevent brute force
+                    startCooldown();
+                    
+                    // Reset CAPTCHA state
+                    captchaVerified = false;
+                });
+        });
+    </script>
+</body>
+</html>
