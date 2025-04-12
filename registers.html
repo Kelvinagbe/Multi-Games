@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Multi Games</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <!-- reCAPTCHA v3 -->
+    <script src="https://www.google.com/recaptcha/api.js?render=6Lf8PhUrAAAAAH45WQCqy6wNKtU_Bgh5ZFaryDEn"></script>
+    <style>
+        .bg-gaming {
+            background: linear-gradient(to right, #1a8d44, #2a9d51);
+        }
+        .card-shadow {
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+        .password-requirements {
+            font-size: 0.75rem;
+            color: #6b7280;
+        }
+        .requirement {
+            display: flex;
+            align-items: center;
+            margin-bottom: 2px;
+        }
+        .requirement-icon {
+            margin-right: 5px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: #d1d5db;
+        }
+        .requirement-met .requirement-icon {
+            background-color: #10b981;
+        }
+        
+        /* Loading animation */
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+            margin-left: 10px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Focus and hover states */
+        input:focus {
+            border-color: #2a9d51 !important;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(42, 157, 81, 0.2);
+        }
+        
+        /* Captcha validation indicator */
+        .captcha-status {
+            font-size: 0.75rem;
+            display: flex;
+            align-items: center;
+            margin-top: 4px;
+        }
+        
+        .captcha-status.loading {
+            color: #6b7280;
+        }
+        
+        .captcha-status.valid {
+            color: #10b981;
+        }
+        
+        .captcha-status.invalid {
+            color: #ef4444;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md w-full bg-white rounded-xl card-shadow p-8">
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-gray-800 mb-2">Create Account</h1>
+            <p class="text-gray-600">Join Multi Games to start playing</p>
+        </div>
+
+        <div id="status-message" class="hidden mb-4 p-4 rounded-md"></div>
+        
+        <!-- Registration Message (initially hidden) -->
+        <div id="registering-message" class="hidden mb-6 p-4 text-center bg-green-50 rounded-md text-green-700 pulse">
+            <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-green-700 inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            Creating your account...
+        </div>
+        
+        <!-- reCAPTCHA validation message -->
+        <div id="captcha-status" class="captcha-status loading mb-4">
+            <svg class="animate-spin h-3 w-3 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            Verifying your device...
+        </div>
+
+        <!-- Registration Form -->
+        <form id="registerForm" class="space-y-4">
+            <!-- Hidden reCAPTCHA token input -->
+            <input type="hidden" id="recaptcha_token" name="recaptcha_token">
+            <input type="hidden" id="recaptcha_verified" name="recaptcha_verified" value="false">
+            <div id="captcha-status" class="captcha-status hidden"></div>
+
+            <!-- Full Name -->
+            <div>
+                <label for="fullname" class="block text-sm font-medium text-gray-700">Full Name</label>
+                <input type="text" id="fullname" name="fullname" required 
+                       class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500">
+            </div>
+            
+            <!-- Username -->
+            <div>
+                <label for="username" class="block text-sm font-medium text-gray-700">Username</label>
+                <input type="text" id="username" name="username" required 
+                       class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500">
+            </div>
+
+            <!-- Email -->
+            <div>
+                <label for="email" class="block text-sm font-medium text-gray-700">Email address</label>
+                <input type="email" id="email" name="email" required 
+                       class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500">
+            </div>
+
+            <!-- Password -->
+            <div>
+                <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+                <input type="password" id="password" name="password" required 
+                       class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500">
+                
+                <!-- Password Requirements -->
+                <div class="password-requirements mt-2">
+                    <div class="requirement" id="req-length">
+                        <span class="requirement-icon"></span>
+                        <span>At least 8 characters</span>
+                    </div>
+                    <div class="requirement" id="req-uppercase">
+                        <span class="requirement-icon"></span>
+                        <span>At least 1 uppercase letter</span>
+                    </div>
+                    <div class="requirement" id="req-lowercase">
+                        <span class="requirement-icon"></span>
+                        <span>At least 1 lowercase letter</span>
+                    </div>
+                    <div class="requirement" id="req-number">
+                        <span class="requirement-icon"></span>
+                        <span>At least 1 number</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Confirm Password -->
+            <div>
+                <label for="confirmPassword" class="block text-sm font-medium text-gray-700">Confirm Password</label>
+                <input type="password" id="confirmPassword" name="confirmPassword" required 
+                       class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500">
+            </div>
+            
+            <!-- Referral Code -->
+            <div>
+                <label for="referralCode" class="block text-sm font-medium text-gray-700">Referral Code (Optional)</label>
+                <input type="text" id="referralCode" name="referralCode" 
+                       class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500">
+            </div>
+
+            <!-- Terms and Conditions -->
+            <div class="flex items-start">
+                <div class="flex items-center h-5">
+                    <input id="terms" name="terms" type="checkbox" required
+                           class="focus:ring-green-500 h-4 w-4 text-green-600 border-gray-300 rounded">
+                </div>
+                <div class="ml-3 text-sm">
+                    <label for="terms" class="font-medium text-gray-700">
+                        I agree to the <a href="#" class="text-green-600 hover:text-green-500">Terms of Service</a> and <a href="#" class="text-green-600 hover:text-green-500">Privacy Policy</a>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Submit Button -->
+            <div>
+                <button type="submit" id="register-btn" disabled
+                        class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gaming hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 opacity-70 cursor-not-allowed">
+                    Waiting for verification...
+                    <span id="loading-spinner" class="loading-spinner"></span>
+                </button>
+            </div>
+        </form>
+        
+        <!-- Google Sign-up Button -->
+        <div class="mt-4">
+            <div class="relative">
+                <div class="absolute inset-0 flex items-center">
+                    <div class="w-full border-t border-gray-300"></div>
+                </div>
+                <div class="relative flex justify-center text-sm">
+                    <span class="px-2 bg-white text-gray-500">Or continue with</span>
+                </div>
+            </div>
+            
+            <div class="mt-4">
+                <button type="button" id="google-sign-up" disabled
+                        class="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 opacity-70 cursor-not-allowed">
+                    <svg class="h-5 w-5 mr-2" viewBox="0 0 24 24" width="24" height="24">
+                        <g transform="matrix(1, 0, 0, 1, 27.009001, -39.238998)">
+                            <path fill="#4285F4" d="M -3.264 51.509 C -3.264 50.719 -3.334 49.969 -3.454 49.239 L -14.754 49.239 L -14.754 53.749 L -8.284 53.749 C -8.574 55.229 -9.424 56.479 -10.684 57.329 L -10.684 60.329 L -6.824 60.329 C -4.564 58.239 -3.264 55.159 -3.264 51.509 Z"/>
+                            <path fill="#34A853" d="M -14.754 63.239 C -11.514 63.239 -8.804 62.159 -6.824 60.329 L -10.684 57.329 C -11.764 58.049 -13.134 58.489 -14.754 58.489 C -17.884 58.489 -20.534 56.379 -21.484 53.529 L -25.464 53.529 L -25.464 56.619 C -23.494 60.539 -19.444 63.239 -14.754 63.239 Z"/>
+                            <path fill="#FBBC05" d="M -21.484 53.529 C -21.734 52.809 -21.864 52.039 -21.864 51.239 C -21.864 50.439 -21.724 49.669 -21.484 48.949 L -21.484 45.859 L -25.464 45.859 C -26.284 47.479 -26.754 49.299 -26.754 51.239 C -26.754 53.179 -26.284 54.999 -25.464 56.619 L -21.484 53.529 Z"/>
+                            <path fill="#EA4335" d="M -14.754 43.989 C -12.984 43.989 -11.404 44.599 -10.154 45.789 L -6.734 42.369 C -8.804 40.429 -11.514 39.239 -14.754 39.239 C -19.444 39.239 -23.494 41.939 -25.464 45.859 L -21.484 48.949 C -20.534 46.099 -17.884 43.989 -14.754 43.989 Z"/>
+                        </g>
+                    </svg>
+                    Sign up with Google
+                </button>
+            </div>
+        </div>
+
+        <!-- Login Link -->
+        <div class="mt-6 text-center">
+            <p class="text-sm text-gray-600">
+                Already have an account? 
+                <a href="login.html" class="font-medium text-green-600 hover:text-green-500">
+                    Sign in
+                </a>
+            </p>
+        </div>
+    </div>
+
+
+    <script>
+        // Firebase Configuration
+const firebaseConfig = {
+    apiKey: "AIzaSyBw1uA-kNKOZEufWKZ9AMBxvRGHNGF1lkA",
+    authDomain: "multi-games-a2561.firebaseapp.com",
+    projectId: "multi-games-a2561",
+    storageBucket: "multi-games-a2561.appspot.com",
+    messagingSenderId: "150551898066",
+    appId: "1:150551898066:web:4e8fb185f2321ba4140a0b",
+    measurementId: "G-PB8Y87E6XV",
+    databaseURL: "https://multi-games-a2561-default-rtdb.firebaseio.com"
+};
+
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.firestore();
+const rtdb = firebase.database();
+
+// Global variables
+let recaptchaVerified = false;
+let recaptchaToken = null;
+
+// Initialize UI elements on page load
+window.onload = function() {
+    updateButtonState();
+    
+    // Set up event listeners
+    document.getElementById('terms').addEventListener('change', updateButtonState);
+    document.getElementById('password').addEventListener('input', validatePassword);
+    document.getElementById('confirmPassword').addEventListener('input', checkPasswordMatch);
+    document.getElementById('registerForm').addEventListener('submit', handleRegistration);
+    document.getElementById('google-sign-up').addEventListener('click', handleGoogleSignUp);
+};
+
+// Password validation
+function validatePassword() {
+    const value = document.getElementById('password').value;
+    
+    // Check requirements
+    const hasLength = value.length >= 8;
+    const hasUppercase = /[A-Z]/.test(value);
+    const hasLowercase = /[a-z]/.test(value);
+    const hasNumber = /[0-9]/.test(value);
+    
+    // Update UI
+    updateRequirement('req-length', hasLength);
+    updateRequirement('req-uppercase', hasUppercase);
+    updateRequirement('req-lowercase', hasLowercase);
+    updateRequirement('req-number', hasNumber);
+    
+    // Check if passwords match
+    checkPasswordMatch();
+    
+    return hasLength && hasUppercase && hasLowercase && hasNumber;
+}
+
+// Check if passwords match
+function checkPasswordMatch() {
+    const password = document.getElementById('password').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
+    
+    if (confirmPassword) {
+        const passwordsMatch = password === confirmPassword;
+        updateRequirement('req-match', passwordsMatch);
+        return passwordsMatch;
+    }
+    return false;
+}
+
+// Update requirement visual indicators
+function updateRequirement(id, isMet) {
+    const element = document.getElementById(id);
+    if (isMet) {
+        element.classList.add('requirement-met');
+    } else {
+        element.classList.remove('requirement-met');
+    }
+}
+
+// Update button state based on terms checkbox
+function updateButtonState() {
+    const termsChecked = document.getElementById('terms').checked;
+    const registerBtn = document.getElementById('register-btn');
+    const googleBtn = document.getElementById('google-sign-up');
+    
+    // Update Register button state
+    if (termsChecked) {
+        registerBtn.disabled = false;
+        registerBtn.classList.remove('opacity-70', 'cursor-not-allowed');
+        registerBtn.textContent = 'Create Account';
+    } else {
+        registerBtn.disabled = true;
+        registerBtn.classList.add('opacity-70', 'cursor-not-allowed');
+        registerBtn.textContent = 'Accept Terms to Continue';
+    }
+    
+    // Update Google button state
+    googleBtn.disabled = !termsChecked;
+    if (termsChecked) {
+        googleBtn.classList.remove('opacity-70', 'cursor-not-allowed');
+    } else {
+        googleBtn.classList.add('opacity-70', 'cursor-not-allowed');
+    }
+    
+    // Hide the loading spinner when updating button state
+    document.getElementById('loading-spinner').classList.add('hidden');
+}
+
+// Execute reCAPTCHA
+async function executeRecaptcha() {
+    try {
+        // Update UI to show loading state
+        updateCaptchaStatus('loading', 'Verifying your device...');
+        
+        // Execute reCAPTCHA
+        const token = await new Promise((resolve, reject) => {
+            grecaptcha.ready(function() {
+                grecaptcha.execute('6Lf8PhUrAAAAAH45WQCqy6wNKtU_Bgh5ZFaryDEn', {action: 'register'})
+                    .then(resolve)
+                    .catch(reject);
+            });
+        });
+        
+        // Store token
+        recaptchaToken = token;
+        document.getElementById('recaptcha_token').value = token;
+        
+        // Validate token
+        await validateRecaptchaToken(token);
+        return true;
+    } catch (error) {
+        console.error("reCAPTCHA execution failed:", error);
+        updateCaptchaStatus('invalid', 'Verification error. Please try again.');
+        return false;
+    }
+}
+
+// Simulate server-side validation
+function validateRecaptchaToken(token) {
+    return new Promise((resolve) => {
+        // In a real implementation, this would be a server call
+        // For demo, we'll just check if the token exists
+        if (token && token.length > 0) {
+            // Simulate network delay
+            setTimeout(function() {
+                recaptchaVerified = true;
+                document.getElementById('recaptcha_verified').value = 'true';
+                updateCaptchaStatus('valid', 'Device verified successfully');
+                resolve(true);
+            }, 1000);
+        } else {
+            updateCaptchaStatus('invalid', 'Verification failed. Please try again.');
+            resolve(false);
+        }
+    });
+}
+
+// Update the captcha status indicator
+function updateCaptchaStatus(status, message) {
+    const captchaStatus = document.getElementById('captcha-status');
+    captchaStatus.className = 'captcha-status ' + status;
+    
+    // Update icon and message
+    if (status === 'loading') {
+        captchaStatus.innerHTML = `
+            <svg class="animate-spin h-3 w-3 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            ${message}
+        `;
+    } else if (status === 'valid') {
+        captchaStatus.innerHTML = `
+            <svg class="h-3 w-3 mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+            ${message}
+        `;
+    } else if (status === 'invalid') {
+        captchaStatus.innerHTML = `
+            <svg class="h-3 w-3 mr-2 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+            ${message}
+        `;
+    }
+}
+
+// Show notification messages
+function showNotification(message, type = 'error') {
+    const statusMessage = document.getElementById('status-message');
+    statusMessage.textContent = message;
+    statusMessage.classList.remove('hidden', 'bg-green-100', 'text-green-700', 'bg-red-100', 'text-red-700', 'bg-yellow-100', 'text-yellow-700');
+    
+    switch(type) {
+        case 'success':
+            statusMessage.classList.add('bg-green-100', 'text-green-700');
+            break;
+        case 'error':
+            statusMessage.classList.add('bg-red-100', 'text-red-700');
+            break;
+        case 'warning':
+            statusMessage.classList.add('bg-yellow-100', 'text-yellow-700');
+            break;
+    }
+    
+    // Auto-hide after 5 seconds
+    setTimeout(() => {
+        statusMessage.classList.add('hidden');
+    }, 5000);
+}
+
+// Set loading state
+function setLoading(isLoading) {
+    const spinner = document.getElementById('loading-spinner');
+    const registerBtn = document.getElementById('register-btn');
+    const registeringMessage = document.getElementById('registering-message');
+    const registerForm = document.getElementById('registerForm');
+    
+    if (isLoading) {
+        spinner.classList.remove('hidden');
+        registerBtn.disabled = true;
+        registerBtn.classList.add('opacity-70', 'cursor-not-allowed');
+        registeringMessage.classList.remove('hidden');
+        registerForm.classList.add('opacity-50');
+        
+        // Change button text during form submission
+        registerBtn.textContent = 'Creating Account...';
+    } else {
+        spinner.classList.add('hidden');
+        registeringMessage.classList.add('hidden');
+        registerForm.classList.remove('opacity-50');
+        updateButtonState();
+    }
+}
+
+// Generate a unique referral code
+async function generateReferralCode() {
+    let code;
+    let exists = true;
+    
+    try {
+        while (exists) {
+            code = "GMR" + Math.random().toString(36).substring(2, 8).toUpperCase();
+            const snapshot = await rtdb.ref(`referralCodes/${code}`).get();
+            exists = snapshot.exists();
+        }
+        return code;
+    } catch (error) {
+        console.error("Error generating referral code:", error);
+        return "GMR" + Math.random().toString(36).substring(2, 8).toUpperCase();
+    }
+}
+
+// Get referral code from URL
+function getReferralCodeFromURL() {
+    const params = new URLSearchParams(window.location.search);
+    return params.get("ref") || null;
+}
+
+// Track referral usage
+async function trackReferral(referralCode) {
+    if (!referralCode) return;
+    
+    try {
+        console.log("Tracking referral code:", referralCode);
+        
+        // Check if the referral code exists
+        const codeSnapshot = await rtdb.ref(`referralCodes/${referralCode}`).get();
+        
+        if (codeSnapshot.exists()) {
+            // Get the user ID of the referrer
+            const referrerId = codeSnapshot.val().userId;
+            console.log("Referrer ID found:", referrerId);
+            
+            // Reference to the referrer's referrals count
+            const referralsRef = rtdb.ref(`users/${referrerId}/referrals`);
+            
+            // Get current referrals count
+            const referralsSnapshot = await referralsRef.get();
+            
+            // If referrals field exists, increment it, otherwise set it to 1
+            let newCount = 1;
+            if (referralsSnapshot.exists()) {
+                newCount = referralsSnapshot.val() + 1;
+            }
+            
+            console.log("Current referrals:", referralsSnapshot.val(), "New count:", newCount);
+            
+            // Update referrals count
+            await referralsRef.set(newCount);
+            console.log("Referral tracked successfully. New count:", newCount);
+        } else {
+            console.log("Invalid referral code:", referralCode);
+        }
+    } catch (error) {
+        console.error("Error tracking referral:", error.message);
+    }
+}
+
+// Create user record in databases
+async function createUserRecord(user, fullname, username, referralUsed, userReferralCode) {
+    try {
+        // Save the referral code mapping for this user
+        await rtdb.ref(`referralCodes/${userReferralCode}`).set({ 
+            userId: user.uid,
+            created: new Date().toISOString()
+        });
+        
+        // Prepare user data including all required fields
+        const userData = {
+            name: fullname || user.displayName || "User",
+            username: username || user.displayName || "User" + Math.floor(Math.random() * 10000),
+            email: user.email,
+            referralCode: userReferralCode,
+            referredBy: referralUsed || null,
+            dateJoined: new Date().toISOString(),
+            signupMethod: username ? "email" : "google",
+            referrals: 0,
+            airtimeBalance: 0,
+            airtimeScore: 0,
+            monthlyAirtime: 0,
+            weeklyAirtime: 0,
+            airtimeHistory: {},
+            playedGames: {},
+            verified: true // Set verified to true by default
+        };
+        
+        // Save user data in both Firestore and Realtime Database
+        await db.collection('users').doc(user.uid).set(userData);
+        await rtdb.ref(`users/${user.uid}`).set(userData);
+        
+        // If a referral code was used, track it
+        if (referralUsed) {
+            await trackReferral(referralUsed);
+        }
+        
+        return true;
+    } catch (error) {
+        console.error("Error creating user record:", error);
+        throw error;
+    }
+}
+
+// Handle successful registration
+function handleSuccessfulRegistration() {
+    showNotification('Account created successfully! Redirecting...', 'success');
+    setTimeout(() => {
+        window.location.href = 'profile.html';
+    }, 1500);
+}
+
+// Handle registration form submission
+async function handleRegistration(e) {
+    e.preventDefault();
+    
+    // Get form values
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
+    const fullname = document.getElementById('fullname').value;
+    const username = document.getElementById('username').value;
+    const termsChecked = document.getElementById('terms').checked;
+    
+    // Validation checks
+    if (!termsChecked) {
+        showNotification('Please accept the terms and conditions.');
+        return;
+    }
+    
+    if (!validatePassword()) {
+        showNotification('Please ensure your password meets all requirements.');
+        return;
+    }
+    
+    if (password !== confirmPassword) {
+        showNotification('Passwords do not match.');
+        return;
+    }
+    
+    // Set loading state
+    setLoading(true);
+    
+    try {
+        // Execute reCAPTCHA only when registering
+        const recaptchaSuccess = await executeRecaptcha();
+        
+        if (!recaptchaSuccess) {
+            showNotification('Human verification failed. Please try again.');
+            setLoading(false);
+            return;
+        }
+        
+        // Create user with Firebase Auth
+        const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+        const user = userCredential.user;
+        
+        // Update profile with display name
+        await user.updateProfile({
+            displayName: fullname
+        });
+        
+        // Get referral code from URL if any
+        const referralUsed = getReferralCodeFromURL();
+        
+        // Generate a unique referral code for this user
+        const userReferralCode = await generateReferralCode();
+        
+        // Create user record in databases
+        await createUserRecord(user, fullname, username, referralUsed, userReferralCode);
+        
+        // Handle successful registration
+        handleSuccessfulRegistration();
+    } catch (error) {
+        setLoading(false);
+        console.error("Registration error:", error);
+        
+        // Show appropriate error message
+        let errorMessage = "Failed to create account. Please try again.";
+        if (error.code === 'auth/email-already-in-use') {
+            errorMessage = "This email is already registered. Please use a different email or try logging in.";
+        } else if (error.code === 'auth/invalid-email') {
+            errorMessage = "Invalid email address. Please check and try again.";
+        } else if (error.code === 'auth/weak-password') {
+            errorMessage = "Password is too weak. Please choose a stronger password.";
+        }
+        
+        showNotification(errorMessage);
+    }
+}
+
+// Handle Google Sign Up
+async function handleGoogleSignUp(e) {
+    e.preventDefault();
+    
+    // Check if terms are accepted
+    const termsChecked = document.getElementById('terms').checked;
+    if (!termsChecked) {
+        showNotification('Please accept the terms and conditions.');
+        return;
+    }
+    
+    try {
+        // Execute reCAPTCHA only when signing up
+        const recaptchaSuccess = await executeRecaptcha();
+        
+        if (!recaptchaSuccess) {
+            showNotification('Human verification failed. Please try again.');
+            return;
+        }
+        
+        // Set loading state
+        setLoading(true);
+        
+        // Google sign-in provider
+        const provider = new firebase.auth.GoogleAuthProvider();
+        
+        // Sign in with popup
+        const result = await auth.signInWithPopup(provider);
+        const user = result.user;
+        
+        // Get referral code from URL if any
+        const referralUsed = getReferralCodeFromURL();
+        
+        // Generate a unique referral code for this user
+        const userReferralCode = await generateReferralCode();
+        
+        // Check if user already exists in our database
+        const userDoc = await db.collection('users').doc(user.uid).get();
+        
+        if (!userDoc.exists) {
+            // Create user record if new user
+            await createUserRecord(user, null, null, referralUsed, userReferralCode);
+        }
+        
+        // Handle successful registration
+        handleSuccessfulRegistration();
+    } catch (error) {
+        setLoading(false);
+        console.error("Google sign-up error:", error);
+        
+        let errorMessage = "Failed to sign up with Google. Please try again.";
+        if (error.code === 'auth/account-exists-with-different-credential') {
+            errorMessage = "An account already exists with the same email address but different sign-in credentials.";
+        } else if (error.code === 'auth/popup-closed-by-user') {
+            errorMessage = "Sign-up process was cancelled. Please try again.";
+        }
+        
+        showNotification(errorMessage);
+    }
+}
+</script>
+</body>
+</html>
