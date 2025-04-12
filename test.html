@@ -908,13 +908,24 @@ password.addEventListener('input', function() {
 });
 </script>
 <script>
+// Firebase v9 imports (these should be in your main JS file or included in your bundler)
+// import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+
 // Initialize custom sign-up
 function initCustomSignUp() {
     // Custom sign-up button event listener
-    document.getElementById('custom-signup-btn').addEventListener('click', showSignUpForm);
+    const customSignupBtn = document.getElementById('custom-signup-btn');
+    if (customSignupBtn) {
+        customSignupBtn.addEventListener('click', showSignUpForm);
+    }
     
     // Google Sign-in button event listener
-    document.getElementById('google-signin-btn').addEventListener('click', signInWithGoogle);
+    const googleSigninBtn = document.getElementById('google-signin-btn');
+    if (googleSigninBtn) {
+        googleSigninBtn.addEventListener('click', signInWithGoogle);
+    } else {
+        console.error("Google sign-in button not found!");
+    }
     
     // Toggle between sign-up methods and regular form
     const registerForm = document.getElementById('registerForm');
@@ -927,45 +938,40 @@ function initCustomSignUp() {
     }
 }
 
-// Function to handle Google Sign-in using Firebase
+// Function to handle Google Sign-in using Firebase v9
 function signInWithGoogle() {
-    const provider = new firebase.auth.GoogleAuthProvider();
+    console.log("Google sign-in button clicked");
     
-    // Optional: Add scopes if needed
-    // provider.addScope('https://www.googleapis.com/auth/contacts.readonly');
-    
-    // Optional: Configure custom parameters
-    provider.setCustomParameters({
-        'prompt': 'select_account'
-    });
-    
-    // Sign in with popup
-    firebase.auth()
-        .signInWithPopup(provider)
-        .then((result) => {
-            // This gives you a Google Access Token
-            const credential = result.credential;
-            const token = credential.accessToken;
-            
-            // The signed-in user info
-            const user = result.user;
-            
-            // Handle successful sign-in (redirect or update UI)
-            console.log("Successfully signed in with Google", user);
-            window.location.href = "profile.html"; // or wherever you want to redirect
-        })
-        .catch((error) => {
-            // Handle Errors here
-            const errorCode = error.code;
-            const errorMessage = error.message;
-            // The email of the user's account used
-            const email = error.email;
-            // The firebase.auth.AuthCredential type that was used
-            const credential = error.credential;
-            
-            console.error("Google sign-in error:", errorCode, errorMessage);
-            alert("Failed to sign in with Google. Please try again.");
-        });
+    // For Firebase v9 (modular SDK)
+    if (typeof firebase !== 'undefined' && firebase.auth) {
+        // Using Firebase v8 syntax
+        const provider = new firebase.auth.GoogleAuthProvider();
+        firebase.auth().signInWithPopup(provider)
+            .then((result) => {
+                console.log("Successfully signed in with Google", result.user);
+                window.location.href = "/dashboard"; // or wherever you want to redirect
+            })
+            .catch((error) => {
+                console.error("Google sign-in error:", error);
+                alert("Failed to sign in with Google. Please try again.");
+            });
+    } else if (typeof getAuth !== 'undefined') {
+        // Using Firebase v9 syntax
+        const auth = getAuth();
+        const provider = new GoogleAuthProvider();
+        signInWithPopup(auth, provider)
+            .then((result) => {
+                console.log("Successfully signed in with Google", result.user);
+                window.location.href = "/dashboard"; // or wherever you want to redirect
+            })
+            .catch((error) => {
+                console.error("Google sign-in error:", error);
+                alert("Failed to sign in with Google. Please try again.");
+            });
+    } else {
+        console.error("Firebase authentication is not available. Make sure Firebase is properly initialized.");
+        alert("Authentication service is not available. Please try again later.");
+    }
 }
 
 // Show the sign-up form when custom button is clicked
@@ -987,6 +993,7 @@ function showSignUpForm() {
 window.addEventListener('load', function() {
     // Initialize custom sign-up options
     initCustomSignUp();
+    console.log("Custom sign-up initialized");
 });
 </script>
 </body>
