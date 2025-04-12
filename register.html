@@ -847,7 +847,7 @@ auth.onAuthStateChanged(function(user) {
     if (user) {
         // If user is already logged in and verified, redirect to dashboard
         if (user.emailVerified) {
-            window.location.href = 'dashboard.html';
+            window.location.href = 'profile.html';
         } 
         // If user is logged in but not verified, show verification instructions
         else {
