@@ -11,7 +11,7 @@
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <style>
         .bg-gaming {
-            background: linear-gradient(to right, #4a00e0, #8e2de2);
+            background: linear-gradient(to right, #00b09b, #38ef7d);
         }
         .card-shadow {
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
@@ -38,6 +38,24 @@
             margin-top: 8px;
             color: #6b7280;
         }
+        .verification-status {
+            text-align: center;
+            margin-top: 8px;
+            font-size: 14px;
+            color: #10b981;
+            display: none;
+        }
+        /* Enhanced styles for inputs and buttons */
+        input, button {
+            border-radius: 8px !important;
+        }
+        .btn-green {
+            background-color: #10b981;
+            transition: all 0.3s ease;
+        }
+        .btn-green:hover {
+            background-color: #059669;
+        }
     </style>
 </head>
 <body class="bg-gray-100 min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
@@ -53,7 +71,7 @@
             <div>
                 <label for="email" class="block text-sm font-medium text-gray-700">Email address</label>
                 <input type="email" id="email" name="email" required 
-                       class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                       class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500">
             </div>
 
             <!-- reCAPTCHA container - visible checkbox -->
@@ -61,11 +79,12 @@
                 <div id="recaptcha-checkbox"></div>
             </div>
             
+            <div id="verification-status" class="verification-status"></div>
             <div id="timer" class="hidden"></div>
 
             <div>
                 <button type="submit" id="submit-button" disabled
-                        class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gaming hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 btn-disabled">
+                        class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gaming hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 btn-disabled">
                     Complete CAPTCHA to Continue
                 </button>
             </div>
@@ -73,13 +92,13 @@
             <!-- reCAPTCHA terms text -->
             <div class="recaptcha-terms">
                 This site is protected by reCAPTCHA and the Google
-                <a href="https://policies.google.com/privacy" target="_blank">Privacy Policy</a> and
-                <a href="https://policies.google.com/terms" target="_blank">Terms of Service</a> apply.
+                <a href="https://policies.google.com/privacy" target="_blank" class="text-green-600">Privacy Policy</a> and
+                <a href="https://policies.google.com/terms" target="_blank" class="text-green-600">Terms of Service</a> apply.
             </div>
         </form>
 
         <div class="mt-6 text-center">
-            <a href="login.html" class="text-sm font-medium text-indigo-600 hover:text-indigo-500">
+            <a href="login.html" class="text-sm font-medium text-green-600 hover:text-green-500">
                 Return to login
             </a>
         </div>
@@ -104,7 +123,7 @@
         // Global variables
         let captchaVerified = false;
         let cooldownActive = false;
-        const cooldownTime = 60000; // 60 seconds cooldown
+        const cooldownTime = 30 * 60 * 1000; // 30 minutes cooldown in milliseconds
         let cooldownTimer = null;
         let remainingTime = 0;
         
@@ -113,52 +132,56 @@
         const statusMessage = document.getElementById('status-message');
         const timerElement = document.getElementById('timer');
         const emailInput = document.getElementById('email');
+        const verificationStatus = document.getElementById('verification-status');
         
-        // Render reCAPTCHA
-        window.onload = function() {
-            grecaptcha.render('recaptcha-checkbox', {
-                'sitekey': '6LcUC_0qAAAAAO9Aa5ydOLmbp2_ymtNJlj9v3ZfF',
-                'callback': onCaptchaVerified,
-                'expired-callback': onCaptchaExpired
-            });
-        };
+        // Check for existing cooldown
+        document.addEventListener('DOMContentLoaded', function() {
+            checkExistingCooldown();
+        });
         
-        // Called when CAPTCHA is successfully verified
-        function onCaptchaVerified() {
-            captchaVerified = true;
-            submitButton.textContent = 'Send Reset Link';
-            submitButton.classList.remove('btn-disabled');
-            submitButton.disabled = false;
+        function checkExistingCooldown() {
+            const savedCooldown = localStorage.getItem('resetPasswordCooldown');
+            if (savedCooldown) {
+                const cooldownData = JSON.parse(savedCooldown);
+                const now = new Date().getTime();
+                const expiryTime = cooldownData.expiryTime;
+                
+                if (now < expiryTime) {
+                    // Cooldown still active
+                    const timeLeft = Math.ceil((expiryTime - now) / 1000);
+                    cooldownActive = true;
+                    
+                    submitButton.textContent = 'Try Again Later';
+                    submitButton.disabled = true;
+                    submitButton.classList.add('btn-disabled');
+                    
+                    timerElement.classList.remove('hidden');
+                    startCountdownFromSeconds(timeLeft);
+                }
+            }
         }
         
-        // Called when CAPTCHA expires
-        function onCaptchaExpired() {
-            captchaVerified = false;
-            submitButton.textContent = 'Complete CAPTCHA to Continue';
-            submitButton.classList.add('btn-disabled');
-            submitButton.disabled = true;
-        }
-        
-        // Start cooldown timer
-        function startCooldown() {
-            cooldownActive = true;
-            remainingTime = cooldownTime / 1000;
+        // Start countdown from seconds
+        function startCountdownFromSeconds(seconds) {
+            remainingTime = seconds;
             
-            submitButton.textContent = 'Try Again Later';
-            submitButton.disabled = true;
-            submitButton.classList.add('btn-disabled');
-            
-            timerElement.classList.remove('hidden');
-            timerElement.textContent = `Please wait ${remainingTime} seconds before trying again.`;
+            timerElement.textContent = formatTime(remainingTime);
             
             cooldownTimer = setInterval(function() {
                 remainingTime--;
-                timerElement.textContent = `Please wait ${remainingTime} seconds before trying again.`;
+                timerElement.textContent = formatTime(remainingTime);
+                
+                // Update localStorage
+                const expiryTime = new Date().getTime() + (remainingTime * 1000);
+                localStorage.setItem('resetPasswordCooldown', JSON.stringify({
+                    expiryTime: expiryTime
+                }));
                 
                 if (remainingTime <= 0) {
                     clearInterval(cooldownTimer);
                     cooldownActive = false;
                     timerElement.classList.add('hidden');
+                    localStorage.removeItem('resetPasswordCooldown');
                     
                     // Reset CAPTCHA
                     grecaptcha.reset();
@@ -167,6 +190,70 @@
                     submitButton.disabled = true;
                 }
             }, 1000);
+        }
+        
+        // Format time to MM:SS
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `Please wait ${minutes}:${secs < 10 ? '0' + secs : secs} before trying again`;
+        }
+        
+        // Render reCAPTCHA
+        window.onload = function() {
+            grecaptcha.render('recaptcha-checkbox', {
+                'sitekey': '6LcUC_0qAAAAAO9Aa5ydOLmbp2_ymtNJlj9v3ZfF',
+                'callback': onCaptchaSubmitted,
+                'expired-callback': onCaptchaExpired
+            });
+        };
+        
+        // Called when CAPTCHA is submitted - simulated verification
+        function onCaptchaSubmitted() {
+            // Show verification in progress
+            verificationStatus.style.display = 'block';
+            verificationStatus.textContent = 'Verification in progress...';
+            verificationStatus.style.color = '#6b7280';
+            
+            // Set a 30-second timer to simulate verification
+            setTimeout(function() {
+                captchaVerified = true;
+                verificationStatus.textContent = 'Verified';
+                verificationStatus.style.color = '#10b981';
+                
+                submitButton.textContent = 'Send Reset Link';
+                submitButton.classList.remove('btn-disabled');
+                submitButton.disabled = false;
+            }, 30000); // 30 seconds delay
+        }
+        
+        // Called when CAPTCHA expires
+        function onCaptchaExpired() {
+            captchaVerified = false;
+            verificationStatus.style.display = 'none';
+            submitButton.textContent = 'Complete CAPTCHA to Continue';
+            submitButton.classList.add('btn-disabled');
+            submitButton.disabled = true;
+        }
+        
+        // Start cooldown timer
+        function startCooldown() {
+            cooldownActive = true;
+            
+            // Set expiry time to 30 minutes from now
+            const expiryTime = new Date().getTime() + cooldownTime;
+            localStorage.setItem('resetPasswordCooldown', JSON.stringify({
+                expiryTime: expiryTime
+            }));
+            
+            remainingTime = cooldownTime / 1000;
+            
+            submitButton.textContent = 'Try Again Later';
+            submitButton.disabled = true;
+            submitButton.classList.add('btn-disabled');
+            
+            timerElement.classList.remove('hidden');
+            startCountdownFromSeconds(remainingTime);
         }
 
         // Handle form submission
@@ -207,6 +294,7 @@
                     
                     // Reset CAPTCHA state
                     captchaVerified = false;
+                    verificationStatus.style.display = 'none';
                 })
                 .catch((error) => {
                     // Error
@@ -232,6 +320,7 @@
                     
                     // Reset CAPTCHA state
                     captchaVerified = false;
+                    verificationStatus.style.display = 'none';
                 });
         });
     </script>
