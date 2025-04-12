@@ -76,6 +76,24 @@
             outline: none;
             box-shadow: 0 0 0 3px rgba(42, 157, 81, 0.2);
         }
+
+        /* Timer animation */
+        .timer-progress {
+            height: 4px;
+            background-color: #10b981;
+            transition: width 1s linear;
+        }
+
+        /* Anti-bot honeypot field */
+        .honeypot-field {
+            opacity: 0;
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 0;
+            width: 0;
+            z-index: -1;
+        }
     </style>
 </head>
 <body class="bg-gray-100 min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
@@ -94,6 +112,21 @@
                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
             </svg>
             Creating your account...
+        </div>
+
+        <!-- Verification Timer (initially hidden) -->
+        <div id="verification-timer" class="hidden mb-6 p-4 bg-blue-50 rounded-md">
+            <div class="flex items-center mb-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-500 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd" />
+                </svg>
+                <span class="font-medium text-blue-700">Verifying user authenticity</span>
+            </div>
+            <p class="text-blue-600 text-sm mb-2">Please wait while we verify your submission. This helps us prevent spam.</p>
+            <div class="w-full bg-gray-200 rounded-full h-1 mb-1">
+                <div id="timer-bar" class="timer-progress w-full rounded-full"></div>
+            </div>
+            <p class="text-right text-xs text-blue-500"><span id="timer-seconds">30</span> seconds remaining...</p>
         </div>
 
         <!-- Registration Form -->
@@ -143,6 +176,10 @@
                         <span class="requirement-icon"></span>
                         <span>At least 1 number</span>
                     </div>
+                    <div class="requirement" id="req-special">
+                        <span class="requirement-icon"></span>
+                        <span>At least 1 special character (!@#$%^&*)</span>
+                    </div>
                 </div>
             </div>
 
@@ -159,6 +196,14 @@
                 <input type="text" id="referralCode" name="referralCode" 
                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500">
             </div>
+
+            <!-- Honeypot field (anti-bot) -->
+            <div class="honeypot-field">
+                <input type="text" id="website" name="website" autocomplete="off" tabindex="-1">
+            </div>
+            
+            <!-- Registration timestamp (anti-bot) -->
+            <input type="hidden" id="registration-time" name="registration-time" value="">
             
             <!-- reCAPTCHA -->
             <div class="flex justify-center mt-2">
@@ -187,33 +232,6 @@
                 </button>
             </div>
         </form>
-        
-        <!-- Google Sign-up Button -->
-        <div class="mt-4">
-            <div class="relative">
-                <div class="absolute inset-0 flex items-center">
-                    <div class="w-full border-t border-gray-300"></div>
-                </div>
-                <div class="relative flex justify-center text-sm">
-                    <span class="px-2 bg-white text-gray-500">Or continue with</span>
-                </div>
-            </div>
-            
-            <div class="mt-4">
-                <button type="button" id="google-sign-up" 
-                        class="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
-                    <svg class="h-5 w-5 mr-2" viewBox="0 0 24 24" width="24" height="24">
-                        <g transform="matrix(1, 0, 0, 1, 27.009001, -39.238998)">
-                            <path fill="#4285F4" d="M -3.264 51.509 C -3.264 50.719 -3.334 49.969 -3.454 49.239 L -14.754 49.239 L -14.754 53.749 L -8.284 53.749 C -8.574 55.229 -9.424 56.479 -10.684 57.329 L -10.684 60.329 L -6.824 60.329 C -4.564 58.239 -3.264 55.159 -3.264 51.509 Z"/>
-                            <path fill="#34A853" d="M -14.754 63.239 C -11.514 63.239 -8.804 62.159 -6.824 60.329 L -10.684 57.329 C -11.764 58.049 -13.134 58.489 -14.754 58.489 C -17.884 58.489 -20.534 56.379 -21.484 53.529 L -25.464 53.529 L -25.464 56.619 C -23.494 60.539 -19.444 63.239 -14.754 63.239 Z"/>
-                            <path fill="#FBBC05" d="M -21.484 53.529 C -21.734 52.809 -21.864 52.039 -21.864 51.239 C -21.864 50.439 -21.724 49.669 -21.484 48.949 L -21.484 45.859 L -25.464 45.859 C -26.284 47.479 -26.754 49.299 -26.754 51.239 C -26.754 53.179 -26.284 54.999 -25.464 56.619 L -21.484 53.529 Z"/>
-                            <path fill="#EA4335" d="M -14.754 43.989 C -12.984 43.989 -11.404 44.599 -10.154 45.789 L -6.734 42.369 C -8.804 40.429 -11.514 39.239 -14.754 39.239 C -19.444 39.239 -23.494 41.939 -25.464 45.859 L -21.484 48.949 C -20.534 46.099 -17.884 43.989 -14.754 43.989 Z"/>
-                        </g>
-                    </svg>
-                    Sign up with Google
-                </button>
-            </div>
-        </div>
 
         <!-- Verification Instructions (initially hidden) -->
         <div id="verification-instructions" class="hidden mt-6 p-4 bg-green-50 rounded-md text-green-700 text-sm">
@@ -253,9 +271,15 @@ const auth = firebase.auth();
 const db = firebase.firestore();
 const rtdb = firebase.database();
 
-// Global reCAPTCHA verification flag
+// Global variables
 let recaptchaVerified = false;
 let recaptchaWidget;
+let verificationComplete = false;
+let timerId = null;
+let registrationAttempts = 0;
+
+// Record time when page loads (anti-bot)
+document.getElementById('registration-time').value = Date.now();
 
 // Function to render the reCAPTCHA widget
 window.onload = function() {
@@ -265,33 +289,88 @@ window.onload = function() {
         'callback': enableSubmit,
         'expired-callback': recaptchaExpired
     });
+    
+    // Detect automated form filling
+    detectAutomatedSubmission();
 };
 
 // Enable submit button when reCAPTCHA is verified
 function enableSubmit() {
     recaptchaVerified = true;
-    updateSubmitButton();
+    showVerificationTimer();
+}
+
+// Start verification timer simulation
+function showVerificationTimer() {
+    const timerElement = document.getElementById('verification-timer');
+    const timerBar = document.getElementById('timer-bar');
+    const timerSeconds = document.getElementById('timer-seconds');
+    const registerForm = document.getElementById('registerForm');
+    
+    timerElement.classList.remove('hidden');
+    
+    let secondsRemaining = 30;
+    timerSeconds.textContent = secondsRemaining;
+    
+    // Disable form during verification
+    const formInputs = registerForm.querySelectorAll('input, button');
+    formInputs.forEach(input => {
+        input.disabled = true;
+    });
+    
+    // Start countdown
+    timerId = setInterval(() => {
+        secondsRemaining--;
+        timerSeconds.textContent = secondsRemaining;
+        
+        // Update progress bar
+        const percentage = (secondsRemaining / 30) * 100;
+        timerBar.style.width = `${percentage}%`;
+        
+        if (secondsRemaining <= 0) {
+            clearInterval(timerId);
+            verificationComplete = true;
+            timerElement.classList.add('hidden');
+            
+            // Re-enable form
+            formInputs.forEach(input => {
+                if (input.id !== 'register-btn') {
+                    input.disabled = false;
+                }
+            });
+            
+            updateSubmitButton();
+            showNotification('Verification complete! You can now create your account.', 'success');
+        }
+    }, 1000);
 }
 
 // Handle reCAPTCHA expiration
 function recaptchaExpired() {
     recaptchaVerified = false;
+    verificationComplete = false;
     updateSubmitButton();
     showNotification('reCAPTCHA verification expired. Please verify again.', 'warning');
+    
+    // If timer is running, stop it
+    if (timerId) {
+        clearInterval(timerId);
+        document.getElementById('verification-timer').classList.add('hidden');
+    }
 }
 
-// Update submit button based on terms checkbox and reCAPTCHA
+// Update submit button based on terms checkbox and verification status
 function updateSubmitButton() {
     const termsChecked = document.getElementById('terms').checked;
     const registerBtn = document.getElementById('register-btn');
     
-    registerBtn.disabled = !(termsChecked && recaptchaVerified);
+    registerBtn.disabled = !(termsChecked && recaptchaVerified && verificationComplete);
 }
 
 // Terms checkbox event listener
 document.getElementById('terms').addEventListener('change', updateSubmitButton);
 
-// Password validation
+// Password validation with additional requirements
 const password = document.getElementById('password');
 const confirmPassword = document.getElementById('confirmPassword');
 
@@ -305,14 +384,16 @@ function validatePassword() {
     const hasUppercase = /[A-Z]/.test(value);
     const hasLowercase = /[a-z]/.test(value);
     const hasNumber = /[0-9]/.test(value);
+    const hasSpecial = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(value);
     
     // Update UI
     updateRequirement('req-length', hasLength);
     updateRequirement('req-uppercase', hasUppercase);
     updateRequirement('req-lowercase', hasLowercase);
     updateRequirement('req-number', hasNumber);
+    updateRequirement('req-special', hasSpecial);
     
-    return hasLength && hasUppercase && hasLowercase && hasNumber;
+    return hasLength && hasUppercase && hasLowercase && hasNumber && hasSpecial;
 }
 
 function updateRequirement(id, isMet) {
@@ -328,7 +409,7 @@ function updateRequirement(id, isMet) {
 function showNotification(message, type = 'error') {
     const statusMessage = document.getElementById('status-message');
     statusMessage.textContent = message;
-    statusMessage.classList.remove('hidden', 'bg-green-100', 'text-green-700', 'bg-red-100', 'text-red-700', 'bg-yellow-100', 'text-yellow-700');
+    statusMessage.classList.remove('hidden', 'bg-green-100', 'text-green-700', 'bg-red-100', 'text-red-700', 'bg-yellow-100', 'text-yellow-700', 'bg-blue-100', 'text-blue-700');
     
     switch(type) {
         case 'success':
@@ -339,6 +420,9 @@ function showNotification(message, type = 'error') {
             break;
         case 'warning':
             statusMessage.classList.add('bg-yellow-100', 'text-yellow-700');
+            break;
+        case 'info':
+            statusMessage.classList.add('bg-blue-100', 'text-blue-700');
             break;
     }
     
@@ -409,7 +493,7 @@ async function trackReferral(referralCode) {
             // Reference to the referrer's referrals count
             const referralsRef = rtdb.ref(`users/${referrerId}/referrals`);
             
-            // Get current referrals count
+     // Get current referrals count
             const referralsSnapshot = await referralsRef.get();
             
             // If referrals field exists, increment it, otherwise set it to 1
@@ -442,13 +526,13 @@ async function createUserRecord(user, fullname, username, referralUsed, userRefe
         
         // Prepare user data including all required fields
         const userData = {
-            name: fullname || user.displayName || "User",
-            username: username || user.displayName || "User" + Math.floor(Math.random() * 10000),
+            name: fullname || "User",
+            username: username || "User" + Math.floor(Math.random() * 10000),
             email: user.email,
             referralCode: userReferralCode,
             referredBy: referralUsed || null,
             dateJoined: new Date().toISOString(),
-            signupMethod: username ? "email" : "google",
+            signupMethod: "email",
             referrals: 0,
             airtimeBalance: 0,
             airtimeScore: 0,
@@ -456,7 +540,9 @@ async function createUserRecord(user, fullname, username, referralUsed, userRefe
             weeklyAirtime: 0,
             airtimeHistory: {},
             playedGames: {},
-            verified: user.emailVerified
+            verified: user.emailVerified,
+            lastLoginIP: "127.0.0.1", // Will be replaced with actual IP on server
+            registrationIP: "127.0.0.1" // Will be replaced with actual IP on server
         };
         
         // Save user data in both Firestore and Realtime Database
@@ -475,26 +561,58 @@ async function createUserRecord(user, fullname, username, referralUsed, userRefe
     }
 }
 
-// Handle account redirect after verification
-function handlePostRegistration(user, isEmail = true) {
-    if (isEmail) {
-        // For email registration, show verification instructions
-        document.getElementById('registerForm').classList.add('hidden');
-        document.getElementById('verification-instructions').classList.remove('hidden');
-        document.getElementById('google-sign-up').parentElement.parentElement.classList.add('hidden');
-        document.getElementById('user-email').textContent = user.email;
-    } else {
-        // For Google sign-in, redirect to profile page
-        showNotification('Account created successfully! Redirecting...', 'success');
-        setTimeout(() => {
-            window.location.href = 'profile.html';
-        }, 1500);
+// Handle post-registration actions
+function handlePostRegistration(user) {
+    // Show verification instructions
+    document.getElementById('registerForm').classList.add('hidden');
+    document.getElementById('verification-instructions').classList.remove('hidden');
+    document.getElementById('user-email').textContent = user.email;
+}
+
+// Anti-bot detection for automated form filling
+function detectAutomatedSubmission() {
+    const formElements = document.getElementById('registerForm').elements;
+    let lastModifiedTime = Date.now();
+    
+    for (let i = 0; i < formElements.length; i++) {
+        const element = formElements[i];
+        
+        if (element.type !== 'hidden' && element.type !== 'submit' && !element.classList.contains('honeypot-field')) {
+            element.addEventListener('input', function() {
+                const currentTime = Date.now();
+                const timeDiff = currentTime - lastModifiedTime;
+                
+                // If inputs are filled too quickly (less than 100ms between inputs)
+                if (timeDiff < 100 && element.value.length > 0) {
+                    // Possible bot activity
+                    console.log("Potential bot detected: Input fields filled too quickly");
+                    recordBotAttempt("rapid_input");
+                }
+                
+                lastModifiedTime = currentTime;
+            });
+        }
     }
+}
+
+// Record bot attempts in database (would be implemented on server)
+function recordBotAttempt(type) {
+    console.log(`Bot attempt recorded: ${type}`);
+    // In a real implementation, this would send data to your server
 }
 
 // Form submission
 document.getElementById('registerForm').addEventListener('submit', async function(e) {
     e.preventDefault();
+    
+    // Increment registration attempts
+    registrationAttempts++;
+    
+    // Check for too many attempts (anti-brute force)
+    if (registrationAttempts > 5) {
+        showNotification('Too many registration attempts. Please try again later.', 'error');
+        return;
+    }
     
     // Get form values
     const fullname = document.getElementById('fullname').value.trim();
@@ -504,8 +622,28 @@ document.getElementById('registerForm').addEventListener('submit', async functio
     const confirmPassword = document.getElementById('confirmPassword').value;
     const manualReferral = document.getElementById('referralCode').value.trim();
     const terms = document.getElementById('terms').checked;
+    const honeypot = document.getElementById('website').value;
+    const registrationTime = parseInt(document.getElementById('registration-time').value);
+    const currentTime = Date.now();
+    const timeOnPage = currentTime - registrationTime;
     
-    // Validate form
+    // Anti-bot checks
+    if (honeypot) {
+        console.log("Bot detected: Honeypot field filled");
+        recordBotAttempt("honeypot");
+        showNotification('Registration failed. Please try again later.', 'error');
+        return;
+    }
+    
+    // Check if the form was submitted too quickly (less than 5 seconds on page)
+    if (timeOnPage < 5000) {
+        console.log("Bot detected: Form submitted too quickly");
+        recordBotAttempt("quick_submission");
+        showNotification('Please review the form carefully before submitting.', 'warning');
+        return;
+    }
+    
+    // Form validation
     if (!fullname) {
         showNotification('Please enter your full name.');
         return;
@@ -513,6 +651,12 @@ document.getElementById('registerForm').addEventListener('submit', async functio
     
     if (!username) {
         showNotification('Please enter a username.');
+        return;
+    }
+    
+    // Username validation (alphanumeric and underscores only)
+    if (!/^[a-zA-Z0-9_]+$/.test(username)) {
+        showNotification('Username can only contain letters, numbers, and underscores.', 'error');
         return;
     }
     
@@ -531,8 +675,8 @@ document.getElementById('registerForm').addEventListener('submit', async functio
         return;
     }
     
-    if (!recaptchaVerified) {
-        showNotification('Please verify that you are not a robot.');
+    if (!recaptchaVerified || !verificationComplete) {
+        showNotification('Please complete the verification process.');
         return;
     }
     
@@ -562,7 +706,7 @@ document.getElementById('registerForm').addEventListener('submit', async functio
         await user.sendEmailVerification();
         
         // Show verification instructions
-        handlePostRegistration(user, true);
+        handlePostRegistration(user);
         
         // Clear form
         document.getElementById('registerForm').reset();
@@ -570,128 +714,127 @@ document.getElementById('registerForm').addEventListener('submit', async functio
         // Reset reCAPTCHA
         grecaptcha.reset(recaptchaWidget);
         recaptchaVerified = false;
+        verificationComplete = false;
         
     } catch (error) {
         // Handle errors
         let errorMessage;
         
         switch(error.code) {
+            // Continuing from the error handling switch case
             case 'auth/email-already-in-use':
-                errorMessage = 'This email is already registered.';
+                errorMessage = 'This email address is already in use. Please use another email or try logging in.';
                 break;
             case 'auth/invalid-email':
                 errorMessage = 'Please enter a valid email address.';
                 break;
             case 'auth/weak-password':
-                errorMessage = 'Password is too weak.';
+                errorMessage = 'The password is too weak. Please create a stronger password.';
+                break;
+            case 'auth/username-already-in-use':
+                errorMessage = 'This username is already taken. Please choose another username.';
+                break;
+            case 'auth/operation-not-allowed':
+                errorMessage = 'Email/password accounts are not enabled. Please contact support.';
                 break;
             default:
-                errorMessage = 'Registration error: ' + error.message;
+                errorMessage = error.message || 'An error occurred during registration. Please try again.';
         }
         
-        showNotification(errorMessage);
-        
-        // Reset reCAPTCHA on error
-        grecaptcha.reset(recaptchaWidget);
-        recaptchaVerified = false;
-        updateSubmitButton();
-        
+        showNotification(errorMessage, 'error');
+        console.error("Registration error:", error);
     } finally {
-        // Reset loading state
+        // Hide loading state
         setLoading(false);
     }
 });
 
-// Google Sign-up
-document.getElementById('google-sign-up').addEventListener('click', async function() {
-    if (!document.getElementById('terms').checked) {
-        showNotification("You must accept the Terms and Conditions");
-        return;
-    }
+// Check for username availability
+document.getElementById('username').addEventListener('blur', async function() {
+    const username = this.value.trim();
     
-    if (!recaptchaVerified) {
-        showNotification("Please verify that you are not a robot");
-        return;
-    }
-    
-    setLoading(true);
+    if (!username) return;
     
     try {
-        const provider = new firebase.auth.GoogleAuthProvider();
-        // Add scopes to request additional permissions if needed
-        provider.addScope('profile');
-        provider.addScope('email');
+        // Check if username already exists in database
+        const usersRef = db.collection('users');
+        const querySnapshot = await usersRef.where('username', '==', username).get();
         
-        const result = await auth.signInWithPopup(provider);
-        const user = result.user;
-        
-        // Check if this is a new user
-        const userDoc = await db.collection('users').doc(user.uid).get();
-        const isNewUser = !userDoc.exists;
-        
-        if (isNewUser) {
-            // Generate a referral code for this new Google user
-            const userReferralCode = await generateReferralCode();
-            const referralUsed = document.getElementById('referralCode').value.trim() || getReferralCodeFromURL();
-            
-            // Create user record
-            await createUserRecord(user, null, null, referralUsed, userReferralCode);
-            
-            // Handle post-registration for Google sign-up
-            handlePostRegistration(user, false);
-        } else {
-            // User already exists, redirect to profile
-            showNotification('Signed in successfully! Redirecting...', 'success');
-            setTimeout(() => {
-                window.location.href = 'profile.html';
-            }, 1500);
+        if (!querySnapshot.empty) {
+            showNotification('This username is already taken.', 'warning');
         }
     } catch (error) {
-        console.error("Google sign-up error:", error);
-        let errorMessage = "Google sign-up failed.";
-        
-        if (error.code === 'auth/popup-closed-by-user') {
-            errorMessage = "Sign-up canceled. You closed the Google login window.";
-        } else if (error.code === 'auth/popup-blocked') {
-            errorMessage = "Pop-up blocked. Please enable pop-ups for this site.";
-        } else if (error.code === 'auth/account-exists-with-different-credential') {
-            errorMessage = "An account already exists with the same email address but different sign-in credentials.";
-        }
-        
-        showNotification(errorMessage);
-        
-        // Reset reCAPTCHA on error
-        grecaptcha.reset(recaptchaWidget);
-        recaptchaVerified = false;
-        updateSubmitButton();
-    } finally {
-        setLoading(false);
+        console.error("Error checking username:", error);
     }
 });
 
 // Resend verification email
 document.getElementById('resend-email').addEventListener('click', async function() {
-    const user = auth.currentUser;
-    
-    if (user) {
-        try {
-            setLoading(true);
+    try {
+        const user = auth.currentUser;
+        
+        if (user) {
             await user.sendEmailVerification();
-            showNotification('Verification email resent! Please check your inbox.', 'success');
-        } catch (error) {
-            showNotification('Error sending verification email: ' + error.message);
-        } finally {
-            setLoading(false);
+            showNotification('Verification email sent successfully!', 'success');
+        } else {
+            showNotification('You must be logged in to resend the verification email.', 'error');
         }
-    } else {
-        showNotification('Please sign in again to resend the verification email.', 'warning');
-        setTimeout(() => {
-            window.location.href = 'login.html';
-        }, 2000);
+    } catch (error) {
+        showNotification('Failed to send verification email. Please try again later.', 'error');
+        console.error("Error sending verification email:", error);
     }
 });
 
-// Prefill referral code from URL if available
+// Function to check if username contains only valid characters
+function isValidUsername(username) {
+    return /^[a-zA-Z0-9_]+$/.test(username);
+}
+
+// Email validation on blur
+document.getElementById('email').addEventListener('blur', function() {
+    const email = this.value.trim();
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    
+    if (email && !emailRegex.test(email)) {
+        showNotification('Please enter a valid email address.', 'warning');
+    }
+});
+
+// Username validation on input
+document.getElementById('username').addEventListener('input', function() {
+    const username = this.value.trim();
+    
+    if (username && !isValidUsername(username)) {
+        this.classList.add('border-red-500');
+        document.getElementById('username').nextElementSibling?.remove();
+        
+        const warningMsg = document.createElement('p');
+        warningMsg.className = 'text-red-500 text-xs mt-1';
+        warningMsg.textContent = 'Username can only contain letters, numbers, and underscores';
+        this.parentNode.appendChild(warningMsg);
+    } else {
+        this.classList.remove('border-red-500');
+        document.getElementById('username').nextElementSibling?.remove();
+    }
+});
+
+// Check password match on confirm password input
+confirmPassword.addEventListener('input', function() {
+    if (this.value && this.value !== password.value) {
+        this.classList.add('border-red-500');
+        document.getElementById('confirmPassword').nextElementSibling?.remove();
+        
+        const warningMsg = document.createElement('p');
+        warningMsg.className = 'text-red-500 text-xs mt-1';
+        warningMsg.textContent = 'Passwords do not match';
+        this.parentNode.appendChild(warningMsg);
+    } else {
+        this.classList.remove('border-red-500');
+        document.getElementById('confirmPassword').nextElementSibling?.remove();
+    }
+});
+
+// Auto-fill referral code from URL
 window.addEventListener('DOMContentLoaded', function() {
     const referralCode = getReferralCodeFromURL();
     if (referralCode) {
@@ -699,30 +842,57 @@ window.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-// Check auth state on page load
+// Check for active session
 auth.onAuthStateChanged(function(user) {
-    const loadingElement = document.getElementById('loading-spinner');
-    
-    // Only show loader when we're actually performing an operation
-    if (!loadingElement.classList.contains('hidden')) {
-        return; // If we're already in a loading state, don't interfere
-    }
-    
     if (user) {
-        // Check if user is verified
+        // If user is already logged in and verified, redirect to dashboard
         if (user.emailVerified) {
-            // User is verified, redirect to profile
-            window.location.href = 'profile.html';
-        } else if (document.getElementById('verification-instructions').classList.contains('hidden')) {
-            // User needs to verify, but we're not showing instructions yet
-            // (meaning they've just landed back on this page)
-            document.getElementById('user-email').textContent = user.email;
+            window.location.href = 'dashboard.html';
+        } 
+        // If user is logged in but not verified, show verification instructions
+        else {
             document.getElementById('registerForm').classList.add('hidden');
             document.getElementById('verification-instructions').classList.remove('hidden');
-            document.getElementById('google-sign-up').parentElement.parentElement.classList.add('hidden');
+            document.getElementById('user-email').textContent = user.email;
         }
     }
 });
-    </script>
+
+// Add password strength indicator
+password.addEventListener('input', function() {
+    const value = this.value;
+    let strength = 0;
+    
+    // Criteria check
+    if (value.length >= 8) strength += 1;
+    if (/[A-Z]/.test(value)) strength += 1;
+    if (/[a-z]/.test(value)) strength += 1;
+    if (/[0-9]/.test(value)) strength += 1;
+    if (/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(value)) strength += 1;
+    
+    // Check if existing strength indicator exists
+    const existingIndicator = document.getElementById('password-strength-indicator');
+    if (existingIndicator) existingIndicator.remove();
+    
+    // Create strength indicator
+    const strengthIndicator = document.createElement('div');
+    strengthIndicator.id = 'password-strength-indicator';
+    strengthIndicator.className = 'mt-1 h-1 rounded';
+    
+    // Set width and color based on strength
+    strengthIndicator.style.width = `${(strength / 5) * 100}%`;
+    
+    if (strength < 2) {
+        strengthIndicator.classList.add('bg-red-500');
+    } else if (strength < 4) {
+        strengthIndicator.classList.add('bg-yellow-500');
+    } else {
+        strengthIndicator.classList.add('bg-green-500');
+    }
+    
+    // Add to DOM after password input
+    this.parentNode.appendChild(strengthIndicator);
+});
+</script>
 </body>
 </html>
