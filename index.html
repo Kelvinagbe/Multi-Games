@@ -815,6 +815,85 @@
             max-width: none;
         }
     }
+
+
+    /* Page content styles */
+    .page-content {
+      position: fixed;
+      top: 0;
+      left: -100%;  /* Start off-screen */
+      width: 100%;
+      height: 100%;
+      background-color: #fff;
+      z-index: 1000;
+      transition: left 0.3s ease-in-out;
+      display: none;
+    }
+
+    .page-content.active {
+      left: 0;
+      display: block;
+    }
+
+    .page-iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    /* Back button styles */
+    .back-button {
+      position: absolute;
+      top: 15px;
+      left: 15px;
+      width: 40px;
+      height: 40px;
+      background-color: #f5f5f5;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+      z-index: 1001;
+      cursor: pointer;
+      font-size: 20px;
+    }
+
+    .back-button:hover {
+      background-color: #e0e0e0;
+    }
+
+    /* Bottom navigation styles */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background-color: #fff;
+      display: flex;
+      justify-content: space-around;
+      padding: 10px 0;
+      box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+      z-index: 100;
+    }
+
+    .bottom-nav a {
+      text-decoration: none;
+      color: #777;
+      font-size: 0.9rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .bottom-nav a.active {
+      color: #ff6b6b;
+    }
+
+    .bottom-nav a i {
+      font-size: 1.2rem;
+      margin-bottom: 4px;
+    }
 </style>
 </head>
 <body>
@@ -1032,10 +1111,12 @@
         </div>
     </div>
 
-    <!-- UPDATED: Page Content for Categories (Full Screen) -->
-    <div class="page-content" id="categories-content">
-        <iframe src="about:blank" id="categories-iframe" class="page-iframe"></iframe>
-    </div>
+    
+  <!-- Categories Page Content (Full Screen) -->
+  <div class="page-content" id="categories-content">
+    <div class="back-button" id="categories-back"><i class="fas fa-chevron-left"></i></div>
+    <iframe src="categories.html" id="categories-iframe" class="page-iframe"></iframe>
+  </div>
 
     <!-- Trending Section -->
     <div class="container" id="trending-content">
@@ -1341,10 +1422,11 @@
         <iframe src="about:blank" id="earn-iframe" class="page-iframe"></iframe>
     </div>
 
-    <!-- UPDATED: Page Content for Profile (Full Screen) -->
-    <div class="page-content" id="profile-content">
-        <iframe src="about:blank" id="profile-iframe" class="page-iframe"></iframe>
-    </div>
+  <!-- Profile Page Content (Full Screen) -->
+  <div class="page-content" id="profile-content">
+    <div class="back-button" id="profile-back"><i class="fas fa-chevron-left"></i></div>
+    <iframe src="profile.html" id="profile-iframe" class="page-iframe"></iframe>
+  </div>
 
     <!-- NEW: Page Content for Notifications (Full Screen) -->
     <div class="page-content" id="notification-content">
@@ -1367,51 +1449,7 @@
 
   <!-- JavaScript for Loader, Navigation, and Floating Search Bar Visibility -->
   <script>
-    // Hide loader after page load
-    document.addEventListener('DOMContentLoaded', function() {
-      setTimeout(function() {
-        document.getElementById('loader').style.opacity = '0';
-        setTimeout(function() {
-          document.getElementById('loader').style.display = 'none';
-        }, 300);
-      }, 800);
-    });
-
-    // Floating Search Bar show/hide for navigation
-    document.addEventListener("DOMContentLoaded", function() {
-      const floatingSearch = document.getElementById("floating-search");
-
-      function showSearchBar() {
-          floatingSearch.style.display = "block";
-      }
-
-      function hideSearchBar() {
-          floatingSearch.style.display = "none";
-      }
-
-      document.getElementById("home-nav").addEventListener("click", showSearchBar);
-      document.getElementById("categories-nav").addEventListener("click", hideSearchBar);
-      document.getElementById("trending-nav").addEventListener("click", hideSearchBar);
-      document.getElementById("earn-nav").addEventListener("click", hideSearchBar);
-      document.getElementById("profile-nav").addEventListener("click", hideSearchBar);
-    });
-
-    // Navigation active state (simplified for demonstration)
-    document.querySelectorAll('.bottom-nav a').forEach(nav => {
-      nav.addEventListener('click', function(e) {
-        e.preventDefault();
-        document.querySelectorAll('.bottom-nav a').forEach(item => item.classList.remove('active'));
-        this.classList.add('active');
-      });
-    });
-  </script>
-  
-  <!-- Additional scripts and iframes for other sections can be added below as needed -->
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5345992350931230"
-    crossorigin="anonymous"></script>
-
-<script>
-// Helper functions to show/hide loader
+    // Helper functions to show/hide loader
 function showLoader() {
     const loader = document.getElementById('loader');
     loader.style.display = 'flex';
@@ -1448,26 +1486,37 @@ function resetActiveState() {
     });
 }
 
-// Navigation handler to load iframe content and switch active states
+//handle navigation 
 function handleNavigation(contentElement, iframe, navElement, url) {
     showLoader();
     resetActiveState();
     navElement.classList.add('active');
 
-    // If an iframe is used and its source is not yet set, assign it
     if (iframe && (iframe.src === 'about:blank' || iframe.src === '')) {
         iframe.src = url;
     }
-    // Display the target content section
+
+    contentElement.style.display = 'block';
+    void contentElement.offsetWidth;
     contentElement.classList.add('active');
 
-    // Hide the floating search bar on non-home pages
+    // Hide nav only for Profile or Categories
+    if (
+        navElement.id === "profile-nav" ||
+        navElement.id === "categories-nav"
+    ) {
+        document.querySelector('.bottom-nav').style.display = "none";
+    } else {
+        document.querySelector('.bottom-nav').style.display = "flex";
+    }
+
+    // Hide floating search bar on non-home pages
     if (navElement.id !== 'home-nav') {
         document.getElementById("floating-search").style.display = "none";
     }
-    // If using an iframe, hide the loader once the iframe loads
+
     if (iframe) {
-        iframe.onload = function() {
+        iframe.onload = function () {
             hideLoader();
         };
     } else {
@@ -1475,55 +1524,119 @@ function handleNavigation(contentElement, iframe, navElement, url) {
     }
 }
 
-// Navigation for Home: Show main content and floating search bar
-document.getElementById("home-nav").addEventListener("click", function(e) {
-    e.preventDefault();
-    resetActiveState();
-    // Show the main content section
-    document.getElementById('main-content').classList.remove('hidden');
-    // Set Home nav to active
-    this.classList.add('active');
-    // Display the floating search bar on Home
-    document.getElementById("floating-search").style.display = "block";
-});
-
-// Navigation for Categories
-document.getElementById("categories-nav").addEventListener("click", function(e) {
-    e.preventDefault();
-    const categoriesContent = document.getElementById('categories-content');
-    const categoriesIframe = document.getElementById('categories-iframe');
-    handleNavigation(categoriesContent, categoriesIframe, this, 'categories.html');
-});
-
-// Navigation for Trending
-document.getElementById("trending-nav").addEventListener("click", function(e) {
-    e.preventDefault();
-    const trendingContent = document.getElementById('trending-content');
-    const trendingIframe = document.getElementById('trending-iframe');
-    handleNavigation(trendingContent, trendingIframe, this, 'trending.html');
-});
-
-// Navigation for Earn
-document.getElementById("earn-nav").addEventListener("click", function(e) {
-    e.preventDefault();
-    const earnContent = document.getElementById('earn-content');
-    const earnIframe = document.getElementById('earn-iframe');
-    handleNavigation(earnContent, earnIframe, this, 'Airtime-earn.html');
-});
-
-// Navigation for Profile
-document.getElementById("profile-nav").addEventListener("click", function(e) {
-    e.preventDefault();
-    const profileContent = document.getElementById('profile-content');
-    const profileIframe = document.getElementById('profile-iframe');
-    handleNavigation(profileContent, profileIframe, this, 'profile.html');
-});
-</script>
-
-<script>
+// Document Ready Event Handler
 document.addEventListener("DOMContentLoaded", function() {
-    var refreshButton = document.getElementById("refresh-button");
+    // Hide loader after page load
+    setTimeout(function() {
+        document.getElementById('loader').style.opacity = '0';
+        setTimeout(function() {
+            document.getElementById('loader').style.display = 'none';
+        }, 300);
+    }, 800);
 
+    // Floating Search Bar show/hide for navigation
+    const floatingSearch = document.getElementById("floating-search");
+
+    function showSearchBar() {
+        floatingSearch.style.display = "block";
+    }
+
+    function hideSearchBar() {
+        floatingSearch.style.display = "none";
+    }
+
+    // Navigation for Home: Show main content and floating search bar
+    document.getElementById("home-nav").addEventListener("click", function(e) {
+        e.preventDefault();
+        resetActiveState();
+        // Show the main content section
+        document.getElementById('main-content').classList.remove('hidden');
+        // Set Home nav to active
+        this.classList.add('active');
+        // Display the floating search bar on Home
+        showSearchBar();
+    });
+
+    // Navigation for Categories
+    document.getElementById("categories-nav").addEventListener("click", function(e) {
+        e.preventDefault();
+        const categoriesContent = document.getElementById('categories-content');
+        const categoriesIframe = document.getElementById('categories-iframe');
+        handleNavigation(categoriesContent, categoriesIframe, this, 'categories.html');
+        hideSearchBar();
+    });
+
+    // Navigation for Trending
+    document.getElementById("trending-nav").addEventListener("click", function(e) {
+        e.preventDefault();
+        const trendingContent = document.getElementById('trending-content');
+        const trendingIframe = document.getElementById('trending-iframe');
+        handleNavigation(trendingContent, trendingIframe, this, 'trending.html');
+        hideSearchBar();
+    });
+
+    // Navigation for Earn
+    document.getElementById("earn-nav").addEventListener("click", function(e) {
+        e.preventDefault();
+        const earnContent = document.getElementById('earn-content');
+        const earnIframe = document.getElementById('earn-iframe');
+        handleNavigation(earnContent, earnIframe, this, 'Airtime-earn.html');
+        hideSearchBar();
+    });
+
+    // Navigation for Profile
+    document.getElementById("profile-nav").addEventListener("click", function(e) {
+        e.preventDefault();
+        const profileContent = document.getElementById('profile-content');
+        const profileIframe = document.getElementById('profile-iframe');
+        handleNavigation(profileContent, profileIframe, this, 'profile.html');
+        hideSearchBar();
+    });
+
+    // Handle Back button for Profile (if exists)
+    const profileBackBtn = document.getElementById("profile-back");
+    if (profileBackBtn) {
+        profileBackBtn.addEventListener("click", function() {
+            const profileContent = document.getElementById('profile-content');
+            profileContent.classList.remove('active');
+            
+            // Hide content after animation completes
+            setTimeout(function() {
+                profileContent.style.display = 'none';
+            }, 300); // Match transition duration
+            
+            // Activate home nav
+            resetActiveState();
+            document.getElementById('main-content').classList.remove('hidden');
+            document.getElementById('home-nav').classList.add('active');
+             document.querySelector('.bottom-nav').style.display = "flex";
+            showSearchBar();
+        });
+    }
+
+    // Handle Back button for Categories (if exists)
+    const categoriesBackBtn = document.getElementById("categories-back");
+    if (categoriesBackBtn) {
+        categoriesBackBtn.addEventListener("click", function() {
+            const categoriesContent = document.getElementById('categories-content');
+            categoriesContent.classList.remove('active');
+            
+            // Hide content after animation completes
+            setTimeout(function() {
+                categoriesContent.style.display = 'none';
+            }, 300); // Match transition duration
+            
+            // Activate home nav
+            resetActiveState();
+            document.getElementById('main-content').classList.remove('hidden');
+            document.getElementById('home-nav').classList.add('active');
+            document.querySelector('.bottom-nav').style.display = "flex";
+            showSearchBar();
+        });
+    }
+
+    // Refresh button functionality
+    var refreshButton = document.getElementById("refresh-button");
     if (refreshButton) {
         refreshButton.addEventListener("touchstart", function(event) {
             event.preventDefault();
@@ -1542,10 +1655,10 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 });
-</script>
 
-<script>
-    // Game data
+// Search functionality for the games
+document.addEventListener("DOMContentLoaded", function() {
+    // Game data - keeping original games array from the existing code
     const games = [
     { 
         name: "Truth or Dare", 
@@ -1746,280 +1859,283 @@ document.addEventListener("DOMContentLoaded", function() {
     const searchIcon = document.getElementById('search-icon');
     const suggestionsContainer = document.getElementById('floating-suggestions');
 
-    // Search function
-    function performSearch() {
-        const query = searchInput.value.toLowerCase();
+    // Only set up search if elements exist
+    if (searchInput && searchIcon && suggestionsContainer) {
+        // Search function
+        function performSearch() {
+            const query = searchInput.value.toLowerCase();
+            
+            // Clear previous results
+            suggestionsContainer.innerHTML = '';
+            
+            // Don't search if query is empty
+            if (query.length === 0) {
+                suggestionsContainer.style.display = 'none';
+                return;
+            }
+            
+            // Filter games
+            const filteredGames = games.filter(game => 
+                game.name.toLowerCase().includes(query) || 
+                game.category.toLowerCase().includes(query)
+            );
+            
+            // Display results
+            if (filteredGames.length > 0) {
+                suggestionsContainer.style.display = 'block';
+                
+                filteredGames.forEach(game => {
+                    const suggestionItem = document.createElement('div');
+                    suggestionItem.classList.add('autocomplete-suggestion');
+                    suggestionItem.innerHTML = `
+                        <img src="${game.icon}" alt="${game.name} icon">
+                        <div class="game-info">
+                            <span class="game-name">${game.name}</span>
+                            <span class="game-category">${game.category}</span>
+                        </div>
+                        <button class="play-btn">Play</button>
+                    `;
+                    
+                    suggestionItem.addEventListener('click', function() {
+                        window.location.href = game.url;
+                    });
+                    
+                    suggestionsContainer.appendChild(suggestionItem);
+                });
+            } else {
+                suggestionsContainer.style.display = 'block';
+                const noResults = document.createElement('div');
+                noResults.classList.add('no-results');
+                noResults.textContent = 'No games found';
+                suggestionsContainer.appendChild(noResults);
+            }
+        }
+
+        // Event Listeners
+        // Trigger search when clicking the search icon
+        searchIcon.addEventListener('click', performSearch);
         
-        // Clear previous results
-        suggestionsContainer.innerHTML = '';
+        // Real-time filtering on input
+        searchInput.addEventListener('input', performSearch);
         
-        // Don't search if query is empty
-        if (query.length === 0) {
-            suggestionsContainer.style.display = 'none';
-            return;
+        // Enter key support
+        searchInput.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                performSearch();
+                const suggestions = suggestionsContainer.querySelectorAll('.autocomplete-suggestion');
+                if (suggestions.length === 1) {
+                    suggestions[0].click();
+                }
+            }
+        });
+        
+        // Close suggestions when clicking outside
+        document.addEventListener('click', function(event) {
+            if (!suggestionsContainer.contains(event.target) && 
+                event.target !== searchInput && 
+                event.target !== searchIcon) {
+                suggestionsContainer.style.display = 'none';
+            }
+        });
+    }
+    
+    // Firebase configuration (keeping original Firebase code)
+    // Firebase configuration - use your existing config
+    const firebaseConfig = {
+        apiKey: "AIzaSyBw1uA-kNKOZEufWKZ9AMBxvRGHNGF1lkA",
+        authDomain: "multi-games-a2561.firebaseapp.com",
+        databaseURL: "https://multi-games-a2561-default-rtdb.firebaseio.com",
+        projectId: "multi-games-a2561",
+        storageBucket: "multi-games-a2561.appspot.com",
+        messagingSenderId: "150551898066",
+        appId: "1:150551898066:web:4e8fb185f2321ba4140a0b",
+        measurementId: "G-PB8Y87E6XV"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.database();
+
+    // Popup Notification System
+    class PopupSystem {
+        constructor() {
+            this.container = document.getElementById('popupContainer');
+            this.popupCount = 0;
+            this.maxPopups = 5;
+            this.autoDismissDuration = 12000; // 5 seconds
+            this.popupsRef = db.ref('popIn');
+            
+            // Initialize the popup listener
+            this.initPopupListener();
+        }
+
+        initPopupListener() {
+            // Listen for new popup messages
+            this.popupsRef.on('child_added', (snapshot) => {
+                const popup = snapshot.val();
+                if (popup && popup.message) {
+                    this.showPopup(
+                        popup.title || "Notification", 
+                        popup.message,
+                        popup.type || "primary",
+                        popup.timestamp || Date.now(),
+                        snapshot.key
+                    );
+                }
+            });
+        }
+
+        showPopup(title, message, type, timestamp, id) {
+            const popupId = `popup-${this.popupCount++}`;
+            
+            
+            // Determine the symbol based on type
+            let symbol = '';
+            switch(type) {
+                case 'success':
+                    symbol = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>';
+                    break;
+                case 'warning':
+                    symbol = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>';
+                    break;
+                case 'error':
+                    symbol = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>';
+                    break;
+                case 'info':
+                    symbol = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>';
+                    break;
+                default: // primary
+                    symbol = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>';
+                    break;
+            }
+            
+            // Format timestamp nicely
+            let displayTime;
+            if (typeof timestamp === 'number' || !isNaN(new Date(timestamp).getTime())) {
+                const date = typeof timestamp === 'number' ? new Date(timestamp) : new Date(timestamp);
+                displayTime = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            } else {
+                // Fallback to current time if timestamp is invalid
+                displayTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            }
+            
+            // Create popup element
+            const popup = document.createElement('div');
+            popup.className = `popup popup-${type}`;
+            popup.id = popupId;
+            
+            popup.innerHTML = `
+                <div class="popup-icon"></div>
+                <div class="popup-content">
+                    <div class="popup-symbol">
+                        ${symbol}
+                    </div>
+                    <div class="popup-text">
+                        <h4 class="popup-title">${title}</h4>
+                        <p class="popup-message">${message}</p>
+                        <div class="popup-time">${displayTime}</div>
+                    </div>
+                </div>
+                <button class="popup-close">&times;</button>
+                <div class="popup-progress">
+                    <div class="popup-progress-inner"></div>
+                </div>
+            `;
+            
+            // Add to container
+            this.container.appendChild(popup);
+            
+            // Apply animation after a small delay to ensure DOM update
+            setTimeout(() => {
+                popup.classList.add('visible');
+                
+                // Start progress bar animation
+                const progressInner = popup.querySelector('.popup-progress-inner');
+                progressInner.style.width = '100%';
+                progressInner.style.transition = `width ${this.autoDismissDuration}ms linear`;
+                setTimeout(() => {
+                    progressInner.style.width = '0%';
+                }, 50);
+            }, 10);
+            
+            // Set up close button
+            const closeBtn = popup.querySelector('.popup-close');
+            closeBtn.addEventListener('click', () => {
+                this.closePopup(popupId, id);
+            });
+            
+            // Auto-dismiss after set duration
+            setTimeout(() => {
+                this.closePopup(popupId, id);
+            }, this.autoDismissDuration);
+            
+            // Limit number of visible popups
+            this.limitPopups();
         }
         
-        // Filter games
-        const filteredGames = games.filter(game => 
-            game.name.toLowerCase().includes(query) || 
-            game.category.toLowerCase().includes(query)
-        );
-        
-        // Display results
-        if (filteredGames.length > 0) {
-            suggestionsContainer.style.display = 'block';
+        closePopup(popupId, firebaseId) {
+            const popup = document.getElementById(popupId);
+            if (popup && !popup.classList.contains('hiding')) {
+                popup.classList.remove('visible');
+                popup.classList.add('hiding');
+                setTimeout(() => {
+                    if (popup.parentNode) {
+                        popup.parentNode.removeChild(popup);
+                    }
+                }, 400); // Match animation duration
+            }
             
-            filteredGames.forEach(game => {
-                const suggestionItem = document.createElement('div');
-                suggestionItem.classList.add('autocomplete-suggestion');
-                suggestionItem.innerHTML = `
-                    <img src="${game.icon}" alt="${game.name} icon">
-                    <div class="game-info">
-                        <span class="game-name">${game.name}</span>
-                        <span class="game-category">${game.category}</span>
-                    </div>
-                    <button class="play-btn">Play</button>
-                `;
-                
-                suggestionItem.addEventListener('click', function() {
-                    window.location.href = game.url;
-                });
-                
-                suggestionsContainer.appendChild(suggestionItem);
-            });
-        } else {
-            suggestionsContainer.style.display = 'block';
-            const noResults = document.createElement('div');
-            noResults.classList.add('no-results');
-            noResults.textContent = 'No games found';
-            suggestionsContainer.appendChild(noResults);
+            // Optionally mark as read in Firebase
+            // db.ref(`popIn/${firebaseId}`).update({ read: true });
+        }
+        
+        limitPopups() {
+            const popups = this.container.querySelectorAll('.popup:not(.hiding)');
+            if (popups.length > this.maxPopups) {
+                for (let i = 0; i < popups.length - this.maxPopups; i++) {
+                    const oldestPopup = popups[i];
+                    this.closePopup(oldestPopup.id);
+                }
+            }
         }
     }
 
-    // Event Listeners
-
-    // Trigger search when clicking the search icon
-    searchIcon.addEventListener('click', performSearch);
+    // Initialize popup system when DOM is loaded
+    let popupSystem;
+    popupSystem = new PopupSystem();
     
-    // Real-time filtering on input
-    searchInput.addEventListener('input', performSearch);
-    
-    // Enter key support
-    searchInput.addEventListener('keypress', function(event) {
-        if (event.key === 'Enter') {
-            performSearch();
-            const suggestions = suggestionsContainer.querySelectorAll('.autocomplete-suggestion');
-            if (suggestions.length === 1) {
-                suggestions[0].click();
-            }
-        }
-    });
-    
-    // Close suggestions when clicking outside
-    document.addEventListener('click', function(event) {
-        if (!suggestionsContainer.contains(event.target) && 
-            event.target !== searchInput && 
-            event.target !== searchIcon) {
-            suggestionsContainer.style.display = 'none';
-        }
-    });
-</script>
-<script>
-   // Firebase configuration - use your existing config
-        const firebaseConfig = {
-            apiKey: "AIzaSyBw1uA-kNKOZEufWKZ9AMBxvRGHNGF1lkA",
-            authDomain: "multi-games-a2561.firebaseapp.com",
-            databaseURL: "https://multi-games-a2561-default-rtdb.firebaseio.com",
-            projectId: "multi-games-a2561",
-            storageBucket: "multi-games-a2561.appspot.com",
-            messagingSenderId: "150551898066",
-            appId: "1:150551898066:web:4e8fb185f2321ba4140a0b",
-            measurementId: "G-PB8Y87E6XV"
-        };
-
-        // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const db = firebase.database();
-
-                // Popup Notification System
-        class PopupSystem {
-            constructor() {
-                this.container = document.getElementById('popupContainer');
-                this.popupCount = 0;
-                this.maxPopups = 5;
-                this.autoDismissDuration = 12000; // 5 seconds
-                this.popupsRef = db.ref('popIn');
-                
-                // Initialize the popup listener
-                this.initPopupListener();
-            }
-
-            initPopupListener() {
-                // Listen for new popup messages
-                this.popupsRef.on('child_added', (snapshot) => {
-                    const popup = snapshot.val();
-                    if (popup && popup.message) {
-                        this.showPopup(
-                            popup.title || "Notification", 
-                            popup.message,
-                            popup.type || "primary",
-                            popup.timestamp || Date.now(),
-                            snapshot.key
-                        );
-                    }
-                });
-            }
-
-            showPopup(title, message, type, timestamp, id) {
-                const popupId = `popup-${this.popupCount++}`;
-                
-                // Determine the symbol based on type
-                let symbol = '';
-                switch(type) {
-                    case 'success':
-                        symbol = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>';
-                        break;
-                    case 'warning':
-                        symbol = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>';
-                        break;
-                    case 'error':
-                        symbol = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>';
-                        break;
-                    case 'info':
-                        symbol = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>';
-                        break;
-                    default: // primary
-                        symbol = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>';
-                        break;
-                }
-                
-                // Format timestamp nicely
-                let displayTime;
-                if (typeof timestamp === 'number' || !isNaN(new Date(timestamp).getTime())) {
-                    const date = typeof timestamp === 'number' ? new Date(timestamp) : new Date(timestamp);
-                    displayTime = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                } else {
-                    // Fallback to current time if timestamp is invalid
-                    displayTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                }
-                
-                // Create popup element
-                const popup = document.createElement('div');
-                popup.className = `popup popup-${type}`;
-                popup.id = popupId;
-                
-                popup.innerHTML = `
-                    <div class="popup-icon"></div>
-                    <div class="popup-content">
-                        <div class="popup-symbol">
-                            ${symbol}
-                        </div>
-                        <div class="popup-text">
-                            <h4 class="popup-title">${title}</h4>
-                            <p class="popup-message">${message}</p>
-                            <div class="popup-time">${displayTime}</div>
-                        </div>
-                    </div>
-                    <button class="popup-close">&times;</button>
-                    <div class="popup-progress">
-                        <div class="popup-progress-inner"></div>
-                    </div>
-                `;
-                
-                // Add to container
-                this.container.appendChild(popup);
-                
-                // Apply animation after a small delay to ensure DOM update
-                setTimeout(() => {
-                    popup.classList.add('visible');
-                    
-                    // Start progress bar animation
-                    const progressInner = popup.querySelector('.popup-progress-inner');
-                    progressInner.style.width = '100%';
-                    progressInner.style.transition = `width ${this.autoDismissDuration}ms linear`;
-                    setTimeout(() => {
-                        progressInner.style.width = '0%';
-                    }, 50);
-                }, 10);
-                
-                // Set up close button
-                const closeBtn = popup.querySelector('.popup-close');
-                closeBtn.addEventListener('click', () => {
-                    this.closePopup(popupId, id);
-                });
-                
-                // Auto-dismiss after set duration
-                setTimeout(() => {
-                    this.closePopup(popupId, id);
-                }, this.autoDismissDuration);
-                
-                // Limit number of visible popups
-                this.limitPopups();
-            }
-            
-            closePopup(popupId, firebaseId) {
-                const popup = document.getElementById(popupId);
-                if (popup && !popup.classList.contains('hiding')) {
-                    popup.classList.remove('visible');
-                    popup.classList.add('hiding');
-                    setTimeout(() => {
-                        if (popup.parentNode) {
-                            popup.parentNode.removeChild(popup);
-                        }
-                    }, 400); // Match animation duration
-                }
-                
-                // Optionally mark as read in Firebase
-                // db.ref(`popIn/${firebaseId}`).update({ read: true });
-            }
-            
-            limitPopups() {
-                const popups = this.container.querySelectorAll('.popup:not(.hiding)');
-                if (popups.length > this.maxPopups) {
-                    for (let i = 0; i < popups.length - this.maxPopups; i++) {
-                        const oldestPopup = popups[i];
-                        this.closePopup(oldestPopup.id);
-                    }
-                }
-            }
-        }
-
-        // Initialize popup system when DOM is loaded
-        let popupSystem;
-        document.addEventListener('DOMContentLoaded', () => {
-            popupSystem = new PopupSystem();
-        });
+    // Test function to create sample popups
+    function testPopups() {
+        if (!popupSystem) return;
         
-        // Test function to create sample popups
-        function testPopups() {
-            if (!popupSystem) return;
-            
-            // Test different types of popups
-            const types = ['primary', 'success', 'warning', 'error', 'info'];
-            const titles = ['Information', 'Success', 'Warning', 'Error', 'Important'];
-            const messages = [
-                'This is a primary notification with some information.',
-                'Your changes have been saved successfully!',
-                'Please check your connection status.',
-                'An error occurred while processing your request.',
-                'Don\'t forget about your upcoming appointment.'
-            ];
-            
-            // Show test popups with slight delays
-            types.forEach((type, index) => {
-                setTimeout(() => {
-                    const mockId = `mock-${Date.now()}-${index}`;
-                    popupSystem.showPopup(
-                        titles[index],
-                        messages[index],
-                        type,
-                        Date.now(),
-                        mockId
-                    );
-                }, index * 1000);
-            });
-        }
+        // Test different types of popups
+        const types = ['primary', 'success', 'warning', 'error', 'info'];
+        const titles = ['Information', 'Success', 'Warning', 'Error', 'Important'];
+        const messages = [
+            'This is a primary notification with some information.',
+            'Your changes have been saved successfully!',
+            'Please check your connection status.',
+            'An error occurred while processing your request.',
+            'Don\'t forget about your upcoming appointment.'
+        ];
+        
+        // Show test popups with slight delays
+        types.forEach((type, index) => {
+            setTimeout(() => {
+                const mockId = `mock-${Date.now()}-${index}`;
+                popupSystem.showPopup(
+                    titles[index],
+                    messages[index],
+                    type,
+                    Date.now(),
+                    mockId
+                );
+            }, index * 1000);
+        });
+    }
+});
+
 </script>
 <script>(function(){'use strict';function aa(a){var b=0;return function(){return b<a.length?{done:!1,value:a[b++]}:{done:!0}}}var ba=typeof Object.defineProperties=="function"?Object.defineProperty:function(a,b,c){if(a==Array.prototype||a==Object.prototype)return a;a[b]=c.value;return a};
 function ca(a){a=["object"==typeof globalThis&&globalThis,a,"object"==typeof window&&window,"object"==typeof self&&self,"object"==typeof global&&global];for(var b=0;b<a.length;++b){var c=a[b];if(c&&c.Math==Math)return c}throw Error("Cannot find global object");}var da=ca(this);function l(a,b){if(b)a:{var c=da;a=a.split(".");for(var d=0;d<a.length-1;d++){var e=a[d];if(!(e in c))break a;c=c[e]}a=a[a.length-1];d=c[a];b=b(d);b!=d&&b!=null&&ba(c,a,{configurable:!0,writable:!0,value:b})}}

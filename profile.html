@@ -3,481 +3,331 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gaming Profile Dashboard</title>
-    <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
-      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <title>Gaming Profile</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.min.css" rel="stylesheet">
     <style>
-        /* Root Variables */
+       
 :root {
-    --primary-color: #2ecc71;
-    --secondary-color: #27ae60;
-    --background-color: #ffffff;
-    --card-background: #f8f9fa;
-    --text-color: #2c3e50;
-    --shadow-color: rgba(0, 0, 0, 0.1);
-    --accent-color: #1abc9c;
-    --border-radius: 25px;
+    --primary: #1a9e42;
+    --primary-dark: #0e7c2e;
+    --secondary: #555555;
+    --text: #333333;
+    --bg: #f5f5f5;
+    --card-bg: #ffffff;
+    --accent: #50e980;
 }
 
-/* Base Styles */
-* { 
-    margin: 0; 
-    padding: 0; 
-    box-sizing: border-box; 
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 body {
-    font-family: 'Arial', sans-serif;
-    background: var(--background-color);
-    color: var(--text-color);
+    background-color: var(--bg);
+    color: var(--text);
     min-height: 100vh;
-    overflow-x: hidden;
 }
 
-/* Profile Container */
-.profile-container { 
-    width: 100%; 
-    min-height: 100vh; 
-    padding: 0; 
-    background: var(--background-color);
-    position: relative;
-    overflow: hidden;
+.container {
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 20px;
 }
 
-/* Subtle Grid Background */
-.profile-container::before { 
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-image: 
-        radial-gradient(rgba(46, 204, 113, 0.05) 1px, transparent 1px),
-        radial-gradient(rgba(46, 204, 113, 0.03) 1px, transparent 1px);
-    background-size: 20px 20px, 30px 30px;
-    background-position: 0 0, 10px 10px;
-    z-index: 0;
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
 }
 
-/* Modern Header */
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+    color: var(--primary);
+}
+
+.actions {
+    display: flex;
+    gap: 10px;
+}
+
+.btn {
+    background-color: var(--primary);
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.2s;
+       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.btn:hover {
+    background-color: var(--primary-dark);
+}
+
+.profile-card {
+    background-color: var(--card-bg);
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
 .profile-header {
-    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-    padding: 25px;
-    color: #fff;
     display: flex;
     align-items: center;
-    gap: 20px;
-    position: relative;
-    border-radius: 0 0 var(--border-radius) var(--border-radius);
     margin-bottom: 20px;
-    box-shadow: 0 5px 15px rgba(46, 204, 113, 0.2);
-    z-index: 1;
-    overflow: hidden;
 }
 
-/* Scanning Line Animation */
-.profile-header::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 50%;
-    height: 100%;
-    background: linear-gradient(90deg, 
-        transparent, 
-        rgba(255, 255, 255, 0.1), 
-        transparent);
-    animation: scan 3s infinite;
+.avatar-container {
+    position: relative;
+    margin-right: 15px;
 }
 
-@keyframes scan {
-    0% { left: -100%; }
-    100% { left: 200%; }
-}
-
-/* Avatar Styling */
-.profile-avatar {
-    width: 90px;
-    height: 90px;
+#user-avatar {
+    width: 70px;
+    height: 70px;
     border-radius: 50%;
-    border: 4px solid rgba(255, 255, 255, 0.8);
     object-fit: cover;
-    position: relative;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1), 0 0 0 4px rgba(46, 204, 113, 0.3);
+    border: 3px solid var(--primary);
 }
 
-.profile-avatar:hover {
-    transform: scale(1.05);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15), 0 0 0 4px rgba(46, 204, 113, 0.5);
-}
-
-.profile-info { 
-    flex: 1; 
-}
-
-/* Username Styling */
-.profile-header h2 { 
-    font-size: 1.5rem;
-    font-weight: 700;
-    margin-bottom: 6px;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-    display: inline-block;
-    position: relative;
-}
-
-.profile-header h2::after {
-    content: "";
+.avatar-upload-icon {
     position: absolute;
-    bottom: -4px;
-    left: 0;
-    width: 40px;
-    height: 3px;
-    background: #fff;
-}
-
-/* Player Level */
-.player-level {
-    display: inline-block;
-    font-size: 0.8rem;
-    background: rgba(255, 255, 255, 0.2);
-    padding: 3px 8px;
-    border-radius: 12px;
-    margin-left: 10px;
-    vertical-align: middle;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-}
-
-/* Stats Display */
-.profile-stats {
+    bottom: 0;
+    right: 0;
+    background-color: var(--primary);
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
     display: flex;
-    gap: 15px;
-    margin-top: 10px;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
 }
 
-.stat-item {
+.user-info {
+    flex: 1;
+}
+
+#username {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+#user-email {
+    color: #777777;
+    font-size: 14px;
+}
+
+.wallet-section {
+    background-color: var(--primary);
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 20px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+#wallet-balance {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.wallet-actions {
+    display: flex;
+    justify-content: space-around;
+}
+
+.action-btn {
     display: flex;
     flex-direction: column;
     align-items: center;
+    color: white;
+    text-decoration: none;
+    cursor: pointer;
 }
 
-.stat-value {
-    font-size: 1.2rem;
-    font-weight: bold;
-}
-
-.stat-label {
-    font-size: 0.7rem;
-    text-transform: uppercase;
-    opacity: 0.8;
-}
-
-/* Button Styling */
-.auth-button { 
-    padding: 10px 20px; 
-    background: rgba(255, 255, 255, 0.2); 
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    border-radius: var(--border-radius); 
-    color: #ffffff; 
-    cursor: pointer; 
-    transition: all 0.3s ease;
-    font-weight: bold;
-    letter-spacing: 0.5px;
-    position: relative;
-    overflow: hidden;
-}
-
-.auth-button::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-    transition: 0.5s;
-}
-
-.auth-button:hover { 
-    background: rgba(255, 255, 255, 0.3); 
-    transform: translateY(-2px);
-}
-
-.auth-button:hover::before {
-    left: 100%;
-}
-
-/* Main Content Area */
-.profile-content { 
-    padding: 20px;
-    position: relative;
-    z-index: 1;
-}
-
-/* Game Cards */
-.game-cards {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 15px;
-    margin-top: 20px;
-}
-
-/* Improved Game Cards */
-.game-card {
-    background: var(--card-background);
-    border-radius: var(--border-radius);
-    overflow: hidden;
-    transition: all 0.3s ease;
-    border: 1px solid rgba(46, 204, 113, 0.1);
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
-    position: relative;
-}
-
-.game-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 20px rgba(46, 204, 113, 0.2);
-    border-color: var(--primary-color);
-}
-
-
-/* Add game status indicator */
-.game-card::before {
-    content: "";
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    background-color: var(--primary-color);
-    box-shadow: 0 0 5px rgba(46, 204, 113, 0.5);
-    z-index: 1;
-}
-
-.game-img {
-    width: 100%;
-    height: 120px;
-    object-fit: cover;
-}
-
-.game-info {
-    padding: 12px;
-}
-
-.game-title {
-    font-size: 1rem;
+.action-btn i {
+    font-size: 24px;
     margin-bottom: 5px;
-    color: var(--text-color);
-    font-weight: bold;
 }
 
-.game-stats {
+.quick-actions {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.quick-action {
+    background-color: var(--card-bg);
+    padding: 15px;
+    border-radius: 10px;
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.2s;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.quick-action:hover {
+    transform: translateY(-5px);
+}
+
+.quick-action i {
+    font-size: 24px;
+    color: var(--primary);
+    margin-bottom: 10px;
+}
+
+.referral-section {
+    background-color: var(--card-bg);
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.referral-header {
     display: flex;
     justify-content: space-between;
-    font-size: 0.8rem;
-    color: rgba(44, 62, 80, 0.7);
+    align-items: center;
+    margin-bottom: 15px;
 }
 
-/* Progress Bar */
-.progress-container {
-    margin-top: 8px;
+.referral-info {
+    display: flex;
+    justify-content: space-between;
+    background-color: rgba(0, 0, 0, 0.05);
+    padding: 15px;
+    border-radius: 8px;
 }
 
-.progress-bar-bg {
-    height: 6px;
-    background: rgba(0, 0, 0, 0.05);
-    border-radius: 3px;
-    overflow: hidden;
+.transaction-history {
+    background-color: var(--card-bg);
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-.progress-bar-fill {
-    height: 100%;
-    background: linear-gradient(90deg, var(--secondary-color), var(--primary-color));
-    border-radius: 3px;
-    width: 65%; /* Example width */
+.wallet-history {
+    margin-top: 15px;
 }
 
-.wallet-section { 
-    padding: 15px; 
-    background: var(--card-background);
-    border-radius: var(--border-radius);
-    box-shadow: 0 3px 10px var(--shadow-color); 
-    margin-bottom: 20px; 
-    display: flex; 
-    justify-content: space-between; 
-    align-items: center; 
-    border: 2px solid rgba(46, 204, 113, 0.2);
-    /* Gaming style additions */
-    position: relative;
-    overflow: hidden;
+.transaction-item {
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 }
 
-.wallet-section::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 3px;
-    background: linear-gradient(90deg, transparent, var(--primary-color), transparent);
-    animation: scanner 3s ease-in-out infinite;
+.transaction-details {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
 }
 
-@keyframes scanner {
-    0%, 100% { transform: translateX(-100%); }
-    50% { transform: translateX(100%); }
+.transaction-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: #777777;
 }
 
-.wallet-section:hover {
-    border-color: var(--primary-color);
-    box-shadow: 0 0 15px rgba(46, 204, 113, 0.3);
-    transform: translateY(-2px);
-    transition: all 0.3s ease;
+.credit {
+    color: var(--primary);
 }
 
-.wallet-info { 
-    display: flex; 
-    flex-direction: column; 
-    gap: 5px; 
+.debit {
+    color: #ff3333;
 }
 
-.wallet-balance { 
-    display: flex; 
-    align-items: center; 
-    gap: 10px; 
-    font-weight: bold;
-    color: #1c8c4b;
-    text-shadow: 0 0 8px rgba(46, 204, 113, 0.4);
-    font-size: 1.2rem;
-    position: relative;
+.pending {
+    color: #ff9900;
 }
 
-.wallet-balance .amount {
-    background: linear-gradient(to right, #1c8c4b, #166539);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    margin-left: 4px;
-    position: relative;
-    padding: 0 4px;
+.completed {
+    color: var(--primary);
 }
 
-.wallet-icon { 
-    color: var(--primary-color); 
-    font-size: 1.5rem;
-    /* Gaming style pulse effect */
-    animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.1); }
-    100% { transform: scale(1); }
-}
-
-.wallet-history { 
-    font-size: 0.7rem; 
-    color: #1c8c4b; 
-    cursor: pointer; 
-    transition: opacity 0.3s;
-}
-
-.wallet-history:hover { 
-    opacity: 0.7;
-}
-
-.wallet-actions { 
-    display: flex; 
-    align-items: center; 
-    gap: 10px; 
-}
-
-.withdraw-btn { 
-    padding: 10px 20px; 
-    background: var(--primary-color); 
-    border: none;
-    border-radius: var(--border-radius); 
-    color: #fff; 
-    cursor: pointer; 
-    transition: 0.3s; 
-    font-weight: bold;
-    /* Gaming style button */
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    position: relative;
-    overflow: hidden;
-    z-index: 1;
-}
-
-.withdraw-btn::after {
-    content: '';
-    position: absolute;
+.modal-container {
+    position: fixed;
     bottom: 0;
     left: 0;
     width: 100%;
     height: 0;
-    background: rgba(255, 255, 255, 0.2);
-    transition: all 0.3s;
-    z-index: -1;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    z-index: 999;
+    overflow: hidden;
+    transition: height 0.3s ease-out;
 }
 
-.withdraw-btn:hover { 
-    background: var(--secondary-color); 
-    box-shadow: 0 0 15px rgba(46, 204, 113, 0.5);
-    transform: translateY(-2px) scale(1.05);
-}
-
-.withdraw-btn:hover::after {
+.modal-container.open {
     height: 100%;
 }
 
-/* Optional: Add this glow effect on focus to improve accessibility */
-.withdraw-btn:focus {
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(46, 204, 113, 0.5);
+.modal-content {
+    background-color: var(--bg);
+    width: 100%;
+    max-width: 480px;
+    border-radius: 15px 15px 0 0;
+    padding: 20px;
+    transform: translateY(100%);
+    transition: transform 0.3s ease-out;
 }
 
-/* Quick Actions */
-.quick-actions { 
-    display: grid; 
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); 
-    gap: 15px; 
+.modal-container.open .modal-content {
+    transform: translateY(0);
 }
 
-.quick-action { 
-    background: var(--card-background); 
-    padding: 15px; 
-    border-radius: var(--border-radius); 
-    text-align: center; 
-    transition: 0.3s; 
-    box-shadow: 0 3px 10px var(--shadow-color); 
-    display: flex; 
-    flex-direction: column; 
-    align-items: center; 
-    gap: 10px; 
-    border: 1px solid rgba(46, 204, 113, 0.1);
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
 }
 
-.quick-action:hover { 
-    transform: translateY(-5px); 
-    border-color: var(--primary-color);
-    box-shadow: 0 5px 15px rgba(46, 204, 113, 0.15);
+.back-btn {
+    background: none;
+    border: none;
+    color: var(--text);
+    font-size: 24px;
+    cursor: pointer;
+    transform: rotate(90deg);
 }
 
-.quick-action i { 
-    font-size: 2rem; 
-    color: var(--primary-color); 
+.form-group {
+    margin-bottom: 15px;
 }
 
-/* Loading Overlay */
-#loading-overlay {
+label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+input {
+    width: 100%;
+    padding: 12px;
+    background-color: var(--bg);
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+    color: var(--text);
+}
+
+.loading-overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(255, 255, 255, 0.8);
+    background-color: rgba(255, 255, 255, 0.8);
     display: none;
     justify-content: center;
     align-items: center;
@@ -485,2061 +335,774 @@ body {
 }
 
 .spinner {
-    width: 50px;
-    height: 50px;
-    border: 5px solid rgba(46, 204, 113, 0.1);
-    border-top: 5px solid var(--primary-color);
+    width: 40px;
+    height: 40px;
+    border: 4px solid rgba(0, 0, 0, 0.1);
     border-radius: 50%;
-    animation: spin 1s linear infinite;
+    border-top-color: var(--primary);
+    animation: spin 1s ease-in-out infinite;
 }
 
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    to { transform: rotate(360deg); }
 }
 
-/* Login Modal */
-#login-modal {
-    display: none;
+.notification {
     position: fixed;
-    z-index: 1500;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0, 0, 0, 0.4);
-    justify-content: center;
-    align-items: center;
-}
-
-.login-modal-content {
-    background-color: var(--background-color);
-    padding: 40px;
-    border-radius: var(--border-radius);
-    width: 100%;
-    max-width: 320px;
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    border: 1px solid rgba(46, 204, 113, 0.1);
-}
-
-.login-modal-content h2 {
-    margin-bottom: 20px;
-    color: var(--primary-color);
-}
-
-.login-form {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
-.login-input {
-    padding: 12px 15px;
-    border: 1px solid #ddd;
-    border-radius: var(--border-radius);
-    width: 100%;
-    transition: border-color 0.3s;
-}
-
-.login-input:focus {
-    border-color: var(--primary-color);
-    outline: none;
-}
-
-.login-button {
-    background-color: var(--primary-color);
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: red;
     color: white;
-    border: none;
-    padding: 12px;
-    border-radius: var(--border-radius);
-    cursor: pointer;
-    transition: all 0.3s;
+    padding: 15px 15px;
+    border-radius: 30px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    z-index: 1001;
+    display: none;
+}
+
+.notification-title {
     font-weight: bold;
-}
-
-.login-button:hover {
-    background-color: var(--secondary-color);
-    transform: translateY(-2px);
-}
-
-.login-alternatives {
-    margin-top: 20px;
-    display: flex;
-    justify-content: space-between;
+    margin-bottom: 5px;
 }
 
 .social-login {
     display: flex;
     justify-content: center;
     gap: 15px;
-    margin-top: 15px;
-}
-
-.social-login-btn {
-    background: none;
-    border: 1px solid #ddd;
-    padding: 10px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.3s;
-}
-
-.social-login-btn:hover {
-    background-color: #f0f0f0;
-    border-color: var(--primary-color);
-    transform: translateY(-2px);
-}
-
-.social-login-btn i {
-    font-size: 1.5rem;
-    color: var(--text-color);
-}
-
-.error-message {
-    color: #e74c3c;
-    margin-bottom: 15px;
-    display: none;
-    padding: 10px;
-    border-radius: var(--border-radius);
-    background-color: rgba(231, 76, 60, 0.1);
-}
-
-/* Avatar Upload */
-.avatar-container {
-    position: relative;
-    width: 80px;
-    height: 80px;
-}
-
-.avatar-upload-icon {
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    background-color: var(--primary-color);
-    color: white;
-    border-radius: 50%;
-    width: 25px;
-    height: 25px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.3s;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-}
-
-.avatar-upload-icon:hover {
-    background-color: var(--secondary-color);
-    transform: scale(1.1);
-}
-
-#avatar-file-input {
-    display: none;
-}
-
-/* Generic Modal */
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 1500;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0, 0, 0, 0.4);
-    justify-content: center;
-    align-items: center;
-}
-
-.modal-content {
-    background-color: var(--background-color);
-    padding: 30px;
-    border-radius: var(--border-radius);
-    width: 100%;
-    max-width: 320px;
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    position: relative;
-    border: 1px solid rgba(46, 204, 113, 0.1);
-}
-
-.modal-content h2 {
-    margin-bottom: 20px;
-    color: var(--primary-color);
-}
-
-.modal-form {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
-.modal-input {
-    padding: 12px 15px;
-    border: 1px solid #ddd;
-    border-radius: var(--border-radius);
-    width: 100%;
-    transition: border-color 0.3s;
-}
-
-.modal-input:focus {
-    border-color: var(--primary-color);
-    outline: none;
-}
-
-.modal-button {
-    background-color: var(--primary-color);
-    color: white;
-    border: none;
-    padding: 12px;
-    border-radius: var(--border-radius);
-    cursor: pointer;
-    transition: all 0.3s;
-    font-weight: bold;
-}
-
-.modal-button:hover {
-    background-color: var(--secondary-color);
-    transform: translateY(-2px);
-}
-
-.modal-close {
-    color: #aaa;
-    font-size: 24px;
-    font-weight: bold;
-    cursor: pointer;
-    position: absolute;
-    top: 15px;
-    right: 20px;
-    transition: color 0.3s;
-}
-
-.modal-close:hover {
-    color: var(--primary-color);
-}
-
-/* Settings Modal */
-.settings-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 15px;
     margin-top: 20px;
 }
 
-.settings-option {
-    background: #f5f5f5;
-    padding: 15px;
-    border-radius: var(--border-radius);
+.social-btn {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    cursor: pointer;
-    transition: all 0.3s;
-    border: 1px solid transparent;
-}
-
-.settings-option:hover {
-    background-color: #e8e8e8;
-    border-color: rgba(46, 204, 113, 0.3);
-    transform: translateY(-2px);
-}
-
-.settings-option i {
-    color: var(--primary-color);
-    font-size: 1.5rem;
-}
-
-/* Toggle Switch */
-.toggle-switch {
-    position: relative;
-    display: inline-block;
-    width: 50px;
-    height: 24px;
-}
-
-.toggle-switch input {
-    opacity: 0;
-    width: 0;
-    height: 0;
-}
-
-.toggle-slider {
-    position: absolute;
-    cursor: pointer;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: #ccc;
-    transition: .4s;
-    border-radius: 34px;
-}
-
-.toggle-slider:before {
-    position: absolute;
-    content: "";
-    height: 16px;
-    width: 16px;
-    left: 4px;
-    bottom: 4px;
-    background-color: white;
-    transition: .4s;
-    border-radius: 50%;
-}
-
-input:checked + .toggle-slider {
-    background-color: var(--primary-color);
-}
-
-input:checked + .toggle-slider:before {
-    transform: translateX(26px);
-}
-
-/* Withdrawal Modal */
-.withdrawal-modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
     justify-content: center;
-    align-items: center;
-    z-index: 1000;
-}
-
-.withdrawal-modal-content {
-    background-color: var(--background-color);
-    border-radius: var(--border-radius);
-    width: 90%;
-    max-width: 400px;
-    padding: 25px;
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
-    position: relative;
-    animation: slideUp 0.3s ease-out;
-    border: 1px solid rgba(46, 204, 113, 0.1);
-}
-
-@keyframes slideUp {
-    from {
-        transform: translateY(50px);
-        opacity: 0;
-    }
-    to {
-        transform: translateY(0);
-        opacity: 1;
-    }
-}
-
-.withdrawal-modal .close-btn {
-    position: absolute;
-    top: 15px;
-    right: 20px;
-    font-size: 24px;
-    color: #888;
-    cursor: pointer;
-    transition: color 0.3s ease;
-}
-
-.withdrawal-modal .close-btn:hover {
-    color: var(--primary-color);
-}
-
-.withdrawal-modal h2 {
-    text-align: center;
-    color: var(--text-color);
-    margin-bottom: 20px;
-}
-
-.network-selection {
-    margin-bottom: 25px;
-}
-
-.network-icons {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 15px;
-}
-
-.network-icon {
-    width: 70px;
-    text-align: center;
-    cursor: pointer;
-    opacity: 0.6;
-    transition: all 0.3s ease;
-    padding: 5px;
-    border-radius: var(--border-radius);
-}
-
-.network-icon.active {
-    opacity: 1;
-    transform: scale(1.1);
-    background-color: rgba(46, 204, 113, 0.1);
-}
-
-.network-icon img {
     width: 50px;
     height: 50px;
     border-radius: 50%;
-    transition: transform 0.3s;
-}
-
-.network-icon:hover img {
-    transform: scale(1.1);
-}
-
-.network-icon .network-name {
-    margin-top: 8px;
-    font-size: 12px;
-    color: var(--text-color);
-}
-
-.withdrawal-form {
-    display: flex;
-    flex-direction: column;
-}
-
-#withdrawal-phone {
-    width: 100%;
-    padding: 12px 15px;
-    margin-bottom: 20px;
-    border: 1px solid #ddd;
-    border-radius: var(--border-radius);
-    transition: border-color 0.3s;
-}
-
-#withdrawal-phone:focus {
-    border-color: var(--primary-color);
-    outline: none;
-}
-
-.amount-options {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 10px;
-    margin-bottom: 20px;
-}
-
-.amount-option {
-    background-color: #f5f5f5;
-    padding: 10px;
-    text-align: center;
-    border-radius: var(--border-radius);
+    background-color: var(--bg);
+    color: var(--text);
+    font-size: 20px;
     cursor: pointer;
-    transition: all 0.3s ease;
-    border: 1px solid transparent;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-.amount-option:hover {
-    background-color: #e8e8e8;
-    border-color: rgba(46, 204, 113, 0.3);
+.google {
+    color: #ea4335;
 }
 
-.amount-option.active {
-    background-color: var(--primary-color);
-    color: white;
-    border-color: var(--primary-color);
+.facebook {
+    color: #1877f2;
 }
 
-#confirm-withdrawal-btn {
-    background-color: var(--primary-color);
-    color: white;
-    border: none;
-    padding: 12px;
-    border-radius: var(--border-radius);
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-weight: bold;
-}
-
-#confirm-withdrawal-btn:hover {
-    background-color: var(--secondary-color);
-    transform: translateY(-2px);
-}
-
-.withdrawal-error {
-    color: #e74c3c;
-    background-color: rgba(231, 76, 60, 0.1);
-    border: 1px solid #e74c3c;
-    border-radius: var(--border-radius);
-    padding: 12px;
-    margin-top: 15px;
-    text-align: center;
-    animation: shake 0.5s;
-}
-
-@keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
-    20%, 40%, 60%, 80% { transform: translateX(5px); }
-}
-
-/* Unique Achievements Modal */
-#achievementModal {
-    display: none; /* Initially hidden */
-    position: fixed;
-    z-index: 1000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.8); /* Darker overlay for more drama */
-    display: flex;
-    justify-content: center;
-    align-items: center; /* Ensures full center alignment */
-    animation: fadeIn 0.3s ease-in-out; /* Fade-in animation */
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-
-/* Modal Box */
-#achievementModal .modal-content {
-    background: linear-gradient(to bottom, white, #f0f0f0); /* Subtle gradient */
-    padding: 30px;
-    border-radius: 12px;
-    width: 85%;
-    max-width: 500px;
-    text-align: center;
-    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.5), 0 0 0 2px rgba(255,255,255,0.1); /* Enhanced shadow */
-    position: relative;
-    border: 2px solid #e0e0e0;
-    animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Pop-in animation */
-    transform-origin: center;
-}
-
-@keyframes popIn {
-    from { transform: scale(0.8); opacity: 0; }
-    to { transform: scale(1); opacity: 1; }
-}
-
-/* Title Styling */
-#achievementModal h2 {
-    font-size: 24px;
-    margin-bottom: 20px;
-    font-weight: bold;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    color: #222; /* Slightly off-black */
-    text-shadow: 1px 1px 0 rgba(255,255,255,0.7); /* Subtle text shadow */
-    position: relative;
-    padding-bottom: 10px;
-}
-
-#achievementModal h2:after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 80px;
-    height: 3px;
-    background-color: #444;
-    border-radius: 3px;
-}
-
-/* Close Button */
-#achievementModal .close {
-    position: absolute;
-    top: 12px;
-    right: 16px;
-    font-size: 24px;
-    color: #444;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    width: 30px;
-    height: 30px;
-    line-height: 30px;
-    text-align: center;
-    border-radius: 50%;
-    background-color: rgba(240,240,240,0.7);
-}
-
-#achievementModal .close:hover {
-    color: red; /* Red hover effect */
-    transform: rotate(90deg);
-    background-color: rgba(240,240,240,1);
-}
-
-/* Centered iFrame */
-#achievementModal iframe {
-    width: 100%;
-    height: 400px;
-    border: none;
-    border-radius: 8px;
-    background: white;
-    box-shadow: inset 0 0 10px rgba(0,0,0,0.1);
-    margin-top: 15px;
-    transition: all 0.3s ease;
-}
-
-#achievementModal iframe:hover {
-    box-shadow: inset 0 0 15px rgba(0,0,0,0.15);
-}
-
-/* Add this to create a subtle pulsing effect when modal is shown */
-@keyframes pulse {
-    0% { box-shadow: 0 5px 25px rgba(0, 0, 0, 0.5), 0 0 0 2px rgba(255,255,255,0.1); }
-    50% { box-shadow: 0 5px 30px rgba(0, 0, 0, 0.6), 0 0 0 3px rgba(255,255,255,0.2); }
-    100% { box-shadow: 0 5px 25px rgba(0, 0, 0, 0.5), 0 0 0 2px rgba(255,255,255,0.1); }
-}
-
-#achievementModal .modal-content:hover {
-    animation: pulse 2s infinite;
-}
-
-.referral-container {
-    margin: 15px 0;
-    position: relative;
-}
-
-.referral-label {
-    font-size: 14px;
-    color: #ffffff;
-    margin-bottom: 8px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.referral-code-box {
-    display: flex;
-    align-items: center;
-    background-color: rgba(255, 255, 255, 0.1);
-    border: 2px solid rgba(255, 255, 255, 0.4);
-    border-radius: var(--border-radius);
-    padding: 10px 15px;
-    max-width: fit-content;
-    position: relative;
-    overflow: hidden;
-}
-
-.referral-code-box::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    background: linear-gradient(45deg, 
-                rgba(255, 255, 255, 0.1) 0%, 
-                rgba(255, 255, 255, 0) 40%, 
-                rgba(255, 255, 255, 0.1) 50%, 
-                rgba(255, 255, 255, 0) 60%, 
-                rgba(255, 255, 255, 0.1) 100%);
-    background-size: 200% 200%;
-    animation: shine 3s linear infinite;
-    pointer-events: none;
-}
-
-@keyframes shine {
-    to {
-        background-position: 200% 0;
-    }
-}
-
-#referral-code {
-    font-family: monospace;
-    font-weight: bold;
-    color: #ffffff;
-    letter-spacing: 1.5px;
-    font-size: 16px;
-    text-shadow: 0 0 5px rgba(255, 255, 255, 0.2);
-}
-
-.copy-btn {
-    background: none;
-    border: none;
-    color: #ffffff;
-    cursor: pointer;
-    font-size: 18px;
-    padding: 0 0 0 12px;
-    transition: all 0.2s ease;
-}
-
-.copy-btn:hover {
-    transform: scale(1.2);
-    color: #e6e6e6;
-}
-
-.copy-btn:active {
-    transform: scale(0.95);
-}
-
-.copy-btn.copied {
-    color: #ffffff;
-    animation: pulse 1s ease-in-out;
-}
-
-@keyframes pulse {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.3); }
-}
-
-.copy-message {
+/* Hide file input */
+#avatar-file-input {
     display: none;
-    color: #ffffff;
-    font-size: 12px;
-    margin-left: 10px;
-    font-weight: 600;
-    animation: fade 1.5s;
 }
-
-@keyframes fade {
-    0% { opacity: 0; }
-    25% { opacity: 1; }
-    75% { opacity: 1; }
-    100% { opacity: 0; }
-}
-
-.referral-start {
-    margin-top: 12px;
-    margin-bottom: 5px;
-    padding: 10px 18px;
-    background-color: rgba(28, 140, 75, 0.15);
-    border: 2px solid rgba(28, 140, 75, 0.3);
-    border-radius: var(--border-radius);
-    display: inline-block;
-    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(28, 140, 75, 0.2);
-    transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
-}
-
-.referral-start::after {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: radial-gradient(circle, rgba(28, 140, 75, 0.2) 0%, rgba(28, 140, 75, 0) 70%);
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-
-.referral-start:hover {
-    background-color: rgba(28, 140, 75, 0.2);
-    box-shadow: 0 5px 12px rgba(0, 0, 0, 0.15), 0 2px 4px rgba(28, 140, 75, 0.25);
-    transform: translateY(-2px);
-    border-color: rgba(28, 140, 75, 0.5);
-}
-
-.referral-start:hover::after {
-    opacity: 1;
-    animation: ripple 1.5s ease-out infinite;
-}
-
-@keyframes ripple {
-    from {
-        transform: scale(0.8);
-        opacity: 0.5;
-    }
-    to {
-        transform: scale(1.2);
-        opacity: 0;
-    }
-}
-
-.referral-start p {
-    margin: 0;
-    font-size: 14px;
-    color: #166539;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    position: relative;
-    z-index: 1;
-}
-
-.referral-start span {
-    font-weight: bold;
-    color: #1c8c4b;
-    padding: 0 3px;
-    position: relative;
-}
-
-.referral-start span::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 2px;
-    background-color: rgba(28, 140, 75, 0.3);
-}
-
-.mail-box {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin: 13px auto; /* Top/bottom margins and centered horizontally */
-    padding: 12px 18px;
-    max-width: 400px; /* Reduced max-width */
-    margin-left: 0px; /* Left margin */
-    margin-right: 0px; /* Right margin */
-    text-align: left;
-    background-color: rgba(40, 167, 69, 0.2); /* Subtle green overlay from referral */
-    border: 2px solid rgba(40, 167, 69, 0.3); /* Light green border from referral */
-    border-radius: 15px;
-    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(40, 167, 69, 0.2);
-    transition: all 0.3s ease;
-}
-
-.mail-box:hover {
-    background-color: rgba(40, 167, 69, 0.25);
-    box-shadow: 0 5px 12px rgba(0, 0, 0, 0.15), 0 2px 4px rgba(40, 167, 69, 0.25);
-    transform: translateY(-1px);
-}
-
-.mail-description {
-    margin: 0;
-    font-size: 13px;
-    color: #1e7e34; /* Darker green text for better contrast */
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    line-height: 1.5;
-}
-
-.mail-description span {
-    font-weight: bold;
-    color: #155724; /* Even darker green for emphasis */
-    padding: 0 3px;
-}
-
-.mail-join-button {
-    display: inline-block;
-    padding: 6px 14px;
-    background-color: #28a745; /* Green button */
-    color: #fff;
-    border-radius: 20px;
-    text-decoration: none;
-    font-size: 0.85rem;
-    font-weight: 800;
-    transition: all 0.3s ease;
-    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
-    border: none;
-    cursor: pointer;
-}
-
-.mail-join-button:hover {
-    background-color: #218838; /* Slightly darker green on hover */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-    transform: translateY(-2px);
-}
-
-.mail-join-button:active {
-    transform: translateY(0);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-</style>
-
-<style>
-/* Modal Container */
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 1000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
-    justify-content: center;
-    align-items: center;
-}
-
-/* Modal Content Box */
-.modal-content {
-    width: 93%; /* Adjust width as needed */
-    max-width: 1000px; /* Set a maximum width */
-    height: 68vh; /* Adjust height to fit screen */
-    background: white;
-    border-radius: 30px;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-}
-
-/* Full-size iframe inside the modal */
-#withdrawIframe {
-    width: 100%;
-    height: 100%;
-    border: none;
-}
-
-/* Close Button */
-.close {
-    position: absolute;
-    top: 10px;
-    right: 15px;
-    font-size: 25px;
-    cursor: pointer;
-    color: black;
-    background: rgba(255, 255, 255, 0.8);
-    padding: 5px 10px;
-    border-radius: 50%;
-}
-
-/* Alert Styles */
-.alert {
-    position: fixed;
-    top: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 9999;
-    padding: 16px 24px;
-    border-radius: 12px;
-    box-shadow: 0 6px 15px rgba(0,0,0,0.2);
-    font-size: 15px;
-    font-weight: bold;
-    color: white;
-    animation: fadeSlide 0.3s ease;
-    max-width: 90%;
-    text-align: center;
-    line-height: 1.4;
-}
-
-.alert-success { background-color: #28a745; }
-.alert-error { background-color: #e74c3c; }
-.alert-info { background-color: #3498db; }
-
-@keyframes fadeSlide {
-    from { opacity: 0; transform: translateX(-50%) translateY(-20px); }
-    to { opacity: 1; transform: translateX(-50%) translateY(0); }
-        }
-
-    
-/* Alert Styles */
-.alert {
-    padding: 12px 20px;
-    border-radius: 6px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    font-family: sans-serif;
-    font-size: 16px;
-    max-width: 90%;
-    min-width: 300px;
-    text-align: center;
-    z-index: 9999;
-    transition: opacity 0.3s ease;
-}
-
-.alert-info {
-    background-color: #e3f2fd;
-    color: #0d47a1;
-    border-left: 4px solid #2196f3;
-}
-
-.alert-success {
-    background-color: #e8f5e9;
-    color: #1b5e20;
-    border-left: 4px solid #4caf50;
-}
-
-.alert-warning {
-    background-color: #fff3e0;
-    color: #e65100;
-    border-left: 4px solid #ff9800;
-}
-
-.alert-error {
-    background-color: #ffebee;
-    color: #b71c1c;
-    border-left: 4px solid #f44336;
-</style>
-    <script>
-// Show styled alert
-function showAlert(message, type = 'info') {
-    const alertEl = document.createElement('div');
-    alertEl.className = `alert alert-${type}`;
-    alertEl.textContent = message;
-    
-    // Position the alert at the top of the page
-    alertEl.style.position = 'fixed';
-    alertEl.style.top = '20px';
-    alertEl.style.left = '50%';
-    alertEl.style.transform = 'translateX(-50%)';
-    
-    document.body.appendChild(alertEl);
-    
-    // Fade in animation
-    alertEl.style.opacity = '0';
-    setTimeout(() => {
-        alertEl.style.opacity = '1';
-    }, 10);
-    
-    // Remove after specified duration
-    setTimeout(() => {
-        alertEl.style.opacity = '0';
-        setTimeout(() => alertEl.remove(), 300);
-    }, type === 'error' ? 4000 : 2000);
-}
-
-// Check user's status in Realtime DB
-async function checkUserStatus(uid) {
-    try {
-        const userRef = ref(database, `users/${uid}/status`);
-        const snapshot = await get(userRef);
-        const status = snapshot.val();
-
-        if (!status) {
-            // If status is not set, assume active
-            showAlert('Your account is active', 'success');
-            return;
-        }
-
-        const statusValue = status.toLowerCase();
-
-        switch(statusValue) {
-            case 'active':
-                showAlert('Your account is active', 'success');
-                break;
-            case 'suspended':
-                showAlert('Your account has been suspended', 'error');
-                setTimeout(() => {
-                    signOut(auth).then(() => location.reload());
-                }, 4000);
-                break;
-            case 'blocked':
-                showAlert('Your account has been blocked', 'error');
-                setTimeout(() => {
-                    signOut(auth).then(() => location.reload());
-                }, 1000);
-                break;
-            default:
-                showAlert(`Account status: ${status}`, 'info');
-        }
-    } catch (error) {
-        console.error("Error checking status:", error);
-        showAlert('Error checking account status', 'warning');
-    }
-}
-
-// Auth check with status enforcement
-onAuthStateChanged(auth, (user) => {
-    if (user) {
-        updateProfileInfo(user);
-        // Add slight delay to ensure UI is updated before showing status
-        setTimeout(() => {
-            checkUserStatus(user.uid);
-        }, 500);
-    } else {
-        showLoginModal();
-    }
-});
-         </script>
+    </style>
 </head>
 <body>
-    <!-- Existing content from previous document -->
-      <div id="loading-overlay">
+    <div class="container">
+<header>
+<button id="auth-action-btn" class="btn">Login</button>
+<button id="update-app" class="btn">Sign up</button>
+        </header>
+
+        <div class="profile-card">
+            <div class="profile-header">
+                <div class="avatar-container">
+                    <img id="user-avatar" src="https://i.postimg.cc/gJZr2MPG/images-20.jpg" alt="User Avatar">
+                    <div class="avatar-upload-icon">
+                        <i class="ri-camera-line"></i>
+                    </div>
+                </div>
+                <div class="user-info">
+                    <div id="username">Guest Player</div>
+                    <div id="user-email">Sign in to continue</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="wallet-section">
+            <div id="wallet-balance">Wallet: ₦0</div>
+            <div class="wallet-actions">
+                <div class="action-btn" id="withdraw-btn">
+                    <i class="ri-wallet-3-line"></i>
+                    <span>Withdraw</span>
+                </div>
+                <div class="action-btn" id="play-games-btn">
+                    <i class="ri-gamepad-line"></i>
+                    <span>Play Games</span>
+                </div>
+                <div class="action-btn" id="leaderboard-btn">
+                    <i class="ri-bar-chart-line"></i>
+                    <span>Rankings</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="quick-actions">
+            <div class="quick-action" id="achievements-btn">
+                <i class="ri-medal-line"></i>
+                <span>Achievements</span>
+            </div>
+            <div class="quick-action" id="referral-btn">
+                <i class="ri-user-add-line"></i>
+                <span>Invite Friends</span>
+            </div>
+            <div class="quick-action" id="settings-btn">
+                <i class="ri-settings-3-line"></i>
+                <span>Settings</span>
+            </div>
+        </div>
+        
+        <div class="referral-section">
+            <div class="referral-header">
+                <h3>Referrals</h3>
+                <span id="referral-count">0</span>
+            </div>
+            <div class="referral-info">
+                <div>
+                    <strong>Your Code</strong>
+                    <div id="referral-code">Sign in to get code</div>
+                </div>
+                <div>
+                    <strong>Earnings</strong>
+                    <div>₦0</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="transaction-history">
+            <h3>Recent Activity</h3>
+            <div class="wallet-history">
+                <div class="no-transactions">No transactions yet</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal Containers -->
+    <div id="login-modal" class="modal-container">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Login</h2>
+                <button class="back-btn"><i class="ri-arrow-right-s-line"></i></button>
+            </div>
+            <iframe id="login-iframe" frameborder="0" width="100%" height="350px" style="display: none;"></iframe>
+        </div>
+    </div>
+    
+    <div id="register-modal" class="modal-container">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Create Account</h2>
+                <button class="back-btn"><i class="ri-arrow-right-s-line"></i></button>
+            </div>
+            <iframe id="register-iframe" frameborder="0" width="100%" height="400px" style="display: none;"></iframe>
+        </div>
+    </div>
+    
+    <div id="withdraw-modal" class="modal-container">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Withdraw Funds</h2>
+                <button class="back-btn"><i class="ri-arrow-right-s-line"></i></button>
+            </div>
+            <iframe id="withdraw-iframe" frameborder="0" width="100%" height="350px" style="display: none;"></iframe>
+        </div>
+    </div>
+    
+    <div id="settings-modal" class="modal-container">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Settings</h2>
+                <button class="back-btn"><i class="ri-arrow-right-s-line"></i></button>
+            </div>
+            <div class="settings-content">
+                <div class="form-group">
+                    <label for="notifications-toggle">Notifications</label>
+                    <div class="toggle-container">
+                        <input type="checkbox" id="notifications-toggle" class="toggle">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="dark-mode-toggle">Dark Mode</label>
+                    <div class="toggle-container">
+                        <input type="checkbox" id="dark-mode-toggle" class="toggle" checked>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="sound-toggle">Game Sounds</label>
+                    <div class="toggle-container">
+                        <input type="checkbox" id="sound-toggle" class="toggle" checked>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="referral-modal" class="modal-container">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Invite Friends</h2>
+                <button class="back-btn"><i class="ri-arrow-right-s-line"></i></button>
+            </div>
+            <div class="referral-content">
+                <p>Share your referral code with friends. You'll earn ₦50 for each friend who signs up!</p>
+                <div class="form-group">
+                    <label>Your Referral Code</label>
+                    <input type="text" id="share-referral-code" readonly>
+                </div>
+                <div class="referral-input-section" style="display: none;">
+                    <p>Have a referral code? Enter it below:</p>
+                    <div class="form-group">
+                        <input type="text" id="input-referral-code" placeholder="Enter referral code">
+                    </div>
+                    <button class="btn" id="submit-referral">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay">
         <div class="spinner"></div>
     </div>
-    <div id="login-modal">
-        <div class="login-modal-content">
-            <h2>Login to Multi Games</h2>
-            <div id="login-error" class="error-message">Invalid credentials. Please try again.</div>
-            <form id="login-form" class="login-form">
-                <input type="email" id="login-email" class="login-input" placeholder="Email" required>
-                <input type="password" id="login-password" class="login-input" placeholder="Password" required>
-                <button type="submit" class="login-button">Login</button>
-            </form>
-            <div class="login-alternatives">
-                <a href="#" id="forgot-password">Forgot Password?</a>
-                <a href="register.html">Create Account</a>
-            </div>
-            <div class="social-login">
-                <button class="social-login-btn" id="google-login"><i class="ri-google-fill"></i></button>
-                <button class="social-login-btn" id="facebook-login"><i class="ri-facebook-fill"></i></button>
-                <button class="social-login-btn" id="apple-login"><i class="ri-apple-fill"></i></button>
-            </div>
-        </div>
+    
+    <!-- Notification -->
+    <div id="notification" class="notification">
+        <div id="notification-title" class="notification-title"></div>
+        <div id="notification-message"></div>
     </div>
-
-        
-    <div class="profile-container">
-    <div class="profile-header">
-        <img src="https://multi-games-fawn.vercel.app/logo.png" alt="Profile" class="profile-avatar" id="user-avatar">
-        <div class="profile-info">
-            <h2 id="username">Loading...</h2>
-            <p id="user-email">Fetching user details...</p>
-            <div class="referral-container">
-                <p class="referral-label">Your Referral Code:</p>
-                <div class="referral-code-box">
-                    <span id="referral-code">Loading...</span>
-                    <button id="copy-referral" class="copy-btn" title="Copy to clipboard">
-                        <i class="fas fa-copy"></i>
-                    </button>
-                </div>
-                <span id="copy-message" class="copy-message">Copied!</span>
-            </div>
-            <button class="auth-button" id="auth-action-btn">Sign up/ log in</button>
-        </div>
-        </div>
-        <div class="profile-content">
-            <div class="wallet-section">
-                <div class="wallet-info">
-                    <div class="wallet-balance">
-                        <i class="ri-wallet-line wallet-icon"></i>
-                        <span id="wallet-balance">Wallet: ₦0</span>
-                    </div>
-                    <div class="wallet-history">View Transaction History</div>
-                </div>
-                <div class="wallet-actions">
-                    <button class="withdraw-btn">Withdraw</button>
-                </div>
-            </div>
-
-   <div class="referral-start">
-  <p>You have referred <span id="referral-count">0</span> person, Share your code to earn rewards </p>
-            </div>  
-
-<div class="mail-box">
-  <p class="mail-description">contact us <span>mailing list</span> any issues</p>
-  <a href="mailto:multigames0000@gmail.com?subject=I have%20some%20issues" class="mail-join-button">Email Us</a>
-</div>
-  
-                <div class="quick-actions">
-          
-               <div class="quick-action" id="achievementBtn"><i class="ri-trophy-line"></i>Leaderboard</div>
-        
-               <div class="quick-action" id="update-app"><i class="ri-download-line"></i>Update App</div>
-            </div>
-        </div>
-     
-    <!-- Avatar Upload Input (Hidden) -->
+    
+    <!-- Hidden Input for Avatar Upload -->
     <input type="file" id="avatar-file-input" accept="image/*">
-
-    <!-- Registration Modal -->
-    <div id="register-modal" class="modal">
-        <div class="modal-content">
-            <span class="modal-close" id="register-close">&times;</span>
-            <h2>Create Account</h2>
-            <form id="register-form" class="modal-form">
-                <input type="text" id="register-username" class="modal-input" placeholder="Username" required>
-                <input type="email" id="register-email" class="modal-input" placeholder="Email" required>
-                <input type="password" id="register-password" class="modal-input" placeholder="Password" required>
-                <input type="password" id="register-confirm-password" class="modal-input" placeholder="Confirm Password" required>
-                <button type="submit" class="modal-button">Create Account</button>
-            </form>
-        </div>
-    </div>
-
-<div id="withdrawModal" class="modal">
-    <div class="modal-content">
-        <span class="close" onclick="closeModal()">&times;</span>
-        <iframe id="withdrawIframe" src="withdrawal.html" width="100%" height="500px"></iframe>
-    </div>
-</div>
-
-
-    <!-- Forgot Password Modal -->
-    <div id="forgot-password-modal" class="modal">
-        <div class="modal-content">
-            <span class="modal-close" id="forgot-password-close">&times;</span>
-            <h2>Reset Password</h2>
-            <form id="forgot-password-form" class="modal-form">
-                <input type="email" id="forgot-password-email" class="modal-input" placeholder="Enter your email" required>
-                <button type="submit" class="modal-button">Send Reset Link</button>
-            </form>
-        </div>
-    </div>
-
-    <!-- Settings Modal -->
-    <div id="settings-modal" class="modal">
-        <div class="modal-content">
-            <span class="modal-close" id="settings-close">&times;</span>
-            <h2>Settings</h2>
-            <div class="settings-grid">
-                <div class="settings-option">
-                    <div>
-                        <i class="ri-notification-line"></i>
-                        Notifications
-                    </div>
-                    <label class="toggle-switch">
-                        <input type="checkbox" id="notifications-toggle">
-                        <span class="toggle-slider"></span>
-                    </label>
-                </div>
-                <div class="settings-option">
-                    <div>
-                        <i class="ri-lock-line"></i>
-                        Privacy Mode
-                    </div>
-                    <label class="toggle-switch">
-                        <input type="checkbox" id="privacy-toggle">
-                        <span class="toggle-slider"></span>
-                    </label>
-                </div>
-                <div class="settings-option">
-                    <div>
-                        <i class="ri-palette-line"></i>
-                        Dark Mode
-                    </div>
-                    <label class="toggle-switch">
-                        <input type="checkbox" id="dark-mode-toggle">
-                        <span class="toggle-slider"></span>
-                    </label>
-                </div>
-                <div class="settings-option">
-                    <div>
-                        <i class="ri-game-line"></i>
-                        Stream Mode
-                    </div>
-                    <label class="toggle-switch">
-                        <input type="checkbox" id="stream-mode-toggle">
-                        <span class="toggle-slider"></span>
-                    </label>
-                </div>
-                <div class="settings-option">
-                    <div>
-                        <i class="ri-global-line"></i>
-                        Language
-                    </div>
-                    <select class="modal-input">
-                        <option>English</option>
-                        <option>Spanish</option>
-                        <option>French</option>
-                        <option>German</option>
-                    </select>
-                </div>
-                <div class="settings-option">
-                    <div>
-                        <i class="ri-sound-module-line"></i>
-                        Sound
-                    </div>
-                    <label class="toggle-switch">
-                        <input type="checkbox" id="sound-toggle">
-                        <span class="toggle-slider"></span>
-                    </label>
-                </div>
-            </div>
-        </div>
-    </div>
-
-   <div id="notification" style="display: none; position: fixed; top: 20px; right: 20px; background-color: white; color: green; padding: 15px; border-radius: 24px; box-shadow: 0 4px 8px rgba(0,0,0,0.2); z-index: 1000; max-width: 300px;">
-    <div style="display: flex; align-items: center; gap: 10px;">
-        <i class="ri-checkbox-circle-line" style="font-size: 1.5rem;"></i>
-        <div>
-            <div style="font-weight: bold;" id="notification-title">Success</div>
-            <div id="notification-message">App downloaded successfully!</div>
-        </div>
-    </div>
-</div>
-
-<!-- Achievements Modal -->
-<div id="achievementModal">
-    <div class="modal-content">
-        <span class="close" onclick="closeModal()">&times;</span> <!-- Close Button -->
-        <h2>leaderboard</h2>
-        <iframe id="achievementFrame" src="leaderboard.html"></iframe>
-    </div>
-</div>
-
-    <!-- Script to modify existing profile header -->
+    
+    <!-- Firebase Scripts -->
     <script type="module">
-        // Add camera icon to avatar container
-        const avatarContainer = document.createElement('div');
-        avatarContainer.className = 'avatar-container';
+        // Import Firebase modules
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
+        import { 
+            getAuth, 
+            onAuthStateChanged, 
+            signOut, 
+            signInWithEmailAndPassword,
+            GoogleAuthProvider,
+            FacebookAuthProvider,
+            signInWithPopup
+        } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
+        import { 
+            getDatabase, 
+            ref, 
+            onValue, 
+            update, 
+            set, 
+            get 
+        } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-database.js";
+        
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBw1uA-kNKOZEufWKZ9AMBxvRGHNGF1lkA",
+            authDomain: "multi-games-a2561.firebaseapp.com",
+            projectId: "multi-games-a2561",
+            storageBucket: "multi-games-a2561.appspot.com",
+            messagingSenderId: "150551898066",
+            appId: "1:150551898066:web:4e8fb185f2321ba4140a0b",
+            measurementId: "G-PB8Y87E6XV",
+            databaseURL: "https://multi-games-a2561-default-rtdb.firebaseio.com"
+        };
+        
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const database = getDatabase(app);
+        
+        // DOM Elements
+        const usernameEl = document.getElementById('username');
+        const userEmailEl = document.getElementById('user-email');
+        const authActionBtn = document.getElementById('auth-action-btn');
         const avatarEl = document.getElementById('user-avatar');
-        const parentNode = avatarEl.parentNode;
-        parentNode.replaceChild(avatarContainer, avatarEl);
-        avatarContainer.appendChild(avatarEl);
-
-        // Create camera upload icon
-        const cameraIcon = document.createElement('div');
-        cameraIcon.className = 'avatar-upload-icon';
-        cameraIcon.innerHTML = '<i class="ri-camera-line"></i>';
-        avatarContainer.appendChild(cameraIcon);
-
-        // Hidden file input for avatar upload
         const avatarFileInput = document.getElementById('avatar-file-input');
-
-        // Handle avatar upload icon click
-        cameraIcon.addEventListener('click', () => {
-            avatarFileInput.click();
-        });
-
-        // Handle file selection
-        avatarFileInput.addEventListener('change', (event) => {
-            const file = event.target.files[0];
-            if (file) {
-                // Here you would typically:
-                // 1. Validate file type and size
-                // 2. Upload to storage (e.g., localStorage or a custom storage solution)
-                // 3. Update avatar source
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    avatarEl.src = e.target.result;
-                    // Optional: Save to localStorage
-                    localStorage.setItem('userAvatar', e.target.result);
-                };
-                reader.readAsDataURL(file);
+        const walletBalanceEl = document.getElementById('wallet-balance');
+        const loadingOverlay = document.getElementById('loading-overlay');
+        const referralCodeEl = document.getElementById('referral-code');
+        const shareReferralCodeEl = document.getElementById('share-referral-code');
+        const referralInputSection = document.querySelector('.referral-input-section');
+        const submitReferralBtn = document.getElementById('submit-referral');
+        const referralCountEl = document.getElementById('referral-count');
+        
+        // Modal Elements
+        const loginModal = document.getElementById('login-modal');
+        const registerModal = document.getElementById('register-modal');
+        const withdrawModal = document.getElementById('withdraw-modal');
+        const settingsModal = document.getElementById('settings-modal');
+        const referralModal = document.getElementById('referral-modal');
+        
+        // State Variables
+        let currentUser = null;
+        let userBalance = 0;
+        let transactions = [];
+        
+      
+        // Utility Functions
+        function showLoading() {
+            loadingOverlay.style.display = 'flex';
+        }
+        
+        function hideLoading() {
+            loadingOverlay.style.display = 'none';
+        }
+        
+        function showNotification(title, message, duration = 3000) {
+            const notification = document.getElementById('notification');
+            document.getElementById('notification-title').textContent = title;
+            document.getElementById('notification-message').textContent = message;
+            notification.style.display = 'block';
+            
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, duration);
+        }
+        
+        function generateReferralCode(uid) {
+            // Generate a referral code based on user ID and timestamp
+            const randomChars = uid.substring(0, 4) + Math.random().toString(36).substring(2, 6);
+            return randomChars.toUpperCase();
+        }
+        
+        // Firebase User Data Management
+        async function initUserData(uid) {
+            const userRef = ref(database, `users/${uid}`);
+            
+            try {
+                const snapshot = await get(userRef);
+                if (!snapshot.exists()) {
+                    // Generate referral code
+                    const referralCode = generateReferralCode(uid);
+                    
+                    // Create new user data
+                    await set(userRef, {
+                        displayName: 'GameMaster',
+                        airtimeBalance: 0,
+                        lastClaim: 0,
+                        referralCode: referralCode,
+                        referrals: 0,
+                        transactions: [],
+                        createdAt: new Date().toISOString()
+                    });
+                    
+                    showNotification('Account Created', 'Welcome to GameXP!');
+                    
+                    // Show referral input for new users
+                    if (referralInputSection) {
+                        referralInputSection.style.display = 'block';
+                    }
+                }
+            } catch (error) {
+                console.error("Error initializing user data:", error);
+                showNotification('Error', 'Failed to set up your account', 'error');
             }
-        });
-
-        // Modal Functionality
-        const modals = {
-            register: document.getElementById('register-modal'),
-            forgotPassword: document.getElementById('forgot-password-modal'),
-            settings: document.getElementById('settings-modal')
-        };
-
-        const modalCloseButtons = {
-            register: document.getElementById('register-close'),
-            forgotPassword: document.getElementById('forgot-password-close'),
-            settings: document.getElementById('settings-close')
-        };
-
-        // Close modal functions
-        Object.keys(modals).forEach(modalKey => {
-            modalCloseButtons[modalKey].addEventListener('click', () => {
-                modals[modalKey].style.display = 'none';
-            });
-        });
-
-        // Register form submission
-        const registerForm = document.getElementById('register-form');
-        registerForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const password = document.getElementById('register-password').value;
-            const confirmPassword = document.getElementById('register-confirm-password').value;
-
-            if (password !== confirmPassword) {
-                alert('Passwords do not match!');
+        }
+        
+        function updateTransactionHistory(newTransactions) {
+            const transactionHistoryEl = document.querySelector('.wallet-history');
+            
+            if (!transactionHistoryEl) {
                 return;
             }
-
-            // Here you would typically:
-            // 1. Validate form inputs
-            // 2. Create user account with Firebase Authentication
-            alert('Registration functionality to be implemented');
-            modals.register.style.display = 'none';
-        });
-
-        // Forgot Password form submission
-        const forgotPasswordForm = document.getElementById('forgot-password-form');
-        forgotPasswordForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            // Here you would typically:
-            // 1. Send password reset email via Firebase Authentication
-            alert('Password reset link to be sent');
-            modals.forgotPassword.style.display = 'none';
-        });
-
-        // Add event listeners to open various modals
-        document.getElementById('create-account').addEventListener('click', () => {
-            modals.register.style.display = 'flex';
-        });
-
-        document.getElementById('forgot-password').addEventListener('click', () => {
-            modals.forgotPassword.style.display = 'flex';
-        });
-
-        document.querySelector('.quick-action:nth-child(3)').addEventListener('click', () => {
-            modals.settings.style.display = 'flex';
-        });
-
-        // Settings toggles
-        const settingsToggles = [
-            'notifications-toggle',
-            'privacy-toggle', 
-            'dark-mode-toggle', 
-            'stream-mode-toggle', 
-            'sound-toggle'
-        ];
-
-        settingsToggles.forEach(toggleId => {
-            const toggle = document.getElementById(toggleId);
-            toggle.addEventListener('change', () => {
-                // Here you would typically save the toggle state
-                localStorage.setItem(toggleId, toggle.checked);
-            });
-
-            // Load previous state from localStorage
-            const savedState = localStorage.getItem(toggleId);
-            if (savedState !== null) {
-                toggle.checked = savedState === 'true';
-            }
-        });
-    </script>
-
-    
-    
-    <!-- Firebase Configuration and Authentication Script -->
-    <script type="module">
-    // Firebase Configuration and Authentication Script
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
-import { 
-    getAuth, 
-    onAuthStateChanged, 
-    signOut, 
-    signInWithEmailAndPassword,
-    GoogleAuthProvider,
-    FacebookAuthProvider,
-    signInWithPopup
-} from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
-import { 
-    getDatabase, 
-    ref, 
-    onValue, 
-    update, 
-    set, 
-    get, 
-    child,
-    push
-} from "https://www.gstatic.com/firebasejs/11.4.0/firebase-database.js";
-import { 
-    getFirestore,
-    collection,
-    doc,
-    getDoc,
-    updateDoc
-} from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
-
-// Firebase Configuration
-const firebaseConfig = {
-    apiKey: "AIzaSyBw1uA-kNKOZEufWKZ9AMBxvRGHNGF1lkA",
-    authDomain: "multi-games-a2561.firebaseapp.com",
-    projectId: "multi-games-a2561",
-    storageBucket: "multi-games-a2561.appspot.com",
-    messagingSenderId: "150551898066",
-    appId: "1:150551898066:web:4e8fb185f2321ba4140a0b",
-    measurementId: "G-PB8Y87E6XV",
-    databaseURL: "https://multi-games-a2561-default-rtdb.firebaseio.com"
-};
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const database = getDatabase(app);
-const firestore = getFirestore(app);
-
-// DOM Elements
-const usernameEl = document.getElementById('username');
-const userEmailEl = document.getElementById('user-email');
-const authActionBtn = document.getElementById('auth-action-btn');
-const avatarEl = document.getElementById('user-avatar');
-const walletBalanceEl = document.getElementById('wallet-balance');
-const loadingOverlay = document.getElementById('loading-overlay');
-const loginModal = document.getElementById('login-modal');
-const loginForm = document.getElementById('login-form');
-const loginErrorEl = document.getElementById('login-error');
-const googleLoginBtn = document.getElementById('google-login');
-const facebookLoginBtn = document.getElementById('facebook-login');
-const updateAppBtn = document.getElementById('update-app');
-const notification = document.getElementById('notification');
-const achievementModal = document.getElementById("achievementModal");
-const achievementBtn = document.getElementById("achievementBtn");
-const closeBtn = document.querySelector(".close");
-const referralCodeEl = document.getElementById('referral-code');
-
-// State Variables
-let currentUser = null;
-let airtimeBalance = 0;
-let lastClaim = 0;
-let transactions = [];
-let selectedNetwork = 'mtn';
-let selectedAmount = 50;
-
-// Utility Functions
-function showLoading() {
-    loadingOverlay.style.display = 'flex';
-}
-
-function hideLoading() {
-    loadingOverlay.style.display = 'none';
-}
-
-function showLoginModal() {
-    loginModal.style.display = 'flex';
-}
-
-function hideLoginModal() {
-    loginModal.style.display = 'none';
-    loginErrorEl.style.display = 'none';
-}
-
-function showAlert(message, type = 'info') {
-    const alertEl = document.createElement('div');
-    alertEl.className = `alert alert-${type}`;
-    alertEl.textContent = message;
-    alertEl.style.position = 'fixed';
-    alertEl.style.top = '20px';
-    alertEl.style.left = '50%';
-    alertEl.style.transform = 'translateX(-50%)';
-    alertEl.style.zIndex = '9999';
-    alertEl.style.padding = '12px 20px';
-    alertEl.style.borderRadius = '5px';
-    alertEl.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
-    alertEl.style.fontSize = '14px';
-    alertEl.style.fontWeight = 'bold';
-    
-    // Set colors based on type
-    if (type === 'error') {
-        alertEl.style.backgroundColor = '#f44336';
-        alertEl.style.color = 'white';
-    } else if (type === 'success') {
-        alertEl.style.backgroundColor = '#4CAF50';
-        alertEl.style.color = 'white';
-    } else {
-        alertEl.style.backgroundColor = '#2196F3';
-        alertEl.style.color = 'white';
-    }
-    
-    document.body.appendChild(alertEl);
-    
-    setTimeout(() => {
-        alertEl.remove();
-    }, 3000);
-}
-
-function generateReference() {
-    return `TX-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-}
-
-// Firebase User Data Management
-async function initUserData(uid) {
-    // Initialize Realtime Database data
-    const userRef = ref(database, `users/${uid}`);
-    
-    try {
-        const snapshot = await get(userRef);
-        if (!snapshot.exists()) {
-            await set(userRef, {
-                airtimeBalance: 0,
-                lastClaim: 0,
-                transactions: []
-            });
-        }
-        
-        // Initialize Firestore data (for additional validation)
-        const firestoreUserRef = doc(firestore, "users", uid);
-        const firestoreDoc = await getDoc(firestoreUserRef);
-        
-        if (!firestoreDoc.exists()) {
-            // Create the Firestore document for this user
-            await setDoc(firestoreUserRef, {
-                balance: 0,
-                lastWithdrawal: 0,
-                created: Date.now()
-            });
-        }
-    } catch (error) {
-        console.error("Error checking user data:", error);
-        showAlert('Error initializing user data', 'error');
-    }
-}
-
-function updateTransactionHistory(newTransactions) {
-    const transactionHistoryEl = document.querySelector('.wallet-history');
-    
-    if (!transactionHistoryEl) {
-        console.error("Transaction history element not found");
-        return;
-    }
-    
-    if (!newTransactions || newTransactions.length === 0) {
-        transactionHistoryEl.innerHTML = '<div class="no-transactions">No transactions yet</div>';
-        return;
-    }
-    
-    // Sort transactions by date (most recent first)
-    const sortedTransactions = newTransactions.sort((a, b) => b.date - a.date);
-    
-    // Limit to only the 3 most recent transactions
-    const limitedTransactions = sortedTransactions.slice(0, 3);
-    
-    const transactionsHtml = limitedTransactions.map(transaction => `
-        <div class="transaction-item">
-            <div class="transaction-details">
-                <span class="transaction-type">${transaction.type}</span>
-                <span class="transaction-amount ${transaction.amount > 0 ? 'credit' : 'debit'}">
-                    ${transaction.amount > 0 ? '+' : ''}₦${Math.abs(transaction.amount)}
-                </span>
-            </div>
-            <div class="transaction-meta">
-                <span class="transaction-date">${new Date(transaction.date).toLocaleString()}</span>
-                <span class="transaction-status ${transaction.status}">${transaction.status}</span>
-            </div>
-        </div>
-    `).join('');
-    
-    transactionHistoryEl.innerHTML = transactionsHtml;
-}
-
-// Profile Update and Authentication
-async function updateProfileInfo(user) {
-    try {
-        showLoading();
-        currentUser = user;
-
-        // Get user data from Realtime Database
-        const userRef = ref(database, 'users/' + user.uid);
-        const snapshot = await get(userRef);
-        
-        // If user doc doesn't exist, create it
-        if (!snapshot.exists()) {
-            await set(userRef, {
-                displayName: user.displayName || 'GameMaster',
-                email: user.email,
-                airtimeBalance: 0,
-                createdAt: new Date().toISOString(),
-                transactions: [] // Initialize transactions array
-            });
-        }
-        
-        // Get user data
-        const userData = snapshot.exists() ? snapshot.val() : {};
-        
-        // Update username
-        const displayName = userData.displayName || user.displayName || 'GameMaster';
-        if (usernameEl) {
-            usernameEl.textContent = displayName;
-        }
-
-        // Update email
-        if (userEmailEl) {
-            userEmailEl.textContent = user.email || 'Elite Gamer';
-        }
-
-        // Update the referral code display
-        if (referralCodeEl) {
-            if (userData.referralCode) {
-                referralCodeEl.textContent = userData.referralCode;
-            } else {
-                referralCodeEl.textContent = 'No referral code';
-            }
-        }
-
-        // Update avatar
-        if (avatarEl) {
-            avatarEl.src = user.photoURL || 'https://i.postimg.cc/gJZr2MPG/images-20.jpg';
-        }
-
-        // Update auth action button
-        if (authActionBtn) {
-            authActionBtn.textContent = 'Logout';
-            authActionBtn.onclick = () => {
-                signOut(auth).then(() => {
-                    showLoginModal();
-                }).catch((error) => {
-                    console.error('Logout error', error);
-                });
-            };
-        }
-
-        // Update wallet balance
-        airtimeBalance = userData.airtimeBalance || 0;
-        if (walletBalanceEl) {
-            walletBalanceEl.textContent = `Wallet: ₦${airtimeBalance}`;
-        }
-
-        // Update referral count
-        if (userData.referrals !== undefined) {
-            const referralCountEl = document.getElementById('referral-count');
-            if (referralCountEl) {
-                referralCountEl.textContent = userData.referrals;
-                console.log("Updated referral count to:", userData.referrals);
-            }
-        }
-
-        // Update transactions
-        if (userData.transactions) {
-            // Convert object of transactions to array if needed
-            if (!Array.isArray(userData.transactions)) {
-                transactions = Object.values(userData.transactions);
-            } else {
-                transactions = userData.transactions;
-            }
-            updateTransactionHistory(transactions);
-        } else {
-            transactions = [];
-            updateTransactionHistory([]);
-        }
-
-        // Hide login modal if open
-        hideLoginModal();
-    } catch (error) {
-        console.error('Error updating profile:', error);
-        showAlert('Failed to update profile information', 'error');
-    } finally {
-        hideLoading();
-    }
-}
-
-// Document Ready Function
-document.addEventListener('DOMContentLoaded', function() {
-    // Login form
-    if (loginForm) {
-        loginForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const email = document.getElementById('login-email').value;
-            const password = document.getElementById('login-password').value;
-
-            try {
-                showLoading();
-                const userCredential = await signInWithEmailAndPassword(auth, email, password);
-                hideLoading();
-            } catch (error) {
-                hideLoading();
-                loginErrorEl.style.display = 'block';
-                loginErrorEl.textContent = error.message || 'Login failed. Please try again.';
-            }
-        });
-    }
-
-    // Google Login
-    if (googleLoginBtn) {
-        googleLoginBtn.addEventListener('click', async () => {
-            const provider = new GoogleAuthProvider();
-            try {
-                showLoading();
-                const result = await signInWithPopup(auth, provider);
-                hideLoading();
-            } catch (error) {
-                hideLoading();
-                loginErrorEl.style.display = 'block';
-                loginErrorEl.textContent = error.message || 'Google login failed.';
-            }
-        });
-    }
-
-    // Facebook Login
-    if (facebookLoginBtn) {
-        facebookLoginBtn.addEventListener('click', async () => {
-            const provider = new FacebookAuthProvider();
-            try {
-                showLoading();
-                const result = await signInWithPopup(auth, provider);
-                hideLoading();
-            } catch (error) {
-                hideLoading();
-                loginErrorEl.style.display = 'block';
-                loginErrorEl.textContent = error.message || 'Facebook login failed.';
-            }
-        });
-    }
-
-    // Connect Gaming Account Button
-    if (authActionBtn) {
-        authActionBtn.addEventListener('click', () => {
-            const user = auth.currentUser;
-            if (user) {
-                // If user is logged in, log out
-                signOut(auth).then(() => {
-                    showLoginModal();
-                }).catch((error) => {
-                    console.error('Logout error', error);
-                });
-            } else {
-                // If no user, show login modal
-                showLoginModal();
-            }
-        });
-    }
-
-    // Achievement Modal
-    if (achievementBtn && achievementModal) {
-        achievementBtn.addEventListener('click', () => {
-            achievementModal.style.display = 'block';
-        });
-    }
-
-    if (closeBtn && achievementModal) {
-        closeBtn.addEventListener('click', () => {
-            achievementModal.style.display = 'none';
-        });
-    }
-
-    // Forgot Password
-    const forgotPasswordBtn = document.getElementById('forgot-password');
-    if (forgotPasswordBtn) {
-        forgotPasswordBtn.addEventListener('click', () => {
-            // Implement password reset logic
-            showAlert('Password reset functionality coming soon!', 'info');
-        });
-    }
-
-    // Create Account
-    const createAccountBtn = document.getElementById('create-account');
-    if (createAccountBtn) {
-        createAccountBtn.addEventListener('click', () => {
-            // Redirect to sign-up page or show sign-up modal
-            showAlert('Create account functionality coming soon!', 'info');
-        });
-    }
-
-    // Authentication State Observer
-    onAuthStateChanged(auth, (user) => {
-        if (user) {
-            // User is signed in, update profile
-            initUserData(user.uid);
-            updateProfileInfo(user);
-        } else {
-            // No user is signed in, show login modal
-            showLoginModal();
-        }
-    });
-});
-</script>
-
-    <!-- New Download App Code -->
-    <script type="module">
-        // Function to show notification
-        function showNotification(title, message, duration = 5000) {
-    const notification = document.getElementById('notification');
-    document.getElementById('notification-title').textContent = title;
-    document.getElementById('notification-message').textContent = message;
-    notification.style.display = 'block';
-    
-    // Hide notification after duration
-    setTimeout(() => {
-        notification.style.display = 'none';
-    }, duration);
-}
-
-// Show/hide loading functions
-function showLoading() {
-    const loader = document.getElementById('loader');
-    if (loader) loader.style.display = 'block';
-}
-
-function hideLoading() {
-    const loader = document.getElementById('loader');
-    if (loader) loader.style.display = 'none';
-}
-
-// Download app function
-async function downloadApp() {
-    const appUrl = 'https://multi-games-fawn.vercel.app/multigames.apk';
-   
-    try {
-        showLoading();
-        
-        // Create an anchor element
-        const a = document.createElement('a');
-        a.href = appUrl;
-        a.download = 'Multi Games.apk';
-        a.target = '_blank'; // Open in new tab
-        
-        // Triggering download
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        
-        // Show success notification
-        showNotification('Download Started', 'If download doesn\'t start automatically, click the button again.');
-    } catch (error) {
-        console.error('Download failed:', error);
-        showNotification('Download Failed', 'Please try again later.', 3000);
-    } finally {
-        hideLoading();
-    }
-}
-
-// Add click event to update app button
-document.addEventListener('DOMContentLoaded', () => {
-    const updateAppBtn = document.getElementById('update-app');
-    if (updateAppBtn) {
-        updateAppBtn.addEventListener('click', downloadApp);
-    } else {
-        console.error('Update button not found');
-    }
-});
-    </script>
-
-<script>
-// Set the initial state of the modal to be hidden
-if (achievementModal) {
-    achievementModal.style.display = "none";
-}
-
-// Function to open modal
-function openModal() {
-    if (achievementModal) {
-        achievementModal.style.display = "block";
-    }
-}
-
-// Function to close modal
-function closeModal() {
-    if (achievementModal) {
-        achievementModal.style.display = "none";
-    }
-}
-
-// Ensure button and close button exist before adding event listeners
-if (achievementBtn) {
-    achievementBtn.addEventListener("click", openModal);
-}
-if (closeBtn) {
-    closeBtn.addEventListener("click", closeModal);
-}
-
-// When the user clicks anywhere outside of the modal, close it
-window.addEventListener("click", function(event) {
-    if (event.target === achievementModal) {
-        closeModal();
-    }
-});
-</script>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-  const copyButton = document.getElementById('copy-referral');
-  const referralCodeElement = document.getElementById('referral-code');
-  
-  copyButton.addEventListener('click', function() {
-    // Get the text content from the referral code span
-    const referralCode = referralCodeElement.textContent;
-    
-    // Create a temporary textarea element to copy from
-    const textarea = document.createElement('textarea');
-    textarea.value = referralCode;
-    textarea.setAttribute('readonly', '');
-    textarea.style.position = 'absolute';
-    textarea.style.left = '-9999px';
-    document.body.appendChild(textarea);
-    
-    // Select and copy the text
-    textarea.select();
-    document.execCommand('copy');
-    
-    // Remove the temporary element
-    document.body.removeChild(textarea);
-    
-    // Visual feedback for the user
-    const originalTitle = copyButton.getAttribute('title');
-    copyButton.setAttribute('title', 'Copied!');
-    
-    // Optional: Add a class for visual feedback
-    copyButton.classList.add('copied');
-    
-    // Reset after a short delay
-    setTimeout(function() {
-      copyButton.setAttribute('title', originalTitle);
-      copyButton.classList.remove('copied');
-    }, 2000);
-  });
-});
-</script>
-
-<script>
-function updateReferralCount(uid) {
-    const referralCountEl = document.getElementById('referral-count');
-    
-    if (!referralCountEl) {
-        console.error("Could not find element with ID 'referral-count'");
-        return;
-    }
-    
-    // Reference to the user's data
-    const userRef = ref(database, `users/${uid}`);
-    
-    get(userRef).then((snapshot) => {
-        if (snapshot.exists()) {
-            const userData = snapshot.val();
-            console.log("Full user data:", userData); // Debug log
             
-            if (userData.referrals !== undefined) {
-                console.log("Found referrals value:", userData.referrals);
-                referralCountEl.textContent = userData.referrals;
-            } else {
-                console.log("No referrals field in user data");
-                referralCountEl.textContent = "0";
+            if (!newTransactions || newTransactions.length === 0) {
+                transactionHistoryEl.innerHTML = '<div class="no-transactions">No transactions yet</div>';
+                return;
             }
-        } else {
-            console.log("No user data found for ID:", uid);
-            referralCountEl.textContent = "0";
+            
+            // Sort transactions by date (most recent first)
+            const sortedTransactions = Array.isArray(newTransactions) 
+                ? newTransactions.sort((a, b) => b.date - a.date)
+                : Object.values(newTransactions).sort((a, b) => b.date - a.date);
+            
+            // Limit to only the 3 most recent transactions
+            const limitedTransactions = sortedTransactions.slice(0, 3);
+            
+            const transactionsHtml = limitedTransactions.map(transaction => `
+                <div class="transaction-item">
+                    <div class="transaction-details">
+                        <span class="transaction-type">${transaction.type}</span>
+                        <span class="transaction-amount ${transaction.amount > 0 ? 'credit' : 'debit'}">
+                            ${transaction.amount > 0 ? '+' : ''}₦${Math.abs(transaction.amount)}
+                        </span>
+                    </div>
+                    <div class="transaction-meta">
+                        <span class="transaction-date">${new Date(transaction.date).toLocaleString()}</span>
+                        <span class="transaction-status ${transaction.status}">${transaction.status}</span>
+                    </div>
+                </div>
+            `).join('');
+            
+            transactionHistoryEl.innerHTML = transactionsHtml;
         }
-    }).catch((error) => {
-        console.error("Error fetching user data:", error);
-    });
-}
-</script>
-
-<script>
-function openEmailClient() {
-  window.location.href = "mailto:multigames0000@gmail.com?subject=i have issues%20with%20Multigames%20apk";
-  return false;
-}
-</script>
-<script>
-document.addEventListener("DOMContentLoaded", function() {
-    // Get the withdraw button and modal
-    const withdrawButton = document.querySelector(".withdraw-btn");
-    const withdrawModal = document.getElementById("withdrawModal");
-
-    // Add click event listener to the withdraw button
-    withdrawButton.addEventListener("click", function() {
-        withdrawModal.style.display = "flex"; // Show the modal
-    });
-
-    // Close modal when clicking the close button
-    document.querySelector(".close").addEventListener("click", function() {
-        withdrawModal.style.display = "none"; // Hide the modal
-    });
-
-    // Close modal when clicking outside the content
-    window.addEventListener("click", function(event) {
-        if (event.target === withdrawModal) {
-            withdrawModal.style.display = "none";
+        
+        // Profile Update function
+        async function updateProfileInfo(user) {
+            try {
+                showLoading();
+                currentUser = user;
+                
+                // Get user data from Realtime Database
+                const userRef = ref(database, 'users/' + user.uid);
+                const snapshot = await get(userRef);
+                
+                // If user doc doesn't exist, create it
+                if (!snapshot.exists()) {
+                    await initUserData(user.uid);
+                    return; // Exit and let the auth state change trigger this function again
+                }
+                
+                // Get user data
+                const userData = snapshot.val();
+                
+                // Update username
+                const displayName = userData.displayName || user.displayName || 'GameMaster';
+                if (usernameEl) {
+                    usernameEl.textContent = displayName;
+                }
+                
+                // Update email
+                if (userEmailEl) {
+                    userEmailEl.textContent = user.email || 'Elite Gamer';
+                }
+                
+                // Update avatar
+                if (avatarEl) {
+                    avatarEl.src = user.photoURL || userData.avatarURL || 'https://i.postimg.cc/gJZr2MPG/images-20.jpg';
+                }
+                
+                // Update auth action button
+                if (authActionBtn) {
+                    authActionBtn.textContent = 'Logout';
+                    authActionBtn.onclick = () => {
+                        signOut(auth).then(() => {
+                            // Reset UI after logout
+                            usernameEl.textContent = 'Guest Player';
+                            userEmailEl.textContent = 'Sign in to continue';
+                            avatarEl.src = 'https://i.postimg.cc/gJZr2MPG/images-20.jpg';
+                            walletBalanceEl.textContent = 'Wallet: ₦0';
+                            referralCodeEl.textContent = 'Sign in to get code';
+                            updateTransactionHistory([]);
+                            
+                            // Update auth button
+                            authActionBtn.textContent = 'Login';
+                            authActionBtn.onclick = showLoginModal;
+                            
+                            showNotification('Logged Out', 'Come back soon!');
+                        }).catch((error) => {
+                            console.error('Logout error', error);
+                        });
+                    };
+                }
+                
+                // Update wallet balance
+                userBalance = userData.airtimeBalance || 0;
+                if (walletBalanceEl) {
+                    walletBalanceEl.textContent = `Wallet: ₦${userBalance}`;
+                }
+                
+                // Update referral code
+                if (referralCodeEl && shareReferralCodeEl) {
+                    const code = userData.referralCode || generateReferralCode(user.uid);
+                    referralCodeEl.textContent = code;
+                    shareReferralCodeEl.value = code;
+                    
+                    // Save generated code if it doesn't exist
+                    if (!userData.referralCode) {
+                        update(userRef, { referralCode: code });
+                    }
+                }
+                
+                // Update referral count
+                if (referralCountEl) {
+                    referralCountEl.textContent = userData.referrals || 0;
+                }
+                
+                // Update transactions
+                if (userData.transactions) {
+                    transactions = userData.transactions;
+                    updateTransactionHistory(transactions);
+                } else {
+                    transactions = [];
+                    updateTransactionHistory([]);
+                }
+                
+            } catch (error) {
+                console.error('Error updating profile:', error);
+                showNotification('Error', 'Failed to update profile information');
+            } finally {
+                hideLoading();
+            }
         }
-    });
-});
-</script>
-<script>
-    // Show styled alert
-function showAlert(message, type = 'info') {
-    const alertEl = document.createElement('div');
-    alertEl.className = `alert alert-${type}`;
-    alertEl.textContent = message;
-    document.body.appendChild(alertEl);
-    setTimeout(() => alertEl.remove(), 4000);
-}
-
-// Check user's status in Realtime DB
-async function checkUserStatus(uid) {
-    try {
-        const userRef = ref(database, `users/${uid}`);
-        const snapshot = await get(userRef);
-        const userData = snapshot.val();
-
-        if (!userData || !userData.status) return;
-
-        const status = userData.status.toLowerCase();
-
-        if (status === 'suspended') {
-            showAlert('You have been suspended', 'error');
-            setTimeout(() => {
-                signOut(auth).then(() => location.reload());
-            }, 4000);
-        } else if (status === 'blocked') {
-            showAlert('You have been blocked', 'error');
-            setTimeout(() => {
-                signOut(auth).then(() => location.reload());
-            }, 1000);
+        
+        // Modal Functions
+        function showModal(modal) {
+            if (modal) {
+                modal.classList.add('open');
+                const iframe = modal.querySelector('iframe');
+                if (iframe) {
+                    iframe.style.display = 'block';
+                    
+                    // Set iframe src based on modal
+                    if (modal.id === 'login-modal') {
+                        iframe.src = 'login.html';
+                    } else if (modal.id === 'register-modal') {
+                        iframe.src = 'register.html';
+                    } else if (modal.id === 'withdraw-modal') {
+                        iframe.src = 'withdraw.html';
+                    }
+                }
+            }
         }
-    } catch (error) {
-        console.error("Error checking status:", error);
-    }
-}
-
-// Auth check with status enforcement
-onAuthStateChanged(auth, (user) => {
-    if (user) {
-        updateProfileInfo(user);
-        checkUserStatus(user.uid); // NEW: status check
-    } else {
-        showLoginModal();
-    }
-});
-</script>
+        
+        function hideModal(modal) {
+            if (modal) {
+                modal.classList.remove('open');
+                const iframe = modal.querySelector('iframe');
+                if (iframe) {
+                    iframe.style.display = 'none';
+                    iframe.src = '';
+                }
+            }
+        }
+        
+        function showLoginModal() {
+            showModal(loginModal);
+        }
+        
+        // Avatar Upload Functionality
+        if (avatarEl && avatarFileInput) {
+            const cameraIcon = document.querySelector('.avatar-upload-icon');
+            
+            cameraIcon.addEventListener('click', () => {
+                if (!currentUser) {
+                    showNotification('Login Required', 'Please login to change your avatar');
+                    showLoginModal();
+                    return;
+                }
+                
+                avatarFileInput.click();
+            });
+            
+            avatarFileInput.addEventListener('change', (event) => {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        avatarEl.src = e.target.result;
+                        
+                   // Save to database
+                        if (currentUser) {
+                            update(ref(database, `users/${currentUser.uid}`), {
+                                avatarURL: e.target.result
+                            }).then(() => {
+                                showNotification('Success', 'Avatar updated successfully');
+                            }).catch(error => {
+                                console.error('Error updating avatar:', error);
+                                showNotification('Error', 'Failed to update avatar');
+                            });
+                        }
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+        
+        // Button Click Handlers
+        document.getElementById('withdraw-btn').addEventListener('click', () => {
+            if (!currentUser) {
+                showNotification('Login Required', 'Please login to withdraw funds');
+                showLoginModal();
+                return;
+            }
+            
+            if (userBalance < 100) {
+                showNotification('Insufficient Balance', 'You need at least ₦100 to withdraw');
+                return;
+            }
+            
+            showModal(withdrawModal);
+        });
+        
+        document.getElementById('play-games-btn').addEventListener('click', () => {
+            if (!currentUser) {
+                showNotification('Login Required', 'Please login to play games');
+                showLoginModal();
+                return;
+            }
+            
+            // Redirect to games page
+            window.location.href = 'games.html';
+        });
+        
+        document.getElementById('leaderboard-btn').addEventListener('click', () => {
+            window.location.href = 'leaderboard.html';
+        });
+        
+        document.getElementById('achievements-btn').addEventListener('click', () => {
+            if (!currentUser) {
+                showNotification('Login Required', 'Please login to view achievements');
+                showLoginModal();
+                return;
+            }
+            
+            window.location.href = 'achievements.html';
+        });
+        
+        document.getElementById('referral-btn').addEventListener('click', () => {
+            if (!currentUser) {
+                showNotification('Login Required', 'Please login to view your referral code');
+                showLoginModal();
+                return;
+            }
+            
+            showModal(referralModal);
+        });
+        
+        document.getElementById('settings-btn').addEventListener('click', () => {
+            showModal(settingsModal);
+        });
+        
+        document.getElementById('update-app').addEventListener('click', () => {
+            // App download link or logic
+            showNotification('Download Started', 'Your download will begin shortly');
+            window.location.href = 'https://play.google.com/store/search?q=GameXP&c=apps';
+        });
+        
+        // Process referral code
+        if (submitReferralBtn) {
+            submitReferralBtn.addEventListener('click', async () => {
+                const referralCode = document.getElementById('input-referral-code').value;
+                
+                if (!referralCode) {
+                    showNotification('Error', 'Please enter a referral code');
+                    return;
+                }
+                
+                if (!currentUser) {
+                    showNotification('Login Required', 'Please login to submit a referral code');
+                    showLoginModal();
+                    return;
+                }
+                
+                showLoading();
+                
+                try {
+                    // Get all users to find the referrer
+                    const usersRef = ref(database, 'users');
+                    const snapshot = await get(usersRef);
+                    const users = snapshot.val();
+                    
+                    let referrerFound = false;
+                    let referrerId = null;
+                    
+                    // Find the user with this referral code
+                    for (const [userId, userData] of Object.entries(users)) {
+                        if (userData.referralCode === referralCode && userId !== currentUser.uid) {
+                            referrerId = userId;
+                            referrerFound = true;
+                            break;
+                        }
+                    }
+                    
+                    if (!referrerFound) {
+                        showNotification('Invalid Code', 'This referral code is invalid or expired');
+                        return;
+                    }
+                    
+                    // Check if user has already used a referral code
+                    const userSnapshot = await get(ref(database, `users/${currentUser.uid}`));
+                    const userData = userSnapshot.val();
+                    
+                    if (userData.usedReferralCode) {
+                        showNotification('Already Used', 'You have already used a referral code');
+                        return;
+                    }
+                    
+                    // Update referrer's stats
+                    const referrerRef = ref(database, `users/${referrerId}`);
+                    const referrerSnapshot = await get(referrerRef);
+                    const referrerData = referrerSnapshot.val();
+                    
+                    const referralCount = (referrerData.referrals || 0) + 1;
+                    const bonusAmount = 50; // ₦50 bonus for each referral
+                    
+                    // Update referrer balance and count
+                    await update(referrerRef, {
+                        airtimeBalance: (referrerData.airtimeBalance || 0) + bonusAmount,
+                        referrals: referralCount
+                    });
+                    
+                    // Add transaction to referrer
+                    const referrerTransactions = referrerData.transactions || [];
+                    referrerTransactions.push({
+                        type: 'Referral Bonus',
+                        amount: bonusAmount,
+                        date: Date.now(),
+                        status: 'completed'
+                    });
+                    
+                    await update(referrerRef, { transactions: referrerTransactions });
+                    
+                    // Mark the current user as having used a referral
+                    await update(ref(database, `users/${currentUser.uid}`), {
+                        usedReferralCode: referralCode
+                    });
+                    
+                    showNotification('Success', 'Referral code applied successfully!');
+                    referralInputSection.style.display = 'none';
+                    
+                } catch (error) {
+                    console.error('Error processing referral:', error);
+                    showNotification('Error', 'Failed to process referral code');
+                } finally {
+                    hideLoading();
+                }
+            });
+        }
+        
+        // Close modals when clicking the back button
+        document.querySelectorAll('.back-btn').forEach(button => {
+            button.addEventListener('click', () => {
+                const modal = button.closest('.modal-container');
+                hideModal(modal);
+            });
+        });
+        
+        // Listen for auth state changes
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                // User is signed in
+                updateProfileInfo(user);
+            } else {
+                // User is signed out
+                currentUser = null;
+                
+                // Set default values
+                if (usernameEl) usernameEl.textContent = 'Guest Player';
+                if (userEmailEl) userEmailEl.textContent = 'Sign in to continue';
+                if (walletBalanceEl) walletBalanceEl.textContent = 'Wallet: ₦0';
+                if (referralCodeEl) referralCodeEl.textContent = 'Sign in to get code';
+                if (authActionBtn) {
+                    authActionBtn.textContent = 'Login';
+                    authActionBtn.onclick = showLoginModal;
+                }
+                
+                // Clean up transaction history
+                updateTransactionHistory([]);
+            }
+        });
+        
+        // Initial setup
+        if (authActionBtn) {
+            authActionBtn.onclick = showLoginModal;
+        }
+    </script>
 </body>
 </html>
