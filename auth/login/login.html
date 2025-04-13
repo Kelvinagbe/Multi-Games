@@ -1,1 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi Games - Login</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="login-card">
+        <div class="login-header">
+        </div>
+        
+        <form id="login-form">
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" placeholder="Enter your email" required>
+                <div class="error-message" id="email-error"></div>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" placeholder="Enter your password" required>
+                <div class="error-message" id="password-error"></div>
+                <a href="#" class="forgot-password" id="forgot-password">Forgot Password?</a>
+            </div>
+            
+            <div class="verification-container" id="verification-container">
+                <div class="verification-text">
+                    <div>Verifying device...</div>
+                    <div class="verification-progress">
+                        <div class="verification-bar" id="verification-bar"></div>
+                    </div>
+                </div>
+                <div class="verified-badge" id="verified-badge">
+                    <i class="fas fa-check-circle"></i> Verified
+                </div>
+            </div>
+            
+            <button type="submit" class="btn" id="login-btn" disabled>Sign In</button>
+        </form>
+        
+        <div class="signup-link">
+            Don't have an account? <a href="signup.html" id="signup-link">Sign Up</a>
+        </div>
+    </div>
+    
+    <div class="loading-overlay" id="loading-overlay">
+        <div class="spinner"></div>
+    </div>
+    
+    <div class="notification" id="notification">
+        <div class="notification-title" id="notification-title">Success</div>
+        <div class="notification-message" id="notification-message">Operation completed successfully.</div>
+    </div>
 
+    <script type="module" src="script.js"></script>
+</body>
+</html>
