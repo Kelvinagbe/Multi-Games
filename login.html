@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi Games - Login</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #1a9e42;
+            --primary-dark: #0e7c2e;
+            --secondary: #222222;
+            --text: #ffffff;
+            --bg: #121212;
+            --card-bg: #121212;
+            --accent: #50e980;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding-top: -30px;
+        }
+        
+        .login-card {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 389px;
+        }
+        
+        .login-header {
+            text-align: center;
+            margin-bottom: -10px;
+        }
+        
+        .login-header h1 {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+        
+        .login-header p {
+            color: #bbbbbb;
+            font-size: 14px;
+        }
+        
+        .form-group {
+            margin-bottom: 9px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        input {
+            width: 100%;
+            padding: 12px 15px;
+            background-color: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: var(--text);
+            font-size: 16px;
+            transition: border-color 0.2s;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        .forgot-password {
+            display: block;
+            text-align: right;
+            color: var(--accent);
+            text-decoration: none;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        
+        .btn {
+            width: 100%;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 17px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 16px;
+            transition: background-color 0.2s;
+            margin-top: 10px;
+        }
+        
+        .btn:hover {
+            background-color: var(--primary-dark);
+        }
+        
+        .btn:disabled {
+            background-color: #555;
+            cursor: not-allowed;
+        }
+        
+        .divider {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            margin: 30px 0;
+        }
+        
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .divider span {
+            padding: 0 15px;
+            color: #bbbbbb;
+            font-size: 14px;
+        }
+        
+        .social-login {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 10px;
+        }
+        
+        .social-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.05);
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            transition: transform 0.2s, background-color 0.2s;
+        }
+        
+        .social-btn:hover {
+            transform: translateY(-3px);
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .google {
+            color: #ea4335;
+        }
+        
+        .facebook {
+            color: #1877f2;
+        }
+        
+        .signup-link {
+            text-align: center;
+            margin-top: 10px;
+            font-size: 14px;
+            color: #bbbbbb;
+        }
+        
+        .signup-link a {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--primary);
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--primary);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            z-index: 1001;
+            display: none;
+        }
+        
+        .notification.error {
+            background-color: #ff5555;
+        }
+        
+        .notification-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .verification-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 10px 0;
+            padding: 10px;
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+        }
+        
+        .verification-text {
+            flex: 1;
+            font-size: 14px;
+            color: #bbbbbb;
+        }
+        
+        .verification-progress {
+            position: relative;
+            width: 100%;
+            height: 6px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            margin-top: 4px;
+        }
+        
+        .verification-bar {
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 0%;
+            background-color: var(--accent);
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
+        
+        .verified-badge {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 5px 10px;
+            background-color: var(--primary-dark);
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .verified-badge i {
+            margin-right: 5px;
+            color: var(--accent);
+        }
+        
+        .error-message {
+            color: #ff5555;
+            font-size: 13px;
+            margin-top: 5px;
+            display: none;
+        }
+        
+        .modal-container {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            z-index: 999;
+            overflow: hidden;
+            transition: height 0.3s ease-out;
+        }
+        
+        .modal-container.open {
+            height: 100%;
+        }
+        
+        .modal-content {
+            background-color: var(--bg);
+            width: 100%;
+            max-width: 380px;
+            border-radius: 15px 15px 0 0;
+            padding: 20px;
+            transform: translateY(100%);
+            transition: transform 0.3s ease-out;
+        }
+        
+        .modal-container.open .modal-content {
+            transform: translateY(0);
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .back-btn {
+            background: none;
+            border: none;
+            color: var(--text);
+            font-size: 24px;
+            cursor: pointer;
+            transform: rotate(90deg);
+        }
+    </style>
+</head>
+<body>
+    <div class="login-card">
+        <div class="login-header">
+        </div>
+        
+        <form id="login-form">
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" placeholder="Enter your email" required>
+                <div class="error-message" id="email-error"></div>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" placeholder="Enter your password" required>
+                <div class="error-message" id="password-error"></div>
+                <a href="#" class="forgot-password" id="forgot-password">Forgot Password?</a>
+            </div>
+            
+            <div class="verification-container" id="verification-container">
+                <div class="verification-text">
+                    <div>Verifying device...</div>
+                    <div class="verification-progress">
+                        <div class="verification-bar" id="verification-bar"></div>
+                    </div>
+                </div>
+                <div class="verified-badge" id="verified-badge">
+                    <i class="fas fa-check-circle"></i> Verified
+                </div>
+            </div>
+            
+            <button type="submit" class="btn" id="login-btn" disabled>Sign In</button>
+        </form>
+        
+        <div class="signup-link">
+            Don't have an account? <a href="signup.html" id="signup-link">Sign Up</a>
+        </div>
+    </div>
+    
+    <div class="loading-overlay" id="loading-overlay">
+        <div class="spinner"></div>
+    </div>
+    
+    <div class="notification" id="notification">
+        <div class="notification-title" id="notification-title">Success</div>
+        <div class="notification-message" id="notification-message">Operation completed successfully.</div>
+    </div>
+
+    <script type="module">
+        // Firebase Configuration and Authentication Script
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
+        import { 
+            getAuth, 
+            onAuthStateChanged, 
+            signOut, 
+            signInWithEmailAndPassword,
+            GoogleAuthProvider,
+            FacebookAuthProvider,
+            signInWithPopup,
+            sendPasswordResetEmail
+        } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
+        import { 
+            getDatabase, 
+            ref, 
+            set, 
+            get, 
+            child 
+        } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-database.js";
+
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBw1uA-kNKOZEufWKZ9AMBxvRGHNGF1lkA",
+            authDomain: "multi-games-a2561.firebaseapp.com",
+            projectId: "multi-games-a2561",
+            storageBucket: "multi-games-a2561.appspot.com",
+            messagingSenderId: "150551898066",
+            appId: "1:150551898066:web:4e8fb185f2321ba4140a0b",
+            measurementId: "G-PB8Y87E6XV",
+            databaseURL: "https://multi-games-a2561-default-rtdb.firebaseio.com"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const database = getDatabase(app);
+
+        // DOM Elements
+        const loginForm = document.getElementById('login-form');
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+        const loginBtn = document.getElementById('login-btn');
+        const googleLoginBtn = document.getElementById('google-login');
+        const facebookLoginBtn = document.getElementById('facebook-login');
+        const forgotPasswordLink = document.getElementById('forgot-password');
+        const loadingOverlay = document.getElementById('loading-overlay');
+        const notification = document.getElementById('notification');
+        const notificationTitle = document.getElementById('notification-title');
+        const notificationMessage = document.getElementById('notification-message');
+        const emailError = document.getElementById('email-error');
+        const passwordError = document.getElementById('password-error');
+        const verificationBar = document.getElementById('verification-bar');
+        const verifiedBadge = document.getElementById('verified-badge');
+
+        // Anti-spam verification setup
+        const verificationTime = 17; // seconds
+        let verificationProgress = 0;
+        let verificationInterval;
+        let isVerified = false;
+
+        // Start verification process
+        function startVerification() {
+            verificationProgress = 0;
+            verificationBar.style.width = '0%';
+            verifiedBadge.style.display = 'none';
+            loginBtn.disabled = true;
+            
+            const intervalTime = 100; // update every 100ms
+            const increment = 100 / (verificationTime * 10); // 100% spread over 17 seconds with 10 updates per second
+            
+            verificationInterval = setInterval(() => {
+                verificationProgress += increment;
+                verificationBar.style.width = Math.min(verificationProgress, 100) + '%';
+                
+                if (verificationProgress >= 100) {
+                    completeVerification();
+                }
+            }, intervalTime);
+        }
+
+        // Complete verification
+        function completeVerification() {
+            clearInterval(verificationInterval);
+            verificationBar.style.width = '100%';
+            document.querySelector('.verification-text').style.display = 'none';
+            verifiedBadge.style.display = 'flex';
+            loginBtn.disabled = false;
+            isVerified = true;
+        }
+
+        // Reset verification on page load
+        startVerification();
+
+        // Field validation
+        emailInput.addEventListener('input', () => {
+            validateEmail();
+        });
+
+        passwordInput.addEventListener('input', () => {
+            validatePassword();
+        });
+
+        function validateEmail() {
+            const email = emailInput.value.trim();
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            
+            if (!email) {
+                emailError.textContent = "Email is required";
+                emailError.style.display = 'block';
+                return false;
+            } else if (!emailRegex.test(email)) {
+                emailError.textContent = "Please enter a valid email address";
+                emailError.style.display = 'block';
+                return false;
+            } else {
+                emailError.style.display = 'none';
+                return true;
+            }
+        }
+
+        function validatePassword() {
+            const password = passwordInput.value;
+            
+            if (!password) {
+                passwordError.textContent = "Password is required";
+                passwordError.style.display = 'block';
+                return false;
+            } else if (password.length < 6) {
+                passwordError.textContent = "Password must be at least 6 characters";
+                passwordError.style.display = 'block';
+                return false;
+            } else {
+                passwordError.style.display = 'none';
+                return true;
+            }
+        }
+
+        // Check if user is already logged in
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                // User is signed in, redirect to dashboard
+                window.location.href = 'dashboard.html';
+            }
+        });
+
+        // Login with Email and Password
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            if (!isVerified) {
+                showNotification("Error", "Please wait for device verification to complete", true);
+                return;
+            }
+            
+            if (!validateEmail() || !validatePassword()) {
+                return; // Don't proceed if validation fails
+            }
+            
+            const email = emailInput.value.trim();
+            const password = passwordInput.value;
+            
+            // Show loading
+            showLoading();
+            
+            // Sign in with email and password
+            signInWithEmailAndPassword(auth, email, password)
+                .then((userCredential) => {
+                    // Signed in
+                    const user = userCredential.user;
+                    hideLoading();
+                    
+                    // Redirect to dashboard
+                    window.location.href = 'dashboard.html';
+                })
+                .catch((error) => {
+                    hideLoading();
+                    
+                    // Handle errors
+                    let errorMessage = "Failed to sign in. Please check your credentials.";
+                    if (error.code === 'auth/user-not-found') {
+                        errorMessage = "No account found with this email. Please sign up.";
+                    } else if (error.code === 'auth/wrong-password') {
+                        errorMessage = "Incorrect password. Please try again.";
+                    } else if (error.code === 'auth/invalid-email') {
+                        errorMessage = "Invalid email format. Please enter a valid email.";
+                    } else if (error.code === 'auth/too-many-requests') {
+                        errorMessage = "Too many unsuccessful login attempts. Please try again later.";
+                    }
+                    
+                    // Show error notification
+                    showNotification("Error", errorMessage, true);
+                });
+        });
+
+        // Google Sign In
+        googleLoginBtn.addEventListener('click', () => {
+            if (!isVerified) {
+                showNotification("Error", "Please wait for device verification to complete", true);
+                return;
+            }
+            
+            const provider = new GoogleAuthProvider();
+            signInWithSocialProvider(provider, 'Google');
+        });
+
+        // Facebook Sign In
+        facebookLoginBtn.addEventListener('click', () => {
+            if (!isVerified) {
+                showNotification("Error", "Please wait for device verification to complete", true);
+                return;
+            }
+            
+            const provider = new FacebookAuthProvider();
+            signInWithSocialProvider(provider, 'Facebook');
+        });
+
+        // Social Sign In Function
+        function signInWithSocialProvider(provider, providerName) {
+            showLoading();
+            
+            signInWithPopup(auth, provider)
+                .then((result) => {
+                    // This gives you a Google/Facebook Access Token
+                    const user = result.user;
+                    
+                    // Check if this is a new user
+                    const isNewUser = result._tokenResponse.isNewUser;
+                    
+                    if (isNewUser) {
+                        // Create user profile in database
+                        createUserProfile(user);
+                    }
+                    
+                    hideLoading();
+                    
+                    // Redirect to dashboard
+                    window.location.href = 'profile.html';
+                })
+                .catch((error) => {
+                    hideLoading();
+                    
+                    // Handle errors
+                    let errorMessage = `Failed to sign in with ${providerName}. Please try again.`;
+                    if (error.code === 'auth/popup-closed-by-user') {
+                        errorMessage = `${providerName} sign-in was cancelled. Please try again.`;
+                    } else if (error.code === 'auth/account-exists-with-different-credential') {
+                        errorMessage = `An account already exists with the same email address but different sign-in credentials.`;
+                    }
+                    
+                    // Show error notification
+                    showNotification("Error", errorMessage, true);
+                });
+        }
+
+        // Create user profile in database for new users
+        function createUserProfile(user) {
+            // Get display name or use email as fallback
+            const displayName = user.displayName || user.email.split('@')[0];
+            
+            // Get photo URL or use default avatar
+            const photoURL = user.photoURL || 'assets/default-avatar.png';
+            
+            // Set initial user data
+            const userData = {
+                displayName: displayName,
+                email: user.email,
+                photoURL: photoURL,
+                walletBalance: 0,
+                createdAt: new Date().toISOString(),
+                lastLogin: new Date().toISOString()
+            };
+            
+            // Save to database
+            set(ref(database, 'users/' + user.uid), userData);
+        }
+
+        // Forgot Password
+        forgotPasswordLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            
+            const email = emailInput.value.trim();
+            
+            if (!email) {
+                showNotification("Error", "Please enter your email address in the email field.", true);
+                emailInput.focus();
+                return;
+            }
+            
+            showLoading();
+            
+            sendPasswordResetEmail(auth, email)
+                .then(() => {
+                    hideLoading();
+                    showNotification("Success", "Password reset email sent. Please check your inbox.", false);
+                })
+                .catch((error) => {
+                    hideLoading();
+                    
+                    let errorMessage = "Failed to send password reset email. Please try again.";
+                    if (error.code === 'auth/user-not-found') {
+                        errorMessage = "No account found with this email address.";
+                    } else if (error.code === 'auth/invalid-email') {
+                        errorMessage = "Invalid email format. Please enter a valid email.";
+                    }
+                    
+                    showNotification("Error", errorMessage, true);
+                });
+        });
+
+        // Show loading overlay
+        function showLoading() {
+            loadingOverlay.style.display = 'flex';
+        }
+
+        // Hide loading overlay
+        function hideLoading() {
+            loadingOverlay.style.display = 'none';
+        }
+
+        // Show notification
+        function showNotification(title, message, isError = false) {
+            notificationTitle.textContent = title;
+            notificationMessage.textContent = message;
+            
+            // Add or remove error class
+            if (isError) {
+                notification.classList.add('error');
+            } else {
+                notification.classList.remove('error');
+            }
+            
+            // Show notification
+            notification.style.display = 'block';
+            
+            // Hide after 5 seconds
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 5000);
+        }
+    </script>
+</body>
+</html>
