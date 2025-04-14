@@ -269,7 +269,7 @@
                     
                     // Set iframe src based on modal
                     if (modal.id === 'login-modal') {
-                        iframe.src = 'auth/login/login.html';
+                        iframe.src = 'auth/login.html';
                     } else if (modal.id === 'register-modal') {
                         iframe.src = 'auth/login/signup/signup.html';
                     } else if (modal.id === 'withdraw-modal') {
