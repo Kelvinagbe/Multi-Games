@@ -1,1 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - Multi-Step Registration</title>
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Create Your Account</h1>
+        
+        <div class="progress-container">
+            <div class="progress-bar">
+                <div class="progress-step active" id="step-indicator-1">1</div>
+                <div class="progress-step" id="step-indicator-2">2</div>
+                <div class="progress-step" id="step-indicator-3">3</div>
+                <div class="progress-step" id="step-indicator-4">4</div>
+            </div>
+            <div class="step-title">
+                <span>Personal</span>
+                <span>Account</span>
+                <span>Referral</span>
+                <span>Verify</span>
+            </div>
+        </div>
+        
+        <form id="registration-form">
+            <!-- Step 1: Personal Information -->
+            <div class="form-step active" id="step-1">
+                <div class="form-group">
+                    <label for="fullName">Full Name</label>
+                    <input type="text" id="fullName" name="fullName" autocomplete="name" required>
+                    <div class="error" id="fullName-error">Please enter your full name (at least 3 characters)</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" autocomplete="username" required>
+                    <div class="error" id="username-error">Username must be 3-20 characters (letters, numbers, underscores only)</div>
+                    <div class="error" id="username-taken-error">This username is already taken</div>
+                </div>
+                
+                <div class="buttons">
+                    <div></div> <!-- Empty div for spacing -->
+                    <button type="button" id="step1-next" class="btn-next">Next</button>
+                </div>
+            </div>
+            
+            <!-- Step 2: Account Information -->
+            <div class="form-step" id="step-2">
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" autocomplete="email" required>
+                    <div class="error" id="email-error">Please enter a valid email address</div>
+                    <div class="error" id="email-taken-error">This email is already registered</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" autocomplete="new-password" required>
+                    <div class="error" id="password-error">Password must meet all requirements</div>
+                    <div class="password-requirements" id="password-requirements">
+                        <div id="length-req">• 8+ characters</div>
+                        <div id="uppercase-req">• At least 1 uppercase letter</div>
+                        <div id="lowercase-req">• At least 1 lowercase letter</div>
+                        <div id="number-req">• At least 1 number</div>
+                        <div id="special-req">• At least 1 special character</div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="confirmPassword">Confirm Password</label>
+                    <input type="password" id="confirmPassword" name="confirmPassword" autocomplete="new-password" required>
+                    <div class="error" id="confirmPassword-error">Passwords do not match</div>
+                </div>
+                
+                <div class="buttons">
+                    <button type="button" id="step2-prev" class="btn-prev">Previous</button>
+                    <button type="button" id="step2-next" class="btn-next">Next</button>
+                </div>
+            </div>
+            
+            <!-- Step 3: Referral System -->
+            <div class="form-step" id="step-3">
+                <div class="form-group">
+                    <label for="referralCode">Referral Code (Optional)</label>
+                    <input type="text" id="referralCode" name="referralCode">
+                    <div class="error" id="referralCode-error">Invalid referral code</div>
+                    <div class="referral-info">Enter a referral code if someone invited you</div>
+                </div>
+                
+                <div class="buttons">
+                    <button type="button" id="step3-prev" class="btn-prev">Previous</button>
+                    <button type="button" id="step3-next" class="btn-next">Next</button>
+                </div>
+            </div>
+            
+            <!-- Step 4: Captcha & Terms -->
+            <div class="form-step" id="step-4">
+                <div class="captcha-container">
+                    <label>Verify you're human</label>
+                    <div class="captcha" id="captcha-text"></div>
+                    <div class="form-group">
+                        <input type="text" id="captcha-input" name="captcha" placeholder="Enter the code above" required>
+                        <div class="error" id="captcha-error">Incorrect captcha code</div>
+                    </div>
+                </div>
+                
+                <div class="terms-container">
+                    <input type="checkbox" id="terms" name="terms" required>
+                    <label for="terms">I agree to the <a href="#" target="_blank">Terms of Service</a> and <a href="#" target="_blank">Privacy Policy</a></label>
+                </div>
+                <div class="error" id="terms-error">You must agree to the terms to continue</div>
+                
+                <div class="buttons">
+                    <button type="button" id="step4-prev" class="btn-prev">Previous</button>
+                    <button type="submit" id="submit-btn" class="btn-submit">Create Account</button>
+                </div>
+            </div>
+        </form>
+        
+        <div class="success-message" id="success-message">
+            <h2>Registration Successful!</h2>
+            <p>Your account has been created. Redirecting to login in <span id="countdown">5</span> seconds...</p>
+        </div>
+    </div>
 
+<script src="script.js"></script>
+</body>
+</html>
