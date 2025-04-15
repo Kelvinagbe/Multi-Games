@@ -625,3 +625,16 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     }
 });
+
+// Listen for message from signup iframe to close login modal
+window.addEventListener('message', (event) => {
+    if (event.data?.action === 'close-login-modal') {
+        hideModal(loginModal);
+        showNotification('Welcome!', 'Your account has been created successfully');
+        
+        // Optional: refresh user data if needed
+        if (auth.currentUser) {
+            updateProfileInfo(auth.currentUser);
+        }
+    }
+});
