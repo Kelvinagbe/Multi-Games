@@ -401,23 +401,12 @@ async function handleSubmit(event) {
             }
         }
         
-        // Show success message and redirect
+        // Show success message and notify parent to close modal
         form.style.display = 'none';
         successMessage.style.display = 'block';
         
-        // Countdown redirect
-        let secondsLeft = 5;
-        countdown.textContent = secondsLeft;
-        
-        const countdownInterval = setInterval(() => {
-            secondsLeft--;
-            countdown.textContent = secondsLeft;
-            
-            if (secondsLeft <= 0) {
-                clearInterval(countdownInterval);
-                window.location.href = 'login.html'; // Redirect to login page
-            }
-        }, 1000);
+        // Send message to parent to close login modal
+        window.parent.postMessage({ action: 'close-login-modal' }, '*');
         
     } catch (error) {
         console.error('Registration error:', error);
@@ -440,4 +429,4 @@ function generateReferralCode() {
     }
     
     return code;
-}
+    }
