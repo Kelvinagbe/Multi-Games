@@ -56,5 +56,19 @@
     </div>
 
     <script type="module" src="script.js"></script>
+    <!-- Add this script at the bottom of login.html -->
+<script>
+    // Notify parent window that this page has loaded
+    window.addEventListener('DOMContentLoaded', () => {
+        // Short delay to ensure all assets are loaded
+        setTimeout(() => {
+            if (window.parent) {
+                // Dispatch a custom event that the iframe in the parent window can listen for
+                const event = new CustomEvent('loginPageLoaded');
+                window.dispatchEvent(event);
+            }
+        }, 300);
+    });
+</script>
 </body>
 </html>
