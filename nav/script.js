@@ -522,3 +522,116 @@
             authActionBtn.onclick = showLoginModal;
         }
              
+// Add iframe loader functionality
+document.addEventListener('DOMContentLoaded', () => {
+    // Create styles for the loader
+    const style = document.createElement('style');
+    style.textContent = `
+        .iframe-container {
+            position: relative;
+        }
+        
+        .iframe-loader {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    `;
+    document.head.appendChild(style);
+    
+    // Get all modal containers with iframes
+    const modalContainers = document.querySelectorAll('.modal-container');
+    
+    modalContainers.forEach(modal => {
+        const iframe = modal.querySelector('iframe');
+        if (iframe) {
+            // Create a wrapper for the iframe if it doesn't exist
+            let container = iframe.parentElement;
+            if (!container.classList.contains('iframe-container')) {
+                container = document.createElement('div');
+                container.classList.add('iframe-container');
+                iframe.parentNode.insertBefore(container, iframe);
+                container.appendChild(iframe);
+            }
+            
+            // Create the loader element
+            const loader = document.createElement('div');
+            loader.classList.add('iframe-loader');
+            loader.innerHTML = '<div class="spinner"></div>';
+            container.appendChild(loader);
+            
+            // Show loader when iframe starts loading
+            iframe.addEventListener('loadstart', () => {
+                loader.style.display = 'flex';
+            });
+            
+            // Hide loader when iframe is loaded
+            iframe.addEventListener('load', () => {
+                loader.style.display = 'none';
+            });
+            
+            // Also handle iframe src changes (for modal openings)
+            const originalShowModal = window.showModal;
+            if (typeof originalShowModal === 'function') {
+                window.showModal = function(modal) {
+                    originalShowModal(modal);
+                    const frameInModal = modal.querySelector('iframe');
+                    if (frameInModal && frameInModal.style.display === 'block') {
+                        const loaderInModal = modal.querySelector('.iframe-loader');
+                        if (loaderInModal) {
+                            loaderInModal.style.display = 'flex';
+                        }
+                    }
+                };
+            }
+        }
+    });
+    
+    // Override the showModal function to ensure loaders appear
+    const originalShowModal = window.showModal;
+    if (typeof originalShowModal === 'function') {
+        window.showModal = function(modal) {
+            if (modal) {
+                modal.classList.add('open');
+                const iframe = modal.querySelector('iframe');
+                if (iframe) {
+                    iframe.style.display = 'block';
+                    
+                    const loaderInModal = modal.querySelector('.iframe-loader');
+                    if (loaderInModal) {
+                        loaderInModal.style.display = 'flex';
+                    }
+                    
+                    // Set iframe src based on modal
+                    if (modal.id === 'login-modal') {
+                        iframe.src = 'auth/login/login.html';
+                    } else if (modal.id === 'register-modal') {
+                        iframe.src = 'auth/login/signup/signup.html';
+                    } else if (modal.id === 'withdraw-modal') {
+                        iframe.src = 'withdraw.html';
+                    }
+                }
+            }
+        };
+    }
+});
