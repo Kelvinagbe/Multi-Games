@@ -1,1 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recent Games</title>
+    <style>
+        :root {
+            --primary: #1a9e42;
+            --primary-dark: #0e7c2e;
+            --secondary: #555555;
+            --text: #333333;
+            --bg: #f5f5f5;
+            --card-bg: #ffffff;
+            --accent: #50e980;
+        }
 
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        body {
+            max-width: 480px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-left;
+            align-items: center;
+            margin-bottom: 10px;
+           margin-top: -40px;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .recent-games-section {
+            padding: 0;
+            margin-bottom: 20px;
+        }
+
+        .section-header {
+            margin-bottom: 10px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: var(--text);
+        }
+
+        .games-list {
+            list-style-type: none;
+            margin-top: 10px;
+        }
+
+        .game-item {
+            padding: 12px 10px;
+            margin-bottom: 2px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            background-color: rgba(26, 158, 66, 0.1);
+            border-radius: 8px;
+        }
+
+        .game-item:last-child {
+            border-bottom: none;
+        }
+
+        .game-item:hover {
+            background-color: rgba(26, 158, 66, 0.15);
+        }
+
+        .game-name {
+            font-weight: 500;
+            color: var(--text);
+            padding-left: 5px;
+        }
+
+        .no-games {
+            text-align: center;
+            color: var(--secondary);
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="section-header">
+        <h2 class="section-title">Recently Played Games</h2>
+    </div>
+    
+    <ul id="recent-games" class="games-list">
+        <!-- Games will be loaded here -->
+    </ul>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Retrieve played games from localStorage
+            const playedGames = JSON.parse(localStorage.getItem("playedGames")) || [];
+            
+            const recentGamesContainer = document.getElementById('recent-games');
+            
+            // Clear any existing content
+            recentGamesContainer.innerHTML = '';
+            
+            if (playedGames.length > 0) {
+                // Display up to 4 recent games
+                playedGames.slice(0, 4).forEach(game => {
+                    const gameItem = document.createElement('li');
+                    gameItem.className = 'game-item';
+                    
+                    gameItem.innerHTML = `
+                        <div class="game-name">${game}</div>
+                    `;
+                    
+                    // Add click event (you can customize this to launch games)
+                    gameItem.addEventListener('click', function() {
+                        console.log(`Launching ${game}...`);
+                        // Add code to launch the game
+                    });
+                    
+                    recentGamesContainer.appendChild(gameItem);
+                });
+            } else {
+                // Show message if no games have been played
+                recentGamesContainer.innerHTML = '<div class="no-games">No recently played games</div>';
+            }
+        });
+    </script>
+</body>
+</html>
