@@ -14,6 +14,15 @@
  <button id="update-app" class="btn"><i class="ri-download-2-line"></i> Update App</button>
         </header>
 
+
+<!-- Loading Overlay with Spinner -->
+<div id="loading-overlay" style="display: none;">
+    <div class="spinner-container">
+        <div class="spinner"></div>
+        <div class="loading-text">Loading...</div>
+    </div>
+</div>
+
         <div class="profile-card">
             <div class="profile-header">
                 <div class="avatar-container">
@@ -36,7 +45,7 @@
                     <i class="ri-wallet-3-line"></i>
                     <span>Withdraw</span>
                 </div>
-                <div class="action-btn" id="play-games-btn">
+                      <div class="action-btn" id="play-games-btn">
                     <i class="ri-gamepad-line"></i>
                     <span>Play Games</span>
                 </div>
@@ -94,7 +103,7 @@
                 <h2>Login</h2>
                 <button class="back-btn"><i class="ri-arrow-right-s-line"></i></button>
             </div>
-            <iframe id="login-iframe" frameborder="0" width="100%" height="430px" style="display: none;"></iframe>
+            <iframe id="login-iframe" frameborder="0" width="100%" height="405px" style="display: none;"></iframe>
         </div>
     </div>
     
@@ -145,7 +154,8 @@
             </div>
         </div>
     </div>
-    </div>
+</div>
+       
     
     <div id="referral-modal" class="modal-container">
         <div class="modal-content">
@@ -170,6 +180,19 @@
         </div>
     </div>
     
+      <!-- Played Games Modal -->
+<div id="played-games-modal" class="modal-container">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2>Recently Played Games</h2>
+      <button class="back-btn"><i class="ri-arrow-right-s-line"></i></button>
+    </div>
+    <div class="modal-body">
+      <div id="played-games-list" class="games-list"></div>
+    </div>
+  </div>
+</div>
+
     <!-- Loading Overlay -->
     <div id="loading-overlay" class="loading-overlay">
         <div class="spinner"></div>

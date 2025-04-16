@@ -57,12 +57,67 @@ const registerModal = document.getElementById('register-modal');
 const withdrawModal = document.getElementById('withdraw-modal');
 const settingsModal = document.getElementById('settings-modal');
 const referralModal = document.getElementById('referral-modal');
+const gamePlayerModal = document.getElementById('game-player-modal'); // New game player modal
 
 // State Variables
 let currentUser = null;
 let userBalance = 0;
 let transactions = [];
+let walletSyncInterval = null;
 
+// Create game player modal if it doesn't exist
+if (!gamePlayerModal) {
+    const gamePlayerModalHTML = `
+        <div id="game-player-modal" class="modal-container">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Game Player</h2>
+                    <button class="back-btn">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="iframe-container">
+                        <iframe id="game-frame" frameborder="0"></iframe>
+                        <div class="iframe-loader">
+                            <div class="spinner"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    document.body.insertAdjacentHTML('beforeend', gamePlayerModalHTML);
+}
+
+// Central loading indicator (not the overlay)
+if (!document.getElementById('center-loader')) {
+    const centerLoaderHTML = `
+        <div id="center-loader" class="center-loader">
+            <div class="spinner"></div>
+        </div>
+    `;
+    document.body.insertAdjacentHTML('beforeend', centerLoaderHTML);
+}
+
+// Update loading overlay CSS to cover the whole screen
+if (!document.getElementById('overlay-styles')) {
+    const overlayStyles = document.createElement('style');
+    overlayStyles.id = 'overlay-styles';
+    overlayStyles.textContent = `
+        #loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+    `;
+    document.head.appendChild(overlayStyles);
+}
 
 // Utility Functions
 function showLoading() {
@@ -71,6 +126,21 @@ function showLoading() {
 
 function hideLoading() {
     loadingOverlay.style.display = 'none';
+}
+
+// New function to show center loader instead of overlay
+function showCenterLoader() {
+    const centerLoader = document.getElementById('center-loader');
+    if (centerLoader) {
+        centerLoader.style.display = 'flex';
+    }
+}
+
+function hideCenterLoader() {
+    const centerLoader = document.getElementById('center-loader');
+    if (centerLoader) {
+        centerLoader.style.display = 'none';
+    }
 }
 
 function showNotification(title, message, duration = 3000) {
@@ -153,10 +223,54 @@ function updateTransactionHistory(newTransactions) {
     transactionHistoryEl.innerHTML = transactionsHtml;
 }
 
+// Set up wallet auto-sync
+function setupWalletSync() {
+    // Clear any existing interval first
+    if (walletSyncInterval) {
+        clearInterval(walletSyncInterval);
+    }
+    
+    // Only set up sync if user is logged in
+    if (!currentUser) return;
+    
+    // Set up interval to sync wallet every 5 seconds
+    walletSyncInterval = setInterval(async () => {
+        try {
+            if (!currentUser) return;
+            
+            // Get latest user data
+            const userRef = ref(database, `users/${currentUser.uid}`);
+            const snapshot = await get(userRef);
+            
+            if (snapshot.exists()) {
+                const userData = snapshot.val();
+                // Update balance if changed
+                const newBalance = userData.airtimeBalance || 0;
+                
+                if (newBalance !== userBalance) {
+                    userBalance = newBalance;
+                    if (walletBalanceEl) {
+                        walletBalanceEl.textContent = `Wallet: ₦${userBalance}`;
+                    }
+                    
+                    // Update transactions if they've changed
+                    if (userData.transactions) {
+                        transactions = userData.transactions;
+                        updateTransactionHistory(transactions);
+                    }
+                }
+            }
+        } catch (error) {
+            console.error('Error syncing wallet:', error);
+            // Don't show notification for background sync errors
+        }
+    }, 5000); // Every 5 seconds
+}
+
 // Profile Update function
 async function updateProfileInfo(user) {
     try {
-        showLoading();
+        showCenterLoader(); // Use center loader instead of overlay
         currentUser = user;
         
         // Get user data from Realtime Database
@@ -173,7 +287,8 @@ async function updateProfileInfo(user) {
         const userData = snapshot.val();
         
         // Update username - use fullName instead of displayName
-        const fullName = userData.fullName || user.displayName || 'GameMaster';
+        let fullName = userData.fullName || user.displayName || 'GameMaster';
+        
         if (usernameEl) {
             usernameEl.textContent = fullName;
         }
@@ -201,6 +316,12 @@ async function updateProfileInfo(user) {
                     referralCodeEl.textContent = 'Sign in to get code';
                     updateTransactionHistory([]);
                     
+                    // Clear wallet sync interval
+                    if (walletSyncInterval) {
+                        clearInterval(walletSyncInterval);
+                        walletSyncInterval = null;
+                    }
+                    
                     // Update auth button
                     authActionBtn.textContent = 'Login';
                     authActionBtn.onclick = showLoginModal;
@@ -217,6 +338,9 @@ async function updateProfileInfo(user) {
         if (walletBalanceEl) {
             walletBalanceEl.textContent = `Wallet: ₦${userBalance}`;
         }
+        
+        // Set up wallet auto-sync
+        setupWalletSync();
         
         // Update referral code - use the code created during sign-in
         if (referralCodeEl && shareReferralCodeEl && userData.referralCode) {
@@ -245,7 +369,7 @@ async function updateProfileInfo(user) {
         console.error('Error updating profile:', error);
         showNotification('Error', 'Failed to update profile information');
     } finally {
-        hideLoading();
+        hideCenterLoader(); // Hide center loader instead of overlay
     }
 }
 
@@ -257,6 +381,12 @@ function showModal(modal) {
         if (iframe) {
             iframe.style.display = 'block';
             
+            // Show iframe loader
+            const loaderInModal = modal.querySelector('.iframe-loader');
+            if (loaderInModal) {
+                loaderInModal.style.display = 'flex';
+            }
+            
             // Set iframe src based on modal
             if (modal.id === 'login-modal') {
                 iframe.src = '../auth/login.html';
@@ -264,6 +394,8 @@ function showModal(modal) {
                 iframe.src = 'auth/login/signup/signup.html';
             } else if (modal.id === 'withdraw-modal') {
                 iframe.src = 'withdraw.html';
+            } else if (modal.id === 'game-player-modal') {
+                iframe.src = 'games/game-player.html';
             }
         }
     }
@@ -284,6 +416,37 @@ function showLoginModal() {
     showModal(loginModal);
 }
 
+// Show Game Player Modal
+function showGamePlayerModal(gameUrl) {
+    const modal = document.getElementById('game-player-modal');
+    if (modal) {
+        const iframe = modal.querySelector('iframe');
+        if (iframe) {
+            // Set game URL if provided, otherwise use default
+            iframe.src = gameUrl || 'games/game-player.html';
+        }
+        showModal(modal);
+    }
+}
+
+// Update the settings modal to remove gender and sound toggles
+document.addEventListener('DOMContentLoaded', () => {
+    const settingsModalBody = settingsModal?.querySelector('.modal-body');
+    if (settingsModalBody) {
+        // Find and remove game sound toggle if it exists
+        const soundToggleEl = settingsModalBody.querySelector('.sound-toggle-wrapper');
+        if (soundToggleEl) {
+            soundToggleEl.remove();
+        }
+        
+        // Find and remove gender selection if it exists
+        const genderSelectionEl = settingsModalBody.querySelector('.gender-selection');
+        if (genderSelectionEl) {
+            genderSelectionEl.remove();
+        }
+    }
+});
+
 // Full Name Change Functionality
 if (saveFullNameBtn) {
     saveFullNameBtn.addEventListener('click', async () => {
@@ -301,7 +464,7 @@ if (saveFullNameBtn) {
             return;
         }
         
-        showLoading();
+        showCenterLoader(); // Use center loader
         
         try {
             // Update fullName in the database
@@ -309,7 +472,6 @@ if (saveFullNameBtn) {
                 fullName: newFullName
             });
             
-            // Update UI
             if (usernameEl) {
                 usernameEl.textContent = newFullName;
             }
@@ -322,12 +484,12 @@ if (saveFullNameBtn) {
             console.error('Error updating name:', error);
             showNotification('Error', 'Failed to update name');
         } finally {
-            hideLoading();
+            hideCenterLoader(); // Hide center loader
         }
     });
 }
 
-// Avatar Upload Functionality
+// Avatar Upload Functionality with size restrictions
 if (avatarEl && avatarFileInput) {
     const cameraIcon = document.querySelector('.avatar-upload-icon');
     
@@ -339,29 +501,65 @@ if (avatarEl && avatarFileInput) {
         }
         
         avatarFileInput.click();
-    });
+     });
     
     avatarFileInput.addEventListener('change', (event) => {
         const file = event.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = (e) => {
+        if (!file) return;
+        
+        // Check file size (50KB max)
+        const maxSizeKB = 50;
+        const fileSizeKB = file.size / 1024;
+        
+        if (fileSizeKB > maxSizeKB) {
+            showNotification('Error', `Image size exceeds ${maxSizeKB}KB limit (${Math.round(fileSizeKB)}KB)`);
+            return;
+        }
+        
+        showCenterLoader();
+        
+        // Create an image element to check dimensions
+        const img = new Image();
+        const reader = new FileReader();
+        
+        reader.onload = (e) => {
+            img.onload = () => {
+                // Check dimensions (512x512 max)
+                if (img.width > 512 || img.height > 512) {
+                    showNotification('Error', `Image dimensions exceed 512x512px limit (${img.width}x${img.height}px)`);
+                    hideCenterLoader();
+                    return;
+                }
+                
+                // All checks passed, update avatar
                 avatarEl.src = e.target.result;
                 
-                // Save to database - update photoURL instead of avatarURL
+                // Save to database
                 if (currentUser) {
                     update(ref(database, `users/${currentUser.uid}`), {
                         photoURL: e.target.result
                     }).then(() => {
                         showNotification('Success', 'Avatar updated successfully');
+                        hideCenterLoader();
                     }).catch(error => {
                         console.error('Error updating avatar:', error);
                         showNotification('Error', 'Failed to update avatar');
+                        hideCenterLoader();
                     });
+                } else {
+                    hideCenterLoader();
                 }
             };
-            reader.readAsDataURL(file);
-        }
+            
+            img.onerror = () => {
+                showNotification('Error', 'Invalid image file');
+                hideCenterLoader();
+            };
+            
+            img.src = e.target.result;
+        };
+        
+        reader.readAsDataURL(file);
     });
 }
 
@@ -388,12 +586,14 @@ document.getElementById('play-games-btn').addEventListener('click', () => {
         return;
     }
     
-    // Redirect to games page
-    window.location.href = 'games.html';
+    // Use game player modal instead of redirect
+    showGamePlayerModal();
 });
 
 document.getElementById('leaderboard-btn').addEventListener('click', () => {
-    window.location.href = 'leaderboard.html';
+    // Show "Coming Soon" notification for leaderboard
+    showNotification('Coming Soon', 'Leaderboard feature will be available soon!');
+    // window.location.href = 'leaderboard.html'; // Commented out
 });
 
 document.getElementById('achievements-btn').addEventListener('click', () => {
@@ -403,7 +603,9 @@ document.getElementById('achievements-btn').addEventListener('click', () => {
         return;
     }
     
-    window.location.href = 'achievements.html';
+    // Show "Coming Soon" notification for achievements
+    showNotification('Coming Soon', 'Achievements feature will be available soon!');
+    // window.location.href = 'achievements.html'; // Commented out
 });
 
 document.getElementById('referral-btn').addEventListener('click', () => {
@@ -429,7 +631,7 @@ document.getElementById('settings-btn').addEventListener('click', () => {
                 }
             }
         }).catch((error) => {
-            console.error('Error getting full name:', error);
+            console.error('Error getting user data:', error);
         });
     }
     
@@ -458,7 +660,7 @@ if (submitReferralBtn) {
             return;
         }
         
-        showLoading();
+        showCenterLoader(); // Use center loader
         
         try {
             // Get all users to find the referrer
@@ -482,8 +684,8 @@ if (submitReferralBtn) {
                 showNotification('Invalid Code', 'This referral code is invalid or expired');
                 return;
             }
-            
-            // Check if user has already used a referral code
+
+       // Check if user has already used a referral code
             const userSnapshot = await get(ref(database, `users/${currentUser.uid}`));
             const userData = userSnapshot.val();
             
@@ -530,7 +732,7 @@ if (submitReferralBtn) {
             console.error('Error processing referral:', error);
             showNotification('Error', 'Failed to process referral code');
         } finally {
-            hideLoading();
+            hideCenterLoader(); // Hide center loader
         }
     });
 }
@@ -550,7 +752,13 @@ onAuthStateChanged(auth, (user) => {
         updateProfileInfo(user);
     } else {
         // User is signed out
-        currentUser = nul;
+        currentUser = null;
+        
+        // Clear wallet sync interval
+        if (walletSyncInterval) {
+            clearInterval(walletSyncInterval);
+            walletSyncInterval = null;
+        }
         
         // Set default values
         if (usernameEl) usernameEl.textContent = 'Guest Player';
@@ -571,43 +779,50 @@ onAuthStateChanged(auth, (user) => {
 if (authActionBtn) {
     authActionBtn.onclick = showLoginModal;
 }
-     
+
+
 // Add iframe loader functionality
 document.addEventListener('DOMContentLoaded', () => {
-    // Create styles for the loader
-    const style = document.createElement('style');
-    style.textContent = `
-        .iframe-container {
-            position: relative;
-        }
-        
-        .iframe-loader {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-        
-        .spinner {
-            width: 50px;
-            height: 50px;
-            border: 5px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            border-top-color: #fff;
-            animation: spin 1s ease-in-out infinite;
-        }
-        
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-    `;
-    document.head.appendChild(style);
+    // Add center loader CSS if not already added
+    if (!document.getElementById('loader-styles')) {
+        const style = document.createElement('style');
+        style.id = 'loader-styles';
+        style.textContent = `
+            .iframe-container {
+                position: relative;
+                width: 100%;
+                height: 100%;
+            }
+            
+            .iframe-loader {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                background-color: rgba(255, 255, 255, 0.8);
+                z-index: 10;
+            }
+            
+            .center-loader {
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                display: none;
+                justify-content: center;
+                align-items: center;
+                z-index: 9999;
+                background-color: rgba(255, 255, 255, 0.9);
+                border-radius: 0;
+                padding: 20px;
+            }
+        `;
+        document.head.appendChild(style);
+    }
     
     // Get all modal containers with iframes
     const modalContainers = document.querySelectorAll('.modal-container');
@@ -624,66 +839,31 @@ document.addEventListener('DOMContentLoaded', () => {
                 container.appendChild(iframe);
             }
             
-            // Create the loader element
-            const loader = document.createElement('div');
-            loader.classList.add('iframe-loader');
-            loader.innerHTML = '<div class="spinner"></div>';
-            container.appendChild(loader);
+            // Create the loader element if it doesn't exist
+            if (!container.querySelector('.iframe-loader')) {
+                const loader = document.createElement('div');
+                loader.classList.add('iframe-loader');
+                loader.innerHTML = '<div class="spinner"></div>';
+                container.appendChild(loader);
+            }
             
             // Show loader when iframe starts loading
             iframe.addEventListener('loadstart', () => {
-                loader.style.display = 'flex';
+                const loader = container.querySelector('.iframe-loader');
+                if (loader) {
+                    loader.style.display = 'flex';
+                }
             });
             
             // Hide loader when iframe is loaded
             iframe.addEventListener('load', () => {
-                loader.style.display = 'none';
+                const loader = container.querySelector('.iframe-loader');
+                if (loader) {
+                    loader.style.display = 'none';
+                }
             });
-            
-            // Also handle iframe src changes (for modal openings)
-            const originalShowModal = window.showModal;
-            if (typeof originalShowModal === 'function') {
-                window.showModal = function(modal) {
-                    originalShowModal(modal);
-                    const frameInModal = modal.querySelector('iframe');
-                    if (frameInModal && frameInModal.style.display === 'block') {
-                        const loaderInModal = modal.querySelector('.iframe-loader');
-                        if (loaderInModal) {
-                            loaderInModal.style.display = 'flex';
-                        }
-                    }
-                };
-            }
         }
     });
-    
-    // Override the showModal function to ensure loaders appear
-    const originalShowModal = window.showModal;
-    if (typeof originalShowModal === 'function') {
-        window.showModal = function(modal) {
-            if (modal) {
-                modal.classList.add('open');
-                const iframe = modal.querySelector('iframe');
-                if (iframe) {
-                    iframe.style.display = 'block';
-                    
-                    const loaderInModal = modal.querySelector('.iframe-loader');
-                    if (loaderInModal) {
-                        loaderInModal.style.display = 'flex';
-                    }
-                    
-                    // Set iframe src based on modal
-                    if (modal.id === 'login-modal') {
-                        iframe.src = 'auth/login/login.html';
-                    } else if (modal.id === 'register-modal') {
-                        iframe.src = 'auth/login/signup/signup.html';
-                    } else if (modal.id === 'withdraw-modal') {
-                        iframe.src = 'withdraw.html';
-                    }
-                }
-            }
-        };
-    }
 });
 
 // Listen for message from signup iframe to close login modal
@@ -698,3 +878,33 @@ window.addEventListener('message', (event) => {
         }
     }
 });
+
+// Initialize the modal listeners for newly created game player modal
+const gamePlayerModalEl = document.getElementById('game-player-modal');
+if (gamePlayerModalEl) {
+    const backBtn = gamePlayerModalEl.querySelector('.back-btn');
+    if (backBtn) {
+        backBtn.addEventListener('click', () => {
+            hideModal(gamePlayerModalEl);
+        });
+    }
+    
+    const iframe = gamePlayerModalEl.querySelector('iframe');
+    if (iframe) {
+        // Show loader when iframe starts loading
+        iframe.addEventListener('loadstart', () => {
+            const loader = gamePlayerModalEl.querySelector('.iframe-loader');
+            if (loader) {
+                loader.style.display = 'flex';
+            }
+        });
+        
+        // Hide loader when iframe is loaded
+        iframe.addEventListener('load', () => {
+            const loader = gamePlayerModalEl.querySelector('.iframe-loader');
+            if (loader) {
+                loader.style.display = 'none';
+            }
+        });
+    }
+}

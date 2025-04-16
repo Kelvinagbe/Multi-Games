@@ -331,7 +331,7 @@ input {
     height: 40px;
     border: 4px solid rgba(0, 0, 0, 0.1);
     border-radius: 50%;
-    border-top-color: var(--primary);
+    border-top-color: green;
     animation: spin 1s ease-in-out infinite;
 }
 
@@ -389,7 +389,7 @@ input {
 }
 
 #auth-action-btn {
-    margin-left: 136px; /* Add some space between the button and avatar */
+    margin-left: 120px; /* Add some space between the button and avatar */
     order: 1; /* Control the order of flex items */
 }
 
@@ -401,3 +401,4 @@ input {
 #avatar-file-input {
     display: none;
 }
+
