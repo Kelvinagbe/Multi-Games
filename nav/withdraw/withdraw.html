@@ -1,1 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Airtime Withdrawal</title>
+ 
+    <link rel="stylesheet" href="styles.css">
 
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="card-title">Withdraw Airtime</div>
+            
+            <div id="balance-display" class="balance-display">Loading balance...</div>
+            
+            <div id="alert-container" class="alert-container"></div>
+            
+            <!-- Step 1: Network Selection -->
+            <div id="step-1" class="step active">
+                <h3 class="step-title">Step 1: Select Network</h3>
+                <div class="network-selection">
+                    <div class="network-icon" data-network="mtn" data-plan="10">
+                        <img src="https://i.postimg.cc/26qX1XXT/Rounded-20250313-203346.png" alt="MTN">
+                        <div class="network-name">MTN</div>
+                    </div>
+                    <div class="network-icon" data-network="airtel" data-plan="11">
+                        <img src="https://i.postimg.cc/NFc7QJhK/Rounded-20250313-203547.png" alt="Airtel">
+                        <div class="network-name">Airtel</div>
+                    </div>
+                    <div class="network-icon" data-network="glo" data-plan="12">
+                        <img src="https://i.postimg.cc/6qfVqrwY/Rounded-20250313-203607.png" alt="Glo">
+                        <div class="network-name">Glo</div>
+                    </div>
+                    <div class="network-icon" data-network="9mobile" data-plan="1651">
+                        <img src="https://i.postimg.cc/SQ6fgh8C/Rounded-20250313-203622.png" alt="9mobile">
+                        <div class="network-name">9mobile</div>
+                    </div>
+                </div>
+                <button id="next-to-step-2" class="step-btn">Next</button>
+            </div>
+            
+            <!-- Step 2: Amount Selection -->
+            <div id="step-2" class="step">
+                <h3 class="step-title">Step 2: Select Amount</h3>
+                <div class="amount-selection">
+                    <div class="amount-option" data-amount="50">₦50</div>
+                    <div class="amount-option" data-amount="100">₦100</div>
+                    <div class="amount-option" data-amount="200">₦200</div>
+                    <div class="amount-option" data-amount="500">₦500</div>
+                </div>
+                <div class="step-navigation">
+                    <button id="back-to-step-1" class="step-btn secondary">Back</button>
+                    <button id="next-to-step-3" class="step-btn">Next</button>
+                </div>
+            </div>
+            
+            <!-- Step 3: Phone Number -->
+            <div id="step-3" class="step">
+                <h3 class="step-title">Step 3: Enter Phone Number</h3>
+                <div class="input-group">
+                    <label for="phone-number" class="input-label">Phone Number</label>
+                    <input type="tel" id="phone-number" class="phone-input" placeholder="Enter phone number" maxlength="11">
+                </div>
+                <div class="step-navigation">
+                    <button id="back-to-step-2" class="step-btn secondary">Back</button>
+                    <button id="next-to-step-4" class="step-btn">Next</button>
+                </div>
+            </div>
+            
+            <!-- Step 4: Confirmation -->
+            <div id="step-4" class="step">
+                <h3 class="step-title">Step 4: Confirm Withdrawal</h3>
+                <div class="confirmation-details">
+                    <div class="confirmation-item">
+                        <span class="label">Network:</span>
+                        <span id="confirm-network" class="value">MTN</span>
+                    </div>
+                    <div class="confirmation-item">
+                        <span class="label">Amount:</span>
+                        <span id="confirm-amount" class="value">₦50</span>
+                    </div>
+                    <div class="confirmation-item">
+                        <span class="label">Phone Number:</span>
+                        <span id="confirm-phone" class="value">Not set</span>
+                    </div>
+                </div>
+                <div class="step-navigation">
+                    <button id="back-to-step-3" class="step-btn secondary">Back</button>
+                    <button id="purchase-btn" class="step-btn primary">
+                        Withdraw Airtime 
+                        <div id="purchase-loader" class="loader"></div>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="toast" class="toast"></div>
+    <div id="network-status" class="network-status">You're currently offline</div>
+
+     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+
+<script src="script.js"></script>
+      
+</body>
+</html>

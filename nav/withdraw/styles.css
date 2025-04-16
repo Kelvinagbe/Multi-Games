@@ -1,0 +1,395 @@
+/* Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: #fff;
+    color: #333;
+    line-height: 1;
+    padding: 0;
+    min-height: 30vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0px 0px rgba(0, 0, 0, 0.0);
+    width: 100%;
+}
+
+/* Card Styles */
+.card {
+    padding: 20px;
+    background: white;
+    overflow: hidden;
+    position: relative;
+}
+
+.card-title {
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+/* Balance Display */
+.balance-display {
+    text-align: center;
+    margin-bottom: 15px;
+    padding: 8px;
+    background-color: #f0fff8;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+/* Alert Container */
+.alert-container {
+    margin-bottom: 20px;
+    display: none;
+}
+
+.alert {
+    padding: 12px;
+    border-radius: 20px;
+    font-size: 14px;
+}
+
+.alert-warning {
+    background-color: #fff3cd;
+    color: #856404;
+    border: 2px solid #ffeeba;
+}
+
+.alert-danger {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+.alert-success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 2px solid #c3e6cb;
+}
+
+/* Steps Styles */
+.step {
+    display: none;
+}
+
+.step.active {
+    display: block;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+.step-title {
+    font-size: 18px;
+    color: #4a5568;
+    margin-bottom: 16px;
+    position: relative;
+    padding-bottom: 8px;
+}
+
+.step-title:after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 40px;
+    height: 3px;
+    background: #4ae26a;
+    border-radius: 3px;
+}
+
+/* Network Selection Styles */
+.network-selection {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 25px;
+}
+
+.network-icon {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    width: 70px;
+    height: 80px;
+    border-radius: 12px;
+    padding: 10px;
+    transition: all 0.3s ease;
+}
+
+.network-icon:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.network-icon.active {
+    background-color: #f0fff8;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+    transform: translateY(-3px);
+}
+
+.network-icon img {
+    width: 40px;
+    height: 40px;
+    margin-bottom: 8px;
+    border-radius: 50%;
+}
+
+.network-name {
+    font-size: 12px;
+    text-align: center;
+}
+
+/* Amount Selection Styles */
+.amount-selection {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 19px;
+}
+
+.amount-option {
+    flex: 1;
+    min-width: 60px;
+    padding: 12px;
+    text-align: center;
+    border: 2px solid #ddd;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.amount-option:hover {
+    background: #f8f8f8;
+}
+
+.amount-option.active {
+    background-color: #f0fff8;
+    border-color: #4ae26a;
+    color: #4ae26a;
+    font-weight: bold;
+}
+
+/* Input Styles */
+.input-group {
+    margin-bottom: 20px;
+}
+
+.input-label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.phone-input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #ddd;
+    border-radius: 20px;
+    font-size: 16px;
+    transition: border 0.3s ease;
+}
+
+.phone-input:focus {
+    border-color: #4ae26a;
+    outline: none;
+}
+
+/* Button Styles */
+.step-btn, .purchase-btn {
+    width: 100%;
+    padding: 14px;
+    background-color: green;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+.step-btn:hover, .purchase-btn:hover {
+    background-color: #3ac857;
+}
+
+.step-btn.secondary {
+    background: #e2e8f0;
+    color: #4a5568;
+}
+
+.step-btn.secondary:hover {
+    background: #cbd5e0;
+}
+
+.step-btn:disabled, .purchase-btn:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+.step-navigation {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+/* Confirmation Styles */
+.confirmation-details {
+    background: #f8fafc;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 20px;
+}
+
+.confirmation-item {
+    padding: 8px 0;
+    border-bottom: 1px solid #edf2f7;
+    display: flex;
+    justify-content: space-between;
+}
+
+.confirmation-item:last-child {
+    border-bottom: none;
+}
+
+.confirmation-item .label {
+    color: #718096;
+    font-size: 14px;
+}
+
+.confirmation-item .value {
+    font-weight: 600;
+    color: #2d3748;
+}
+
+/* Toast Notification */
+.toast {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 12px 20px;
+    border-radius: 20px;
+    font-size: 14px;
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.toast.show {
+    opacity: 1;
+}
+
+/* Network Status */
+.network-status {
+    position: fixed;
+    top: 16px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-100%);
+    background: #e53e3e;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 14px;
+    z-index: 1000;
+    transition: all 0.3s ease;
+    opacity: 0;
+}
+
+.network-status.show {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+}
+
+/* Loader */
+.loader {
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(255,255,255,.3);
+    border-radius: 50%;
+    border-top-color: #fff;
+    animation: spin 1s ease-in-out infinite;
+    margin-left: 10px;
+    display: none;
+    position: relative;
+}
+
+.loader.show {
+    display: inline-block;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes spin {
+    to { 
+        transform: rotate(360deg); 
+    }
+}
+
+/* Responsive Adjustments */
+@media (max-width: 480px) {
+    .card {
+        padding: 16px;
+    }
+    
+    .network-selection {
+        flex-wrap: wrap;
+        gap: 10px;
+        justify-content: center;
+    }
+    
+    .network-icon img {
+        width: 36px;
+        height: 36px;
+    }
+    
+    .card-title {
+        font-size: 20px;
+    }
+    
+    .step-title {
+        font-size: 16px;
+    }
+    
+    .step-btn, .purchase-btn {
+        padding: 12px;
+        font-size: 14px;
+    }
+}
+
+.show {
+    display: block;
+}
