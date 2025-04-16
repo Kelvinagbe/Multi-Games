@@ -38,8 +38,7 @@
             display: flex;
             justify-content: space-left;
             align-items: center;
-            margin-bottom: 10px;
-           margin-top: -40px;
+            margin-bottom: 20px;
         }
 
         .logo {
@@ -108,7 +107,8 @@
     </ul>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        // Function to load games from localStorage
+        function loadGames() {
             // Retrieve played games from localStorage
             const playedGames = JSON.parse(localStorage.getItem("playedGames")) || [];
             
@@ -139,6 +139,14 @@
                 // Show message if no games have been played
                 recentGamesContainer.innerHTML = '<div class="no-games">No recently played games</div>';
             }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initial load
+            loadGames();
+            
+            // Set up auto-sync every 2 seconds (2000 milliseconds)
+            setInterval(loadGames, 2000);
         });
     </script>
 </body>
