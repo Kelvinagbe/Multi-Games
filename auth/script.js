@@ -56,6 +56,8 @@ const verifiedBadge = document.getElementById('verified-badge');
 const fullNameInput = document.getElementById('full-name');
 const usernameInput = document.getElementById('username');
 const referralCodeInput = document.getElementById('referral-code');
+const form = document.getElementById('login-form');
+const successMessage = document.getElementById('success-message');
 
 // Anti-spam verification setup
 const verificationTime = 17; // seconds
@@ -153,15 +155,21 @@ function generateReferralCode(email, userId) {
 // Check if user is already logged in
 onAuthStateChanged(auth, (user) => {
     if (user) {
-        // User is signed in, update last login and redirect to dashboard
+        // User is signed in, update last login and close modal instead of redirecting
         const userRef = ref(database, 'users/' + user.uid);
         update(userRef, {
             lastLogin: new Date().toISOString()
         }).then(() => {
-            window.location.href = 'dashboard.html';
-        }).catch(() => {
-            // If update fails, still redirect to dashboard
-            window.location.href = 'dashboard.html';
+            // Show success message and notify parent to close modal
+            if (form) form.style.display = 'none';
+            if (successMessage) successMessage.style.display = 'block';
+            
+            // Send message to parent to close login modal
+            window.parent.postMessage({ action: 'close-login-modal' }, '*');
+        }).catch((error) => {
+            console.error("Error updating login timestamp:", error);
+            // Still close modal even if update fails
+            window.parent.postMessage({ action: 'close-login-modal' }, '*');
         });
     }
 });
@@ -197,13 +205,19 @@ loginForm.addEventListener('submit', (e) => {
                 lastLogin: new Date().toISOString()
             }).then(() => {
                 hideLoading();
-                // Redirect to dashboard
-                window.location.href = 'dashboard.html';
+                
+                // Show success message and notify parent to close modal
+                if (form) form.style.display = 'none';
+                if (successMessage) successMessage.style.display = 'block';
+                
+                // Send message to parent to close login modal
+                window.parent.postMessage({ action: 'close-login-modal' }, '*');
             }).catch((error) => {
                 console.error("Error updating login timestamp:", error);
                 hideLoading();
-                // Redirect to dashboard even if update fails
-                window.location.href = 'dashboard.html';
+                
+                // Still close modal even if update fails
+                window.parent.postMessage({ action: 'close-login-modal' }, '*');
             });
         })
         .catch((error) => {
@@ -275,8 +289,12 @@ function signInWithSocialProvider(provider, providerName) {
             
             hideLoading();
             
-            // Redirect to dashboard
-            window.location.href = 'dashboard.html';
+            // Show success message and notify parent to close modal
+            if (form) form.style.display = 'none';
+            if (successMessage) successMessage.style.display = 'block';
+            
+            // Send message to parent to close login modal
+            window.parent.postMessage({ action: 'close-login-modal' }, '*');
         })
         .catch((error) => {
             hideLoading();
@@ -422,4 +440,4 @@ function showNotification(title, message, isError = false) {
     }, 5000);
 }
 
-console.log("Enhanced script loaded!");
+console.log("Enhanced script loaded with modal closing functionality!");
