@@ -630,7 +630,7 @@ document.addEventListener('DOMContentLoaded', () => {
 window.addEventListener('message', (event) => {
     if (event.data?.action === 'close-login-modal') {
         hideModal(loginModal);
-        showNotification('Welcome!', 'Your account has been created successfully');
+        showNotification('Welcome!', 'Welcome Login Successfull');
         
         // Optional: refresh user data if needed
         if (auth.currentUser) {
