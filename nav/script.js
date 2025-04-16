@@ -393,7 +393,7 @@ function showModal(modal) {
             } else if (modal.id === 'register-modal') {
                 iframe.src = 'auth/login/signup/signup.html';
             } else if (modal.id === 'withdraw-modal') {
-                iframe.src = 'withdraw.html';
+                iframe.src = 'withdraw/withdraw.html';
             } else if (modal.id === 'game-player-modal') {
                 iframe.src = 'games/played.html';
             }
