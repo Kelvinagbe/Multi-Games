@@ -48,6 +48,8 @@ const shareReferralCodeEl = document.getElementById('share-referral-code');
 const referralInputSection = document.querySelector('.referral-input-section');
 const submitReferralBtn = document.getElementById('submit-referral');
 const referralCountEl = document.getElementById('referral-count');
+const changeFullNameInput = document.getElementById('change-fullname');
+const saveFullNameBtn = document.getElementById('save-fullname');
 
 // Modal Elements
 const loginModal = document.getElementById('login-modal');
@@ -282,6 +284,49 @@ function showLoginModal() {
     showModal(loginModal);
 }
 
+// Full Name Change Functionality
+if (saveFullNameBtn) {
+    saveFullNameBtn.addEventListener('click', async () => {
+        const newFullName = changeFullNameInput.value.trim();
+        
+        if (!newFullName) {
+            showNotification('Error', 'Please enter a valid name');
+            return;
+        }
+        
+        if (!currentUser) {
+            showNotification('Login Required', 'Please login to change your name');
+            hideModal(settingsModal);
+            showLoginModal();
+            return;
+        }
+        
+        showLoading();
+        
+        try {
+            // Update fullName in the database
+            await update(ref(database, `users/${currentUser.uid}`), {
+                fullName: newFullName
+            });
+            
+            // Update UI
+            if (usernameEl) {
+                usernameEl.textContent = newFullName;
+            }
+            
+            showNotification('Success', 'Name updated successfully');
+            changeFullNameInput.value = ''; // Clear the input field
+            hideModal(settingsModal);
+            
+        } catch (error) {
+            console.error('Error updating name:', error);
+            showNotification('Error', 'Failed to update name');
+        } finally {
+            hideLoading();
+        }
+    });
+}
+
 // Avatar Upload Functionality
 if (avatarEl && avatarFileInput) {
     const cameraIcon = document.querySelector('.avatar-upload-icon');
@@ -372,6 +417,22 @@ document.getElementById('referral-btn').addEventListener('click', () => {
 });
 
 document.getElementById('settings-btn').addEventListener('click', () => {
+    if (currentUser) {
+        // Get current full name and populate the input
+        const userRef = ref(database, `users/${currentUser.uid}`);
+        get(userRef).then((snapshot) => {
+            if (snapshot.exists()) {
+                const userData = snapshot.val();
+                if (changeFullNameInput) {
+                    changeFullNameInput.value = userData.fullName || '';
+                    changeFullNameInput.placeholder = userData.fullName || 'Enter your full name';
+                }
+            }
+        }).catch((error) => {
+            console.error('Error getting full name:', error);
+        });
+    }
+    
     showModal(settingsModal);
 });
 
@@ -489,7 +550,7 @@ onAuthStateChanged(auth, (user) => {
         updateProfileInfo(user);
     } else {
         // User is signed out
-        currentUser = null;
+        currentUser = nul;
         
         // Set default values
         if (usernameEl) usernameEl.textContent = 'Guest Player';
@@ -511,7 +572,6 @@ if (authActionBtn) {
     authActionBtn.onclick = showLoginModal;
 }
      
-
 // Add iframe loader functionality
 document.addEventListener('DOMContentLoaded', () => {
     // Create styles for the loader
