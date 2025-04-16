@@ -395,7 +395,7 @@ function showModal(modal) {
             } else if (modal.id === 'withdraw-modal') {
                 iframe.src = 'withdraw.html';
             } else if (modal.id === 'game-player-modal') {
-                iframe.src = 'games/game-player.html';
+                iframe.src = 'games/played.html';
             }
         }
     }
