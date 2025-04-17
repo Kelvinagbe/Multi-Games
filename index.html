@@ -895,8 +895,54 @@
       margin-bottom: 4px;
     }
 </style>
+  <style>
+        .adblock-message {
+            display: none;
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            padding: 15px 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            z-index: 9999;
+            font-family: Arial, sans-serif;
+            font-size: 16px;
+            max-width: 600px;
+            width: 90%;
+        }
+        
+        .adblock-message h3 {
+            margin: 0 0 10px 0;
+            font-size: 20px;
+        }
+        
+        .adblock-message p {
+            margin: 0;
+            line-height: 1.4;
+        }
+        
+        .close-button {
+            position: absolute;
+            top: 5px;
+            right: 10px;
+            cursor: pointer;
+            font-size: 20px;
+            color: #721c24;
+            font-weight: bold;
+        }
+  </style>
 </head>
 <body>
+  <div id="adblockMessage" class="adblock-message">
+        <span class="close-button" onclick="closeAdBlockMessage()">&times;</span>
+        <h3>Ad Blocker Detected</h3>
+        <p>We've noticed you're using an ad blocker. While we respect your choice, we rely on advertising revenue to keep our content free and accessible to everyone. Please consider whitelisting our website to support us!</p>
+  </div>
+  
      <div class="popup-container" id="popupContainer">
         <!-- Popups will be inserted here by JavaScript -->
     </div>
@@ -2137,5 +2183,76 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 </script>
+      <script>
+    // Ad Blocker Detection Script
+
+    // Function to create a fake ad element for testing
+    function createFakeAd() {
+        const fakeAd = document.createElement('div');
+        fakeAd.id = 'ad-banner';
+        fakeAd.className = 'ad advertisement googlead advert banner-ad';
+        fakeAd.style.height = '1px';
+        fakeAd.style.width = '1px';
+        fakeAd.style.position = 'absolute';
+        fakeAd.style.top = '-100px';
+        fakeAd.style.left = '-100px';
+        document.body.appendChild(fakeAd);
+        return fakeAd;
+    }
+
+    // Function to check if ads are being blocked
+    function checkAdBlocker() {
+        const fakeAd = createFakeAd();
+        
+        setTimeout(() => {
+            const adBlocked = fakeAd.offsetHeight === 0 || !document.body.contains(fakeAd);
+            
+            if (adBlocked) {
+                // Show the ad block message
+                const adblockMessage = document.getElementById('adblockMessage');
+                if (adblockMessage) {
+                    adblockMessage.style.display = 'block';
+                }
+            }
+            
+            // Clean up - remove the fake ad
+            if (document.body.contains(fakeAd)) {
+                document.body.removeChild(fakeAd);
+            }
+        }, 100);
+    }
+
+    // Alternative detection method using fetch
+    function detectAdBlockFetch() {
+        fetch('https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js', {
+            method: 'HEAD',
+            mode: 'no-cors'
+        })
+        .then(() => {
+            console.log('Ads are not blocked');
+        })
+        .catch(() => {
+            const adblockMessage = document.getElementById('adblockMessage');
+            if (adblockMessage) {
+                adblockMessage.style.display = 'block';
+            }
+        });
+    }
+
+    // Function to close the ad block message
+    function closeAdBlockMessage() {
+        const adblockMessage = document.getElementById('adblockMessage');
+        if (adblockMessage) {
+            adblockMessage.style.display = 'none';
+        }
+    }
+
+    // Initialize the ad blocker detection when the page loads
+    window.addEventListener('load', () => {
+        checkAdBlocker();
+        // Uncomment the line below to use the fetch method as a backup
+        // detectAdBlockFetch();
+    });
+      </script>
 </body>
 </html>
