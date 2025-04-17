@@ -12,24 +12,108 @@
     crossorigin="anonymous"></script>
 <script async src="https://fundingchoicesmessages.google.com/i/pub-5345992350931230?ers=1"></script><script>(function() {function signalGooglefcPresent() {if (!window.frames['googlefcPresent']) {if (document.body) {const iframe = document.createElement('iframe'); iframe.style = 'width: 0; height: 0; border: none; z-index: -1000; left: -1000px; top: -1000px;'; iframe.style.display = 'none'; iframe.name = 'googlefcPresent'; document.body.appendChild(iframe);} else {setTimeout(signalGooglefcPresent, 0);}}}signalGooglefcPresent();})();</script>
   <script>
-(async () => {
-  const HTML_VERSION = '2.0.6'; // <-- Update this every time you change the HTML
-  const SAVED_VERSION = localStorage.getItem('html_version');
+const APP_SYNC_CONFIG = {
+  version: '1.0.3', // Increment this with each update
+  lastSyncKey: 'app_last_sync_time',
+  versionKey: 'app_content_version'
+};
 
-  if (SAVED_VERSION !== HTML_VERSION) {
-    console.log('New HTML version detected.');
+// Detect if we're in an iframe
+const isInIframe = window.self !== window.top;
 
-    // Save new version locally
-    localStorage.setItem('html_version', HTML_VERSION);
-
-    // Force refresh from network by changing the URL (bypass cache)
-    const cleanUrl = window.location.href.split('?')[0];
-    window.location.href = `${cleanUrl}?v=${HTML_VERSION}`;
-  } else {
-    console.log('HTML version is current. No sync needed.');
+// Core synchronization function
+async function checkForUpdates() {
+  try {
+    // Get current version from localStorage
+    const currentVersion = localStorage.getItem(APP_SYNC_CONFIG.versionKey);
+    
+    // If version has changed, trigger a refresh
+    if (currentVersion !== APP_SYNC_CONFIG.version) {
+      console.log('New version detected:', APP_SYNC_CONFIG.version);
+      
+      // Mark timestamp of last sync
+      localStorage.setItem(APP_SYNC_CONFIG.lastSyncKey, new Date().toISOString());
+      
+      // Store new version
+      localStorage.setItem(APP_SYNC_CONFIG.versionKey, APP_SYNC_CONFIG.version);
+      
+      // For iframes, communicate with parent about version update
+      if (isInIframe) {
+        window.parent.postMessage({
+          type: 'VERSION_UPDATE',
+          version: APP_SYNC_CONFIG.version
+        }, '*');
+      }
+      
+      // Clear cached resources (works in both iframe and standalone)
+      if ('caches' in window) {
+        try {
+          const cacheNames = await caches.keys();
+          for (const cacheName of cacheNames) {
+            if (cacheName.includes('html') || cacheName.includes('assets')) {
+              await caches.delete(cacheName);
+              console.log('Cleared cache:', cacheName);
+            }
+          }
+        } catch (cacheError) {
+          console.warn('Cache clearing error:', cacheError);
+        }
+      }
+      
+      // Handle service worker update if available
+      if ('serviceWorker' in navigator && !isInIframe) {
+        const registration = await navigator.serviceWorker.getRegistration();
+        if (registration) {
+          registration.update();
+        }
+      }
+      
+      // Force reload with cache bypass
+      if (isInIframe) {
+        // For iframes, reload just the iframe
+        window.location.reload(true);
+      } else {
+        // For standalone pages, full reload
+        window.location.reload(true);
+      }
+    }
+  } catch (error) {
+    console.error('Error checking for updates:', error);
   }
-})();
-  </script>
+}
+
+// Service Worker registration (only if not in iframe)
+if ('serviceWorker' in navigator && !isInIframe) {
+  navigator.serviceWorker.register('/service-worker.js')
+    .then(registration => {
+      console.log('ServiceWorker registered');
+    })
+    .catch(error => {
+      console.log('ServiceWorker registration failed:', error);
+    });
+}
+
+// For iframes: Listen for parent messages
+if (isInIframe) {
+  window.addEventListener('message', (event) => {
+    if (event.data && event.data.type === 'CHECK_UPDATE') {
+      checkForUpdates();
+    }
+  });
+}
+
+// Check for updates when the page loads
+window.addEventListener('load', checkForUpdates);
+
+// Optional: Periodic check for updates
+setInterval(checkForUpdates, 1000 * 60 * 30); // Every 30 minutes
+
+// Debug function to manually trigger update
+window.manualUpdate = async function() {
+  localStorage.setItem(APP_SYNC_CONFIG.versionKey, 'force_update');
+  await checkForUpdates();
+};
+      </script>
   <style>
      :root {
         --popup-primary: #3B82F6;
