@@ -2357,5 +2357,91 @@ document.addEventListener("DOMContentLoaded", function() {
         // detectAdBlockFetch();
     });
       </script>
+      <script>
+// HTML Auto-Sync Script
+// This script automatically syncs HTML content every 5 seconds
+// while ignoring Firebase-related elements
+
+document.addEventListener('DOMContentLoaded', () => {
+  // Store the initial HTML content
+  let previousHTML = getHTMLWithoutFirebase();
+  
+  // Set up the auto-sync interval (every 5 seconds)
+  const syncInterval = setInterval(() => {
+    autoSync();
+  }, 5000);
+  
+  // Function to get HTML content excluding Firebase elements
+  function getHTMLWithoutFirebase() {
+    // Create a clone of the document to avoid modifying the original
+    const documentClone = document.documentElement.cloneNode(true);
+    
+    // Remove Firebase scripts
+    const firebaseScripts = documentClone.querySelectorAll('script[src*="firebase"]');
+    firebaseScripts.forEach(script => script.remove());
+    
+    // Remove Firebase-related elements (those with Firebase-related classes or IDs)
+    const firebaseElements = documentClone.querySelectorAll(
+      '[class*="firebase"], [id*="firebase"], ' +
+      '[data-firebase], [firebase], ' +
+      '[class*="firestore"], [id*="firestore"]'
+    );
+    firebaseElements.forEach(element => element.remove());
+    
+    // Return the cleaned HTML
+    return documentClone.innerHTML;
+  }
+  
+  // Main auto-sync function
+  function autoSync() {
+    // Get current HTML content (excluding Firebase elements)
+    const currentHTML = getHTMLWithoutFirebase();
+    
+    // Compare with previous version
+    if (currentHTML !== previousHTML) {
+      console.log('Changes detected, syncing HTML...');
+      
+      // Sync logic goes here
+      // You can implement your specific sync mechanism here:
+      // - Save to localStorage
+      // - Send to a server
+      // - Update another part of the application
+      
+      // Example: Save to localStorage
+      localStorage.setItem('syncedHTML', currentHTML);
+      localStorage.setItem('lastSyncTime', new Date().toISOString());
+      
+      // Update the previous HTML reference
+      previousHTML = currentHTML;
+      
+      // Notify that sync is complete
+      console.log('HTML sync complete at:', new Date().toISOString());
+    } else {
+      console.log('No changes detected at:', new Date().toISOString());
+    }
+  }
+  
+  // Function to manually trigger a sync
+  window.manualSync = function() {
+    console.log('Manual sync triggered');
+    autoSync();
+  };
+  
+  // Function to stop auto-syncing
+  window.stopAutoSync = function() {
+    clearInterval(syncInterval);
+    console.log('Auto-sync stopped');
+  };
+  
+  // Function to resume auto-syncing
+  window.startAutoSync = function() {
+    clearInterval(syncInterval); // Clear any existing interval first
+    setInterval(autoSync, 5000);
+    console.log('Auto-sync started');
+  };
+  
+  console.log('Auto-sync initialized - checking every 5 seconds');
+});
+      </script>
 </body>
 </html>
