@@ -1,1 +1,25 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Redirect to WhatsApp</title>
+  <script>
+    function redirectToWhatsApp() {
+      const url = "https://www.whatsapp.com/channel/0029Vb2DzFZA2pLDgDZTAD06";
+      window.location.href = url;
+
+      // Optional fallback: open in new tab if needed
+      // window.open(url, '_blank');
+    }
+
+    window.onload = function() {
+      // Automatically redirect on page load
+      redirectToWhatsApp();
+    }
+  </script>
+</head>
+<body>
+  <p>If you're not redirected, <a href="https://www.whatsapp.com/channel/0029Vb2DzFZA2pLDgDZTAD06">click here to open WhatsApp Channel</a>.</p>
+</body>
+</html>
