@@ -641,7 +641,7 @@ document.getElementById('settings-btn').addEventListener('click', () => {
 document.getElementById('update-app').addEventListener('click', () => {
     // App download link or logic
     showNotification('Download Started', 'Your download will begin shortly');
-    window.location.href = 'https://play.google.com/store/search?q=GameXP&c=apps';
+    window.location.href = 'https://whatsapp.com/channel/0029Vb2DzFZA2pLDgDZTAD06';
 });
 
 // Process referral code
