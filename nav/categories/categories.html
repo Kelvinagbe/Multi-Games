@@ -1,25 +1,73 @@
-
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Redirect to WhatsApp</title>
-  <script>
-    function redirectToWhatsApp() {
-      const url = "https://www.whatsapp.com/channel/0029Vb2DzFZA2pLDgDZTAD06";
-      window.location.href = url;
-
-      // Optional fallback: open in new tab if needed
-      // window.open(url, '_blank');
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Game Categories</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #f8f9fa;
+      margin: 0;
+      padding: 0 10px 70px;
+      color: #333;
     }
-
-    window.onload = function() {
-      // Automatically redirect on page load
-      redirectToWhatsApp();
+    h1 {
+      text-align: center;
+      margin: 20px 0;
+      color: #006400;
     }
-  </script>
+    .category-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      gap: 16px;
+    }
+    .category-card {
+      background: #fff;
+      border-radius: 15px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      padding: 20px 10px;
+      text-align: center;
+      transition: transform 0.3s;
+      text-decoration: none;
+      color: #333;
+    }
+    .category-card:hover {
+      transform: translateY(-5px);
+    }
+    .category-card i {
+      font-size: 32px;
+      color: #006400;
+      margin-bottom: 10px;
+    }
+    .category-card p {
+      font-size: 16px;
+      font-weight: 500;
+    }
+    .back-btn {
+      display: block;
+      text-align: center;
+      margin: 20px auto;
+      color: #006400;
+      text-decoration: none;
+      font-weight: bold;
+    }
+  </style>
 </head>
 <body>
-  <p>If you're not redirected, <a href="https://www.whatsapp.com/channel/0029Vb2DzFZA2pLDgDZTAD06">click here to open WhatsApp Channel</a>.</p>
+  <h1>Game Categories</h1>
+  <div class="category-grid">
+    <a href="arcade.html" class="category-card"><i class="fas fa-gamepad"></i><p>Arcade</p></a>
+    <a href="puzzle.html" class="category-card"><i class="fas fa-brain"></i><p>Puzzle</p></a>
+    <a href="action.html" class="category-card"><i class="fas fa-running"></i><p>Action</p></a>
+    <a href="multiplayer.html" class="category-card"><i class="fas fa-users"></i><p>Multiplayer</p></a>
+    <a href="card.html" class="category-card"><i class="fas fa-dice"></i><p>Card Games</p></a>
+    <a href="sports.html" class="category-card"><i class="fas fa-trophy"></i><p>Sports</p></a>
+    <a href="racing.html" class="category-card"><i class="fas fa-motorcycle"></i><p>Racing</p></a>
+    <a href="music.html" class="category-card"><i class="fas fa-music"></i><p>Music</p></a>
+    <a href="adventure.html" class="category-card"><i class="fas fa-dragon"></i><p>Adventure</p></a>
+    <a href="shooter.html" class="category-card"><i class="fas fa-bullseye"></i><p>Shooter</p></a>
+  </div>
+  <a href="../index.html" class="back-btn">&larr; Back to Home</a>
 </body>
-</html>
+  </html>
