@@ -1,4 +1,3 @@
-
 :root {
     --primary: #1a9e42;
     --primary-dark: #0e7c2e;
@@ -297,6 +296,9 @@ header {
 
 .form-group {
     margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
 }
 
 label {
@@ -311,6 +313,74 @@ input {
     border: 1px solid rgba(0, 0, 0, 0.2);
     border-radius: 5px;
     color: var(--text);
+}
+
+/* Toggle Switch Styles */
+.toggle-switch {
+    position: relative;
+    width: 56px;
+    height: 28px;
+    display: inline-block;
+}
+
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .3s;
+    border-radius: 34px;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 20px;
+    width: 20px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .3s;
+    border-radius: 50%;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+input:checked + .slider {
+    background-color: var(--primary);
+}
+
+input:focus + .slider {
+    box-shadow: 0 0 1px var(--primary);
+}
+
+input:checked + .slider:before {
+    transform: translateX(28px);
+}
+
+.slider:after {
+    content: "☀️";
+    position: absolute;
+    top: 6px;
+    left: 7px;
+    font-size: 12px;
+    transition: .3s;
+    opacity: 1;
+}
+
+input:checked + .slider:after {
+    content: "🌙";
+    left: unset;
+    right: 7px;
 }
 
 .loading-overlay {
@@ -401,7 +471,6 @@ input {
 #avatar-file-input {
     display: none;
 }
-
 
 /* Dark Mode Variables - Inspired by Claude.ai and ChatGPT */
 body.dark-mode {
@@ -528,4 +597,4 @@ body.dark-mode [style*="background:#ffffff"],
 body.dark-mode [style*="background: #ffffff"] {
     background-color: var(--card-bg) !important;
     background: var(--card-bg) !important;
-        }
+}
