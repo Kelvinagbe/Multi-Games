@@ -447,6 +447,32 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
+
+
+const darkModeToggle = document.getElementById('dark-mode-toggle');
+
+// Apply saved mode on load
+if (localStorage.getItem('darkMode') === 'enabled') {
+    document.body.classList.add('dark-mode');
+    if (darkModeToggle) darkModeToggle.checked = true;
+}
+
+// Toggle listener
+if (darkModeToggle) {
+    darkModeToggle.addEventListener('change', () => {
+        if (darkModeToggle.checked) {
+            document.body.classList.add('dark-mode');
+            localStorage.setItem('darkMode', 'enabled');
+            showNotification('Dark Mode', 'Enabled');
+        } else {
+            document.body.classList.remove('dark-mode');
+            localStorage.setItem('darkMode', 'disabled');
+            showNotification('Dark Mode', 'Disabled');
+        }
+    });
+    }
+    
+
 // Full Name Change Functionality
 if (saveFullNameBtn) {
     saveFullNameBtn.addEventListener('click', async () => {
