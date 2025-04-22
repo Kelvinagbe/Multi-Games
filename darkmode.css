@@ -1,0 +1,418 @@
+/* Refined Dark Mode Variables - Inspired by Claude.ai and ChatGPT */
+:root.dark-mode, body.dark-mode {
+    --bg: #1a1c21;             /* Slightly lighter background */
+    --bg-secondary: #2b2d33;   /* Secondary background for cards */
+    --bg-tertiary: #25272e;    /* Tertiary background for nav */
+    --text: #e6e8ef;           /* Off-white text for better readability */
+    --text-secondary: #abb0bf; /* Secondary text */
+    --text-muted: #8b90a0;     /* Muted text color */
+    --primary: #5773ff;        /* Vibrant primary blue */
+    --accent: #10a37f;         /* ChatGPT-like green */
+    --border: #393b44;         /* Subtle border color */
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.1);
+    --shadow-md: 0 3px 6px rgba(0, 0, 0, 0.15);
+    --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.18);
+    --popup-primary: #5773ff;
+    --popup-success: #10a37f;
+    --popup-warning: #f0b429;
+    --popup-error: #e5484d;
+    --popup-info: #8385f8;
+    
+    /* Ensure all backgrounds use dark colors */
+    background-color: var(--bg);
+    color: var(--text);
+}
+
+/* Apply smooth transitions */
+body.dark-mode * {
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Base styles */
+body.dark-mode, 
+body.dark-mode iframe {
+    background-color: var(--bg);
+    color: var(--text);
+}
+
+/* Main container elements */
+body.dark-mode div,
+body.dark-mode section,
+body.dark-mode header,
+body.dark-mode footer,
+body.dark-mode main,
+body.dark-mode aside,
+body.dark-mode nav {
+    background-color: transparent;
+}
+
+/* Container styles */
+.dark-mode .container {
+    background-color: var(--bg);
+}
+
+/* Search bar styles */
+.dark-mode .search-bar {
+    background: var(--bg-secondary) !important;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+}
+
+.dark-mode .search-bar i {
+    color: var(--text-secondary);
+}
+
+.dark-mode .search-bar input {
+    background-color: transparent !important;
+    color: var(--text) !important;
+    border: none;
+}
+
+.dark-mode .search-bar input::placeholder {
+    color: var(--text-muted);
+}
+
+/* Suggestions container */
+.dark-mode .suggestions-container {
+    background: var(--bg-secondary);
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+}
+
+.dark-mode .autocomplete-suggestion {
+    border-bottom: 1px solid var(--border);
+    padding: 12px;
+}
+
+.dark-mode .autocomplete-suggestion:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.dark-mode .autocomplete-suggestion .game-name {
+    color: var(--text);
+}
+
+.dark-mode .autocomplete-suggestion .game-category {
+    color: var(--text-muted);
+}
+
+.dark-mode .autocomplete-suggestion .play-btn {
+    background: var(--accent);
+    border-radius: 6px;
+}
+
+.dark-mode .no-results {
+    color: var(--text-muted);
+    padding: 16px;
+}
+
+/* Bottom navigation styles */
+.dark-mode .bottom-nav {
+    background: var(--bg-tertiary) !important;
+    box-shadow: 0 -1px 3px rgba(0, 0, 0, 0.1);
+    border-top: 1px solid var(--border);
+}
+
+.dark-mode .bottom-nav a {
+    color: var(--text-muted);
+}
+
+.dark-mode .bottom-nav a.active {
+    color: var(--accent);
+}
+
+.dark-mode .bottom-nav i {
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+}
+
+.dark-mode .bottom-nav a.active i {
+    background-color: rgba(16, 163, 127, 0.15);
+}
+
+/* Featured games section */
+.dark-mode .featured {
+    box-shadow: var(--shadow-md);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.dark-mode .featured-overlay {
+    background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+}
+
+.dark-mode .featured-btn {
+    background: var(--accent);
+    border-radius: 6px;
+}
+
+/* Section Headers */
+.dark-mode .section-header h2 {
+    color: var(--text);
+    font-weight: 600;
+}
+
+.dark-mode .view-all {
+    color: var(--primary);
+}
+
+/* Game Grid */
+.dark-mode .game-card {
+    background: var(--bg-secondary) !important;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.dark-mode .game-info p {
+    color: var(--text);
+    font-weight: 500;
+}
+
+.dark-mode .game-meta {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+}
+
+.dark-mode .play-btn {
+    background: var(--accent);
+    border-radius: 6px;
+    font-weight: 500;
+}
+
+.dark-mode .play-btn:hover {
+    background: #0d8a6a;
+    transform: translateY(-1px);
+}
+
+/* Categories Section */
+.dark-mode .category {
+    background: var(--bg-secondary);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+}
+
+.dark-mode .category i {
+    color: var(--accent);
+}
+
+.dark-mode .category p {
+    color: var(--text);
+    font-weight: 500;
+}
+
+/* Ribbons */
+.dark-mode .new-ribbon,
+.dark-mode .trending-ribbon {
+    background: #e64a19;
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 4px;
+}
+
+/* Loader Styles */
+.dark-mode .loader-container {
+    background-color: rgba(26, 28, 33, 0.9) !important;
+    backdrop-filter: blur(5px);
+}
+
+.dark-mode .m-loader {
+    color: var(--accent);
+    background-color: var(--bg-secondary);
+    box-shadow: var(--shadow-lg);
+    border-radius: 12px;
+    border: 1px solid var(--border);
+}
+
+@keyframes m-hover-dark {
+    0% {
+        transform: translateY(0) scale(1);
+        box-shadow: var(--shadow-md);
+    }
+    50% {
+        transform: translateY(-12px) scale(1.03);
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.25);
+    }
+    100% {
+        transform: translateY(0) scale(1);
+        box-shadow: var(--shadow-md);
+    }
+}
+
+.dark-mode .m-loader {
+    animation: m-hover-dark 2s infinite ease-in-out;
+}
+
+/* Page Content and iframes */
+.dark-mode .page-content {
+    background: var(--bg) !important;
+}
+
+.dark-mode .page-iframe {
+    background: var(--bg) !important;
+}
+
+/* Fix for iframe content */
+.dark-mode iframe {
+    background: var(--bg) !important;
+}
+
+/* Fix for any inline styling */
+.dark-mode [style*="background-color: white"],
+.dark-mode [style*="background-color:#fff"],
+.dark-mode [style*="background-color: #fff"],
+.dark-mode [style*="background-color:#ffffff"],
+.dark-mode [style*="background-color: #ffffff"],
+.dark-mode [style*="background: white"],
+.dark-mode [style*="background:#fff"],
+.dark-mode [style*="background: #fff"],
+.dark-mode [style*="background:#ffffff"],
+.dark-mode [style*="background: #ffffff"] {
+    background-color: var(--bg-secondary) !important;
+    background: var(--bg-secondary) !important;
+}
+
+/* Profile Header */
+.dark-mode .profile-header {
+    background-color: var(--bg-tertiary);
+    box-shadow: var(--shadow-sm);
+    border-bottom: 1px solid var(--border);
+}
+
+.dark-mode .profile-header .title {
+    color: var(--text);
+    font-weight: 600;
+}
+
+.dark-mode .back-button {
+    color: var(--text-secondary);
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.dark-mode .back-button:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Content frames */
+.dark-mode #earn-content,
+.dark-mode #profile-content {
+    box-shadow: var(--shadow-sm);
+    border-left: 1px solid var(--border);
+}
+
+.dark-mode #earn-iframe {
+    background-color: var(--bg);
+}
+
+.dark-mode #profile-iframe {
+    background-color: var(--bg);
+}
+
+/* Navigation Button Colors - More subtle but still distinctive */
+.dark-mode .bottom-nav a#home-nav.active {
+    color: #10a37f !important;
+}
+
+.dark-mode .bottom-nav a#home-nav.active i {
+    background-color: rgba(16, 163, 127, 0.15) !important;
+    color: #10a37f !important;
+}
+
+.dark-mode .bottom-nav a#trending-nav.active {
+    color: #e5484d !important;
+}
+
+.dark-mode .bottom-nav a#trending-nav.active i {
+    background-color: rgba(229, 72, 77, 0.15) !important;
+    color: #e5484d !important;
+}
+
+.dark-mode .bottom-nav a#profile-nav.active {
+    color: #5773ff !important;
+}
+
+.dark-mode .bottom-nav a#profile-nav.active i {
+    background-color: rgba(87, 115, 255, 0.15) !important;
+    color: #5773ff !important;
+}
+
+.dark-mode .bottom-nav a#categories-nav.active {
+    color: #f0b429 !important;
+}
+
+.dark-mode .bottom-nav a#categories-nav.active i {
+    background-color: rgba(240, 180, 41, 0.15) !important;
+    color: #f0b429 !important;
+}
+
+/* Popup styles for dark mode */
+.dark-mode .popup-container {
+    /* Container remains the same */
+}
+
+.dark-mode .popup {
+    background-color: var(--bg-secondary);
+    box-shadow: var(--shadow-lg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+}
+
+.dark-mode .popup-title {
+    color: var(--text);
+    font-weight: 600;
+}
+
+.dark-mode .popup-message {
+    color: var(--text-secondary);
+}
+
+.dark-mode .popup-close {
+    color: var(--text-muted);
+}
+
+.dark-mode .popup-close:hover {
+    color: var(--text);
+}
+
+.dark-mode .popup-time {
+    color: var(--text-muted);
+    font-size: 0.75rem;
+}
+
+/* Dark mode popup symbols with more subtle backgrounds */
+.dark-mode .popup-primary .popup-symbol {
+    background-color: rgba(87, 115, 255, 0.15);
+    color: var(--popup-primary);
+}
+
+.dark-mode .popup-success .popup-symbol {
+    background-color: rgba(16, 163, 127, 0.15);
+    color: var(--popup-success);
+}
+
+.dark-mode .popup-warning .popup-symbol {
+    background-color: rgba(240, 180, 41, 0.15);
+    color: var(--popup-warning);
+}
+
+.dark-mode .popup-error .popup-symbol {
+    background-color: rgba(229, 72, 77, 0.15);
+    color: var(--popup-error);
+}
+
+.dark-mode .popup-info .popup-symbol {
+    background-color: rgba(131, 133, 248, 0.15);
+    color: var(--popup-info);
+}
