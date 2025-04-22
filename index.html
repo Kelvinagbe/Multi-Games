@@ -1617,11 +1617,11 @@ function showLoader() {
     setTimeout(function() {
         // If loader is still visible, alert the user about a possible network error.
         if (loader.style.display !== 'none') {
-            alert("Network error: Page failed to load. Please check your connection and try again.");
+            alert("");
             // Optionally hide the loader to allow user interaction
             loader.style.display = 'none';
         }
-    }, 30000);
+    }, 15000);
 }
 
 function hideLoader() {
