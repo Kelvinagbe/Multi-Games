@@ -1,0 +1,1537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Airtime Earner</title>
+     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5345992350931230"
+     crossorigin="anonymous"></script>
+    <style>
+        :root {
+    --primary-color: #4CAF50;
+    --secondary-color: #FFC107;
+      --danger-color: #f44336;
+    --warning-color: #ff9800;
+    --success-color: #4CAF50;
+    --info-color: #2196F3;
+    --dark-color: #333;
+    --light-color: #f4f4f4;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: #f5f5f5;
+    color: #333;
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 15px;
+    background-color: #fff;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.15);
+    min-height: 100vh;
+    position: relative;
+    border-left: 2px solid rgba(76, 175, 80, 0.2);
+    border-right: 2px solid rgba(76, 175, 80, 0.2);
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    margin-bottom: 20px;
+    border-bottom: 3px solid rgba(76, 175, 80, 0.3);
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+    color: var(--primary-color);
+    text-shadow: 0 0 10px rgba(76, 175, 80, 0.3);
+    letter-spacing: 1px;
+}
+
+.card {
+    background-color: white;
+    border-radius: 23px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08), 0 0 5px rgba(76, 175, 80, 0.1);
+    border: 2px solid rgba(76, 175, 80, 0.2);
+    transition: transform 0.2s ease;
+}
+
+.card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12), 0 0 7px rgba(76, 175, 80, 0.15);
+}
+
+.card-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: var(--primary-color);
+}
+
+.daily-reward-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(145deg, #ffffff, #f8f8f8);
+}
+
+.reward-info {
+    flex: 1;
+}
+
+.reward-amount {
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: var(--primary-color);
+    text-shadow: 0 0 8px rgba(76, 175, 80, 0.2);
+}
+
+.reward-status {
+    font-size: 14px;
+    color: #666;
+}
+
+.btn {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(rgba(255, 255, 255, 0.2), transparent);
+    pointer-events: none;
+}
+
+.btn-primary {
+    background: linear-gradient(145deg, var(--primary-color), #3e8e41);
+    color: white;
+    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+}
+
+.btn-primary:hover {
+    background: linear-gradient(145deg, #3e8e41, #2d682f);
+    box-shadow: 0 4px 20px rgba(76, 175, 80, 0.5);
+    transform: translateY(-2px);
+}
+
+.btn-primary:active {
+    transform: translateY(1px);
+}
+
+.countdown-display {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #666;
+    display: none;
+}
+
+.countdown-timer {
+    font-weight: bold;
+    color: var(--primary-color);
+}
+
+.network-selection {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+}
+
+.network-icon {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 15px 10px;
+    border-radius: 23px;
+    cursor: pointer;
+    transition: all 0.3s;
+    width: 23%;
+    background-color: #f8f8f8;
+    border: 2px solid #eee;
+}
+
+.network-icon:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    border-color: #ddd;
+}
+
+.network-icon img {
+    width: 40px;
+    height: 40px;
+    margin-bottom: 5px;
+    filter: drop-shadow(0 0 3px rgba(76, 175, 80, 0.2));
+}
+
+.network-name {
+    font-size: 12px;
+    color: #555;
+}
+
+.network-icon.active {
+    background-color: #f0f8f0;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 15px rgba(76, 175, 80, 0.15);
+}
+
+.amount-selection {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.amount-option {
+    background-color: #f5f5f5;
+    padding: 12px;
+    border-radius: 23px;
+    cursor: pointer;
+    transition: all 0.3s;
+    flex: 1;
+    min-width: 70px;
+    text-align: center;
+    font-weight: bold;
+    border: 1px solid #eee;
+}
+
+.amount-option:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 10px rgba(76, 175, 80, 0.1);
+    border-color: #ddd;
+}
+
+.amount-option.active {
+    background: linear-gradient(145deg, var(--primary-color), #3e8e41);
+    color: white;
+    box-shadow: 0 0 15px rgba(76, 175, 80, 0.2);
+    border-color: var(--primary-color);
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 14px;
+    color: #555;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 12px 15px;
+    background-color: #f8f8f8;
+    border: 2px solid #eee;
+    border-radius: 15px;
+    font-size: 16px;
+    color: #333;
+    transition: all 0.3s;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 10px rgba(76, 175, 80, 0.15);
+    background-color: #fff;
+}
+
+.purchase-btn-container {
+    display: flex;
+    align-items: center;
+}
+
+.purchase-loader {
+    width: 20px;
+    height: 20px;
+    border: 2px solid rgba(76, 175, 80, 0.1);
+    border-top: 3px solid var(--primary-color);
+    border-radius: 50%;
+    margin-right: 10px;
+    animation: spin 1s linear infinite;
+    box-shadow: 0 0 10px rgba(76, 175, 80, 0.1);
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.hidden {
+    display: none;
+}
+
+.transactions-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+}
+
+.see-all {
+    font-size: 14px;
+    color: var(--primary-color);
+    text-decoration: none;
+    position: relative;
+    transition: all 0.3s;
+}
+
+.see-all:hover {
+    text-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
+}
+
+.see-all::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: -3px;
+    left: 0;
+    background-color: var(--primary-color);
+    transition: width 0.3s;
+}
+
+.see-all:hover::after {
+    width: 100%;
+}
+
+.transaction-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 0;
+    border-bottom: 1px solid #eee;
+    transition: background-color 0.3s;
+}
+
+.transaction-item:hover {
+    background-color: rgba(76, 175, 80, 0.03);
+}
+
+.transaction-date {
+    font-size: 12px;
+    color: #888;
+}
+
+.transaction-amount {
+    font-weight: bold;
+    color: #333;
+}
+
+.transaction-status {
+    font-size: 12px;
+    text-align: right;
+}
+
+.status-success {
+    color: var(--success-color);
+}
+
+.status-pending {
+    color: var(--warning-color);
+}
+
+.status-failed {
+    color: var(--danger-color);
+}
+
+.alert {
+    padding: 15px;
+    border-radius: 15px;
+    margin-bottom: 20px;
+    position: relative;
+    border-left: 4px solid transparent;
+}
+
+.alert-success {
+    background-color: rgba(76, 175, 80, 0.1);
+    color: #3c763d;
+    border-left-color: var(--success-color);
+}
+
+.alert-danger {
+    background-color: rgba(244, 67, 54, 0.1);
+    color: #a94442;
+    border-left-color: var(--danger-color);
+}
+
+.alert-warning {
+    background-color: rgba(255, 152, 0, 0.1);
+    color: #8a6d3b;
+    border-left-color: var(--warning-color);
+}
+
+.alert-info {
+    background-color: rgba(33, 150, 243, 0.1);
+    color: #31708f;
+    border-left-color: var(--info-color);
+}
+
+.toast {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(255, 255, 255, 0.95);
+    color: #333;
+    padding: 12px 25px;
+    border-radius: 25px;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s;
+    border: 1px solid rgba(76, 175, 80, 0.2);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+}
+
+.toast.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.navigation {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba(255, 255, 255, 0.95);
+    display: flex;
+    justify-content: space-around;
+    padding: 12px 0;
+    box-shadow: 0 -2px 15px rgba(0, 0, 0, 0.08);
+    z-index: 100;
+    backdrop-filter: blur(10px);
+    border-top: 1px solid rgba(76, 175, 80, 0.2);
+}
+
+.nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+    color: #888;
+    font-size: 12px;
+    transition: all 0.3s;
+    position: relative;
+}
+
+.nav-item::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 3px;
+    bottom: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: var(--primary-color);
+    transition: width 0.3s;
+    border-radius: 3px;
+}
+
+.nav-item:hover {
+    color: #555;
+}
+
+.nav-icon {
+    font-size: 22px;
+    margin-bottom: 5px;
+    transition: transform 0.3s;
+}
+
+.nav-item:hover .nav-icon {
+    transform: translateY(-3px);
+}
+
+.nav-item.active {
+    color: var(--primary-color);
+}
+
+.nav-item.active::after {
+    width: 30px;
+}
+
+.footer-space {
+    height: 80px;
+}
+
+/* Add some gaming-specific animations */
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.reward-amount {
+    animation: pulse 2s infinite;
+}
+
+/* Add glowing effect for interactive elements on hover */
+.btn:hover, .network-icon.active, .amount-option.active {
+    box-shadow: 0 0 15px rgba(76, 175, 80, 0.25);
+}
+</style>
+<style>
+.game-instructions {
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #f8f9fa;
+    border-left: 4px solid var(--primary-color);
+    border-radius: 5px;
+    font-size: 14px;
+    color: #333;
+}
+
+.game-instructions ul {
+    margin: 5px 0 0;
+    padding-left: 20px;
+}
+
+.game-instructions li {
+    list-style-type: disc;
+}
+</style>
+<style>
+.countdown-container {
+    text-align: center;
+    margin-top: 10px;
+    padding: 8px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+}
+
+.countdown-timer {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #495057;
+    display: block;
+    margin-top: 5px;
+}
+
+.hidden {
+    display: none;
+}
+</style>
+<style>
+  
+.spin-box-card {
+      background-color: white;
+      border-radius: 23px;
+      padding: 28px 24px;
+      margin: 30px auto;
+      max-width: 400px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08), 0 0 5px rgba(76, 175, 80, 0.1);
+      border: 2px solid rgba(76, 175, 80, 0.2);
+      transition: transform 0.2s ease;
+      text-align: center;
+      letter-spacing: 0.2px;
+    }
+
+    .spin-box-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12), 0 0 7px rgba(76, 175, 80, 0.15);
+    }
+
+    .spin-box-header {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+
+    .spin-icon {
+      font-size: 24px;
+      margin-right: 10px;
+    }
+
+    .spin-title {
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--primary-color);
+      letter-spacing: 0.5px;
+    }
+
+    .spin-box-content {
+      padding: 10px 0;
+    }
+
+    .reward-banner {
+      background-color: rgba(76, 175, 80, 0.1);
+      border-radius: 15px;
+      padding: 12px 18px;
+      margin-bottom: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .reward-banner span {
+      color: var(--primary-color);
+      font-weight: 600;
+      letter-spacing: 0.4px;
+      font-size: 15px;
+    }
+
+    .reward-text {
+      font-size: 16px;
+      line-height: 1.6;
+      margin-bottom: 24px;
+      color: #444;
+      padding: 0 15px;
+    }
+
+    .sparkle {
+      display: inline-block;
+      animation: sparkle 1.5s infinite alternate;
+      color: var(--secondary-color);
+      margin: 0 5px;
+    }
+
+    @keyframes sparkle {
+      0% { opacity: 0.6; transform: scale(0.8); }
+      100% { opacity: 1; transform: scale(1.1); }
+    }
+
+    .spin-button {
+      background: linear-gradient(to right, var(--primary-color), #2E7D32);
+      border: none;
+      color: white;
+      padding: 15px 30px;
+      font-size: 18px;
+      border-radius: 30px;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .spin-button:hover {
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.25);
+    }
+
+    .spin-button:active {
+      transform: translateY(1px);
+    }
+
+    .spin-button::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(to right, transparent, rgba(255,255,255,0.3), transparent);
+      animation: shine 2s infinite;
+    }
+
+    @keyframes shine {
+      0% { left: -100%; }
+      50%, 100% { left: 100%; }
+    }
+
+    .bonus-icon {
+      margin-right: 8px;
+      font-size: 20px;
+    }
+
+    /* Modal Styles */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.7);
+      animation: fadeIn 0.3s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .modal-content {
+  position: relative;
+  background-color: #fff;
+  margin: 2% auto;
+ top: 60px;
+  padding: 0;
+  width: 70%;       /* Manually set width */
+  max-width: 900px; /* Set maximum width */
+  border-radius: 15px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+  overflow: hidden;
+  animation: slideIn 0.4s ease-in-out;
+}
+
+/* Adjust for smaller devices */
+@media (max-width: 768px) {
+  .modal-content {
+    width: 95%;       /* Increase width to nearly full-screen on smaller devices */
+    max-width: 100%;  /* Allow full-width if needed */
+  }
+
+    @keyframes slideIn {
+      from { transform: translateY(-50px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .modal-header {
+      position: relative;
+      padding: 12px 15px;
+      background-color: var(--primary-color);
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-title {
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    .close-btn {
+      color: white;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+      background: none;
+      border: none;
+      padding: 0 5px;
+      line-height: 1;
+    }
+
+    .close-btn:hover {
+      transform: scale(1.1);
+    }
+
+    .modal-body {
+      width: 100%;
+      height: 80vh;
+      max-height: 500px;
+     max-width: 700px;
+    }
+
+    .modal-body iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+  </style>
+</style>
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">Daily Earn</div>
+            <div>
+            </div>
+        </header>
+        
+        <div id="alert-container" class="hidden"></div>
+        
+        <div class="card" style="margin-bottom: 30px;">
+            <div class="daily-reward-card">
+                <div class="reward-info">
+                    <div class="reward-amount">₦1</div>
+                    <b>Complete reCAPTCHA to claim</b>
+                    <div class="reward-status">Daily Reward: <span id="daily-reward-status">Loading...</span></div>
+                    <div id="countdown-display" class="countdown-display">
+                        Next reward in: <span id="countdown-timer">24:00:00</span>
+                    </div>
+                </div>
+               
+                <button id="claim-btn" class="btn btn-primary hidden" disabled>Claim</button>
+            </div>
+        </div>
+
+        <!-- reCAPTCHA positioned between sections -->
+        <div id="recaptcha-container" style="display: flex; justify-content: center; margin-bottom: 20px;">
+            <div class="g-recaptcha" data-sitekey="6LfANf0qAAAAALmlg5u3HnW00PtLEEkKMV-ulglv" data-callback="enableClaimButton"></div>
+        </div>
+
+  <!-- Modal -->
+
+
+  
+        <!-- NEW SECTION: Game Quest Card -->
+        <div class="card" style="margin-bottom: 30px;">
+            <div class="daily-reward-card">
+                <div class="reward-info">
+                    <div class="reward-amount">₦3</div>
+                    <b>Play 3 Games Quest</b>
+                    <div class="reward-status">Quest Status: <span id="quest-status">Incomplete</span></div>
+                    
+                    <!-- Progress bar for games played -->
+                    <div class="progress-container" style="width: 100%; background-color: #e0e0e0; border-radius: 5px; margin: 10px 0;">
+                        <div id="quest-progress-bar" class="progress-bar" style="height: 20px; width: 0%; background-color: var(--primary-color); border-radius: 5px; transition: width 0.3s ease;"></div>
+                    </div>
+                    <div id="games-progress">Games Played: <span id="games-played-count">0</span>/3</div>
+
+<div id="quest-countdown-display" class="countdown-container hidden">
+    <p>Next quest reward available in:</p>
+    <span id="quest-countdown-timer" class="countdown-timer">24:00:00</span>
+</div>
+                    
+            
+<!-- HTML for game instructions -->
+<div class="game-instructions">
+    <b>Games to play to get reward:</b>
+    <ul>
+        <li>Whack Mole</li>
+        <li>Subway Surfers Halloween</li>
+        <li>Relic Runner Away</li>
+    </ul>
+</div>
+                    <div id="game-timer-display" class="countdown-display hidden">
+                        Next game in: <span id="game-countdown-timer">03:00</span>
+                    </div>
+                </div>
+
+               
+                <button id="claim-quest-btn" class="btn btn-primary hidden">Claim Quest Reward</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="transactions-header">
+                <div class="card-title">Recent Transactions</div>
+                <a href="#" class="see-all">See All</a>
+            </div>
+            <div id="transaction-history">
+                <div class="transaction-item" style="text-align: center; color: #888;">
+                    No transactions yet
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer-space"></div>
+        
+        <div id="toast" class="toast">Transaction completed!</div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+    <script>
+  // ----- Firebase Initialization -----
+const firebaseConfig = {
+    apiKey: "AIzaSyBw1uA-kNKOZEufWKZ9AMBxvRGHNGF1lkA",
+    authDomain: "multi-games-a2561.firebaseapp.com",
+    databaseURL: "https://multi-games-a2561-default-rtdb.firebaseio.com",
+    projectId: "multi-games-a2561",
+    storageBucket: "multi-games-a2561.appspot.com",
+    messagingSenderId: "150551898066",
+    appId: "1:150551898066:web:4e8fb185f2321ba4140a0b",
+    measurementId: "G-PB8Y87E6XV"
+};
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const database = firebase.database();
+
+// ----- Global Constants and Variables -----
+const API_KEY = '2K6DSZdbL57EWYJNI4f31cX0O9PHQ8MFGaVCAUBReT7345D80Jea5bbEGkLfBFvAj9C';
+const DAILY_REWARD = 1;
+const QUEST_REWARD = 3;
+const MIN_PLAY_TIME = 3 * 60 * 1000;  // 3 minutes required per valid game session
+const QUEST_COOLDOWN = 24 * 60 * 60 * 1000; // 24 hours cooldown for quest reward
+
+let userData = {
+    userId: null,
+    airtimeBalance: 0,
+    lastClaim: 0,
+    transactions: [],
+    lastQuestClaim: 0,
+    gamesPlayedToday: 0,
+    isProcessingClaim: false,  // Lock to prevent double claims
+    isProcessingQuestClaim: false  // Lock for quest claims
+};
+
+let userLoggedIn = false;
+let captchaValidated = false;
+
+// ----- DOM Elements -----
+const elements = {
+    claimBtn: document.getElementById('claim-btn'),
+    countdownDisplay: document.getElementById('countdown-display'),
+    countdownTimer: document.getElementById('countdown-timer'),
+    dailyRewardStatus: document.getElementById('daily-reward-status'),
+    alertContainer: document.getElementById('alert-container'),
+    transactionHistory: document.getElementById('transaction-history'),
+    recaptchaContainer: document.getElementById('recaptcha-container'),
+    questStatus: document.getElementById('quest-status'),
+    gamesPlayedCount: document.getElementById('games-played-count'),
+    questProgressBar: document.getElementById('quest-progress-bar'),
+    claimQuestBtn: document.getElementById('claim-quest-btn'),
+    questCountdownDisplay: document.getElementById('quest-countdown-display'),
+    questCountdownTimer: document.getElementById('quest-countdown-timer'),
+    signOutBtn: document.getElementById('sign-out-btn')
+};
+
+// ----- Firebase Data Functions -----
+function initUserData(uid) {
+    const userRef = database.ref(`users/${uid}`);
+    return userRef.get().then((snapshot) => {
+        if (!snapshot.exists()) {
+            return userRef.set({
+                airtimeBalance: 0,
+                lastClaim: 0,
+                transactions: [],
+                lastQuestClaim: 0,
+                playedGames: [],
+                playedGamesLastReset: new Date().toISOString()
+            });
+        }
+    });
+}
+
+function syncFromFirebase(uid) {
+    const userRef = database.ref(`users/${uid}`);
+    userRef.on('value', (snapshot) => {
+        const data = snapshot.val() || {};
+        
+        // Update user data with server values
+        userData.airtimeBalance = data.airtimeBalance || 0;
+        userData.lastClaim = data.lastClaim || 0;
+        userData.transactions = data.transactions || [];
+        userData.lastQuestClaim = data.lastQuestClaim || 0;
+        
+        // Sync played games from Firebase with server timestamp validation
+        if (data.playedGames) {
+            localStorage.setItem('playedGames', JSON.stringify(data.playedGames));
+        }
+        if (data.playedGamesLastReset) {
+            localStorage.setItem('playedGamesLastReset', data.playedGamesLastReset);
+        }
+        
+        // Release claim locks in case they were stuck
+        userData.isProcessingClaim = false;
+        userData.isProcessingQuestClaim = false;
+        
+        // Update UI based on synced data
+        updateTransactionHistory();
+        checkDailyReward();
+        checkForPlayedGames();
+        checkQuestCooldown();
+    });
+}
+
+function syncToFirebase(uid, updateData = {}) {
+    if (!uid) return Promise.reject('No user ID');
+    
+    const userRef = database.ref(`users/${uid}`);
+    
+    // Get current played games data from localStorage to sync back
+    const playedGames = JSON.parse(localStorage.getItem('playedGames')) || [];
+    const playedGamesLastReset = localStorage.getItem('playedGamesLastReset') || new Date().toISOString();
+    
+    // Merge with any data updates passed in
+    const dataToSync = {
+        airtimeBalance: userData.airtimeBalance,
+        lastClaim: userData.lastClaim,
+        transactions: userData.transactions,
+        lastQuestClaim: userData.lastQuestClaim,
+        playedGames: playedGames,
+        playedGamesLastReset: playedGamesLastReset,
+        ...updateData
+    };
+    
+    // Use server timestamp for enhanced security
+    return userRef.update({
+        ...dataToSync,
+        lastUpdated: firebase.database.ServerValue.TIMESTAMP
+    });
+}
+
+function addTransaction(transaction) {
+    userData.transactions.unshift(transaction);
+    if (userData.userId) {
+        syncToFirebase(userData.userId);
+    }
+    updateTransactionHistory();
+}
+
+function updateTransactionHistory() {
+    if (!elements.transactionHistory) return;
+    
+    if (userData.transactions.length === 0) {
+        elements.transactionHistory.innerHTML = `<div class="transaction-item" style="text-align: center; color: #888;">No transactions yet</div>`;
+        return;
+    }
+    
+    elements.transactionHistory.innerHTML = '';
+    userData.transactions.slice(0, 3).forEach(transaction => {
+        const date = new Date(transaction.date);
+        const formattedDate = `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
+        const statusClass = transaction.status === 'success' ? 'success' :
+                           transaction.status === 'pending' ? 'pending' :
+                           transaction.status === 'reversed' ? 'reversed' : 'failed';
+        
+        elements.transactionHistory.innerHTML += `
+            <div class="transaction-item">
+                <div class="transaction-info">
+                    <div class="transaction-title">${transaction.type}</div>
+                    <div class="transaction-date">${formattedDate}</div>
+                    ${transaction.phone ? `<div class="transaction-phone">${transaction.phone}</div>` : ''}
+                    ${transaction.reference ? `<div class="transaction-reference">Ref: ${transaction.reference}</div>` : ''}
+                </div>
+                <div class="transaction-amount ${transaction.amount > 0 ? 'credit' : 'debit'}">
+                    ${transaction.amount > 0 ? '+' : ''}₦${Math.abs(transaction.amount)}
+                </div>
+                <div class="transaction-status ${statusClass}">${transaction.status}</div>
+            </div>
+        `;
+    });
+}
+
+function showAlert(message, type) {
+    if (!elements.alertContainer) return;
+    elements.alertContainer.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
+    elements.alertContainer.classList.remove('hidden');
+    setTimeout(() => { elements.alertContainer.classList.add('hidden'); }, 3000);
+}
+
+// ----- DAILY REWARD LOGIC -----
+function checkDailyReward() {
+    if (!elements.dailyRewardStatus || !elements.claimBtn || !elements.countdownDisplay) return;
+    
+    const now = new Date().getTime();
+    const twentyFourHours = 24 * 60 * 60 * 1000;
+    
+    if (now - userData.lastClaim >= twentyFourHours) {
+        elements.dailyRewardStatus.textContent = 'Available';
+        elements.countdownDisplay.style.display = 'none';
+        elements.recaptchaContainer.style.display = 'flex';
+    } else {
+        elements.dailyRewardStatus.textContent = 'Claimed for today';
+        elements.claimBtn.classList.add('hidden');
+        elements.countdownDisplay.style.display = 'block';
+        elements.recaptchaContainer.style.display = 'none';
+        startMainRewardCountdown(userData.lastClaim);
+    }
+}
+
+function startMainRewardCountdown(lastClaimTime) {
+    if (!elements.countdownTimer) return;
+    
+    const targetTime = lastClaimTime + (24 * 60 * 60 * 1000);
+    
+    const updateCountdown = () => {
+        const now = new Date().getTime();
+        const timeRemaining = targetTime - now;
+        
+        if (timeRemaining <= 0) {
+            elements.countdownTimer.textContent = "00:00:00";
+            checkDailyReward();
+            clearInterval(countdownInterval);
+            return;
+        }
+        
+        const hours = Math.floor(timeRemaining / (1000 * 60 * 60));
+        const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
+        elements.countdownTimer.textContent = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+    };
+    
+    updateCountdown();
+    const countdownInterval = setInterval(updateCountdown, 1000);
+    window.addEventListener('beforeunload', () => clearInterval(countdownInterval));
+}
+
+async function claimDailyReward() {
+    // Check prerequisites
+    if (!userLoggedIn || !userData.userId) {
+        showAlert('Please login to claim your daily reward', 'warning');
+        return;
+    }
+    
+    if (!captchaValidated) {
+        showAlert('Please complete the reCAPTCHA first', 'warning');
+        return;
+    }
+    
+    // Prevent double claims
+    if (userData.isProcessingClaim) {
+        showAlert('Processing previous claim, please wait...', 'warning');
+        return;
+    }
+    
+    userData.isProcessingClaim = true;
+    
+    try {
+        // Double-check with server that reward is available
+        const userRef = database.ref(`users/${userData.userId}`);
+        const snapshot = await userRef.once('value');
+        const serverData = snapshot.val() || {};
+        const now = new Date().getTime();
+        
+        if (now - (serverData.lastClaim || 0) < 24 * 60 * 60 * 1000) {
+            showAlert('Daily reward already claimed', 'warning');
+            userData.isProcessingClaim = false;
+            return;
+        }
+        
+        // Update balance and claim time atomically on server
+        await syncToFirebase(userData.userId, {
+            airtimeBalance: (serverData.airtimeBalance || 0) + DAILY_REWARD,
+            lastClaim: now,
+            transactions: [
+                {
+                    type: 'Daily Reward Claimed',
+                    amount: DAILY_REWARD,
+                    date: now,
+                    status: 'success'
+                },
+                ...(serverData.transactions || [])
+            ]
+        });
+        
+        // Update local data
+        userData.airtimeBalance += DAILY_REWARD;
+        userData.lastClaim = now;
+        
+        showAlert(`Daily reward of ₦${DAILY_REWARD} claimed successfully!`, 'success');
+        
+        // Update UI
+        elements.claimBtn.classList.add('hidden');
+        elements.recaptchaContainer.style.display = 'none';
+        captchaValidated = false;
+        checkDailyReward();
+        
+    } catch (error) {
+        console.error("Error claiming daily reward:", error);
+        showAlert('Error claiming reward. Please try again.', 'danger');
+    } finally {
+        userData.isProcessingClaim = false;
+    }
+}
+
+function enableClaimButton() {
+    captchaValidated = true;
+    elements.claimBtn.disabled = false;
+    elements.claimBtn.classList.remove('hidden');
+}
+
+// ----- GAME QUEST LOGIC -----
+function getTodaySixAM() {
+    const now = new Date();
+    return new Date(now.getFullYear(), now.getMonth(), now.getDate(), 6, 0, 0, 0);
+}
+
+function getYesterdaySixAM() {
+    return new Date(getTodaySixAM().getTime() - 24 * 60 * 60 * 1000);
+}
+
+// Reset game tracking if needed, respecting quest cooldown
+function resetPlayedGamesIfNeeded() {
+    const now = new Date().getTime();
+    
+    // Don't reset if quest is on cooldown
+    if (now - userData.lastQuestClaim < QUEST_COOLDOWN) {
+        return;
+    }
+    
+    const todaySixAM = getTodaySixAM();
+    let lastReset = localStorage.getItem('playedGamesLastReset');
+    
+    if (!lastReset) {
+        const initialReset = now < todaySixAM.getTime() ? getYesterdaySixAM() : todaySixAM;
+        localStorage.setItem('playedGamesLastReset', initialReset.toISOString());
+        localStorage.setItem('playedGames', JSON.stringify([]));
+        
+        if (userData.userId) {
+            syncToFirebase(userData.userId);
+        }
+        return;
+    }
+    
+    const lastResetTime = new Date(lastReset);
+    if (now >= todaySixAM.getTime() && lastResetTime < todaySixAM) {
+        localStorage.setItem('playedGames', JSON.stringify([]));
+        localStorage.setItem('playedGamesLastReset', todaySixAM.toISOString());
+        if (userData.userId) {
+            syncToFirebase(userData.userId);
+        }
+    } else if (now < todaySixAM.getTime() && lastResetTime < getYesterdaySixAM()) {
+        localStorage.setItem('playedGames', JSON.stringify([]));
+        localStorage.setItem('playedGamesLastReset', getYesterdaySixAM().toISOString());
+        if (userData.userId) {
+            syncToFirebase(userData.userId);
+        }
+    }
+}
+
+function checkForPlayedGames() {
+    resetPlayedGamesIfNeeded();
+    
+    const playedGames = JSON.parse(localStorage.getItem("playedGames")) || [];
+    const validGames = playedGames.filter(game => game.duration >= MIN_PLAY_TIME);
+    
+    userData.gamesPlayedToday = validGames.length;
+    
+    if (elements.gamesPlayedCount) {
+        elements.gamesPlayedCount.textContent = userData.gamesPlayedToday;
+    }
+    
+    updateQuestProgressBar();
+    checkQuestStatus();
+}
+
+function checkQuestCooldown() {
+    if (!elements.questStatus || !elements.claimQuestBtn || !elements.questCountdownDisplay) return;
+    
+    const now = new Date().getTime();
+    const cooldownRemaining = QUEST_COOLDOWN - (now - userData.lastQuestClaim);
+    
+    if (cooldownRemaining > 0 && userData.lastQuestClaim > 0) {
+        // Quest is on cooldown
+        elements.questStatus.textContent = 'On Cooldown';
+        elements.questStatus.style.color = '#888';
+        elements.claimQuestBtn.classList.add('hidden');
+        elements.questCountdownDisplay.classList.remove('hidden');
+        startQuestCountdown(userData.lastQuestClaim);
+    } else {
+        // No quest cooldown
+        elements.questCountdownDisplay.classList.add('hidden');
+        checkQuestStatus();
+    }
+}
+
+function startQuestCountdown(lastQuestClaimTime) {
+    if (!elements.questCountdownTimer) return;
+    
+    const targetTime = lastQuestClaimTime + QUEST_COOLDOWN;
+    
+    const updateQuestCountdown = () => {
+        const now = new Date().getTime();
+        const timeRemaining = targetTime - now;
+        
+        if (timeRemaining <= 0) {
+            elements.questCountdownTimer.textContent = "00:00:00";
+            checkQuestCooldown();
+            clearInterval(questCountdownInterval);
+            return;
+        }
+        
+        const hours = Math.floor(timeRemaining / (1000 * 60 * 60));
+        const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
+        elements.questCountdownTimer.textContent = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+    };
+    
+    updateQuestCountdown();
+    const questCountdownInterval = setInterval(updateQuestCountdown, 1000);
+    window.addEventListener('beforeunload', () => clearInterval(questCountdownInterval));
+}
+
+function checkQuestStatus() {
+    if (!elements.questStatus || !elements.claimQuestBtn) return;
+    
+    // First check if quest is on cooldown
+    const now = new Date().getTime();
+    if (now - userData.lastQuestClaim < QUEST_COOLDOWN) {
+        return; // Let the cooldown function handle this state
+    }
+    
+    // Quest is not on cooldown, check completion status
+    if (userData.gamesPlayedToday >= 3) {
+        elements.questStatus.textContent = userLoggedIn ? 'Complete! Claim Your Reward' : 'Complete! Login to claim reward';
+        elements.questStatus.style.color = '#4CAF50';
+        elements.claimQuestBtn.classList.toggle('hidden', !userLoggedIn);
+    } else {
+        elements.questStatus.textContent = 'In Progress';
+        elements.questStatus.style.color = '#FFC107';
+        elements.claimQuestBtn.classList.add('hidden');
+    }
+}
+
+function updateQuestProgressBar() {
+    if (!elements.questProgressBar) return;
+    const progressPercentage = Math.min(100, (userData.gamesPlayedToday / 3) * 100);
+    elements.questProgressBar.style.width = `${progressPercentage}%`;
+}
+
+// Record a valid game session
+function recordGameSession(gameName, duration) {
+    let playedGames = JSON.parse(localStorage.getItem("playedGames")) || [];
+    
+    playedGames.push({
+        gameName: gameName,
+        duration: duration,
+        timestamp: new Date().toISOString()
+    });
+    
+    localStorage.setItem("playedGames", JSON.stringify(playedGames));
+    
+    // Sync to Firebase
+    if (userData.userId) {
+        syncToFirebase(userData.userId);
+    }
+    
+    checkForPlayedGames();
+}
+
+// Claim quest reward with server verification
+async function claimQuestReward() {
+    // Check prerequisites
+    if (!userLoggedIn || !userData.userId) {
+        showAlert('Please login to claim your quest reward', 'warning');
+        return;
+    }
+    
+    if (userData.gamesPlayedToday < 3) {
+        showAlert('You need to play 3 games to claim this reward', 'warning');
+        return;
+    }
+    
+    // Prevent double claims
+    if (userData.isProcessingQuestClaim) {
+        showAlert('Processing your claim, please wait...', 'warning');
+        return;
+    }
+    
+    userData.isProcessingQuestClaim = true;
+    
+    try {
+        // Verify with server that reward is available
+        const userRef = database.ref(`users/${userData.userId}`);
+        const snapshot = await userRef.once('value');
+        const serverData = snapshot.val() || {};
+        const now = new Date().getTime();
+        
+        // Check cooldown from server data
+        if (now - (serverData.lastQuestClaim || 0) < QUEST_COOLDOWN) {
+            showAlert('Quest reward is on cooldown', 'warning');
+            userData.isProcessingQuestClaim = false;
+            return;
+        }
+        
+        // Verify games played count from server
+        const serverGames = serverData.playedGames || [];
+        const validServerGames = serverGames.filter(game => game.duration >= MIN_PLAY_TIME);
+        
+        if (validServerGames.length < 3) {
+            showAlert('Server verification failed: Not enough valid games played', 'warning');
+            userData.isProcessingQuestClaim = false;
+            checkForPlayedGames(); // Sync with server's game count
+            return;
+        }
+        
+        // Process reward atomically on server
+        await syncToFirebase(userData.userId, {
+            airtimeBalance: (serverData.airtimeBalance || 0) + QUEST_REWARD,
+            lastQuestClaim: now,
+            // Don't reset games - they'll remain until cooldown is over
+            transactions: [
+                {
+                    type: 'Game Quest Reward',
+                    amount: QUEST_REWARD,
+                    date: now,
+                    status: 'success'
+                },
+                ...(serverData.transactions || [])
+            ]
+        });
+        
+        // Update local data
+        userData.airtimeBalance += QUEST_REWARD;
+        userData.lastQuestClaim = now;
+        
+        showAlert(`Quest reward of ₦${QUEST_REWARD} claimed successfully!`, 'success');
+        
+        // Update UI to show cooldown
+        checkQuestCooldown();
+        
+    } catch (error) {
+        console.error("Error claiming quest reward:", error);
+        showAlert('Error claiming quest reward. Please try again.', 'danger');
+    } finally {
+        userData.isProcessingQuestClaim = false;
+    }
+}
+
+// ----- Event Listeners -----
+// Set up event listeners once DOM is loaded
+function setupEventListeners() {
+    // Claim button for daily reward
+    if (elements.claimBtn) {
+        elements.claimBtn.addEventListener('click', (event) => {
+            event.preventDefault();
+            claimDailyReward();
+        });
+    }
+    
+    // Quest claim button
+    if (elements.claimQuestBtn) {
+        elements.claimQuestBtn.addEventListener('click', (event) => {
+            event.preventDefault();
+            claimQuestReward();
+        });
+    }
+    
+    // Sign out button
+    if (elements.signOutBtn) {
+        elements.signOutBtn.addEventListener('click', () => {
+            auth.signOut().then(() => {
+                showAlert('Signed out successfully', 'success');
+            }).catch((error) => {
+                console.error('Error signing out:', error);
+                showAlert('Error signing out', 'danger');
+            });
+        });
+    }
+    
+    // Network selection
+    document.querySelectorAll('.network-icon').forEach(icon => {
+        icon.addEventListener('click', function() {
+            document.querySelectorAll('.network-icon').forEach(n => n.classList.remove('active'));
+            this.classList.add('active');
+            window.selectedNetwork = this.getAttribute('data-network');
+            window.selectedPlanId = this.getAttribute('data-plan');
+        });
+    });
+    
+    // Amount selection
+    document.querySelectorAll('.amount-option').forEach(option => {
+        option.addEventListener('click', function() {
+            document.querySelectorAll('.amount-option').forEach(o => o.classList.remove('active'));
+            this.classList.add('active');
+            window.selectedAmount = parseInt(this.getAttribute('data-amount'));
+        });
+    });
+}
+
+// ----- Authentication State Handler -----
+auth.onAuthStateChanged((user) => {
+    if (user) {
+        userData.userId = user.uid;
+        userLoggedIn = true;
+        
+        // Initialize and sync data
+        initUserData(userData.userId).then(() => {
+            syncFromFirebase(userData.userId);
+        });
+        
+        if (elements.signOutBtn) {
+            elements.signOutBtn.classList.remove('hidden');
+        }
+    } else {
+        userData.userId = null;
+        userLoggedIn = false;
+        userData.airtimeBalance = 0;
+        userData.lastClaim = 0;
+        userData.transactions = [];
+        userData.lastQuestClaim = 0;
+        
+        if (elements.signOutBtn) {
+            elements.signOutBtn.classList.add('hidden');
+        }
+        
+        if (elements.claimQuestBtn) {
+            elements.claimQuestBtn.classList.add('hidden');
+        }
+        
+        // Still check played games for UI updates
+        checkForPlayedGames();
+        checkQuestStatus();
+    }
+});
+
+// ----- Initialization -----
+window.addEventListener('DOMContentLoaded', () => {
+    setupEventListeners();
+    
+    // Check for played games and quest status
+    checkForPlayedGames();
+    checkQuestCooldown();
+    
+    // Set up timers for periodic checks (with reduced frequency)
+    setInterval(checkForPlayedGames, 10000);  // 10 seconds instead of 5
+    setInterval(checkQuestCooldown, 10000);
+    
+    // Initialize with current user if available
+    if (auth.currentUser) {
+        userData.userId = auth.currentUser.uid;
+        userLoggedIn = true;
+        initUserData(userData.userId).then(() => {
+            syncFromFirebase(userData.userId);
+        });
+    }
+});
+</script>
+<script>
+    // Get modal elements
+    const modal = document.getElementById('spinModal');
+    const closeBtn = document.getElementById('closeModal');
+    const spinBtn = document.getElementById('spinBoxBtn');
+    const spinFrame = document.getElementById('spinFrame');
+
+    // Open modal when spin button is clicked
+    spinBtn.addEventListener('click', function() {
+      // Add animation for button
+      this.innerHTML = '<span class="bonus-icon">🎉</span>Spinning...';
+      
+      // Show modal with slight delay for button animation
+      setTimeout(() => {
+        modal.style.display = 'block';
+        // Reset button text after modal appears
+        this.innerHTML = '<span class="bonus-icon">🎯</span>Spin Box';
+      }, 500);
+    });
+
+    // Close modal when X button is clicked
+    closeBtn.addEventListener('click', function() {
+      modal.style.display = 'none';
+    });
+
+    // Close modal when clicking outside of it
+    window.addEventListener('click', function(event) {
+      if (event.target === modal) {
+        modal.style.display = 'none';
+      }
+    });
+
+    // Handle escape key press to close modal
+    window.addEventListener('keydown', function(event) {
+      if (event.key === 'Escape' && modal.style.display === 'block') {
+        modal.style.display = 'none';
+      }
+    });
+  </script>
+</body>
+</html>
