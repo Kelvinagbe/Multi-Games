@@ -1,0 +1,4 @@
+User-agent: *
+Disallow:
+
+Sitemap: https://multi-games-fawn.vercel.app/sitemap.xml
