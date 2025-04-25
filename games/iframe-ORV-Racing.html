@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Game</title>
+    <link rel="manifest" href="https://www.ooppgame.com/ORV_Racing/manifest_transsion.json">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #0f172a;
+            color: white;
+            min-height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Fullscreen game container */
+        .game-iframe-container {
+            width: 100vw;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: #0f172a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        iframe {
+            width: 100vw;
+            height: 100vh;
+            border: none;
+        }
+
+        /* Floating and draggable menu button */
+        .menu-button {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: #166534;
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: grab;
+            z-index: 1000;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            border: none;
+            transition: background-color 0.3s;
+            user-select: none;
+        }
+
+        .menu-button.active {
+            background-color: white;
+        }
+
+        /* Power icon inside the button */
+        .power-icon svg {
+            width: 36px;
+            height: 36px;
+            fill: none;
+            stroke: white;
+            stroke-width: 2.5;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            transition: all 0.3s;
+        }
+
+        .power-icon.on svg {
+            stroke: #166534;
+        }
+
+        /* The menu overlay */
+        .menu-overlay {
+            position: absolute;
+            display: none;
+            flex-direction: column;
+            background-color: #1e293b;
+            border-radius: 10px;
+            padding: 10px;
+            z-index: 999;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .menu-item {
+            padding: 10px 20px;
+            color: white;
+            cursor: pointer;
+            border-radius: 5px;
+            margin: 5px 0;
+            text-align: center;
+            transition: background-color 0.2s;
+        }
+
+        .menu-item:hover {
+            background-color: #334155;
+        }
+
+        .active {
+            display: flex;
+        }
+
+        /* Offline indicator */
+        #offline-indicator {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #ff4444;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            display: none;
+            z-index: 2000;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="game-iframe-container">
+        <iframe id="gameIframe" src="https://www.ooppgame.com/ORV_Racing/index_aha.html" allowfullscreen></iframe>
+    </div>
+
+    <!-- Floating Menu Button -->
+    <button class="menu-button" id="menuButton">
+        <div class="power-icon" id="powerIcon">
+            <svg viewBox="0 0 24 24">
+                <path d="M12 3.5v9M18.36 6.64C19.6 7.88 20.38 9.57 20.38 11.38c0 4.13-3.25 7.38-7.38 7.38-4.12 0-7.38-3.25-7.38-7.38 0-1.81 0.77-3.5 2.02-4.74" />
+            </svg>
+        </div>
+    </button>
+
+    <!-- Menu Overlay -->
+    <div class="menu-overlay" id="menuOverlay">
+        <div class="menu-item" id="homeButton">Home</div>
+        <div class="menu-item" id="exitButton">Exit</div>
+    </div>
+
+    <div id="offline-indicator">You are currently offline</div>
+
+    <script>
+        // Register Service Worker for offline support
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/service-worker.js')
+                    .then(registration => {
+                        console.log('Service Worker registered:', registration.scope);
+                    })
+                    .catch(error => {
+                        console.log('Service Worker registration failed:', error);
+                    });
+            });
+        }
+
+        // Handle online/offline status
+        const offlineIndicator = document.getElementById('offline-indicator');
+        function updateOnlineStatus() {
+            offlineIndicator.style.display = navigator.onLine ? 'none' : 'block';
+        }
+        window.addEventListener('online', updateOnlineStatus);
+        window.addEventListener('offline', updateOnlineStatus);
+        updateOnlineStatus();
+
+        // Handle device orientation change
+        window.addEventListener("resize", function() {
+            const iframe = document.getElementById("gameIframe");
+            iframe.style.width = "100vw";
+            iframe.style.height = "100vh";
+        });
+
+        // Make the menu button draggable
+        const menuButton = document.getElementById('menuButton');
+        let isDragging = false;
+        let offsetX, offsetY;
+
+        menuButton.addEventListener('mousedown', function(e) {
+            isDragging = true;
+            offsetX = e.clientX - menuButton.getBoundingClientRect().left;
+            offsetY = e.clientY - menuButton.getBoundingClientRect().top;
+            document.addEventListener('mousemove', onMouseMove);
+            document.addEventListener('mouseup', onMouseUp);
+        });
+
+        function onMouseMove(e) {
+            if (isDragging) {
+                menuButton.style.left = `${e.clientX - offsetX}px`;
+                menuButton.style.top = `${e.clientY - offsetY}px`;
+            }
+        }
+
+        function onMouseUp() {
+            isDragging = false;
+            document.removeEventListener('mousemove', onMouseMove);
+            document.removeEventListener('mouseup', onMouseUp);
+        }
+
+        // Touch support for dragging
+        menuButton.addEventListener('touchstart', function(e) {
+            const touch = e.touches[0];
+            offsetX = touch.clientX - menuButton.getBoundingClientRect().left;
+            offsetY = touch.clientY - menuButton.getBoundingClientRect().top;
+            document.addEventListener('touchmove', onTouchMove);
+            document.addEventListener('touchend', onTouchEnd);
+        });
+
+        function onTouchMove(e) {
+            const touch = e.touches[0];
+            menuButton.style.left = `${touch.clientX - offsetX}px`;
+            menuButton.style.top = `${touch.clientY - offsetY}px`;
+        }
+
+        function onTouchEnd() {
+            document.removeEventListener('touchmove', onTouchMove);
+            document.removeEventListener('touchend', onTouchEnd);
+        }
+    </script>
+
+<script>
+    // Define game details (change per game)
+    const gameName = "ORV racing"; // Change this for each game
+
+    // Retrieve existing played games or initialize an empty array
+    let playedGames = JSON.parse(localStorage.getItem("playedGames")) || [];
+
+    // Remove game if already exists to avoid duplicates
+    playedGames = playedGames.filter(game => game !== gameName);
+
+    // Add new game at the beginning (most recent first)
+    playedGames.unshift(gameName);
+
+    // Keep only the last 4 games
+    if (playedGames.length > 4) {
+        playedGames.pop();
+    }
+
+    // Save updated list back to localStorage
+    localStorage.setItem("playedGames", JSON.stringify(playedGames));
+</script>
+</body>
+</html>

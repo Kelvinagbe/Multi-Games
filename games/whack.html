@@ -1,0 +1,1151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Whack-a-Mole</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f0f8e6;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            color: #538d22;
+            margin-bottom: 10px;
+        }
+        .game-info {
+            display: flex;
+            justify-content: space-between;
+            max-width: 500px;
+            margin: 0 auto 20px;
+            background-color: #538d22;
+            color: white;
+            padding: 10px;
+            border-radius: 10px;
+        }
+        .game-info div {
+            font-size: 18px;
+            font-weight: bold;
+        }/* Alert message styling */
+
+        .game-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-gap: 15px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        .hole {
+            position: relative;
+            width: 100%;
+            padding-bottom: 100%;
+            background-color: #76b041;
+            border-radius: 50%;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        .mole {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #8f5631;
+            border-radius: 50%;
+            transition: top 0.3s;
+        }
+        .mole.up {
+            top: 30%; /* Mole peeks out of the hole instead of fully appearing */
+        }
+        .mole .face {
+            position: absolute;
+            top: 20%;
+            left: 0;
+            width: 100%;
+            height: 60%;
+        }
+        .mole .eyes {
+            position: absolute;
+            top: 20%;
+            width: 100%;
+            display: flex;
+            justify-content: space-evenly;
+        }
+        .mole .eye {
+            width: 20%;
+            height: 0;
+            padding-bottom: 20%;
+            background-color: white;
+            border-radius: 50%;
+            position: relative;
+        }
+        .mole .eye::after {
+            content: '';
+            position: absolute;
+            top: 30%;
+            left: 30%;
+            width: 40%;
+            height: 40%;
+            background-color: black;
+            border-radius: 50%;
+        }
+        .mole .nose {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 20%;
+            height: 0;
+            padding-bottom: 10%;
+            background-color: #f08080;
+            border-radius: 50%;
+        }
+        .mole .mouth {
+            position: absolute;
+            bottom: 15%;
+            left: 30%;
+            width: 40%;
+            height: 0;
+            padding-bottom: 10%;
+            background-color: #ff6b6b;
+            border-radius: 10px;
+        }
+        /* Dizzy effect for whacked moles */
+        .mole.whacked .face {
+            transform: translateY(10px);
+        }
+        .mole.whacked .eyes {
+            height: 5%;
+        }
+        .mole.whacked .eye::after {
+            content: 'x';
+            font-size: 20px;
+            line-height: 0;
+            color: black;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .mole.whacked .mouth {
+            transform: scaleY(-1);
+        }
+        /* Stars for dizzy effect */
+        .dizzy-stars {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .dizzy-stars.show {
+            opacity: 1;
+            animation: spin 2s linear;
+        }
+        .star {
+            position: absolute;
+            color: yellow;
+            font-size: 20px;
+            animation: twinkle 0.5s infinite alternate;
+        }
+        .star:nth-child(1) {
+            top: 10%;
+            left: 20%;
+        }
+        .star:nth-child(2) {
+            top: 5%;
+            right: 25%;
+        }
+        .star:nth-child(3) {
+            top: 30%;
+            right: 10%;
+        }
+        .star:nth-child(4) {
+            top: 20%;
+            left: 10%;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        @keyframes twinkle {
+            0% { opacity: 0.3; transform: scale(0.8); }
+            100% { opacity: 1; transform: scale(1.2); }
+        }
+        
+        .instructions {
+            max-width: 500px;
+            margin: 0 auto 20px;
+            background-color: #f8edeb;
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid #538d22;
+            text-align: left;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 200;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+            width: 90%;
+            max-width: 500px;
+        }
+        .instructions h2 {
+            color: #538d22;
+            margin-top: 0;
+            text-align: center;
+        }
+        .instructions ul {
+            padding-left: 20px;
+        }
+        .instructions li {
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+        .instructions p {
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .splash-credits {
+            text-align: center;
+            font-style: italic;
+            margin-top: 15px;
+            color: #538d22;
+            font-weight: bold;
+        }
+        button {
+            margin: 10px 5px;
+            padding: 10px 20px;
+            background-color: #538d22;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #76b041;
+        }
+        .difficulty-selection {
+            max-width: 500px;
+            margin: 0 auto 20px;
+            background-color: #e9f5db;
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid #538d22;
+        }
+        .difficulty-selection h3 {
+            color: #538d22;
+            margin-top: 0;
+        }
+        .difficulty-options {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .difficulty-btn {
+            padding: 8px 15px;
+            background-color: #aad576;
+            opacity: 0.7;
+        }
+        .difficulty-btn.selected {
+            background-color: #538d22;
+            opacity: 1;
+            font-weight: bold;
+        }
+        .difficulty-description {
+            font-size: 14px;
+            margin-top: 10px;
+            font-style: italic;
+        }
+        .game-over {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+        .game-over-content {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+            max-width: 300px;
+        }
+        .whack-effect {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 30px;
+            font-weight: bold;
+            color: #ff6b6b;
+            opacity: 0;
+            pointer-events: none;
+        }
+        .whack-effect.active {
+            animation: whackText 0.5s ease-out;
+        }
+        @keyframes whackText {
+            0% {
+                opacity: 1;
+                transform: scale(0.5);
+            }
+            100% {
+                opacity: 0;
+                transform: scale(1.5);
+            }
+        }
+        .powered-by {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            background-color: rgba(83, 141, 34, 0.8);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            font-weight: bold;
+            display: none;
+        }
+        .splash-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            z-index: 150;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .start-menu-btn {
+            margin-top: 20px;
+            font-size: 18px;
+            padding: 12px 25px;
+        }
+        .game-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+        #main-container {
+            display: none;
+        }
+        .support-btn {
+            background-color: #ff6b6b;
+        }
+        .support-btn:hover {
+            background-color: #ff8c8c;
+        }
+        .splash-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        /* Supreme mode styling */
+        #supreme-btn {
+            background-color: #9d0208;
+            color: #ffd60a;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px black;
+            box-shadow: 0 0 10px #ff0000;
+        }
+        #supreme-btn.selected {
+            background-color: #6a040f;
+            opacity: 1;
+        }
+        /* First splash screen styling */
+        #first-splash {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-color: #538d22;
+            width: 100%;
+            height: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 300;
+        }
+        .splash-logo {
+            max-width: 80%;
+            height: auto;
+            margin-bottom: 30px;
+        }
+        #instructions {
+            display: none;
+        }
+        /* Sound control button styling */
+        .sound-control {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            z-index: 100;
+            background-color: rgba(83, 141, 34, 0.8);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+        }
+        .sound-control i {
+            font-size: 20px;
+        }
+        .sound-control.muted .fa-volume-up {
+            display: none;
+        }
+        .sound-control:not(.muted) .fa-volume-mute {
+            display: none;
+        }
+    </style>
+
+<!-- Add these CSS styles to your <head> section -->
+<style>
+  /* Styles for the alert box */
+  #gameAlert {
+    display: none;
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #ffcc00;
+    color: #333;
+    padding: 10px 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    z-index: 1000;
+    font-weight: bold;
+    text-align: center;
+  }
+
+  /* Styles for the progress bar container */
+  #progressBarContainer {
+    width: 100%;
+    height: 20px;
+    background-color: #eee;
+    border-radius: 10px;
+    margin: 20px 0;
+    overflow: hidden;
+  }
+
+  /* Styles for the progress bar itself */
+  #progressBar {
+    width: 0%;
+    height: 100%;
+    background-color: #4CAF50;
+    transition: width 0.5s ease;
+  }
+
+  #gameStatus {
+    font-weight: bold;
+    margin: 10px 0;
+    text-align: center;
+  }
+</style>
+    <!-- Font Awesome for sound icons and stars -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+
+<!-- Add these HTML elements where you want them to appear in your page -->
+<div id="gameAlert"></div>
+<div id="progressBarContainer">
+  <div id="progressBar"></div>
+</div>
+<div id="gameStatus">Loading game...</div>
+
+
+    <!-- Sound control button -->
+    <div class="sound-control" id="sound-control">
+        <i class="fas fa-volume-up"></i>
+        <i class="fas fa-volume-mute"></i>
+    </div>
+
+    <!-- First splash screen -->
+    <div id="first-splash">
+        <img src="https://i.postimg.cc/tJtT7bVC/IMG-20250226-WA0077.jpg" alt="Whack-a-Mole Logo" class="splash-logo">
+    </div>
+
+    <div id="splash-screen" class="splash-overlay">
+        <div id="instructions" class="instructions">
+            <h2>Whack-a-Mole!</h2>
+            <ul>
+                <li>Moles will randomly pop up from their holes</li>
+                <li>Click or tap on a mole to whack it before it disappears</li>
+                <li>Each successful whack earns you 1 point</li>
+                <li>You have 30 seconds to whack as many moles as possible</li>
+                <li>Be quick! The moles won't stay up for long!</li>
+                <li>Choose a difficulty level to adjust how fast the moles appear and disappear</li>
+                <li>Try Supreme mode if you dare - only for the fastest reflexes!</li>
+            </ul>
+            <p>Click the button below to start!</p>
+            <div class="splash-buttons">
+                <button id="goto-menu-btn" class="start-menu-btn">Go to Menu</button>
+                <button id="splash-support-btn" class="start-menu-btn support-btn">Support</button>
+            </div>
+            <div class="splash-credits">Made by Kelvin</div>
+        </div>
+    </div>
+    
+    <div id="main-container">
+        <h1>Whack-a-Mole!</h1>
+        <div id="difficulty-selection" class="difficulty-selection">
+            <h3>Select Difficulty:</h3>
+            <div class="difficulty-options">
+                <button id="easy-btn" class="difficulty-btn selected">Easy</button>
+                <button id="normal-btn" class="difficulty-btn">Normal</button>
+                <button id="hard-btn" class="difficulty-btn">Hard</button>
+                <button id="supreme-btn" class="difficulty-btn">Supreme</button>
+            </div>
+            <p id="difficulty-description" class="difficulty-description">Easy: Slower moles, longer time to whack them.</p>
+            <button id="start-button">Start Game</button>
+        </div>
+        
+        <div class="game-info">
+            <div>Score: <span id="score">0</span></div>
+            <div>Time: <span id="time">30</span>s</div>
+            <div>Level: <span id="current-level">Easy</span></div>
+        </div>
+        <div class="game-container" id="game">
+            <!-- Holes will be created dynamically -->
+        </div>
+        
+        <div class="powered-by" id="powered-by">Powered by Kelvin</div>
+    </div>
+    
+    <div class="game-over" id="game-over">
+        <div class="game-over-content">
+            <h2>Game Over!</h2>
+            <p>Your score: <span id="final-score">0</span></p>
+            <p>Difficulty: <span id="final-level">Easy</span></p>
+            <div class="game-buttons">
+                <button id="play-again">Play Again</button>
+                <button id="back-to-menu">Back to Menu</button>
+                <button id="game-over-support-btn" class="support-btn">Support</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Audio elements -->
+    <audio id="background-music" loop>
+        <source src="https://audio.jukehost.co.uk/gklZS6RIqecojiP682VHRdWY33eyeCfV" type="audio/mpeg">
+    </audio>
+    <audio id="whack-sound">
+        <source src="https://audio.jukehost.co.uk/xGoDGvrTbntdWgli8cZdQZDMao3TNQpP" type="audio/mpeg">
+    </audio>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const firstSplash = document.getElementById('first-splash');
+            const splashScreen = document.getElementById('splash-screen');
+            const instructions = document.getElementById('instructions');
+            const mainContainer = document.getElementById('main-container');
+            const gotoMenuBtn = document.getElementById('goto-menu-btn');
+            const splashSupportBtn = document.getElementById('splash-support-btn');
+            const gameOverSupportBtn = document.getElementById('game-over-support-btn');
+            const game = document.getElementById('game');
+            const scoreDisplay = document.getElementById('score');
+            const timeDisplay = document.getElementById('time');
+            const startButton = document.getElementById('start-button');
+            const gameOverDisplay = document.getElementById('game-over');
+            const finalScoreDisplay = document.getElementById('final-score');
+            const finalLevelDisplay = document.getElementById('final-level');
+            const playAgainButton = document.getElementById('play-again');
+            const backToMenuButton = document.getElementById('back-to-menu');
+            const currentLevelDisplay = document.getElementById('current-level');
+            const difficultyDescription = document.getElementById('difficulty-description');
+            const poweredByDisplay = document.getElementById('powered-by');
+            const difficultySelection = document.getElementById('difficulty-selection');
+            const soundControl = document.getElementById('sound-control');
+            
+            // Audio elements
+            const backgroundMusic = document.getElementById('background-music');
+            const whackSound = document.getElementById('whack-sound');
+            
+            // Sound control
+            let soundEnabled = true;
+            
+            soundControl.addEventListener('click', toggleSound);
+            
+            function toggleSound() {
+                soundEnabled = !soundEnabled;
+                
+                if (soundEnabled) {
+                    soundControl.classList.remove('muted');
+                    if (gameActive) {
+                        backgroundMusic.play();
+                    }
+                } else {
+                    soundControl.classList.add('muted');
+                    backgroundMusic.pause();
+                }
+            }
+            
+            // Difficulty buttons
+            const easyBtn = document.getElementById('easy-btn');
+            const normalBtn = document.getElementById('normal-btn');
+            const hardBtn = document.getElementById('hard-btn');
+            const supremeBtn = document.getElementById('supreme-btn');
+            
+            // Difficulty settings with increased hardness for normal and hard, plus supreme mode
+            const difficultySettings = {
+                easy: {
+                    minTime: 1200,
+                    maxTime: 2000,
+                    description: "Easy: Slower moles, longer time to whack them."
+                },
+                normal: {
+                    minTime: 500, 
+                    maxTime: 1000,
+                    description: "Normal: Balanced speed and timing."
+                },
+                hard: {
+                    minTime: 300,
+                    maxTime: 600,
+                    description: "Hard: Fast moles, short time to whack them."
+                },
+                supreme: {
+                    minTime: 150,
+                    maxTime: 400,
+                    description: "Supreme: Extreme speed, for masters only! Good luck catching these moles!"
+                }
+            };
+            
+            let currentDifficulty = 'easy';
+            let score = 0;
+            let timeLeft = 30;
+            let gameActive = false;
+            let countdown;
+            let lastHole;
+            
+            // Show first splash screen on start, then transition to instructions after 3 seconds
+            firstSplash.style.display = 'flex';
+            splashScreen.style.display = 'none';
+            mainContainer.style.display = 'none';
+            instructions.style.display = 'none';
+            
+            setTimeout(() => {
+                firstSplash.style.display = 'none';
+                splashScreen.style.display = 'flex';
+                instructions.style.display = 'block';
+            }, 3000);
+            
+            // Support button handlers
+            splashSupportBtn.addEventListener('click', () => {
+                window.open('https://paystack.com/pay/a9mz3mzph8', '_blank');
+            });
+            
+            gameOverSupportBtn.addEventListener('click', () => {
+                window.open('https://paystack.com/pay/a9mz3mzph8', '_blank');
+            });
+            
+            gameOverSupportBtn.addEventListener('click', () => {
+                window.open('https://paystack.com/pay/a9mz3mzph8', '_blank');
+            });
+            
+            // Goto menu button
+            gotoMenuBtn.addEventListener('click', () => {
+                splashScreen.style.display = 'none';
+                mainContainer.style.display = 'block';
+            });
+            
+            // Set up difficulty selection
+            easyBtn.addEventListener('click', () => setDifficulty('easy'));
+            normalBtn.addEventListener('click', () => setDifficulty('normal'));
+            hardBtn.addEventListener('click', () => setDifficulty('hard'));
+            supremeBtn.addEventListener('click', () => setDifficulty('supreme'));
+            
+            function setDifficulty(difficulty) {
+                // Update UI
+                easyBtn.classList.remove('selected');
+                normalBtn.classList.remove('selected');
+                hardBtn.classList.remove('selected');
+                supremeBtn.classList.remove('selected');
+                
+                if (difficulty === 'easy') {
+                    easyBtn.classList.add('selected');
+                } else if (difficulty === 'normal') {
+                    normalBtn.classList.add('selected');
+                } else if (difficulty === 'hard') {
+                    hardBtn.classList.add('selected');
+                } else if (difficulty === 'supreme') {
+                    supremeBtn.classList.add('selected');
+                }
+                
+                currentDifficulty = difficulty;
+                difficultyDescription.textContent = difficultySettings[difficulty].description;
+                currentLevelDisplay.textContent = capitalizeFirstLetter(difficulty);
+            }
+            
+            function capitalizeFirstLetter(string) {
+                return string.charAt(0).toUpperCase() + string.slice(1);
+            }
+            
+            // Create 9 holes (3x3 grid)
+            for (let i = 0; i < 9; i++) {
+                const hole = document.createElement('div');
+                hole.classList.add('hole');
+                hole.dataset.index = i;
+                
+                const mole = document.createElement('div');
+                mole.classList.add('mole');
+                
+                const face = document.createElement('div');
+                face.classList.add('face');
+                
+                const eyes = document.createElement('div');
+                eyes.classList.add('eyes');
+                
+                const leftEye = document.createElement('div');
+                leftEye.classList.add('eye');
+                
+                const rightEye = document.createElement('div');
+                rightEye.classList.add('eye');
+                
+                const nose = document.createElement('div');
+                nose.classList.add('nose');
+                
+                const mouth = document.createElement('div');
+                mouth.classList.add('mouth');
+                
+                // Whack effect element
+                const whackEffect = document.createElement('div');
+                whackEffect.classList.add('whack-effect');
+                whackEffect.textContent = 'WHACK!';
+                
+                // Dizzy stars element
+                const dizzyStars = document.createElement('div');
+                dizzyStars.classList.add('dizzy-stars');
+                
+                // Add stars
+                for (let j = 0; j < 4; j++) {
+                    const star = document.createElement('span');
+                    star.classList.add('star');
+                    star.innerHTML = '★';
+                    dizzyStars.appendChild(star);
+                }
+                
+                eyes.appendChild(leftEye);
+                eyes.appendChild(rightEye);
+                face.appendChild(eyes);
+                face.appendChild(nose);
+                face.appendChild(mouth);
+                mole.appendChild(face);
+                mole.appendChild(dizzyStars);
+                hole.appendChild(mole);
+                hole.appendChild(whackEffect);
+                game.appendChild(hole);
+                
+                // Add event listener to handle whacking
+                hole.addEventListener('mousedown', whackMole);
+                hole.addEventListener('touchstart', whackMole);
+            }
+            
+            const holes = document.querySelectorAll('.hole');
+            const moles = document.querySelectorAll('.mole');
+            const whackEffects = document.querySelectorAll('.whack-effect');
+            const dizzyStarsElements = document.querySelectorAll('.dizzy-stars');
+            
+            startButton.addEventListener('click', startGame);
+            playAgainButton.addEventListener('click', () => {
+                gameOverDisplay.style.display = 'none';
+                startGame();
+            });
+            
+            backToMenuButton.addEventListener('click', () => {
+                gameOverDisplay.style.display = 'none';
+                difficultySelection.style.display = 'block';
+                poweredByDisplay.style.display = 'none';
+                // Stop background music when returning to menu
+                backgroundMusic.pause();
+            });
+            
+            function startGame() {
+                score = 0;
+                timeLeft = 30;
+                gameActive = true;
+                scoreDisplay.textContent = score;
+                timeDisplay.textContent = timeLeft;
+                startButton.disabled = true;
+                
+                // Play background music if sound is enabled
+                if (soundEnabled) {
+                    backgroundMusic.play();
+                }
+                
+                // Show "Powered by Kelvin" tag during gameplay
+                poweredByDisplay.style.display = 'block';
+                
+                // Disable difficulty selection during gameplay
+                easyBtn.disabled = true;
+                normalBtn.disabled = true;
+                hardBtn.disabled = true;
+                supremeBtn.disabled = true;
+                
+                // Hide difficulty selection when game starts
+                difficultySelection.style.display = 'none';
+                
+                // Start the countdown
+                countdown = setInterval(() => {
+                    timeLeft--;
+                    timeDisplay.textContent = timeLeft;
+                    
+                    if (timeLeft <= 0) {
+                        endGame();
+                    }
+                }, 1000);
+                
+                // Start popping up moles
+                popUp();
+            }
+            
+            function endGame() {
+                clearInterval(countdown);
+                gameActive = false;
+                startButton.disabled = false;
+                finalScoreDisplay.textContent = score;
+                finalLevelDisplay.textContent = capitalizeFirstLetter(currentDifficulty);
+                gameOverDisplay.style.display = 'flex';
+                
+                // Stop background music when game ends
+                backgroundMusic.pause();
+                
+                // Re-enable difficulty selection
+                easyBtn.disabled = false;
+                normalBtn.disabled = false;
+                hardBtn.disabled = false;
+                supremeBtn.disabled = false;
+                
+                // Make sure all moles go down
+                moles.forEach(mole => {
+                    mole.classList.remove('up');
+                    mole.classList.remove('whacked');
+                });
+                
+                // Reset all dizzy effects
+                dizzyStarsElements.forEach(stars => {
+                    stars.classList.remove('show');
+                });
+            }
+            
+            function randomTime(min, max) {
+                return Math.round(Math.random() * (max - min) + min);
+            }
+            
+            function randomHole(holes) {
+                const index = Math.floor(Math.random() * holes.length);
+                const hole = holes[index];
+                
+                if (hole === lastHole) {
+                    return randomHole(holes);
+                }
+                
+                lastHole = hole;
+                return hole;
+            }
+            
+            function popUp() {
+                if (!gameActive) return;
+                
+                // Get timing based on current difficulty
+                const { minTime, maxTime } = difficultySettings[currentDifficulty];
+                const time = randomTime(minTime, maxTime);
+                
+                const hole = randomHole(holes);
+                const mole = hole.querySelector('.mole');
+                const dizzyStars = mole.querySelector('.dizzy-stars');
+                
+                mole.classList.remove('whacked');
+                dizzyStars.classList.remove('show');
+                mole.classList.add('up');
+                
+                setTimeout(() => {
+                    mole.classList.remove('up');
+                    if (gameActive) popUp();
+                }, time);
+            }
+            
+            function whackMole(e) {
+                if (!gameActive) return;
+                
+                // Prevent default for touch events
+                if (e.type === 'touchstart') {
+                    e.preventDefault();
+                }
+                
+                const hole = this;
+                const mole = hole.querySelector('.mole');
+                const whackEffect = hole.querySelector('.whack-effect');
+                const dizzyStars = mole.querySelector('.dizzy-stars');
+                
+                if (mole.classList.contains('up') && !mole.classList.contains('whacked')) {
+                    mole.classList.add('whacked');
+                    dizzyStars.classList.add('show');
+                    score++;
+                    scoreDisplay.textContent = score;
+                    
+                    // Play whack sound if sound is enabled
+                    if (soundEnabled) {
+                        // Reset the sound in case it's already playing
+                        whackSound.currentTime = 0;
+                        whackSound.play();
+                    }
+                    
+                    // Show whack effect
+                    whackEffect.classList.add('active');
+                    setTimeout(() => {
+                        whackEffect.classList.remove('active');
+                    }, 500);
+                }
+            }
+            
+            // Preload the whack sound effect
+            whackSound.load();
+            
+            // Try to fix mobile audio issues by playing and immediately pausing the audio on first interaction
+            document.addEventListener('touchstart', () => {
+                backgroundMusic.play();
+                backgroundMusic.pause();
+                whackSound.play();
+                whackSound.pause();
+            }, { once: true });
+        });
+    </script>
+
+<script>
+// --- Configuration ---
+const MIN_PLAY_TIME = 3 * 60 * 1000; // 3 minutes in milliseconds
+const ALERT_INTERVAL = 60 * 1000; // 1 minute in milliseconds
+const GAME_NAME = "Whack-a-Mole"; // Change this to match your game's name
+const INITIAL_ALERT_DURATION = 3000; // 3 seconds for initial game alert
+const COMPLETION_ALERT_DURATION = 2000; // 2 seconds for completion alert
+
+// --- Helper Functions for Daily Reset ---
+function getTodaySixAM() {
+  const now = new Date();
+  return new Date(now.getFullYear(), now.getMonth(), now.getDate(), 6, 0, 0, 0);
+}
+
+function getYesterdaySixAM() {
+  return new Date(getTodaySixAM().getTime() - 24 * 60 * 60 * 1000);
+}
+
+function resetPlayedGamesIfNeeded() {
+  const now = new Date();
+  const todaySixAM = getTodaySixAM();
+  let lastReset = localStorage.getItem('playedGamesLastReset');
+  if (!lastReset) {
+    const initialReset = now < todaySixAM ? getYesterdaySixAM() : todaySixAM;
+    localStorage.setItem('playedGamesLastReset', initialReset.toISOString());
+    localStorage.setItem('playedGames', JSON.stringify([]));
+    return;
+  }
+  const lastResetTime = new Date(lastReset);
+  if (now >= todaySixAM && lastResetTime < todaySixAM) {
+    localStorage.setItem('playedGames', JSON.stringify([]));
+    localStorage.setItem('playedGamesLastReset', todaySixAM.toISOString());
+  } else if (now < todaySixAM && lastResetTime < getYesterdaySixAM()) {
+    localStorage.setItem('playedGames', JSON.stringify([]));
+    localStorage.setItem('playedGamesLastReset', getYesterdaySixAM().toISOString());
+  }
+}
+
+// Check if this game has already been played today
+function hasGameBeenPlayedToday() {
+  resetPlayedGamesIfNeeded(); // Ensure we have fresh data
+  
+  const playedGames = JSON.parse(localStorage.getItem("playedGames")) || [];
+  
+  return playedGames.some(game => game.gameName === GAME_NAME);
+}
+
+// --- Function to Record a Game Session ---
+function recordGameSession(gameName, duration) {
+  resetPlayedGamesIfNeeded();
+  let playedGames = JSON.parse(localStorage.getItem("playedGames")) || [];
+  playedGames.push({
+    gameName: gameName,
+    duration: duration,
+    timestamp: new Date().toISOString()
+  });
+  localStorage.setItem("playedGames", JSON.stringify(playedGames));
+  console.log(`Recorded session for "${gameName}" with duration ${duration}ms`);
+  
+  // Display feedback to user
+  document.getElementById("gameStatus").innerText = `Game completed and recorded!`;
+  
+  // Only show completion alert if this was a freshly completed game (not on reentry)
+  if (!sessionRecorded) {
+    showGameAlert(`Game session recorded: ${gameName}`, COMPLETION_ALERT_DURATION);
+  }
+  
+  // Hide progress bar when completed
+  document.getElementById("progressBarContainer").style.display = "none";
+}
+
+// --- Play Time Tracking ---
+let playTimeInterval;
+let sessionStartTime = null;
+let sessionRecorded = false;
+let alertCounter = 0;
+let gameFirstStart = true;
+
+function startGameTimer() {
+  // Check if game has already been played today
+  if (hasGameBeenPlayedToday()) {
+    console.log("Game has already been played today.");
+    document.getElementById("gameStatus").innerText = "You've already played this game today. Come back tomorrow after 6 AM!";
+    document.getElementById("progressBarContainer").style.display = "none";
+    sessionRecorded = true; // Mark as recorded to prevent alerts on reentry
+    return;
+  }
+  
+  // Don't start if already running
+  if (sessionStartTime !== null) {
+    console.log("Game timer already running");
+    return;
+  }
+  
+  // Make sure progress bar is visible
+  document.getElementById("progressBarContainer").style.display = "block";
+  document.getElementById("gameStatus").innerText = "Game in progress...";
+  
+  // Only show the start alert if this is the first time starting the game
+  if (gameFirstStart) {
+    showGameAlert("Game started!", INITIAL_ALERT_DURATION);
+    gameFirstStart = false;
+  }
+  
+  sessionRecorded = false;
+  sessionStartTime = Date.now();
+  alertCounter = 0;
+  updateProgressBar(0);
+
+  playTimeInterval = setInterval(() => {
+    const elapsed = Date.now() - sessionStartTime;
+    const percentComplete = Math.min(elapsed / MIN_PLAY_TIME * 100, 100);
+    updateProgressBar(percentComplete);
+
+    console.log("Elapsed play time: " + elapsed + "ms");
+
+    // Show alert every minute
+    if (elapsed >= (alertCounter + 1) * ALERT_INTERVAL) {
+      showGameAlert(`You have played for ${alertCounter + 1} minute(s)!`, INITIAL_ALERT_DURATION);
+      alertCounter++;
+    }
+
+    if (elapsed >= MIN_PLAY_TIME && !sessionRecorded) {
+      stopGameTimerAutomatically(GAME_NAME);
+      sessionRecorded = true;
+    }
+  }, 1000);
+}
+
+function stopGameTimerAutomatically(gameName) {
+  clearInterval(playTimeInterval);
+  console.log("Session complete. Recorded play time: " + MIN_PLAY_TIME + "ms");
+  recordGameSession(gameName, MIN_PLAY_TIME);
+  sessionStartTime = null;
+  updateProgressBar(100);
+}
+
+function stopGameTimer() {
+  if (sessionStartTime === null) {
+    console.log("No game session to stop");
+    return;
+  }
+  
+  clearInterval(playTimeInterval);
+  const elapsed = Date.now() - sessionStartTime;
+  console.log("Session ended manually. Total play time: " + elapsed + "ms");
+
+  if (elapsed >= MIN_PLAY_TIME && !sessionRecorded) {
+    recordGameSession(GAME_NAME, MIN_PLAY_TIME);
+    sessionRecorded = true;
+  } else if (elapsed < MIN_PLAY_TIME) {
+    const timeNeeded = Math.ceil((MIN_PLAY_TIME - elapsed) / 1000);
+    document.getElementById("gameStatus").innerText = `Game stopped. Needed ${timeNeeded} more seconds to record.`;
+    console.log("Session did not reach the minimum required play time.");
+  }
+  sessionStartTime = null;
+}
+
+function updateProgressBar(percentage) {
+  document.getElementById("progressBar").style.width = percentage + "%";
+}
+
+function showGameAlert(message, duration) {
+  let alertBox = document.getElementById("gameAlert");
+  alertBox.innerText = message;
+  alertBox.style.display = "block";
+  setTimeout(() => {
+    alertBox.style.display = "none";
+  }, duration);
+}
+
+// Initialize on page load
+function initialize() {
+  resetPlayedGamesIfNeeded();
+  
+  // Check if the game has already been played today
+  if (hasGameBeenPlayedToday()) {
+    document.getElementById("gameStatus").innerText = "You've already played this game today. Come back tomorrow after 6 AM!";
+    document.getElementById("progressBarContainer").style.display = "none";
+    sessionRecorded = true; // Mark as recorded to prevent alerts on reentry
+  } else {
+    const playedGames = JSON.parse(localStorage.getItem("playedGames")) || [];
+    if (playedGames.length > 0) {
+      const lastGame = playedGames[playedGames.length - 1];
+      const lastGameDate = new Date(lastGame.timestamp);
+      document.getElementById("gameStatus").innerText = 
+        `Last played: ${lastGame.gameName} on ${lastGameDate.toLocaleDateString()} at ${lastGameDate.toLocaleTimeString()}`;
+    }
+    
+    // Start the timer after a short delay to ensure everything is loaded
+    setTimeout(startGameTimer, 500);
+  }
+}
+
+// Auto-start the game timer when the page loads
+window.addEventListener('load', initialize);
+
+// Optional: Add event handler for when user tries to leave the page
+window.addEventListener('beforeunload', function(e) {
+  if (sessionStartTime !== null && !sessionRecorded) {
+    // Attempt to save progress if they've been playing
+    const elapsed = Date.now() - sessionStartTime;
+    if (elapsed >= MIN_PLAY_TIME) {
+      recordGameSession(GAME_NAME, MIN_PLAY_TIME);
+    }
+  }
+});
+</script>
+</body>
+</html>
