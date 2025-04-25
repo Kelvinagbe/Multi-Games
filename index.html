@@ -3,7 +3,41 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Multi Games</title>
+<title> Multi Games</title>
+<!-- Web App Meta Tags -->
+  <meta name="theme-color" content="#000000">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="Multi Games">
+  <meta name="application-name" content="Multi Games">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <!-- App Icons -->
+  <link rel="icon" href="./assets/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="./assets/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="./assets/favicon-16x16.png">
+  <link rel="apple-touch-icon" href="./assets/icon-192.png">
+  <link rel="manifest" href="manifest.json">
+  
+  <!-- SEO Meta Tags -->
+  <meta name="description" content="Play multiple games in one convenient web app">
+  <meta name="keywords" content="games, multi games, online games, web games">
+  <meta name="author" content="Kelvin Agbe">
+  <meta name="robots" content="index, follow">
+  
+  <!-- Open Graph / Social Media -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://multi-games-fawn.vercel.app/">
+  <meta property="og:title" content="Multi Games">
+  <meta property="og:description" content="Collection of fun games to play online and offline">
+  <meta property="og:image" content="./assets/og-image.jpg">
+  
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Multi Games">
+  <meta name="twitter:description" content="Collection of fun games to play online">
+  <meta name="twitter:image" content="twitter-image.jpg">
+
   <script async custom-element="amp-auto-ads"
     src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
   </script>
@@ -21,1033 +55,804 @@
         }
     });
 </script>
-  <script>
-const APP_SYNC_CONFIG = {
-  version: '1.0.6', // Increment this with each update
-  lastSyncKey: 'app_last_sync_time',
-  versionKey: 'app_content_version'
-};
+<style>
+/* Reset and Base Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
 
-// Detect if we're in an iframe
-const isInIframe = window.self !== window.top;
+:root {
+  --primary-color: #0f5132; /* Darker green */
+  --primary-dark: #073f24; /* Even darker green */
+  --primary-light: #157347; /* Slightly lighter dark green */
+  --secondary-color: #052e16; /* Dark forest green */
+  --text-color: #333;
+  --text-light: #666;
+  --background-color: #f8f9fa; /* Slightly lighter background */
+  --card-color: #fff;
+  --shadow-color: rgba(0, 0, 0, 0.08); /* Softer shadow */
+  --border-color: #e9ecef; /* Softer border */
+  --border-radius-sm: 8px; /* New border radius values */
+  --border-radius-md: 12px;
+  --border-radius-lg: 16px;
+  --transition: all 0.25s ease; /* Smoother transitions */
+}
 
-// Core synchronization function
-async function checkForUpdates() {
-  try {
-    // Get current version from localStorage
-    const currentVersion = localStorage.getItem(APP_SYNC_CONFIG.versionKey);
-    
-    // If version has changed, trigger a refresh
-    if (currentVersion !== APP_SYNC_CONFIG.version) {
-      console.log('New version detected:', APP_SYNC_CONFIG.version);
-      
-      // Mark timestamp of last sync
-      localStorage.setItem(APP_SYNC_CONFIG.lastSyncKey, new Date().toISOString());
-      
-      // Store new version
-      localStorage.setItem(APP_SYNC_CONFIG.versionKey, APP_SYNC_CONFIG.version);
-      
-      // For iframes, communicate with parent about version update
-      if (isInIframe) {
-        window.parent.postMessage({
-          type: 'VERSION_UPDATE',
-          version: APP_SYNC_CONFIG.version
-        }, '*');
-      }
-      
-      // Clear cached resources (works in both iframe and standalone)
-      if ('caches' in window) {
-        try {
-          const cacheNames = await caches.keys();
-          for (const cacheName of cacheNames) {
-            if (cacheName.includes('html') || cacheName.includes('assets')) {
-              await caches.delete(cacheName);
-              console.log('Cleared cache:', cacheName);
-            }
-          }
-        } catch (cacheError) {
-          console.warn('Cache clearing error:', cacheError);
-        }
-      }
-      
-      // Handle service worker update if available
-      if ('serviceWorker' in navigator && !isInIframe) {
-        const registration = await navigator.serviceWorker.getRegistration();
-        if (registration) {
-          registration.update();
-        }
-      }
-      
-      // Force reload with cache bypass
-      if (isInIframe) {
-        // For iframes, reload just the iframe
-        window.location.reload(true);
-      } else {
-        // For standalone pages, full reload
-        window.location.reload(true);
-      }
-    }
-  } catch (error) {
-    console.error('Error checking for updates:', error);
+.dark-mode {
+  --primary-color: #22c55e; /* Adjusted for dark mode */
+  --primary-dark: #1a1c21;
+  --primary-light: #20803c;
+  --secondary-color: #052e16;
+  --text-color: #e9ecef;
+  --text-light: #adb5bd;
+  --background-color: #1a1c21;
+  --card-color: #25272e;
+  --shadow-color: rgba(0, 0, 0, 0.3);
+  --border-color: #2c2c2c;
+}
+
+body {
+  background-color: var(--background-color);
+  color: var(--text-color);
+  transition: var(--transition);
+  min-height: 100vh;
+  overflow-x: hidden;
+  padding-bottom: 60px;
+  line-height: 1.5; /* Improved readability */
+}
+
+.container {
+  padding: 15px;
+  max-width: 100%;
+  margin: 0 auto;
+  padding-bottom: 70px;
+}
+
+/* Loader Styles */
+.loader-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--background-color);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  transition: var(--transition);
+  backdrop-filter: blur(5px); /* Modern blur effect */
+}
+
+.m-loader {
+  width: 60px;
+  height: 60px;
+  background-color: var(--primary-color);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-size: 30px;
+  font-weight: bold;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
   }
 }
 
-// Service Worker registration (only if not in iframe)
-if ('serviceWorker' in navigator && !isInIframe) {
-  navigator.serviceWorker.register('/service-worker.js')
-    .then(registration => {
-      console.log('ServiceWorker registered');
-    })
-    .catch(error => {
-      console.log('ServiceWorker registration failed:', error);
-    });
-}
-
-// For iframes: Listen for parent messages
-if (isInIframe) {
-  window.addEventListener('message', (event) => {
-    if (event.data && event.data.type === 'CHECK_UPDATE') {
-      checkForUpdates();
-    }
-  });
-}
-
-// Check for updates when the page loads
-window.addEventListener('load', checkForUpdates);
-
-// Optional: Periodic check for updates
-setInterval(checkForUpdates, 1000 * 60 * 30); // Every 30 minutes
-
-// Debug function to manually trigger update
-window.manualUpdate = async function() {
-  localStorage.setItem(APP_SYNC_CONFIG.versionKey, 'force_update');
-  await checkForUpdates();
-};
-      </script>
-  <style>
-     :root {
-        --popup-primary: #3B82F6;
-        --popup-success: #10B981; 
-        --popup-warning: #F59E0B;
-        --popup-error: #EF4444;
-        --popup-info: #6366F1;
-        --popup-light: #F3F4F6;
-        --popup-dark: #1F2937;
-        --text-light: #FFFFFF;
-        --text-dark: #111827;
-        --text-muted: #6B7280;
-        --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
-        --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-        --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-    }
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Poppins', 'Arial', sans-serif;
-    }
-    body {
-      background-color: #f8f9fa;
-      color: #333;
-      overflow-x: hidden;
-      padding-bottom: 70px; /* Space for bottom nav */
-      font-family: Arial, sans-serif;
-    }
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 20px;
-    }
-
-    /* Floating Search Bar (Home Only) */
-    .floating-search {
-    position: relative;
-    max-width: 600px;
-    width: 100%;
-    margin: 20px auto;
-    padding: 0 15px; /* adds some side padding on small screens */
-    box-sizing: border-box;
+/* Floating Search Bar */
+.floating-search {
+  position: sticky;
+  top: 10px;
+  left: 0;
+  right: 0;
+  width: 95%;
+  margin: 0 auto;
+  z-index: 100;
+  padding: 10px 0;
+  transition: var(--transition);
 }
 
 .search-bar {
-    display: flex;
-    align-items: center;
-    background: white;
-    border-radius: 30px;
-    padding: 10px 20px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  background-color: var(--card-color);
+  border-radius: var(--border-radius-lg);
+  padding: 12px 18px; /* Larger padding */
+  box-shadow: 0 4px 12px var(--shadow-color);
+  border: 1px solid var(--border-color);
 }
 
-.search-bar i {
-    color: #666;
-    margin-right: 10px;
-    cursor: pointer;
+#search-icon {
+  color: var(--primary-color);
+  margin-right: 12px;
+  font-size: 18px; /* Slightly larger icon */
 }
 
-.search-bar input {
-    border: none;
-    flex: 1;
-    font-size: 16px;
-    outline: none;
-    padding: 5px 0;
+#floating-search-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background-color: transparent;
+  color: var(--text-color);
+  font-size: 16px;
 }
 
-/* Suggestions container */
+#floating-search-input::placeholder {
+  color: var(--text-light);
+}
+
 .suggestions-container {
-    position: absolute;
-    top: 100%;
-    left: 17px;
-    right: 17px;
-    background: white;
-    border-radius: 22px;
-    margin-top: 5px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    z-index: 1000;
-    max-height: 300px;
-    overflow-y: auto;
-    display: none;
-}
-/* Styling for individual suggestions */
-.autocomplete-suggestion {
-    display: flex;
-    align-items: center;
-    padding: 10px 15px;
-    cursor: pointer;
-    border-bottom: 2px solid #f0f0f0;
+  background-color: var(--card-color);
+  border-radius: var(--border-radius-md);
+  margin-top: 10px;
+  box-shadow: 0 6px 16px var(--shadow-color);
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
 }
 
-.autocomplete-suggestion:hover {
-    background-color: #f9f9f9;
+.suggestions-container.show {
+  max-height: 300px;
+  overflow-y: auto;
 }
 
-.autocomplete-suggestion img {
-    width: 40px;
-    height: 40px;
-    border-radius: 8px;
-    object-fit: cover;
-    margin-right: 15px;
+.suggestion-item {
+  padding: 12px 15px;
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  transition: var(--transition);
 }
 
-.autocomplete-suggestion .game-info {
-    flex: 1;
+.suggestion-item:last-child {
+  border-bottom: none;
 }
 
-.autocomplete-suggestion .game-name {
-    font-weight: bold;
-    display: block;
+.suggestion-item:hover {
+  background-color: rgba(15, 81, 50, 0.1); /* Dark green with opacity */
 }
 
-.autocomplete-suggestion .game-category {
-    font-size: 12px;
-    color: #666;
+.suggestion-item img {
+  width: 45px; /* Slightly larger */
+  height: 45px;
+  border-radius: var(--border-radius-sm);
+  margin-right: 14px;
+  object-fit: cover;
 }
 
-.autocomplete-suggestion .play-btn {
-    background: #4a90e2;
-    color: white;
-    border: none;
-    border-radius: 20px;
-    padding: 5px 15px;
-    cursor: pointer;
+.suggestion-item .suggestion-text {
+  flex: 1;
 }
 
-.no-results {
-    padding: 15px;
-    text-align: center;
-    color: #666;
+.suggestion-item .suggestion-title {
+  font-weight: 600; /* Bolder */
+  margin-bottom: 3px;
 }
 
-/* Responsive adjustments */
-@media (max-width: 480px) {
-    .search-bar {
-        padding: 8px 15px;
-    }
-    
-    .search-bar input {
-        font-size: 14px;
-    }
-    
-    .autocomplete-suggestion {
-        padding: 8px 10px;
-    }
-    
-    .autocomplete-suggestion img {
-        width: 35px;
-        height: 35px;
-        margin-right: 10px;
-    }
-    
-    .autocomplete-suggestion .play-btn {
-        padding: 4px 10px;
-        font-size: 12px;
-    }
+.suggestion-item .suggestion-meta {
+  font-size: 12px;
+  color: var(--text-light);
+}
 
-    /* Bottom Navigation - Reduced Height & Smaller Icons */
-    .bottom-nav {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      background: #ffffff;
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
-      padding: 6px 0;  /* Reduced vertical padding */
-      box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
-      z-index: 100;
-    }
-    .bottom-nav a {
-      text-decoration: none;
-      color: #555;
-      font-size: 12px; /* Smaller text size */
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      transition: color 0.3s;
-    }
-    .bottom-nav a.active {
-      color: #006400;
-    }
-    .bottom-nav i {
-      font-size: 16px;  /* Reduced from 22px */
-      width: 30px;      /* Reduced from 40px */
-      height: 30px;     /* Reduced from 40px */
-      background-color: #f1f3f4;
-      border-radius: 50%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      transition: background-color 0.3s;
-    }
-    .bottom-nav a.active i {
-      background-color: #e6f2e6;
-    }
-    /* Featured Games Carousel and other sections remain unchanged */
-    .featured {
-      width: 100%;
-      overflow: hidden;
-      position: relative;
-      margin: 20px 0;
-      border-radius: 15px;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    }
-    .featured img {
-      width: 100%;
-      border-radius: 15px;
-      display: block;
-    }
-    .featured-overlay {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      background: linear-gradient(transparent, rgba(0,0,0,0.7));
-      padding: 20px;
-      color: white;
-      border-radius: 0 0 15px 15px;
-    }
-    .featured-overlay h3 {
-      font-size: 24px;
-      margin-bottom: 10px;
-    }
-    .featured-btn {
-      display: inline-block;
-      background: #006400;
-      color: white;
-      padding: 8px 20px;
-      border-radius: 20px;
-      text-decoration: none;
-      font-weight: bold;
-      margin-top: 10px;
-    }
-    /* Other CSS rules omitted for brevity... */
+/* Featured Game Styles */
+.featured {
+  position: relative;
+  border-radius: var(--border-radius-lg);
+  overflow: hidden;
+  margin-bottom: 25px;
+  box-shadow: 0 8px 20px var(--shadow-color);
+}
+
+.featured img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  transition: transform 0.5s ease; /* Zoom effect on hover */
+}
+
+.featured:hover img {
+  transform: scale(1.05);
+}
+
+.featured-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.85));
+  padding: 25px 18px; /* More padding */
+  color: white;
+}
+
+.featured-overlay h3 {
+  font-size: 22px;
+  margin-bottom: 8px;
+  font-weight: 700; /* Bolder */
+}
+
+.featured-overlay p {
+  font-size: 14px;
+  margin-bottom: 18px;
+  opacity: 0.9;
+}
+
+.featured-btn {
+  background-color: var(--primary-color);
+  color: white;
+  padding: 10px 22px; /* Larger button */
+  border-radius: 24px;
+  text-decoration: none;
+  font-weight: 600;
+  display: inline-block;
+  transition: var(--transition);
+}
+
+.featured-btn:hover {
+  background-color: var(--primary-dark);
+  transform: translateY(-2px); /* Slight lift on hover */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
 
 /* Section Headers */
 .section-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin: 30px 0 15px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 28px 0 18px;
 }
+
 .section-header h2 {
-    font-size: 22px;
-    color: #333;
+  font-size: 19px;
+  font-weight: 700;
+  position: relative;
+  padding-left: 12px;
 }
+
+.section-header h2::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 3px;
+  height: 80%;
+  width: 4px;
+  background-color: var(--primary-color);
+  border-radius: 2px;
+}
+
 .view-all {
-    color: #006400; /* Changed from #007BFF to dark green */
-    text-decoration: none;
-    font-size: 14px;
+  color: var(--primary-color);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+  transition: var(--transition);
 }
 
-/* Game Grid - Updated for square boxes */
-.game-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-    gap: 4px;
-}
-.game-card {
-    background: #fff;
-    border-radius: 20px;
-    overflow: hidden;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s;
-    display: flex;
-    flex-direction: column;
-}
-.game-card:hover {
-    transform: translateY(-5px);
-}
-.game-card img {
-    width: 100%;
-    aspect-ratio: 1/1;
-    object-fit: cover;
-}
-.game-info {
-    padding: 4px;
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-}
-.game-info p {
-    margin-bottom: 8px;
-    font-weight: 600;
-    font-size: 14px;
-}
-.game-meta {
-    display: flex;
-    align-items: center;
-    font-size: 12px;
-    color: #666;
-    margin-bottom: 10px;
-}
-.game-meta i {
-    margin-right: 5px;
-    color: #FFC107;
-}
-.play-btn {
-    display: block;
-    background: #006400; /* Changed from #007BFF to dark green */
-    color: white;
-    padding: 8px 0;
-    border-radius: 20px;
-    text-decoration: none;
-    font-size: 14px;
-    text-align: center;
-    font-weight: 500;
-    transition: background 0.3s;
-    margin-top: auto;
-}
-.play-btn:hover {
-    background: #004d00; /* Changed from #0056b3 to darker green */
+.view-all:hover {
+  color: var(--primary-dark);
 }
 
-/* Categories Section */
+/* Categories Styles */
 .categories {
-    display: flex;
-    gap: 60px;
-    max-height: 120px; /* Adjust height as needed */
-    overflow-x: auto;
-    padding: 10px 0;
-    margin: 20px 0;
-    scrollbar-width: none; /* Firefox */
+  display: flex;
+  overflow-x: auto;
+  padding: 5px 0 15px;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  scroll-snap-type: x mandatory;
+  gap: 15px; /* Added gap */
 }
+
 .categories::-webkit-scrollbar {
-    display: none; /* Chrome, Safari, Opera */
+  display: none;
 }
+
 .category {
-    min-width: 100px;
-    text-align: center;
-    background: #fff;
-    border-radius: 10px;
-    padding: 15px 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  min-width: 85px; /* Slightly wider */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-right: 15px;
+  scroll-snap-align: start;
+  transition: var(--transition);
 }
+
+.category:hover {
+  transform: translateY(-3px);
+}
+
 .category i {
-    font-size: 28px;
-    margin-bottom: 10px;
-    color: #006400; /* Changed from #007BFF to dark green */
+  width: 65px;
+  height: 65px;
+  background-color: var(--primary-light);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-size: 24px;
+  margin-bottom: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  transition: var(--transition);
 }
+
+.category:hover i {
+  background-color: var(--primary-color);
+}
+
 .category p {
-    font-size: 14px;
+  font-size: 13px;
+  font-weight: 600;
+  text-align: center;
 }
 
-/* New Game Ribbon */
+/* Game Grid Styles */
+.game-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 18px; /* Larger gap */
+  margin-bottom: 30px;
+padding: 10px;
+  max-width: 100%;
+  margin: 0 auto;
+
+}
+
+.game-card {
+  background-color: var(--card-color);
+  border-radius: var(--border-radius-md);
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 5px 15px var(--shadow-color);
+  transition: var(--transition);
+   max-width: 100%;
+}
+
+.game-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px var(--shadow-color);
+}
+
+.game-card img {
+  width: 100%;
+  height: 110px;
+  object-fit: cover;
+  transition: var(--transition);
+}
+
+.game-card:hover img {
+  transform: scale(1.05);
+}
+
 .new-ribbon {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: #FF5722;
-    color: white;
-    padding: 5px 10px;
-    border-radius: 10px;
-    font-size: 12px;
-    font-weight: bold;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: var(--primary-color);
+  color: white;
+  font-size: 11px;
+  font-weight: bold;
+  padding: 4px 10px;
+  border-radius: 12px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
-/* New Game Ribbon */
-.trending-ribbon {
-    position: absolute;
-    top: -70px;
-    right: 10px;
-    background: #FF5722;
-    color: white;
-    padding: 5px 10px;
-    border-radius: 10px;
-    font-size: 12px;
-    font-weight: bold;
+.game-info {
+  padding: 14px; /* More padding */
 }
 
-/* UPDATED: Loader Styles with Circle */
-.loader-container {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(255, 255, 255, 0.9);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 9999;
-    transition: opacity 0.3s;
+.game-info p {
+  font-weight: 600;
+  margin-bottom: 8px;
+  font-size: 15px; /* Slightly larger */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-/* M Loader styles with circle */
-.m-loader {
-    font-family: 'Arial', sans-serif;
-    font-size: 60px; /* Reduced size */
-    font-weight: bold;
-    color: #006400; /* Changed from #007BFF to dark green */
-    position: relative;
-    animation: m-hover 2s infinite ease-in-out;
-    width: 100px;
-    height: 100px;
-    background-color: white;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    box-shadow: 0 4px 20px rgba(0, 100, 0, 0.3); /* Changed from rgba(0, 123, 255, 0.3) to dark green */
+.game-meta {
+  font-size: 12px;
+  color: var(--text-light);
+  margin-bottom: 12px;
 }
 
-@keyframes m-hover {
-    0% {
-        transform: translateY(0) scale(1);
-        box-shadow: 0 4px 20px rgba(0, 100, 0, 0.3); /* Changed from rgba(0, 123, 255, 0.3) to dark green */
-    }
-    50% {
-        transform: translateY(-15px) scale(1.05);
-        box-shadow: 0 15px 30px rgba(0, 100, 0, 0.4); /* Changed from rgba(0, 123, 255, 0.4) to dark green */
-    }
-    100% {
-        transform: translateY(0) scale(1);
-        box-shadow: 0 4px 20px rgba(0, 100, 0, 0.3); /* Changed from rgba(0, 123, 255, 0.3) to dark green */
-    }
+.game-meta i {
+  color: #FFD700;
 }
 
-/* Updated: Page Content Container for full iframes */
+.play-btn {
+  background-color: var(--primary-color);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 18px;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 600;
+  display: inline-block;
+  transition: var(--transition);
+}
+
+.play-btn:hover {
+  background-color: var(--primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Bottom Navigation */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: var(--card-color);
+  display: flex;
+  justify-content: space-around;
+  padding: 12px 0;
+  box-shadow: 0 -2px 10px var(--shadow-color);
+  z-index: 100;
+  border-top: 1px solid var(--border-color);
+}
+
+.bottom-nav a {
+  color: var(--text-light);
+  text-decoration: none;
+  font-size: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 6px 0;
+  transition: var(--transition);
+  position: relative;
+}
+
+.bottom-nav a::after {
+  content: '';
+  position: absolute;
+  bottom: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 3px;
+  background-color: var(--primary-color);
+  transition: var(--transition);
+}
+
+.bottom-nav a i {
+  font-size: 22px;
+  margin-bottom: 4px;
+}
+
+.bottom-nav a.active {
+  color: var(--primary-color);
+}
+
+.bottom-nav a.active::after {
+  width: 25px;
+}
+
+/* Page Content (Full Screen Pages) */
 .page-content {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    display: none; /* Hidden by default */
-    z-index: 99;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--background-color);
+  z-index: 200;
+  display: none;
+  flex-direction: column;
 }
 
 .page-iframe {
-    width: 100%;
-    height: 100%;
-    border: none;
-    background: white;
-}
-
-/* Show active content */
-.page-content.active {
-    display: block;
-}
-
-/* Hide main content when iframe is active */
-.main-content {
-    transition: opacity 0.3s;
-}
-
-.main-content.hidden {
-    display: none;
-}
-
-/* Hide header in profile view or when showing iframes */
-.page-content.active ~ header {
-    display: none;
-}
-
-/* NEW: Custom header for profile view */
-.profile-header {
-    display: none;
-    background-color: #ffffff;
-    padding: 15px 20px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    z-index: 101;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.profile-header.visible {
-    display: flex;
-}
-
-.profile-header .title {
-    font-size: 20px;
-    font-weight: bold;
-    color: #333;
+  width: 100%;
+  height: 100%;
+  border: none;
 }
 
 .back-button {
-    background: none;
-    border: none;
-    font-size: 20px;
-    color: #555;
-    cursor: pointer;
-}
-        
-    #earn-content {
-    position: fixed;
-    top: -0px;
-    left: 0;
-    width: 99%;
-    height: calc(100vh - -0px);
-    overflow: auto;
-    z-index: 99;
-    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  width: 42px;
+  height: 42px;
+  background-color: var(--card-color);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 4px 10px var(--shadow-color);
+  z-index: 10;
+  cursor: pointer;
+  transition: var(--transition);
 }
 
-#profile-content {
-    position: fixed;
-    top: -0px;
-    right: 0;
-    width: 99%;
-    height: calc(100vh - -0px);
-    overflow: auto;
-    z-index: 99;
-    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+.back-button:hover {
+  transform: scale(1.1);
 }
 
-#earn-iframe {
-    width: 100%;
-    height: 100%;
-    border: none;
-    background-color: #f8f9fa;
+.back-button i {
+  color: var(--primary-color);
+  font-size: 18px;
 }
 
-#profile-iframe {
-    width: 100%;
-    height: 100%;
-    border: none;
-    background-color: #f0f4f8;
-}
-  </style>
-
-<style>
-  <!-- Additional CSS for responsiveness and other components can go here -->
-/* Navigation Button Colors */
-.bottom-nav a#home-nav.active {
-    color: green !important;
-}
-
-.bottom-nav a#home-nav.active i {
-    background-color: green !important;
-    color: white !important;
+/* Adblock Message */
+.adblock-message {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: var(--card-color);
+  box-shadow: 0 8px 20px var(--shadow-color);
+  border-radius: var(--border-radius-md);
+  padding: 18px 22px;
+  width: 90%;
+  max-width: 400px;
+  z-index: 1000;
+  border-left: 4px solid var(--primary-color);
+  display: none;
+  animation: slideDown 0.4s ease-out;
 }
 
-.bottom-nav a#trending-nav.active {
-    color: red !important;
+@keyframes slideDown {
+  from {
+    transform: translate(-50%, -20px);
+    opacity: 0;
+  }
+  to {
+    transform: translate(-50%, 0);
+    opacity: 1;
+  }
 }
 
-.bottom-nav a#trending-nav.active i {
-    background-color: red !important;
-    color: white !important;
+.adblock-message h3 {
+  margin-bottom: 12px;
+  color: var(--primary-color);
 }
 
-.bottom-nav a#profile-nav.active {
-    color: blue !important;
+.adblock-message p {
+  font-size: 14px;
+  line-height: 1.6;
 }
 
-.bottom-nav a#profile-nav.active i {
-    background-color: blue !important;
-    color: white !important;
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  cursor: pointer;
+  font-size: 20px;
+  color: var(--text-light);
+  transition: var(--transition);
 }
 
-.bottom-nav a#categories-nav.active {
-    color: darkgoldenrod !important; /* Dark Yellow */
+.close-button:hover {
+  color: var(--primary-color);
 }
 
-.bottom-nav a#categories-nav.active i {
-    background-color: darkgoldenrod !important;
-    color: white !important;
+/* Popup Container */
+.popup-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s, visibility 0.3s;
+  backdrop-filter: blur(5px);
+}
+
+.popup {
+  background-color: var(--card-color);
+  border-radius: var(--border-radius-lg);
+  width: 85%;
+  max-width: 350px;
+  padding: 30px 24px;
+  position: relative;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+  transform: scale(0.95);
+  transition: transform 0.3s;
+}
+
+.popup-container.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.popup-container.active .popup {
+  transform: scale(1);
+}
+
+.popup-close {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  font-size: 20px;
+  color: var(--text-light);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.popup-close:hover {
+  color: var(--primary-color);
+  transform: rotate(90deg);
+}
+
+.popup-title {
+  font-size: 20px;
+  margin-bottom: 15px;
+  color: var(--primary-color);
+  font-weight: 700;
+}
+
+.popup-content {
+  font-size: 15px;
+  line-height: 1.6;
+  margin-bottom: 22px;
+}
+
+.popup-button {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 24px;
+  font-weight: 600;
+  cursor: pointer;
+  width: 100%;
+  transition: var(--transition);
+}
+
+.popup-button:hover {
+  background-color: var(--primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Dark Mode Toggle */
+.dark-mod {
+  position: fixed;
+  top: 15px;
+  right: 15px;
+  width: 42px;
+  height: 42px;
+  background-color: var(--card-color);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 4px 10px var(--shadow-color);
+  z-index: 100;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.dark-mode-toggle:hover {
+  transform: scale(1.1);
+}
+
+.dark-mode-toggle i {
+  color: var(--text-color);
+  font-size: 18px;
+}
+
+/* Media Queries */
+@media (min-width: 768px) {
+  .container {
+    max-width: 720px;
+  }
+  
+  .featured img {
+    height: 250px;
+  }
+  
+  .game-grid {
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  }
+}
+
+@media (max-width: 480px) {
+  .game-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .featured-overlay h3 {
+    font-size: 18px;
+  }
+}
+
+/* Animation Keyframes */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Apply animations */
+.main-content {
+  animation: fadeIn 0.5s ease-out;
+}
+
+.featured {
+  animation: slideUp 0.6s ease-out;
+}
+
+.section-header {
+  animation: slideUp 0.7s ease-out;
+}
+
+.categories {
+  animation: slideUp 0.8s ease-out;
+}
+
+.game-grid {
+  animation: slideUp 0.9s ease-out;
+}
+
+/* Staggered game card animations */
+.game-card {
+  opacity: 0;
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+.game-card:nth-child(1) { animation-delay: 0.1s; }
+.game-card:nth-child(2) { animation-delay: 0.2s; }
+.game-card:nth-child(3) { animation-delay: 0.3s; }
+.game-card:nth-child(4) { animation-delay: 0.4s; }
+.game-card:nth-child(5) { animation-delay: 0.5s; }
+.game-card:nth-child(6) { animation-delay: 0.6s; }
+
+/* PWA Styles */
+@media (display-mode: standalone) {
+  body {
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: calc(60px + env(safe-area-inset-bottom));
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+  
+  .bottom-nav {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
 }
 </style>
-
-<style>
-
-    .popup-container {
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        z-index: 9999;
-        max-width: 320px;
-        font-family: 'Inter', sans-serif;
-        pointer-events: none; /* Important: allows clicking through the container itself */
-    }
-
-    .popup {
-        background-color: var(--text-light);
-        border-radius: 10px;
-        padding: 14px 16px;
-        margin-bottom: 12px;
-        box-shadow: var(--shadow-lg);
-        position: relative;
-        overflow: hidden;
-        opacity: 0;
-        pointer-events: auto; /* Important: enables interactions with individual popups */
-        animation: none; /* We'll set this dynamically */
-    }
-
-    .popup.visible {
-        animation: slideIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-    }
-
-    .popup.hiding {
-        animation: slideOut 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-    }
-    
-    @keyframes slideIn {
-        from {
-            opacity: 0;
-            transform: translateX(100%);
-        }
-        to {
-            opacity: 1;
-            transform: translateX(0);
-        }
-    }
-    
-    @keyframes slideOut {
-        from {
-            opacity: 1;
-            transform: translateX(0);
-        }
-        to {
-            opacity: 0;
-            transform: translateX(100%);
-        }
-    }
-
-    .popup-icon {
-        position: absolute;
-        left: 0;
-        top: 0;
-        bottom: 0;
-        width: 4px;
-    }
-
-    .popup-primary .popup-icon {
-        background-color: var(--popup-primary);
-    }
-
-    .popup-success .popup-icon {
-        background-color: var(--popup-success);
-    }
-
-    .popup-warning .popup-icon {
-        background-color: var(--popup-warning);
-    }
-
-    .popup-error .popup-icon {
-        background-color: var(--popup-error);
-    }
-
-    .popup-info .popup-icon {
-        background-color: var(--popup-info);
-    }
-
-    .popup-content {
-        display: flex;
-        align-items: flex-start;
-    }
-
-    .popup-symbol {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 28px;
-        height: 28px;
-        border-radius: 50%;
-        margin-right: 12px;
-        flex-shrink: 0;
-    }
-
-    .popup-primary .popup-symbol {
-        background-color: rgba(59, 130, 246, 0.1);
-        color: var(--popup-primary);
-    }
-
-    .popup-success .popup-symbol {
-        background-color: rgba(16, 185, 129, 0.1);
-        color: var(--popup-success);
-    }
-
-    .popup-warning .popup-symbol {
-        background-color: rgba(245, 158, 11, 0.1);
-        color: var(--popup-warning);
-    }
-
-    .popup-error .popup-symbol {
-        background-color: rgba(239, 68, 68, 0.1);
-        color: var(--popup-error);
-    }
-
-    .popup-info .popup-symbol {
-        background-color: rgba(99, 102, 241, 0.1);
-        color: var(--popup-info);
-    }
-
-    .popup-text {
-        flex-grow: 1;
-    }
-
-    .popup-title {
-        font-weight: 600;
-        font-size: 14px;
-        color: var(--text-dark);
-        margin: 0 0 4px 0;
-    }
-
-    .popup-message {
-        font-size: 13px;
-        line-height: 1.5;
-        color: var(--text-muted);
-        margin: 0;
-    }
-
-    .popup-close {
-        position: absolute;
-        top: 12px;
-        right: 12px;
-        background: transparent;
-        border: none;
-        cursor: pointer;
-        color: var(--text-muted);
-        width: 20px;
-        height: 20px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 0;
-        font-size: 18px;
-        transition: color 0.2s ease;
-    }
-
-    .popup-close:hover {
-        color: var(--text-dark);
-    }
-
-    .popup-time {
-        font-size: 11px;
-        color: var(--text-muted);
-        margin-top: 8px;
-        text-align: right;
-    }
-
-    /* Progress bar for auto-dismiss */
-    .popup-progress {
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        height: 3px;
-        width: 100%;
-        transform-origin: left center;
-    }
-
-    .popup-primary .popup-progress {
-        background-color: rgba(59, 130, 246, 0.2);
-    }
-
-    .popup-primary .popup-progress-inner {
-        background-color: var(--popup-primary);
-    }
-
-    .popup-success .popup-progress {
-        background-color: rgba(16, 185, 129, 0.2);
-    }
-
-    .popup-success .popup-progress-inner {
-        background-color: var(--popup-success);
-    }
-
-    .popup-warning .popup-progress {
-        background-color: rgba(245, 158, 11, 0.2);
-    }
-
-    .popup-warning .popup-progress-inner {
-        background-color: var(--popup-warning);
-    }
-
-    .popup-error .popup-progress {
-        background-color: rgba(239, 68, 68, 0.2);
-    }
-
-    .popup-error .popup-progress-inner {
-        background-color: var(--popup-error);
-    }
-
-    .popup-info .popup-progress {
-        background-color: rgba(99, 102, 241, 0.2);
-    }
-    
-    .popup-info .popup-progress-inner {
-        background-color: var(--popup-info);
-    }
-
-    .popup-progress-inner {
-        height: 100%;
-        width: 100%;
-        transition: width linear;
-    }
-
-    @media (max-width: 640px) {
-        .popup-container {
-            left: 20px;
-            right: 20px;
-            max-width: none;
-        }
-    }
-
-
-    /* Page content styles */
-    .page-content {
-      position: fixed;
-      top: 0;
-      left: -100%;  /* Start off-screen */
-      width: 100%;
-      height: 100%;
-      background-color: #fff;
-      z-index: 1000;
-      transition: left 0.3s ease-in-out;
-      display: none;
-    }
-
-    .page-content.active {
-      left: 0;
-      display: block;
-    }
-
-    .page-iframe {
-      width: 100%;
-      height: 100%;
-      border: none;
-    }
-
-    /* Back button styles */
-    .back-button {
-      position: absolute;
-      top: 15px;
-      left: 15px;
-      width: 40px;
-      height: 40px;
-      background-color: #f5f5f5;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-      z-index: 1001;
-      cursor: pointer;
-      font-size: 20px;
-    }
-
-    .back-button:hover {
-      background-color: #e0e0e0;
-    }
-
-    /* Bottom navigation styles */
-    .bottom-nav {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      background-color: #fff;
-      display: flex;
-      justify-content: space-around;
-      padding: 10px 0;
-      box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
-      z-index: 100;
-    }
-
-    .bottom-nav a {
-      text-decoration: none;
-      color: #777;
-      font-size: 0.9rem;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    .bottom-nav a.active {
-      color: #ff6b6b;
-    }
-
-    .bottom-nav a i {
-      font-size: 1.2rem;
-      margin-bottom: 4px;
-    }
-</style>
-  <style>
-        .adblock-message {
-            display: none;
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-            padding: 15px 20px;
-            border-radius: 5px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            z-index: 9999;
-            font-family: Arial, sans-serif;
-            font-size: 16px;
-            max-width: 600px;
-            width: 90%;
-        }
-        
-        .adblock-message h3 {
-            margin: 0 0 10px 0;
-            font-size: 20px;
-        }
-        
-        .adblock-message p {
-            margin: 0;
-            line-height: 1.4;
-        }
-        
-        .close-button {
-            position: absolute;
-            top: 5px;
-            right: 10px;
-            cursor: pointer;
-            font-size: 20px;
-            color: #721c24;
-            font-weight: bold;
-        }
-  </style>
+  
 </head>
 <body>
   <div id="adblockMessage" class="adblock-message">
@@ -1144,7 +949,7 @@ window.manualUpdate = async function() {
                         <i class="fas fa-star"></i> 4.8
                         <span style="margin-left: 10px;"><i class="fas fa-user"></i> 10k+</span>
                     </div>
-                    <a href="memory.html" class="play-btn game-link">Play Now</a>
+                    <a href="./games/memory.html" class="play-btn game-link">Play Now</a>
                 </div>
             </div>
             <div class="game-card">
@@ -1156,7 +961,7 @@ window.manualUpdate = async function() {
                         <i class="fas fa-star"></i> 4.5
                         <span style="margin-left: 10px;"><i class="fas fa-user"></i> 8k+</span>
                     </div>
-                    <a href="whack.html" class="play-btn game-link">Play Now</a>
+                    <a href="games/whack.html" class="play-btn game-link">Play Now</a>
                 </div>
             </div>
             <div class="game-card">
@@ -1167,7 +972,7 @@ window.manualUpdate = async function() {
                         <i class="fas fa-star"></i> 4.7
                         <span style="margin-left: 10px;"><i class="fas fa-user"></i> 15k+</span>
                     </div>
-                    <a href="tic-tac-toe.html" class="play-btn game-link">Play Now</a>
+                    <a href="./games/tic-tac-toe.html" class="play-btn game-link">Play Now</a>
                 </div>
             </div>
             <div class="game-card">
@@ -1178,7 +983,7 @@ window.manualUpdate = async function() {
                         <i class="fas fa-star"></i> 4.9
                         <span style="margin-left: 10px;"><i class="fas fa-user"></i> 20k+</span>
                     </div>
-                    <a href="truth.html" class="play-btn game-link">Play Now</a>
+                    <a href="./games/truth.html" class="play-btn game-link">Play Now</a>
                 </div>
             </div>
         </div>
@@ -1209,7 +1014,7 @@ window.manualUpdate = async function() {
                         <i class="fas fa-star"></i> 4.3
                         <span style="margin-left: 10px;"><i class="fas fa-user"></i> 5k+</span>
                     </div>
-                    <a href="iframe-bubble.html" class="play-btn game-link">Play Now</a>
+                    <a href="./games/iframe-bubble.html" class="play-btn game-link">Play Now</a>
                 </div>
             </div>
             <div class="game-card">
@@ -1220,7 +1025,7 @@ window.manualUpdate = async function() {
                         <i class="fas fa-star"></i> 4.6
                         <span style="margin-left: 10px;"><i class="fas fa-user"></i> 3k+</span>
                     </div>
-                    <a href="iframe-warrior.html" class="play-btn game-link">Play Now</a>
+                    <a href="./games/iframe-warrior.html" class="play-btn game-link">Play Now</a>
                 </div>
             </div>
       <div class="game-card">
@@ -1231,7 +1036,7 @@ window.manualUpdate = async function() {
                         <i class="fas fa-star"></i> 4.6
                         <span style="margin-left: 10px;"><i class="fas fa-user"></i> 6k+</span>
                     </div>
-                    <a href="iframe-moto-X3M.html" class="play-btn game-link">Play Now</a>
+                    <a href="./games/iframe-moto-X3M.html" class="play-btn game-link">Play Now</a>
                 </div>
             </div>
  <div class="game-card">
@@ -1242,7 +1047,7 @@ window.manualUpdate = async function() {
                         <i class="fas fa-star"></i> 4.6
                         <span style="margin-left: 10px;"><i class="fas fa-user"></i> 6k+</span>
                     </div>
-                    <a href="iframe-ludo-legend.html" class="play-btn game-link">Play Now</a>
+                    <a href="./games/iframe-ludo-legend.html" class="play-btn game-link">Play Now</a>
                 </div>
             </div>
   <div class="game-card">
@@ -1253,7 +1058,7 @@ window.manualUpdate = async function() {
                         <i class="fas fa-star"></i> 4.6
                         <span style="margin-left: 10px;"><i class="fas fa-user"></i> 6k+</span>
                     </div>
-                    <a href="iframe-bike-rush.html" class="play-btn game-link">Play Now</a>
+                    <a href="./games/iframe-bike-rush.html" class="play-btn game-link">Play Now</a>
                 </div>
             </div>
  <div class="game-card">
@@ -1264,7 +1069,7 @@ window.manualUpdate = async function() {
                         <i class="fas fa-star"></i> 4.6
                         <span style="margin-left: 10px;"><i class="fas fa-user"></i> 6k+</span>
                     </div>
-                    <a href="iframe-boat-race.html" class="play-btn game-link">Play Now</a>
+                    <a href="./games/iframe-boat-race.html" class="play-btn game-link">Play Now</a>
                 </div>
             </div>
         </div>
@@ -1276,7 +1081,7 @@ window.manualUpdate = async function() {
     <div class="back-button" id="categories-back"><i class="fas fa-chevron-left"></i></div>
     <iframe src="nav/categories/categories.html" id="categories-iframe" class="page-iframe"></iframe>
   </div>
-
+ 
     <!-- Trending Section -->
     <div class="container" id="trending-content">
         <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5345992350931230"
@@ -1308,7 +1113,7 @@ window.manualUpdate = async function() {
                         <i class="fas fa-star"></i> 4.8
                         <span style="margin-left: 5px;"><i class="fas fa-user"></i> 10k+</span>
                     </div>
-                    <a href="iframe-subway.html" class="play-btn game-link">Play Now</a>
+                    <a href="/games/iframe-subway.html" class="play-btn game-link">Play Now</a>
                 </div>
             </div>
             <div class="game-card">
@@ -1321,265 +1126,82 @@ window.manualUpdate = async function() {
                         <i class="fas fa-star"></i> 4.5
                         <span style="margin-left: 5px;"><i class="fas fa-user"></i> 8k+</span>
                     </div>
-                    <a href="iframe-pubg.html" class="play-btn game-link">Play Now</a>
+                    <a href="./games/iframe-pubg.html" class="play-btn game-link">Play Now</a>
                 </div>
+          </div>
+       </div>
+</div>
+
+<!-- Additional Game Categories Section -->
+<div class="section-header">
+</div>
+<div class="game-grid">
+    <div class="game-card">
+        <img src="https://i.postimg.cc/9QJf4Lzw/racing-game.jpg" alt="Speed Racers">
+        <div class="new-ribbon">HOT</div>
+        <div class="game-info">
+            <p>Speed Racers</p>
+            <div class="game-meta">
+                <i class="fas fa-star"></i> 4.7
+                <span style="margin-left: 10px;"><i class="fas fa-user"></i> 12k+</span>
             </div>
-     <div class="game-card">
-                <div class="game-image-container">
-                    <img src="https://i.postimg.cc/tCW2rTBL/images-17.jpg" alt="Whack Mole">
-                </div>
-                <div class="game-info">
-                    <p>Pixel Shooter</p>
-                    <div class="game-meta">
-                        <i class="fas fa-star"></i> 4.5
-                        <span style="margin-left: 5px;"><i class="fas fa-user"></i> 8k+</span>
-                    </div>
-                    <a href="iframe-pixel.html" class="play-btn game-link">Play Now</a>
-                </div>
-            </div>
-        <div class="game-card">
-                <div class="game-image-container">
-                    <img src="https://i.postimg.cc/mk6S7rmq/Screenshot-20250315-140235.jpg" alt="Relic Run Away">
-                </div>
-                <div class="game-info">
-                    <p>Relic Run Away</p>
-                    <div class="game-meta">
-                        <i class="fas fa-star"></i> 4.5
-                        <span style="margin-left: 5px;"><i class="fas fa-user"></i> 8k+</span>
-                    </div>
-                    <a href="iframe-runaway.html" class="play-btn game-link">Play Now</a>
-                </div>
-            </div>
+            <a href="./games/iframe-speed-racers.html" class="play-btn game-link">Play Now</a>
         </div>
-
-        <!-- More Ads -->
-        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5345992350931230"
-            crossorigin="anonymous"></script>
-        <ins class="adsbygoogle"
-            style="display:block"
-            data-ad-format="fluid"
-            data-ad-layout-key="-fb+5w+4e-db+86"
-            data-ad-client="ca-pub-5345992350931230"
-            data-ad-slot="1925101979"></ins>
-        <script>
-            (adsbygoogle = window.adsbygoogle || []).push({});
-        </script>
-
-        <!-- Trending Games -->
-        <div class="section-header" style="margin-top: 30px;">
-            <h2>Trending Games</h2>
-        </div>
-        <div class="game-grid">
-            <div class="game-card">
-                <div class="game-image-container">
-                    <img src="https://i.postimg.cc/G2QX6HVH/Screenshot-20250316-013311.jpg" alt="Hunter Assassin">
-                  <div class="new-ribbon">HOT</div>
-                </div>
-                <div class="game-info">
-                    <p>Hunter Assassin</p>
-                    <div class="game-meta">
-                        <i class="fas fa-star"></i> 4.9
-                        <span style="margin-left: 5px;"><i class="fas fa-user"></i> 25k+</span>
-                    </div>
-                    <a href="iframe-hunter.html" class="play-btn game-link">Play Now</a>
-                </div>
-            </div>
-        <div class="game-grid">
-            <div class="game-card">
-                <div class="game-image-container">
-                    <img src="https://ali.iningame.com/cy/sdk/icon/Squid_Survival.png" alt="Squad Survival">
-                    <div class="trending-ribbon">HOT</div>
-                </div>
-                <div class="game-info">
-                    <p>Squid Survival</p>
-                    <div class="game-meta">
-                        <i class="fas fa-star"></i> 4.9
-                        <span style="margin-left: 5px;"><i class="fas fa-user"></i> 25k+</span>
-                    </div>
-                    <a href="iframe-squidsurvival.html" class="play-btn game-link">Play Now</a>
-                </div>
-            </div>
-            </div>
-         </div>
-
-        <!-- More Ads -->
-        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5345992350931230"
-            crossorigin="anonymous"></script>
-        <ins class="adsbygoogle"
-            style="display:block"
-            data-ad-format="fluid"
-            data-ad-layout-key="-fb+5w+4e-db+86"
-            data-ad-client="ca-pub-5345992350931230"
-            data-ad-slot="1925101979"></ins>
-        <script>
-            (adsbygoogle = window.adsbygoogle || []).push({});
-        </script>
-
-<!-- Most playeGames -->
-          <div class="section-header">
-            <h2>Popular Games</h2>
-        </div>
-        <div class="game-grid">
-            <div class="game-card">
-                <div class="game-image-container">
-                    <img src="https://i.postimg.cc/tTHkCqMK/splash-1.webp" alt="Piano fire">
-                    <div class="trending-ribbon">HOT🔥</div>
-                </div>
-                <div class="game-info">
-                    <p>Piano Music Tiles</p>
-                    <div class="game-meta">
-                        <i class="fas fa-star"></i> 4.9k
-                        <span style="margin-left: 5px;"><i class="fas fa-user"></i> 25k+</span>
-                    </div>
-                    <a href="iframe-pianotiles.html" class="play-btn game-link">Play Now</a>
-                </div>
-            </div>
-
-   <div class="game-grid">
-            <div class="game-card">
-                <div class="game-image-container">
-                    <img src="https://i.postimg.cc/HsZKLmzn/images-18.jpg" alt="Sniper Simulator">
-                    <div class="trending-ribbon">HOT🔥</div>
-                </div>
-                <div class="game-info">
-                    <p>Sniper Simulator</p>
-                    <div class="game-meta">
-                        <i class="fas fa-star"></i> 1.8k
-                        <span style="margin-left: 5px;"><i class="fas fa-user"></i> 25k+</span>
-                    </div>
-                    <a href="iframe-snipersimulator.html" class="play-btn game-link">Play Now</a>
-                </div>
-              </div>
-     </div>
-
-  <div class="section-header" style="margin-top: 10px;">
-       <h2></h2>
-</div>
-</div>
-   <div class="game-grid">
-            <div class="game-card">
-                <div class="game-image-container">
-                    <img src="https://i.postimg.cc/Kcs2jCm9/Wild-Hunt-Hunting-Games-3-D.png" alt="wild Hunt Hunting">
-                    <div class="trending-ribbon">HOT🔥</div>
-                </div>
-                <div class="game-info">
-                    <p>Wild Hunt Hunting</p>
-                    <div class="game-meta">
-                        <i class="fas fa-star"></i> 1.8k
-                        <span style="margin-left: 5px;"><i class="fas fa-user"></i> 25k+</span>
-                    </div>
-                    <a href="iframe-wildhunt.html" class="play-btn game-link">Play Now</a>
-                </div>
-              </div>
-   <div class="game-grid">
-            <div class="game-card">
-                <div class="game-image-container">
-                    <img src="https://i.postimg.cc/brCPxBXR/Screenshot-20250326-024432.jpg" alt="Egg adventure">
-                    <div class="trending-ribbon">HOT🔥</div>
-                </div>
-                <div class="game-info">
-                    <p>Egg Super Adventure</p>
-                    <div class="game-meta">
-                        <i class="fas fa-star"></i> 1.0k
-                        <span style="margin-left: 5px;"><i class="fas fa-user"></i> 2k+</span>
-                    </div>
-                    <a href="iframe-eggadventure.html" class="play-btn game-link">Play Now</a>
-                </div>
-              </div>
-   </div>
-
-
-  <div class="section-header" style="margin-top: 10px;">
-       <h2></h2>
-</div>
-</div>
-   <div class="game-grid">
-            <div class="game-card">
-                <div class="game-image-container">
-                    <img src="https://www.fatfishgame.com/Rac_Simulator_1/adapter/logo.png" alt="race simulator 1">
-                    <div class="trending-ribbon">HOT🔥</div>
-                </div>
-                <div class="game-info">
-                    <p>Rac Simulator 1</p>
-                    <div class="game-meta">
-                        <i class="fas fa-star"></i> 1.8k
-                        <span style="margin-left: 5px;"><i class="fas fa-user"></i> 25k+</span>
-                    </div>
-                    <a href="iframe-racesimulator-1.html" class="play-btn game-link">Play Now</a>
-                </div>
-              </div>
-   <div class="game-grid">
-            <div class="game-card">
-                <div class="game-image-container">
-                    <img src="https://www.hnyigegame.com/Smash_Colors_Music_Ball/game/logo.png" alt="Egg adventure">
-                    <div class="trending-ribbon">HOT🔥</div>
-                </div>
-                <div class="game-info">
-                    <p>Smash Colors Music Ball</p>
-                    <div class="game-meta">
-                        <i class="fas fa-star"></i> 1.0k
-                        <span style="margin-left: 5px;"><i class="fas fa-user"></i> 2k+</span>
-                    </div>
-                    <a href="iframe-musicball.html" class="play-btn game-link">Play Now</a>
-                </div>
-              </div>
-   </div>
-
-
-        <!-- More Ads -->
-        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5345992350931230"
-            crossorigin="anonymous"></script>
-        <ins class="adsbygoogle"
-            style="display:block"
-            data-ad-format="fluid"
-            data-ad-layout-key="-fb+5w+4e-db+86"
-            data-ad-client="ca-pub-5345992350931230"
-            data-ad-slot="1925101979"></ins>
-        <script>
-            (adsbygoogle = window.adsbygoogle || []).push({});
-        </script>
-
-<div class="section-header" style="margin-top: 10px;">
-       <h2></h2>
-</div>
-</div>
-   <div class="game-grid">
-            <div class="game-card">
-                <div class="game-image-container">
-                    <img src="https://ali.iningame.com/cy/sdk/icon/Subway_Surfers_Holiday.png" alt="subway">
-                    <div class="trending-ribbon">HOT🔥</div>
-                </div>
-                <div class="game-info">
-                    <p>Subway Surfers Holiday</p>
-                    <div class="game-meta">
-                        <i class="fas fa-star"></i> 1.8k
-                        <span style="margin-left: 5px;"><i class="fas fa-user"></i> 25k+</span>
-                    </div>
-                    <a href="iframe-subway-surfers-holiday.html" class="play-btn game-link">Play Now</a>
-                </div>
-              </div>
-   <div class="game-grid">
-            <div class="game-card">
-                <div class="game-image-container">
-                    <img src="https://ali.iningame.com/cy/sdk/icon/ORV_Racing.png" alt="ORV racing">
-                    <div class="trending-ribbon">HOT🔥</div>
-                </div>
-                <div class="game-info">
-                    <p>ORV Racing </p>
-                    <div class="game-meta">
-                        <i class="fas fa-star"></i> 1.0k
-                        <span style="margin-left: 5px;"><i class="fas fa-user"></i> 2k+</span>
-                    </div>
-                    <a href="iframe-ORV-Racing.html" class="play-btn game-link">Play Now</a>
-                </div>
-              </div>
-   </div>
-</div>
-
-<!-- UPDATED: Page Content for Trending (Full Screen) -->
-    <div class="page-content" id="earn-content">
-        <iframe src="about:blank" id="earn-iframe" class="page-iframe"></iframe>
     </div>
+    <div class="game-card">
+        <img src="https://i.postimg.cc/vZ2rFB3V/zombie-shooter.jpg" alt="Zombie Shooter">
+        <div class="game-info">
+            <p>Zombie Shooter</p>
+            <div class="game-meta">
+                <i class="fas fa-star"></i> 4.5
+                <span style="margin-left: 10px;"><i class="fas fa-user"></i> 9k+</span>
+            </div>
+            <a href="./games/iframe-zombie-shooter.html" class="play-btn game-link">Play Now</a>
+        </div>
+    </div>
+    <div class="game-card">
+        <img src="https://i.postimg.cc/9MgLJQXs/ninja-run.jpg" alt="Ninja Run">
+        <div class="game-info">
+            <p>Ninja Run</p>
+            <div class="game-meta">
+                <i class="fas fa-star"></i> 4.6
+                <span style="margin-left: 10px;"><i class="fas fa-user"></i> 7k+</span>
+            </div>
+            <a href="./games/iframe-ninja-run.html" class="play-btn game-link">Play Now</a>
+        </div>
+    </div>
+    <div class="game-card">
+        <img src="https://i.postimg.cc/HxqNvTdY/space-invaders.jpg" alt="Space Blaster">
+        <div class="game-info">
+            <p>Space Blaster</p>
+            <div class="game-meta">
+                <i class="fas fa-star"></i> 4.4
+                <span style="margin-left: 10px;"><i class="fas fa-user"></i> 5k+</span>
+            </div>
+            <a href="./games/iframe-space-blaster.html" class="play-btn game-link">Play Now</a>
+        </div>
+    </div>
+</div>
+
+  
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5345992350931230"
+            crossorigin="anonymous"></script>
+        <!-- In-feed ads -->
+        <ins class="adsbygoogle"
+            style="display:block"
+            data-ad-client="ca-pub-5345992350931230"
+            data-ad-slot="8886337393"
+            data-ad-format="auto"
+            data-full-width-responsive="true"></ins>
+        <script>
+            (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
+
+  <!-- earn Page Content (Full Screen) -->
+  <div class="page-content" id="earn-content">
+    <div class="back-button" id="earn-back"><i class="fas fa-chevron-left"></i></div>
+    <iframe src="nav/earn.html" id="earn-iframe" class="page-iframe"></iframe>
+  </div>
 
   <!-- Profile Page Content (Full Screen) -->
   <div class="page-content" id="profile-content">
@@ -1611,850 +1233,676 @@ window.manualUpdate = async function() {
 
   <!-- JavaScript for Loader, Navigation, and Floating Search Bar Visibility -->
   <script>
-    // Helper functions to show/hide loader
-function showLoader() {
-    const loader = document.getElementById('loader');
-    loader.style.display = 'flex';
-    loader.style.opacity = '1';
-    // Start timeout check for network issues (3 seconds in this example)
-    setTimeout(function() {
-        // If loader is still visible, alert the user about a possible network error.
-        if (loader.style.display !== 'none') {
-          
-            // Optionally hide the loader to allow user interaction
-            loader.style.display = 'none';
-        }
-    }, 7000);
-}
+   // Initialize Global Variables
+let gamesData = [];
+let searchTimeout;
+const loaderDelay = 1500; // Loader delay in ms
+let deferredPrompt;
 
-function hideLoader() {
-    const loader = document.getElementById('loader');
-    loader.style.opacity = '0';
-    setTimeout(function() {
-        loader.style.display = 'none';
-    }, 300);
-}
+// Set "visited before" flag 
+localStorage.setItem("visitedBefore", "true");
 
-// Reset active state for content sections and navigation buttons
-function resetActiveState() {
-    // Hide main content and all page-content sections
-    document.getElementById('main-content').classList.add('hidden');
-    document.querySelectorAll('.page-content').forEach(function(content) {
-        content.classList.remove('active');
-    });
-    // Remove active class from all bottom navigation links
-    document.querySelectorAll('.bottom-nav a').forEach(function(nav) {
-        nav.classList.remove('active');
-    });
-}
-
-//handle navigation 
-function handleNavigation(contentElement, iframe, navElement, url) {
-    showLoader();
-    resetActiveState();
-    navElement.classList.add('active');
-
-    if (iframe && (iframe.src === 'about:blank' || iframe.src === '')) {
-        iframe.src = url;
-    }
-
-    contentElement.style.display = 'block';
-    void contentElement.offsetWidth;
-    contentElement.classList.add('active');
-
-    // Hide nav only for Profile or Categories
-    if (
-        navElement.id === "profile-nav" ||
-        navElement.id === "categories-nav"
-    ) {
-        document.querySelector('.bottom-nav').style.display = "none";
-    } else {
-        document.querySelector('.bottom-nav').style.display = "flex";
-    }
-
-    // Hide floating search bar on non-home pages
-    if (navElement.id !== 'home-nav') {
-        document.getElementById("floating-search").style.display = "none";
-    }
-
-    if (iframe) {
-        iframe.onload = function () {
-            hideLoader();
-        };
-    } else {
-        setTimeout(hideLoader, 500);
-    }
-}
-
-// Document Ready Event Handler
+// DOM Content Loaded Event
 document.addEventListener("DOMContentLoaded", function() {
-    // Hide loader after page load
-    setTimeout(function() {
+    // Hide loader after delay
+    setTimeout(() => {
         document.getElementById('loader').style.opacity = '0';
-        setTimeout(function() {
+        setTimeout(() => {
             document.getElementById('loader').style.display = 'none';
-        }, 300);
-    }, 800);
+        }, 500);
+    }, loaderDelay);
+    
+    // Add CSS for iframe loaders
+    addIframeLoaderStyles();
 
-    // Floating Search Bar show/hide for navigation
-    const floatingSearch = document.getElementById("floating-search");
-
-    function showSearchBar() {
-        floatingSearch.style.display = "block";
-    }
-
-    function hideSearchBar() {
-        floatingSearch.style.display = "none";
-    }
-
-    // Navigation for Home: Show main content and floating search bar
-    document.getElementById("home-nav").addEventListener("click", function(e) {
-        e.preventDefault();
-        resetActiveState();
-        // Show the main content section
-        document.getElementById('main-content').classList.remove('hidden');
-        // Set Home nav to active
-        this.classList.add('active');
-        // Display the floating search bar on Home
-        showSearchBar();
-    });
-
-    // Navigation for Categories
-    document.getElementById("categories-nav").addEventListener("click", function(e) {
-        e.preventDefault();
-        const categoriesContent = document.getElementById('categories-content');
-        const categoriesIframe = document.getElementById('categories-iframe');
-        handleNavigation(categoriesContent, categoriesIframe, this, 'categories.html');
-        hideSearchBar();
-    });
-
-    // Navigation for Trending
-    document.getElementById("trending-nav").addEventListener("click", function(e) {
-        e.preventDefault();
-        const trendingContent = document.getElementById('trending-content');
-        const trendingIframe = document.getElementById('trending-iframe');
-        handleNavigation(trendingContent, trendingIframe, this, 'trending.html');
-        hideSearchBar();
-    });
-
-    // Navigation for Earn
-    document.getElementById("earn-nav").addEventListener("click", function(e) {
-        e.preventDefault();
-        const earnContent = document.getElementById('earn-content');
-        const earnIframe = document.getElementById('earn-iframe');
-        handleNavigation(earnContent, earnIframe, this, 'Airtime-earn.html');
-        hideSearchBar();
-    });
-
-    // Navigation for Profile
-    document.getElementById("profile-nav").addEventListener("click", function(e) {
-        e.preventDefault();
-        const profileContent = document.getElementById('profile-content');
-        const profileIframe = document.getElementById('profile-iframe');
-        handleNavigation(profileContent, profileIframe, this, 'profile.html');
-        hideSearchBar();
-    });
-
-    // Handle Back button for Profile (if exists)
-    const profileBackBtn = document.getElementById("profile-back");
-    if (profileBackBtn) {
-        profileBackBtn.addEventListener("click", function() {
-            const profileContent = document.getElementById('profile-content');
-            profileContent.classList.remove('active');
-            
-            // Hide content after animation completes
-            setTimeout(function() {
-                profileContent.style.display = 'none';
-            }, 300); // Match transition duration
-            
-            // Activate home nav
-            resetActiveState();
-            document.getElementById('main-content').classList.remove('hidden');
-            document.getElementById('home-nav').classList.add('active');
-             document.querySelector('.bottom-nav').style.display = "flex";
-            showSearchBar();
-        });
-    }
-
-    // Handle Back button for Categories (if exists)
-    const categoriesBackBtn = document.getElementById("categories-back");
-    if (categoriesBackBtn) {
-        categoriesBackBtn.addEventListener("click", function() {
-            const categoriesContent = document.getElementById('categories-content');
-            categoriesContent.classList.remove('active');
-            
-            // Hide content after animation completes
-            setTimeout(function() {
-                categoriesContent.style.display = 'none';
-            }, 300); // Match transition duration
-            
-            // Activate home nav
-            resetActiveState();
-            document.getElementById('main-content').classList.remove('hidden');
-            document.getElementById('home-nav').classList.add('active');
-            document.querySelector('.bottom-nav').style.display = "flex";
-            showSearchBar();
-        });
-    }
-
-    // Refresh button functionality
-    var refreshButton = document.getElementById("refresh-button");
-    if (refreshButton) {
-        refreshButton.addEventListener("touchstart", function(event) {
-            event.preventDefault();
-            refreshButton.style.transform = "scale(0.9)"; // Instant feedback
-        });
-
-        refreshButton.addEventListener("touchend", function(event) {
-            event.preventDefault();
-            refreshButton.style.transform = "scale(1)"; // Reset effect
-            location.reload(); // Refresh the page
-        });
-
-        refreshButton.addEventListener("click", function(event) {
-            event.preventDefault();
-            location.reload();
-        });
-    }
+    // Initialize search functionality
+    initSearch();
+    
+    // Initialize navigation
+    initNavigation();
+    
+    // Initialize dark mode
+    initDarkMode();
+    
+    // Initialize real ad block detection
+    detectAdBlockReal();
+    
+    // Show welcome popup for new users
+    checkForFirstVisit();
+    
+    // Lazy load images
+    lazyLoadImages();
+    
+    // Initialize install button if it exists
+    initPWAInstall();
 });
 
-// Search functionality for the games
-document.addEventListener("DOMContentLoaded", function() {
-    // Game data - keeping original games array from the existing code
-    const games = [
-    { 
-        name: "Truth or Dare", 
-        url: "truth.html", 
-        icon: "https://i.postimg.cc/zfv3jnNr/truth.jpg", 
-        category: "Party Game",
-        plays: 4823,
-        liked: 987
-    },
-    { 
-        name: "Memory Card", 
-        url: "memory.html", 
-        icon: "https://i.postimg.cc/hvXFjbH2/memory.jpg", 
-        category: "Brain Game",
-        plays: 3254,
-        liked: 654
-    },
-    { 
-        name: "Tic Tac Toe", 
-        url: "tic-tac-toe.html", 
-        icon: "https://i.postimg.cc/CL3qTdQn/images-12.jpg", 
-        category: "Strategy",
-        plays: 7854,
-        liked: 1523
-    },
-    { 
-        name: "Whack Mole", 
-        url: "whack.html", 
-        icon: "https://i.postimg.cc/tJtT7bVC/IMG-20250226-WA0077.jpg",
-        category: "Arcade",
-        plays: 5642,
-        liked: 1245
-    },
-    { 
-        name: "Bubble Shoot", 
-        url: "iframe-bubble.html", 
-        icon: "https://i.postimg.cc/xC0Pd8QM/Screenshot-20250316-221515.jpg",
-        category: "Arcade",
-        plays: 5642,
-        liked: 1245
-    },
-    { 
-        name: "Macthman Warrior", 
-        url: "iframe-warrior.html", 
-        icon: "https://i.postimg.cc/HLjWry4C/icon.webp",
-        category: "Action",
-        plays: 3000,
-        liked: 300
-    },
-    { 
-        name: "Moto X3M Christmas", 
-        url: "iframe-moto-X3M.html", 
-        icon: "https://www.play1024.com/cy/icon/Moto_X3M_Christmas.png",
-        category: "Racing",
-        plays: 6000,
-        liked: 600
-    },
-    { 
-        name: "Ludo Legend", 
-        url: "iframe-ludo-legend.html", 
-        icon: "https://www.afantaigame.com/Ludo_Legend/180x180.png",
-        category: "Board Game",
-        plays: 6000,
-        liked: 600
-    },
-    { 
-        name: "Bike Rush 3D", 
-        url: "iframe-bike-rush.html", 
-        icon: "https://i.postimg.cc/qvKCPhMn/Screenshot-20250401-122939.jpg",
-        category: "Racing",
-        plays: 6000,
-        liked: 600
-    },
-    { 
-        name: "Boat Race", 
-        url: "iframe-boat-race.html", 
-        icon: "https://ali.iningame.com/cy/sdk/icon/Boat_Race.png",
-        category: "Sports",
-        plays: 6000,
-        liked: 600
-    },
-    { 
-        name: "Subway Surfers Halloween", 
-        url: "iframe-subway.html", 
-        icon: "https://i.postimg.cc/MTbmT5k9/Halloween-Icon-Logo-Subway-Surfers-purple.jpg",
-        category: "Runner",
-        plays: 10000,
-        liked: 1000
-    },
-    { 
-        name: "Pubg Mobile", 
-        url: "iframe-pubg.html", 
-        icon: "https://www.nmgtianshugame.com/Pubg_Mobile_Online/bg.jpg",
-        category: "Battle Royale",
-        plays: 8000,
-        liked: 800
-    },
-    { 
-        name: "Pixel Shooter", 
-        url: "iframe-pixel.html", 
-        icon: "https://i.postimg.cc/tCW2rTBL/images-17.jpg",
-        category: "Shooter",
-        plays: 8000,
-        liked: 800
-    },
-    { 
-        name: "Relic Run Away", 
-        url: "iframe-runaway.html", 
-        icon: "https://i.postimg.cc/mk6S7rmq/Screenshot-20250315-140235.jpg",
-        category: "Adventure",
-        plays: 8000,
-        liked: 800
-    },
-    { 
-        name: "Hunter Assassin", 
-        url: "iframe-hunter.html", 
-        icon: "https://i.postimg.cc/G2QX6HVH/Screenshot-20250316-013311.jpg",
-        category: "Action",
-        plays: 25000,
-        liked: 2500
-    },
-    { 
-        name: "Squid Survival", 
-        url: "iframe-squidsurvival.html", 
-        icon: "https://ali.iningame.com/cy/sdk/icon/Squid_Survival.png",
-        category: "Survival",
-        plays: 25000,
-        liked: 2500
-    },
-    { 
-        name: "Piano Music Tiles", 
-        url: "iframe-pianotiles.html", 
-        icon: "https://i.postimg.cc/tTHkCqMK/splash-1.webp",
-        category: "Music",
-        plays: 25000,
-        liked: 2500
-    },
-    { 
-        name: "Sniper Simulator", 
-        url: "iframe-snipersimulator.html", 
-        icon: "https://i.postimg.cc/HsZKLmzn/images-18.jpg",
-        category: "Simulator",
-        plays: 1800,
-        liked: 250
-    },
-    { 
-        name: "Wild Hunt Hunting", 
-        url: "iframe-wildhunt.html", 
-        icon: "https://i.postimg.cc/Kcs2jCm9/Wild-Hunt-Hunting-Games-3-D.png",
-        category: "Hunting",
-        plays: 1800,
-        liked: 250
-    },
-    { 
-        name: "Egg Super Adventure", 
-        url: "iframe-eggadventure.html", 
-        icon: "https://i.postimg.cc/brCPxBXR/Screenshot-20250326-024432.jpg",
-        category: "Adventure",
-        plays: 1000,
-        liked: 200
-    },
-    { 
-        name: "Rac Simulator 1", 
-        url: "iframe-racesimulator-1.html", 
-        icon: "https://www.fatfishgame.com/Rac_Simulator_1/adapter/logo.png",
-        category: "Racing Simulator",
-        plays: 1800,
-        liked: 250
-    },
-    { 
-        name: "Smash Colors Music Ball", 
-        url: "iframe-musicball.html", 
-        icon: "https://www.hnyigegame.com/Smash_Colors_Music_Ball/game/logo.png",
-        category: "Puzzle",
-        plays: 1000,
-        liked: 200
-    },
-    { 
-        name: "Subway Surfers Holiday", 
-        url: "iframe-subway-surfers-holiday.html", 
-        icon: "https://ali.iningame.com/cy/sdk/icon/Subway_Surfers_Holiday.png",
-        category: "Runner",
-        plays: 1800,
-        liked: 250
-    },
-    { 
-        name: "ORV Racing", 
-        url: "iframe-ORV-Racing.html", 
-        icon: "https://ali.iningame.com/cy/sdk/icon/ORV_Racing.png",
-        category: "Racing",
-        plays: 1000,
-        liked: 200
-    }
-];
-
-    // DOM Elements
-    const searchInput = document.getElementById('floating-search-input');
-    const searchIcon = document.getElementById('search-icon');
-    const suggestionsContainer = document.getElementById('floating-suggestions');
-
-    // Only set up search if elements exist
-    if (searchInput && searchIcon && suggestionsContainer) {
-        // Search function
-        function performSearch() {
-            const query = searchInput.value.toLowerCase();
-            
-            // Clear previous results
-            suggestionsContainer.innerHTML = '';
-            
-            // Don't search if query is empty
-            if (query.length === 0) {
-                suggestionsContainer.style.display = 'none';
-                return;
-            }
-            
-            // Filter games
-            const filteredGames = games.filter(game => 
-                game.name.toLowerCase().includes(query) || 
-                game.category.toLowerCase().includes(query)
-            );
-            
-            // Display results
-            if (filteredGames.length > 0) {
-                suggestionsContainer.style.display = 'block';
+// PWA Installation Functionality
+function initPWAInstall() {
+    const installButton = document.getElementById('installButton');
+    if (installButton) {
+        // Initially hide the button
+        installButton.style.display = "none";
+        
+        // Check if the app is already installed
+        if (window.matchMedia('(display-mode: standalone)').matches || 
+            window.navigator.standalone === true) {
+            // App is already installed, no need to show install button
+            return;
+        }
+        
+        // Setup event listener for install button
+        installButton.addEventListener("click", () => {
+            if (deferredPrompt) {
+                // Show the install prompt
+                deferredPrompt.prompt();
                 
-                filteredGames.forEach(game => {
-                    const suggestionItem = document.createElement('div');
-                    suggestionItem.classList.add('autocomplete-suggestion');
-                    suggestionItem.innerHTML = `
-                        <img src="${game.icon}" alt="${game.name} icon">
-                        <div class="game-info">
-                            <span class="game-name">${game.name}</span>
-                            <span class="game-category">${game.category}</span>
-                        </div>
-                        <button class="play-btn">Play</button>
-                    `;
-                    
-                    suggestionItem.addEventListener('click', function() {
-                        window.location.href = game.url;
-                    });
-                    
-                    suggestionsContainer.appendChild(suggestionItem);
+                // Wait for the user to respond to the prompt
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === "accepted") {
+                        console.log("User accepted the install prompt");
+                        // Hide the button after installation
+                        installButton.style.display = "none";
+                    } else {
+                        console.log("User dismissed the install prompt");
+                    }
+                    // Clear the saved prompt since it can't be used again
+                    deferredPrompt = null;
                 });
             } else {
-                suggestionsContainer.style.display = 'block';
-                const noResults = document.createElement('div');
-                noResults.classList.add('no-results');
-                noResults.textContent = 'No games found';
-                suggestionsContainer.appendChild(noResults);
-            }
-        }
-
-        // Event Listeners
-        // Trigger search when clicking the search icon
-        searchIcon.addEventListener('click', performSearch);
-        
-        // Real-time filtering on input
-        searchInput.addEventListener('input', performSearch);
-        
-        // Enter key support
-        searchInput.addEventListener('keypress', function(event) {
-            if (event.key === 'Enter') {
-                performSearch();
-                const suggestions = suggestionsContainer.querySelectorAll('.autocomplete-suggestion');
-                if (suggestions.length === 1) {
-                    suggestions[0].click();
+                // If running on localhost, provide instructions for testing PWA
+                if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
+                    alert("To install this app during local development:\n1. Make sure your manifest.json is properly configured\n2. In Chrome DevTools, go to Application > Manifest\n3. Click 'Add to homescreen' for testing");
                 }
-            }
-        });
-        
-        // Close suggestions when clicking outside
-        document.addEventListener('click', function(event) {
-            if (!suggestionsContainer.contains(event.target) && 
-                event.target !== searchInput && 
-                event.target !== searchIcon) {
-                suggestionsContainer.style.display = 'none';
             }
         });
     }
+}
+
+// PWA Installation Prompt
+window.addEventListener("beforeinstallprompt", (e) => {
+    // Prevent Chrome 67+ from automatically showing the prompt
+    e.preventDefault();
+    // Stash the event so it can be triggered later
+    deferredPrompt = e;
     
-    // Firebase configuration (keeping original Firebase code)
-    // Firebase configuration - use your existing config
-    const firebaseConfig = {
-        apiKey: "AIzaSyBw1uA-kNKOZEufWKZ9AMBxvRGHNGF1lkA",
-        authDomain: "multi-games-a2561.firebaseapp.com",
-        databaseURL: "https://multi-games-a2561-default-rtdb.firebaseio.com",
-        projectId: "multi-games-a2561",
-        storageBucket: "multi-games-a2561.appspot.com",
-        messagingSenderId: "150551898066",
-        appId: "1:150551898066:web:4e8fb185f2321ba4140a0b",
-        measurementId: "G-PB8Y87E6XV"
-    };
+    // Update UI to show the install button
+    const installButton = document.getElementById('installButton');
+    if (installButton) {
+        installButton.style.display = "block";
+    }
+    
+    // Log that the prompt is available (for debugging)
+    console.log("Install prompt is ready to be used");
+});
 
-    // Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const db = firebase.database();
+// When the app is successfully installed
+window.addEventListener('appinstalled', (evt) => {
+    // Hide the install button after successful installation
+    const installButton = document.getElementById('installButton');
+    if (installButton) {
+        installButton.style.display = "none";
+    }
+    console.log('Application was successfully installed');
+});
 
-    // Popup Notification System
-    class PopupSystem {
-        constructor() {
-            this.container = document.getElementById('popupContainer');
-            this.popupCount = 0;
-            this.maxPopups = 5;
-            this.autoDismissDuration = 12000; // 5 seconds
-            this.popupsRef = db.ref('popIn');
-            
-            // Initialize the popup listener
-            this.initPopupListener();
+// Initialize Search Functionality
+function initSearch() {
+    const searchInput = document.getElementById('floating-search-input');
+    const suggestionsContainer = document.getElementById('floating-suggestions');
+    
+    // Fetch games data (mocked here, should be replaced with actual data)
+    fetchGamesData();
+    
+    searchInput.addEventListener('focus', function() {
+        document.getElementById('floating-search').style.width = '95%';
+    });
+    
+    searchInput.addEventListener('input', function() {
+        clearTimeout(searchTimeout);
+        const query = this.value.trim();
+        
+        if (query.length > 0) {
+            searchTimeout = setTimeout(() => {
+                searchGames(query);
+            }, 300);
+        } else {
+            suggestionsContainer.innerHTML = '';
+            suggestionsContainer.classList.remove('show');
         }
-
-        initPopupListener() {
-            // Listen for new popup messages
-            this.popupsRef.on('child_added', (snapshot) => {
-                const popup = snapshot.val();
-                if (popup && popup.message) {
-                    this.showPopup(
-                        popup.title || "Notification", 
-                        popup.message,
-                        popup.type || "primary",
-                        popup.timestamp || Date.now(),
-                        snapshot.key
-                    );
-                }
-            });
+    });
+    
+    // Close search when clicking outside
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('.floating-search')) {
+            suggestionsContainer.classList.remove('show');
         }
+    });
+}
 
-        showPopup(title, message, type, timestamp, id) {
-            const popupId = `popup-${this.popupCount++}`;
-            
-            
-            // Determine the symbol based on type
-            let symbol = '';
-            switch(type) {
-                case 'success':
-                    symbol = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>';
-                    break;
-                case 'warning':
-                    symbol = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>';
-                    break;
-                case 'error':
-                    symbol = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>';
-                    break;
-                case 'info':
-                    symbol = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>';
-                    break;
-                default: // primary
-                    symbol = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>';
-                    break;
-            }
-            
-            // Format timestamp nicely
-            let displayTime;
-            if (typeof timestamp === 'number' || !isNaN(new Date(timestamp).getTime())) {
-                const date = typeof timestamp === 'number' ? new Date(timestamp) : new Date(timestamp);
-                displayTime = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            } else {
-                // Fallback to current time if timestamp is invalid
-                displayTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            }
-            
-            // Create popup element
-            const popup = document.createElement('div');
-            popup.className = `popup popup-${type}`;
-            popup.id = popupId;
-            
-            popup.innerHTML = `
-                <div class="popup-icon"></div>
-                <div class="popup-content">
-                    <div class="popup-symbol">
-                        ${symbol}
-                    </div>
-                    <div class="popup-text">
-                        <h4 class="popup-title">${title}</h4>
-                        <p class="popup-message">${message}</p>
-                        <div class="popup-time">${displayTime}</div>
-                    </div>
-                </div>
-                <button class="popup-close">&times;</button>
-                <div class="popup-progress">
-                    <div class="popup-progress-inner"></div>
+// Fetch Games Data
+function fetchGamesData() {
+    // This would normally be an API call - for now we'll use data from the HTML
+    const gameCards = document.querySelectorAll('.game-card');
+    gameCards.forEach(card => {
+        const img = card.querySelector('img');
+        const title = card.querySelector('.game-info p').textContent;
+        const rating = card.querySelector('.game-meta i').nextSibling.textContent.trim();
+        const link = card.querySelector('.play-btn').getAttribute('href');
+        
+        gamesData.push({
+            title: title,
+            image: img.src,
+            rating: rating,
+            link: link
+        });
+    });
+}
+
+// Search Games
+function searchGames(query) {
+    const suggestionsContainer = document.getElementById('floating-suggestions');
+    suggestionsContainer.innerHTML = '';
+    
+    const filteredGames = gamesData.filter(game => 
+        game.title.toLowerCase().includes(query.toLowerCase())
+    );
+    
+    if (filteredGames.length > 0) {
+        filteredGames.forEach(game => {
+            const suggestionItem = document.createElement('div');
+            suggestionItem.className = 'suggestion-item';
+            suggestionItem.innerHTML = `
+                <img src="${game.image}" alt="${game.title}">
+                <div class="suggestion-text">
+                    <div class="suggestion-title">${game.title}</div>
+                    <div class="suggestion-meta">Rating: ${game.rating}</div>
                 </div>
             `;
             
-            // Add to container
-            this.container.appendChild(popup);
-            
-            // Apply animation after a small delay to ensure DOM update
-            setTimeout(() => {
-                popup.classList.add('visible');
-                
-                // Start progress bar animation
-                const progressInner = popup.querySelector('.popup-progress-inner');
-                progressInner.style.width = '100%';
-                progressInner.style.transition = `width ${this.autoDismissDuration}ms linear`;
-                setTimeout(() => {
-                    progressInner.style.width = '0%';
-                }, 50);
-            }, 10);
-            
-            // Set up close button
-            const closeBtn = popup.querySelector('.popup-close');
-            closeBtn.addEventListener('click', () => {
-                this.closePopup(popupId, id);
+            suggestionItem.addEventListener('click', () => {
+                window.location.href = game.link;
             });
             
-            // Auto-dismiss after set duration
-            setTimeout(() => {
-                this.closePopup(popupId, id);
-            }, this.autoDismissDuration);
-            
-            // Limit number of visible popups
-            this.limitPopups();
-        }
-        
-        closePopup(popupId, firebaseId) {
-            const popup = document.getElementById(popupId);
-            if (popup && !popup.classList.contains('hiding')) {
-                popup.classList.remove('visible');
-                popup.classList.add('hiding');
-                setTimeout(() => {
-                    if (popup.parentNode) {
-                        popup.parentNode.removeChild(popup);
-                    }
-                }, 400); // Match animation duration
-            }
-            
-            // Optionally mark as read in Firebase
-            // db.ref(`popIn/${firebaseId}`).update({ read: true });
-        }
-        
-        limitPopups() {
-            const popups = this.container.querySelectorAll('.popup:not(.hiding)');
-            if (popups.length > this.maxPopups) {
-                for (let i = 0; i < popups.length - this.maxPopups; i++) {
-                    const oldestPopup = popups[i];
-                    this.closePopup(oldestPopup.id);
-                }
-            }
-        }
-    }
-
-    // Initialize popup system when DOM is loaded
-    let popupSystem;
-    popupSystem = new PopupSystem();
-    
-    // Test function to create sample popups
-    function testPopups() {
-        if (!popupSystem) return;
-        
-        // Test different types of popups
-        const types = ['primary', 'success', 'warning', 'error', 'info'];
-        const titles = ['Information', 'Success', 'Warning', 'Error', 'Important'];
-        const messages = [
-            'This is a primary notification with some information.',
-            'Your changes have been saved successfully!',
-            'Please check your connection status.',
-            'An error occurred while processing your request.',
-            'Don\'t forget about your upcoming appointment.'
-        ];
-        
-        // Show test popups with slight delays
-        types.forEach((type, index) => {
-            setTimeout(() => {
-                const mockId = `mock-${Date.now()}-${index}`;
-                popupSystem.showPopup(
-                    titles[index],
-                    messages[index],
-                    type,
-                    Date.now(),
-                    mockId
-                );
-            }, index * 1000);
+            suggestionsContainer.appendChild(suggestionItem);
         });
+        
+        suggestionsContainer.classList.add('show');
+    } else {
+        const noResults = document.createElement('div');
+        noResults.className = 'suggestion-item';
+        noResults.innerHTML = `
+            <div class="suggestion-text">
+                <div class="suggestion-title">No games found</div>
+            </div>
+        `;
+        suggestionsContainer.appendChild(noResults);
+        suggestionsContainer.classList.add('show');
     }
-});
+}
 
-</script>
-      <script>
-    // Ad Blocker Detection Script
-
-    // Function to create a fake ad element for testing
-    function createFakeAd() {
-        const fakeAd = document.createElement('div');
-        fakeAd.id = 'ad-banner';
-        fakeAd.className = 'ad advertisement googlead advert banner-ad';
-        fakeAd.style.height = '1px';
-        fakeAd.style.width = '1px';
-        fakeAd.style.position = 'absolute';
-        fakeAd.style.top = '-100px';
-        fakeAd.style.left = '-100px';
-        document.body.appendChild(fakeAd);
-        return fakeAd;
-    }
-
-    // Function to check if ads are being blocked
-    function checkAdBlocker() {
-        const fakeAd = createFakeAd();
+// Initialize Navigation
+function initNavigation() {
+    // Home Navigation
+    document.getElementById('home-nav').addEventListener('click', function(e) {
+        e.preventDefault();
+        showMainContent();
+    });
+    
+    // Categories Navigation
+    document.getElementById('categories-nav').addEventListener('click', function(e) {
+        e.preventDefault();
+        const categoriesContent = document.getElementById('categories-content');
+        categoriesContent.style.display = 'flex';
+        
+        // Show iframe loader
+        showIframeLoader(categoriesContent);
+        
+        const categoriesIframe = document.getElementById('categories-iframe');
+        categoriesIframe.style.opacity = '0'; // Hide iframe initially
+        categoriesIframe.src = 'nav/categories/categories.html';
+        
+        // Handle iframe load completion
+        categoriesIframe.onload = function() {
+            hideIframeLoader(categoriesContent);
+            categoriesIframe.style.opacity = '1'; // Show iframe with fade effect
+            
+            // Apply slide-in animation
+            categoriesIframe.style.transform = 'translateX(-100%)';
+            setTimeout(() => {
+                categoriesIframe.style.transition = 'transform 0.5s ease-out';
+                categoriesIframe.style.transform = 'translateX(0)';
+            }, 50);
+        };
+        
+        // Keep navigation bar visible
+        document.querySelector('.bottom-nav').style.display = 'flex';
+        updateActiveNav('categories-nav');
+    });
+    
+    document.getElementById('categories-back').addEventListener('click', function() {
+        const iframe = document.getElementById('categories-iframe');
+        // Slide out animation
+        iframe.style.transition = 'transform 0.5s ease-in';
+        iframe.style.transform = 'translateX(100%)';
         
         setTimeout(() => {
-            const adBlocked = fakeAd.offsetHeight === 0 || !document.body.contains(fakeAd);
+            document.getElementById('categories-content').style.display = 'none';
+            showMainContent(); // Reset to main content when back button is pressed
+        }, 500);
+    });
+    
+    // View All Categories
+    document.getElementById('view-all-categories').addEventListener('click', function(e) {
+        e.preventDefault();
+        const categoriesContent = document.getElementById('categories-content');
+        categoriesContent.style.display = 'flex';
+        
+        // Show iframe loader
+        showIframeLoader(categoriesContent);
+        
+        const categoriesIframe = document.getElementById('categories-iframe');
+        categoriesIframe.style.opacity = '0'; // Hide iframe initially
+        categoriesIframe.src = 'nav/categories/categories.html';
+        
+        // Handle iframe load completion
+        categoriesIframe.onload = function() {
+            hideIframeLoader(categoriesContent);
+            categoriesIframe.style.opacity = '1'; // Show iframe with fade effect
             
-            if (adBlocked) {
-                // Show the ad block message
-                const adblockMessage = document.getElementById('adblockMessage');
-                if (adblockMessage) {
-                    adblockMessage.style.display = 'block';
-                }
-            }
+            // Apply slide-in animation
+            categoriesIframe.style.transform = 'translateX(-100%)';
+            setTimeout(() => {
+                categoriesIframe.style.transition = 'transform 0.5s ease-out';
+                categoriesIframe.style.transform = 'translateX(0)';
+            }, 50);
+        };
+        
+        // Keep navigation bar visible
+        document.querySelector('.bottom-nav').style.display = 'flex';
+        updateActiveNav('categories-nav');
+    });
+    
+    // Trending Navigation
+    document.getElementById('trending-nav').addEventListener('click', function(e) {
+        e.preventDefault();
+        document.querySelectorAll('.container').forEach(container => {
+            container.style.display = 'none';
+        });
+        document.getElementById('trending-content').style.display = 'block';
+        updateActiveNav('trending-nav');
+        
+        // Ensure navigation bar is visible
+        document.querySelector('.bottom-nav').style.display = 'flex';
+    });
+    
+    // Earn Navigation
+    document.getElementById('earn-nav').addEventListener('click', function(e) {
+        e.preventDefault();
+        const earnContent = document.getElementById('earn-content');
+        earnContent.style.display = 'flex';
+        
+        // Show iframe loader
+        showIframeLoader(earnContent);
+        
+        const earnIframe = document.getElementById('earn-iframe');
+        earnIframe.style.opacity = '0'; // Hide iframe initially
+        earnIframe.src = 'nav/earn.html';
+        
+        // Handle iframe load completion
+        earnIframe.onload = function() {
+            hideIframeLoader(earnContent);
+            earnIframe.style.opacity = '1'; // Show iframe with fade effect
             
-            // Clean up - remove the fake ad
-            if (document.body.contains(fakeAd)) {
-                document.body.removeChild(fakeAd);
-            }
-        }, 100);
-    }
+            // Apply slide-in animation
+            earnIframe.style.transform = 'translateX(-100%)';
+            setTimeout(() => {
+                earnIframe.style.transition = 'transform 0.5s ease-out';
+                earnIframe.style.transform = 'translateX(0)';
+            }, 50);
+        };
+        
+        // Ensure navigation bar is visible
+        document.querySelector('.bottom-nav').style.display = 'flex';
+        updateActiveNav('earn-nav');
+    });
+    
+    document.getElementById('earn-back').addEventListener('click', function() {
+        if (this.parentElement) {
+            const iframe = document.getElementById('earn-iframe');
+            // Slide out animation
+            iframe.style.transition = 'transform 0.5s ease-in';
+            iframe.style.transform = 'translateX(100%)';
+            
+            setTimeout(() => {
+                document.getElementById('earn-content').style.display = 'none';
+                showMainContent(); // Reset to main content when back button is pressed
+            }, 500);
+        }
+    });
+    
+    // Profile Navigation
+    document.getElementById('profile-nav').addEventListener('click', function(e) {
+        e.preventDefault();
+        // Hide all containers first
+        document.querySelectorAll('.container').forEach(container => {
+            container.style.display = 'none';
+        });
+        
+        const profileContent = document.getElementById('profile-content');
+        profileContent.style.display = 'flex';
+        
+        // Show iframe loader
+        showIframeLoader(profileContent);
+        
+        const profileIframe = document.getElementById('profile-iframe');
+        profileIframe.style.opacity = '0'; // Hide iframe initially
+        profileIframe.src = 'nav/profile.html';
+        
+        // Handle iframe load completion
+        profileIframe.onload = function() {
+            hideIframeLoader(profileContent);
+            profileIframe.style.opacity = '1'; // Show iframe with fade effect
+            
+            // Apply slide-in animation
+            profileIframe.style.transform = 'translateX(-100%)';
+            setTimeout(() => {
+                profileIframe.style.transition = 'transform 0.5s ease-out';
+                profileIframe.style.transform = 'translateX(0)';
+            }, 50);
+        };
+        
+        // Keep navigation bar visible
+        document.querySelector('.bottom-nav').style.display = 'flex';
+        updateActiveNav('profile-nav');
+    });
+    
+    document.getElementById('profile-back').addEventListener('click', function() {
+        const iframe = document.getElementById('profile-iframe');
+        // Slide out animation
+        iframe.style.transition = 'transform 0.5s ease-in';
+        iframe.style.transform = 'translateX(100%)';
+        
+        setTimeout(() => {
+            document.getElementById('profile-content').style.display = 'none';
+            showMainContent(); // Reset to main content when back button is pressed
+        }, 500);
+    });
+}
 
-    // Alternative detection method using fetch
-    function detectAdBlockFetch() {
-        fetch('https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js', {
-            method: 'HEAD',
-            mode: 'no-cors'
-        })
-        .then(() => {
-            console.log('Ads are not blocked');
-        })
-        .catch(() => {
-            const adblockMessage = document.getElementById('adblockMessage');
-            if (adblockMessage) {
-                adblockMessage.style.display = 'block';
-            }
+// Show Main Content
+function showMainContent() {
+    document.querySelectorAll('.container').forEach(container => {
+        container.style.display = 'none';
+    });
+    document.getElementById('main-content').style.display = 'block';
+    // Ensure navigation bar is visible
+    document.querySelector('.bottom-nav').style.display = 'flex';
+    updateActiveNav('home-nav');
+}
+
+// Update Active Navigation
+function updateActiveNav(activeId) {
+    document.querySelectorAll('.bottom-nav a').forEach(item => {
+        item.classList.remove('active');
+    });
+    document.getElementById(activeId).classList.add('active');
+}
+
+// Initialize Dark Mode
+function initDarkMode() {
+    // Create dark mode toggle button
+    const darkModeToggle = document.createElement('div');
+    darkModeToggle.className = 'dark-mode-toggle';
+ 
+    document.body.appendChild(darkModeToggle);
+    
+    // Check for saved theme preference
+    const isDarkMode = localStorage.getItem('darkMode') === 'true';
+    
+    // Apply saved preference
+    if (isDarkMode) {
+        document.body.classList.add('dark-mode');
+    }
+    
+    // Toggle dark mode on click
+    darkModeToggle.addEventListener('click', function() {
+        document.body.classList.toggle('dark-mode');
+        const isDark = document.body.classList.contains('dark-mode');
+        localStorage.setItem('darkMode', isDark);
+    });
+}
+
+// Real Ad Blocker Detection
+function detectAdBlockReal() {
+    // Create a test ad element
+    const testAd = document.createElement('div');
+    testAd.className = 'ads ad adsbox doubleclick ad-placement carbon-ads';
+    testAd.innerHTML = '&nbsp;';
+    testAd.style.position = 'absolute';
+    testAd.style.top = '-999px';
+    testAd.style.left = '-999px';
+    testAd.style.height = '1px';
+    testAd.style.width = '1px';
+    
+    document.body.appendChild(testAd);
+    
+    // Check if the ad element is hidden (ad blocker active)
+    setTimeout(() => {
+        // If the element's height is 0, ad blocker is active
+        const isAdBlocked = testAd.offsetHeight === 0 || 
+                           window.getComputedStyle(testAd).display === 'none' || 
+                           !document.body.contains(testAd);
+        
+        if (isAdBlocked) {
+            // Show ad block message
+            document.getElementById('adblockMessage').style.display = 'block';
+            console.log('Ad blocker detected');
+        } else {
+            console.log('No ad blocker detected');
+        }
+        
+        // Remove the test element
+        if (document.body.contains(testAd)) {
+            document.body.removeChild(testAd);
+        }
+    }, 100);
+    
+    // Alternative method using a fake ad request
+    const testScript = document.createElement('script');
+    testScript.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js';
+    testScript.onerror = function() {
+        // Show ad block message if script failed to load
+        document.getElementById('adblockMessage').style.display = 'block';
+        console.log('Ad blocker detected (script method)');
+    };
+    document.body.appendChild(testScript);
+}
+
+// Close Ad Block Message
+function closeAdBlockMessage() {
+    document.getElementById('adblockMessage').style.display = 'none';
+}
+
+// Check for First Visit
+function checkForFirstVisit() {
+    const isFirstVisit = localStorage.getItem('firstVisit') !== 'false';
+    
+    if (isFirstVisit) {
+        showWelcomePopup();
+        localStorage.setItem('firstVisit', 'false');
+    }
+}
+
+// Show Welcome Popup
+function showWelcomePopup() {
+    const popupContainer = document.getElementById('popupContainer');
+    
+    const popup = document.createElement('div');
+    popup.className = 'popup';
+    popup.innerHTML = `
+        <div class="popup-close">&times;</div>
+        <h3 class="popup-title">Welcome to Multi Games!</h3>
+        <div class="popup-content">
+            <p>Thanks for downloading our app! Get ready to play the best mobile games for free.</p>
+            <p>Explore our categories, play trending games, and have fun!</p>
+        </div>
+        <button class="popup-button">Start Playing</button>
+    `;
+    
+    popupContainer.appendChild(popup);
+    popupContainer.style.visibility = 'visible';
+    popupContainer.style.opacity = '1';
+    
+    // Close popup on close button click
+    popup.querySelector('.popup-close').addEventListener('click', () => {
+        popupContainer.style.opacity = '0';
+        setTimeout(() => {
+            popupContainer.style.visibility = 'hidden';
+            popupContainer.innerHTML = '';
+        }, 300);
+    });
+    
+    // Close popup on button click
+    popup.querySelector('.popup-button').addEventListener('click', () => {
+        popupContainer.style.opacity = '0';
+        setTimeout(() => {
+            popupContainer.style.visibility = 'hidden';
+            popupContainer.innerHTML = '';
+        }, 300);
+    });
+}
+
+
+// Lazy Load Images
+function lazyLoadImages() {
+    const gameImages = document.querySelectorAll('.game-card img');
+    
+    if ('IntersectionObserver' in window) {
+        const imageObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const img = entry.target;
+                    img.src = img.src; // Keep the original src
+                    imageObserver.unobserve(img);
+                }
+            });
+        });
+        
+        gameImages.forEach(img => {
+            imageObserver.observe(img);
         });
     }
+}
 
-    // Function to close the ad block message
-    function closeAdBlockMessage() {
-        const adblockMessage = document.getElementById('adblockMessage');
-        if (adblockMessage) {
-            adblockMessage.style.display = 'none';
-        }
-    }
+// Service Worker Registration for PWA
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function() {
+        // Register service worker with scope parameter to work on localhost
+        navigator.serviceWorker.register('./service-worker.js', { scope: './' })
+            .then(function(registration) {
 
-    // Initialize the ad blocker detection when the page loads
-    window.addEventListener('load', () => {
-        checkAdBlocker();
-        // Uncomment the line below to use the fetch method as a backup
-        // detectAdBlockFetch();
+                console.log('ServiceWorker registration successful with scope: ', registration.scope);
+            })
+            .catch(function(err) {
+                console.log('ServiceWorker registration failed: ', err);
+            });
     });
-      </script>
-      <script>
-// HTML Auto-Sync Script
-// This script automatically syncs HTML content every 5 seconds
-// while ignoring Firebase-related elements
+}
 
-document.addEventListener('DOMContentLoaded', () => {
-  // Store the initial HTML content
-  let previousHTML = getHTMLWithoutFirebase();
-  
-  // Set up the auto-sync interval (every 5 seconds)
-  const syncInterval = setInterval(() => {
-    autoSync();
-  }, 5000);
-  
-  // Function to get HTML content excluding Firebase elements
-  function getHTMLWithoutFirebase() {
-    // Create a clone of the document to avoid modifying the original
-    const documentClone = document.documentElement.cloneNode(true);
-    
-    // Remove Firebase scripts
-    const firebaseScripts = documentClone.querySelectorAll('script[src*="firebase"]');
-    firebaseScripts.forEach(script => script.remove());
-    
-    // Remove Firebase-related elements (those with Firebase-related classes or IDs)
-    const firebaseElements = documentClone.querySelectorAll(
-      '[class*="firebase"], [id*="firebase"], ' +
-      '[data-firebase], [firebase], ' +
-      '[class*="firestore"], [id*="firestore"]'
-    );
-    firebaseElements.forEach(element => element.remove());
-    
-    // Return the cleaned HTML
-    return documentClone.innerHTML;
-  }
-  
-  // Main auto-sync function
-  function autoSync() {
-    // Get current HTML content (excluding Firebase elements)
-    const currentHTML = getHTMLWithoutFirebase();
-    
-    // Compare with previous version
-    if (currentHTML !== previousHTML) {
-      console.log('Changes detected, syncing HTML...');
-      
-      // Sync logic goes here
-      // You can implement your specific sync mechanism here:
-      // - Save to localStorage
-      // - Send to a server
-      // - Update another part of the application
-      
-      // Example: Save to localStorage
-      localStorage.setItem('syncedHTML', currentHTML);
-      localStorage.setItem('lastSyncTime', new Date().toISOString());
-      
-      // Update the previous HTML reference
-      previousHTML = currentHTML;
-      
-      // Notify that sync is complete
-      console.log('HTML sync complete at:', new Date().toISOString());
-    } else {
-      console.log('No changes detected at:', new Date().toISOString());
+// Prevent default behavior for all game links to enable analytics tracking
+document.addEventListener('click', function(e) {
+    if (e.target.classList.contains('game-link') || e.target.parentElement.classList.contains('game-link')) {
+        const link = e.target.classList.contains('game-link') ? e.target : e.target.parentElement;
+        const href = link.getAttribute('href');
+        const gameName = link.closest('.game-card').querySelector('.game-info p').textContent;
+        
+        // Track analytics (placeholder for actual analytics code)
+        console.log(`Game clicked: ${gameName}`);
+        
+        // Allow default behavior to continue
     }
-  }
-  
-  // Function to manually trigger a sync
-  window.manualSync = function() {
-    console.log('Manual sync triggered');
-    autoSync();
-  };
-  
-  // Function to stop auto-syncing
-  window.stopAutoSync = function() {
-    clearInterval(syncInterval);
-    console.log('Auto-sync stopped');
-  };
-  
-  // Function to resume auto-syncing
-  window.startAutoSync = function() {
-    clearInterval(syncInterval); // Clear any existing interval first
-    setInterval(autoSync, 5000);
-    console.log('Auto-sync started');
-  };
-  
-  console.log('Auto-sync initialized - checking every 5 seconds');
 });
-      </script>
+
+// Function to handle category clicks
+function handleCategoryClick(category) {
+    // This would filter games by category
+    console.log(`Category clicked: ${category}`);
+}
+
+// Add click listeners to categories
+document.querySelectorAll('.category').forEach(categoryElement => {
+    categoryElement.addEventListener('click', function() {
+        const categoryName = this.querySelector('p').textContent;
+        handleCategoryClick(categoryName);
+    });
+});
+
+// Create and add iframe loader styles
+function addIframeLoaderStyles() {
+    const styleEl = document.createElement('style');
+    styleEl.innerHTML = `
+        .iframe-loader-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: rgba(255, 255, 255, 0.8);
+            z-index: 10;
+        }
+        
+        .dark-mode .iframe-loader-container {
+            background-color: rgba(30, 30, 30, 0.8);
+        }
+        
+        .flashing-m {
+            font-size: 4rem;
+            font-weight: bold;
+            font-family: 'Arial', sans-serif;
+            animation: flashM 1.2s infinite;
+            color: #006600; /* Dark green color */
+        }
+        
+        @keyframes flashM {
+            0%, 100% { opacity: 0.2; }
+            50% { opacity: 1; }
+        }
+        
+        .iframe-container iframe {
+            transition: opacity 0.3s ease, transform 0.5s ease-out;
+        }
+    `;
+    document.head.appendChild(styleEl);
+}
+
+// Show iframe loader
+function showIframeLoader(container) {
+    // Create loader if it doesn't exist
+    let loader = container.querySelector('.iframe-loader-container');
+    if (!loader) {
+        loader = document.createElement('div');
+        loader.className = 'iframe-loader-container';
+        loader.innerHTML = '<div class="flashing-m">M</div>';
+        container.appendChild(loader);
+    } else {
+        loader.style.display = 'flex';
+    }
+}
+
+// Hide iframe loader
+function hideIframeLoader(container) {
+    const loader = container.querySelector('.iframe-loader-container');
+    if (loader) {
+        loader.style.opacity = '0';
+        setTimeout(() => {
+            loader.style.display = 'none';
+        }, 300);
+    }
+}
+</script>
 </body>
 </html>
