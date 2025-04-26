@@ -20,6 +20,12 @@
   <link rel="apple-touch-icon" href="./assets/icon-192.png">
    <link rel="manifest" href="manifest.json">
 
+<!-- Firebase App SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-app-compat.js"></script>
+<!-- Firebase Messaging SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-messaging-compat.js"></script>
+
+
 
 <!-- Improve viewport for iOS full screen (for notches) -->
 
@@ -1274,6 +1280,8 @@ padding: 10px;
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
+
+
   <!-- JavaScript for Loader, Navigation, and Floating Search Bar Visibility -->
   <script>
    // Initialize Global Variables
@@ -1927,6 +1935,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 });
 </script>
+<!-- Add this script block wherever you want in your index.html (preferably before the closing </body> tag) -->
 <script>
   // Your Firebase Config
   const firebaseConfig = {
@@ -1942,34 +1951,48 @@ document.addEventListener("DOMContentLoaded", function() {
 
   // Initialize Firebase
   firebase.initializeApp(firebaseConfig);
-
-  // Initialize Firebase Cloud Messaging
-  const messaging = firebase.messaging();
-
-  // Ask for Notification Permission
-  Notification.requestPermission().then((permission) => {
-    if (permission === "granted") {
-      console.log("Notification permission granted.");
-
-      // Get Token
-      messaging.getToken({ 
-        vapidKey: "BP7nzSjc1bjOZAz98-nRm8hs1Dvdjyfo1JnfXQ2ZVUVWJscK_GpeLEfpgwL4G3jZPO_GIvSkk2xpPAC8CvQrFH8" 
-      }).then((currentToken) => {
-        if (currentToken) {
-          console.log("FCM Token:", currentToken);
-          alert("FCM Token: " + currentToken);
-          // Here you can save the token to your server/database if you want
-        } else {
-          console.warn("No registration token available. Request permission to generate one.");
-        }
-      }).catch((err) => {
-        console.error("An error occurred while retrieving token. ", err);
+  
+  // Register service worker (crucial for FCM)
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/firebase-messaging-sw.js')
+      .then(function(registration) {
+        console.log('Service Worker registered successfully');
+        
+        // Initialize Firebase Cloud Messaging
+        const messaging = firebase.messaging();
+        
+        // Request permission and get token
+        Notification.requestPermission().then((permission) => {
+          if (permission === "granted") {
+            console.log("Notification permission granted.");
+            
+            // Get Token with your provided VAPID key
+            messaging.getToken({ 
+              vapidKey: "BMcnZnq4TDu23XvkA8icF4zxDeX_ctw-x42B73ulQb72rDTj-LOgK-rHAeKtoFozQXa7j5XMF82Ay8PE5G9ACUw"
+            }).then((currentToken) => {
+              if (currentToken) {
+                console.log("FCM Token:", currentToken);
+                // Here you can save the token to your server/database if you want
+              } else {
+                console.warn("No registration token available");
+              }
+            }).catch((err) => {
+              console.error("An error occurred while retrieving token: ", err);
+              // Log more details about the error
+              console.error("Error code:", err.code);
+              console.error("Error message:", err.message);
+            });
+          } else {
+            console.warn("Notification permission denied");
+          }
+        });
+      })
+      .catch(function(err) {
+        console.error('Service Worker registration failed: ', err);
       });
-
-    } else {
-      console.warn("Notification permission not granted.");
-    }
-  });
+  } else {
+    console.warn('Service Workers not supported in this browser');
+  }
 </script>
 <script>
   if ('serviceWorker' in navigator) {
