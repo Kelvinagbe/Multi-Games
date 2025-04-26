@@ -1969,11 +1969,19 @@ function hideIframeLoader(container) {
   const installBanner = document.getElementById('installBanner');
   const installButton = document.getElementById('installButton');
 
+  // Hide the banner initially
+  installBanner.style.display = 'none';
+
   // Hide the banner if the app is already installed
   window.addEventListener('appinstalled', () => {
     installBanner.style.display = 'none';
     deferredPrompt = null;
   });
+
+  // Check if already in standalone mode (installed)
+  if (window.matchMedia('(display-mode: standalone)').matches) {
+    installBanner.style.display = 'none';
+  }
 
   // Handle the install prompt
   window.addEventListener('beforeinstallprompt', (e) => {
@@ -1981,19 +1989,18 @@ function hideIframeLoader(container) {
     deferredPrompt = e;
 
     // Show banner only if not already installed
-    if (window.matchMedia('(display-mode: standalone)').matches) {
-      // Already installed
-      return;
+    if (!window.matchMedia('(display-mode: standalone)').matches) {
+      installBanner.style.display = 'flex';
     }
-
-    installBanner.style.display = 'flex';
   });
 
   installButton.addEventListener('click', async () => {
-    installBanner.style.display = 'none';
     if (deferredPrompt) {
       deferredPrompt.prompt();
       const { outcome } = await deferredPrompt.userChoice;
+      
+      // Hide banner after user makes a choice
+      installBanner.style.display = 'none';
       deferredPrompt = null;
     }
   });
