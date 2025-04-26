@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Firebase Notifications Demo</title>
+  
+  <!-- Firebase App SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-app-compat.js"></script>
+  <!-- Firebase Messaging SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-messaging-compat.js"></script>
+</head>
+<body>
+  <h1>Firebase Notifications Demo</h1>
+  <p id="status">Initializing...</p>
+  
+  <script>
+    // Your Firebase Config
+    const firebaseConfig = {
+      apiKey: "AIzaSyBw1uA-kNKOZEufWKZ9AMBxvRGHNGF1lkA",
+      authDomain: "multi-games-a2561.firebaseapp.com",
+      databaseURL: "https://multi-games-a2561-default-rtdb.firebaseio.com",
+      projectId: "multi-games-a2561",
+      storageBucket: "multi-games-a2561.appspot.com",
+      messagingSenderId: "150551898066",
+      appId: "1:150551898066:web:4e8fb185f2321ba4140a0b",
+      measurementId: "G-PB8Y87E6XV"
+    };
+
+    const statusElement = document.getElementById('status');
+    
+    // Check if the browser supports notifications
+    if (!('Notification' in window)) {
+      statusElement.textContent = 'This browser does not support notifications';
+    } else {
+      statusElement.textContent = 'Initializing Firebase...';
+      
+      // Initialize Firebase
+      firebase.initializeApp(firebaseConfig);
+      
+      // Register service worker (crucial for FCM)
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/firebase-messaging-sw.js')
+          .then(function(registration) {
+            statusElement.textContent = 'Service Worker registered, initializing messaging...';
+            
+            // Initialize Firebase Cloud Messaging
+            const messaging = firebase.messaging();
+            
+            // Request permission and get token
+            statusElement.textContent = 'Requesting notification permission...';
+            Notification.requestPermission().then((permission) => {
+              if (permission === "granted") {
+                statusElement.textContent = "Notification permission granted! Getting token...";
+                console.log("Notification permission granted.");
+                
+                // Get Token
+                messaging.getToken({ 
+                  vapidKey: "BP7nzSjc1bjOZAz98-nRm8hs1Dvdjyfo1JnfXQ2ZVUVWJscK_GpeLEfpgwL4G3jZPO_GIvSkk2xpPAC8CvQrFH8",
+                  serviceWorkerRegistration: registration
+                }).then((currentToken) => {
+                  if (currentToken) {
+                    console.log("FCM Token:", currentToken);
+                    statusElement.textContent = "Success! Token received.";
+                    // Here you can save the token to your server/database if you want
+                  } else {
+                    console.warn("No registration token available");
+                    statusElement.textContent = "Failed to get token";
+                  }
+                }).catch((err) => {
+                  console.error("An error occurred while retrieving token: ", err);
+                  statusElement.textContent = "Error getting token: " + err.message;
+                });
+              } else {
+                console.warn("Notification permission denied");
+                statusElement.textContent = "Notification permission denied";
+              }
+            });
+          })
+          .catch(function(err) {
+            console.error('Service Worker registration failed: ', err);
+            statusElement.textContent = 'Service Worker registration failed: ' + err.message;
+          });
+      } else {
+        statusElement.textContent = 'Service Workers not supported in this browser';
+      }
+    }
+  </script>
+</body>
+</html>
