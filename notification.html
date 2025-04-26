@@ -9,6 +9,8 @@
   <script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-app-compat.js"></script>
   <!-- Firebase Messaging SDK -->
   <script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-messaging-compat.js"></script>
+  <!-- Firebase Realtime Database SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-database-compat.js"></script>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -19,17 +21,31 @@
     }
     .notification-btn {
       padding: 15px 30px;
-      background-color: #4285f4;
       color: white;
       border: none;
       border-radius: 8px;
       cursor: pointer;
       font-size: 16px;
       margin: 20px 0;
-      transition: background-color 0.3s;
+      transition: all 0.3s;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    .notification-btn.inactive {
+      background-color: #4CAF50; /* Green when inactive */
+    }
+    .notification-btn.active {
+      background-color: #F44336; /* Red when active */
     }
     .notification-btn:hover {
-      background-color: #3367d6;
+      opacity: 0.9;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+    }
+    .notification-btn:disabled {
+      background-color: #cccccc;
+      cursor: not-allowed;
+      opacity: 0.7;
+      box-shadow: none;
     }
     #status {
       margin: 20px 0;
@@ -45,15 +61,77 @@
       color: #f44336;
       font-weight: bold;
     }
+    
+    /* In-app notification styles */
+    .in-app-notification-container {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      max-width: 300px;
+      z-index: 1000;
+    }
+    
+    .in-app-notification {
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      padding: 15px;
+      margin-bottom: 10px;
+      transform: translateX(120%);
+      transition: transform 0.3s ease-out;
+      border-left: 4px solid #4285f4;
+      text-align: left;
+      animation: slide-in 0.3s forwards;
+    }
+    
+    @keyframes slide-in {
+      to { transform: translateX(0); }
+    }
+    
+    .in-app-notification.show {
+      transform: translateX(0);
+    }
+    
+    .in-app-notification h4 {
+      margin: 0 0 5px 0;
+      color: #333;
+    }
+    
+    .in-app-notification p {
+      margin: 0;
+      color: #666;
+      font-size: 14px;
+    }
+    
+    .notification-close {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background: none;
+      border: none;
+      color: #999;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    
+    .notification-close:hover {
+      color: #333;
+    }
   </style>
 </head>
 <body>
   <h1>Enable Notifications</h1>
   <p>Click the button below to activate push notifications</p>
   
-  <button id="enable-notifications" class="notification-btn">Activate Notifications</button>
+  <button id="enable-notifications" class="notification-btn inactive">Activate Notifications</button>
   
   <div id="status">Status: Ready to enable notifications</div>
+  
+  <!-- In-app notification container -->
+  <div id="in-app-notification-container" class="in-app-notification-container"></div>
+  
+  <!-- Test button for in-app notification -->
+  <button id="test-in-app" style="margin-top: 20px; padding: 10px 20px;">Test In-App Notification</button>
   
   <script>
     // Your Firebase Config
@@ -70,10 +148,17 @@
 
     const statusElement = document.getElementById('status');
     const enableButton = document.getElementById('enable-notifications');
+    const notificationContainer = document.getElementById('in-app-notification-container');
+    const testInAppButton = document.getElementById('test-in-app');
+    
     let messaging;
+    let database;
     
     // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
+    
+    // Initialize Firebase Realtime Database
+    database = firebase.database();
     
     // Function to update status with appropriate styling
     function updateStatus(message, isError = false) {
@@ -81,6 +166,54 @@
       statusElement.className = isError ? 'error' : '';
       if (!isError && message.includes('Success')) {
         statusElement.className = 'success';
+      }
+    }
+    
+    // Function to create and display in-app notification
+    function showInAppNotification(title, message, duration = 5000) {
+      // Create notification element
+      const notification = document.createElement('div');
+      notification.className = 'in-app-notification';
+      
+      // Create content
+      notification.innerHTML = `
+        <button class="notification-close">&times;</button>
+        <h4>${title}</h4>
+        <p>${message}</p>
+      `;
+      
+      // Add to container
+      notificationContainer.appendChild(notification);
+      
+      // Add event listener to close button
+      notification.querySelector('.notification-close').addEventListener('click', () => {
+        notification.style.transform = 'translateX(120%)';
+        setTimeout(() => notification.remove(), 300);
+      });
+      
+      // Auto remove after duration
+      if (duration) {
+        setTimeout(() => {
+          if (notification.parentNode) {
+            notification.style.transform = 'translateX(120%)';
+            setTimeout(() => notification.remove(), 300);
+          }
+        }, duration);
+      }
+      
+      return notification;
+    }
+    
+    // Function to update button state
+    function updateButtonState(isActive) {
+      if (isActive) {
+        enableButton.classList.remove('inactive');
+        enableButton.classList.add('active');
+        enableButton.textContent = 'Notifications Active';
+      } else {
+        enableButton.classList.remove('active');
+        enableButton.classList.add('inactive');
+        enableButton.textContent = 'Activate Notifications';
       }
     }
     
@@ -114,7 +247,7 @@
           if (Notification.permission === 'granted') {
             getToken(registration);
             updateStatus('Notifications are already enabled');
-            enableButton.textContent = 'Notifications Active';
+            updateButtonState(true);
           }
         })
         .catch(error => {
@@ -135,16 +268,75 @@
         if (token) {
           console.log('FCM Token:', token);
           updateStatus('Success! Notifications enabled.');
-          enableButton.textContent = 'Notifications Active';
+          updateButtonState(true);
           
-          // Here you would typically send this token to your server
-          // saveTokenToServer(token);
+          // Save token to Firebase Realtime Database
+          const userId = 'user_' + Math.random().toString(36).substr(2, 9); // Generate a random user ID for demo
+          saveTokenToDatabase(userId, token);
+          
+          // Set up Firebase database listener for in-app notifications
+          setupInAppNotificationListener(userId);
+          
+          // Show success notification
+          showInAppNotification('Notifications Enabled', 'You will now receive both push and in-app notifications.');
         } else {
           updateStatus('Failed to get notification token', true);
+          updateButtonState(false);
         }
       }).catch(error => {
         console.error('Error getting token:', error);
         updateStatus('Error enabling notifications: ' + error.message, true);
+        updateButtonState(false);
+      });
+    }
+    
+    // Save the token to Firebase Database
+    function saveTokenToDatabase(userId, token) {
+      const tokenRef = database.ref('users/' + userId);
+      tokenRef.set({
+        token: token,
+        lastActive: new Date().toISOString(),
+        
+      });
+      
+      // Store user ID in local storage for persistent identification
+      localStorage.setItem('notificationUserId', userId);
+      
+      console.log('Token saved to database for user:', userId);
+    }
+    
+    // Set up a listener for in-app notifications from Firebase
+    function setupInAppNotificationListener(userId) {
+      // Listen for notifications addressed to this user
+      const notificationsRef = database.ref('notifications/' + userId);
+      notificationsRef.on('child_added', (snapshot) => {
+        const notification = snapshot.val();
+        console.log('Received in-app notification:', notification);
+        
+        // Display the in-app notification
+        showInAppNotification(
+          notification.title || 'New Notification', 
+          notification.message || 'You have a new notification'
+        );
+        
+        // Mark as read (optional)
+        snapshot.ref.update({ read: true });
+      });
+      
+      // Also listen for broadcast notifications
+      const broadcastRef = database.ref('notifications/broadcast');
+      broadcastRef.on('child_added', (snapshot) => {
+        const notification = snapshot.val();
+        
+        // Only show if within the last minute (to avoid showing old broadcasts)
+        const timestamp = notification.timestamp || 0;
+        const currentTime = new Date().getTime();
+        if (currentTime - timestamp < 60000) {
+          showInAppNotification(
+            notification.title || 'Broadcast', 
+            notification.message || 'Broadcast notification'
+          );
+        }
       });
     }
     
@@ -169,9 +361,40 @@
         } else {
           console.warn('Notification permission denied');
           updateStatus('Notification permission denied. Please enable notifications in your browser settings.', true);
+          updateButtonState(false);
         }
       });
     });
+    
+    // Set up test button for in-app notifications
+    testInAppButton.addEventListener('click', () => {
+      const userId = localStorage.getItem('notificationUserId');
+      
+      if (userId) {
+        // Create a test notification in the database
+        const notificationRef = database.ref('notifications/' + userId).push();
+        notificationRef.set({
+          title: 'Test Notification',
+          message: 'This is a test in-app notification',
+          timestamp: firebase.database.ServerValue.TIMESTAMP,
+          read: false
+        });
+      } else {
+        // If no user ID, show a local notification
+        showInAppNotification(
+          'Test Notification', 
+          'This is a local test notification. Enable notifications to receive real-time updates.'
+        );
+      }
+    });
+    
+    // Check for existing user ID in localStorage
+    const savedUserId = localStorage.getItem('notificationUserId');
+    if (savedUserId) {
+      console.log('Found saved user ID:', savedUserId);
+      // Set up notification listener for returning users
+      setupInAppNotificationListener(savedUserId);
+    }
   </script>
 </body>
 </html>
