@@ -888,7 +888,7 @@ padding: 10px;
 </style>
 </head>
 <body>
-
+<div id="notification-container"></div>
 
  <!-- Install App Banner -->
 <div id="installBanner" style="display: none; position: fixed; top: 0; left: 0; width: 100%; background-color: #0f5132; color: white; padding: 10px 20px; z-index: 1000; box-shadow: 0 2px 6px rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: space-between; font-family: sans-serif;">
@@ -1956,62 +1956,107 @@ const messaging = firebase.messaging();
 
 // Wait for the DOM to be fully loaded
 document.addEventListener('DOMContentLoaded', function() {
+  // Get notification container
+  const container = document.getElementById('notification-container');
+  
+  // If no container is found, create one
+  if (!container) {
+    const newContainer = document.createElement('div');
+    newContainer.id = 'notification-container';
+    newContainer.style.padding = '20px';
+    newContainer.style.margin = '20px 0';
+    document.body.appendChild(newContainer);
+    
+    // Use the new container
+    initializeNotifications(newContainer);
+  } else {
+    // Use the existing container
+    initializeNotifications(container);
+  }
+});
+
+function initializeNotifications(container) {
+  // Create status element
+  const statusElement = document.createElement('div');
+  statusElement.textContent = 'Initializing notifications...';
+  container.appendChild(statusElement);
+  
   // Check if the browser supports service workers
   if ('serviceWorker' in navigator) {
     // Register the service worker
     navigator.serviceWorker.register('./firebase-messaging-sw.js')
       .then(registration => {
         console.log('Service Worker registered with scope:', registration.scope);
+        statusElement.textContent = 'Service Worker registered. Requesting permission...';
         
-        // Initialize Firebase Cloud Messaging
-        const messaging = firebase.messaging();
+        // Create button for permission request
+        const permissionButton = document.createElement('button');
+        permissionButton.textContent = 'Enable Notifications';
+        permissionButton.style.padding = '10px 20px';
+        permissionButton.style.backgroundColor = '#4285F4';
+        permissionButton.style.color = 'white';
+        permissionButton.style.border = 'none';
+        permissionButton.style.borderRadius = '4px';
+        permissionButton.style.cursor = 'pointer';
+        permissionButton.style.margin = '10px 0';
+        container.appendChild(permissionButton);
         
-        // Request permission directly (as in your demo)
-        Notification.requestPermission().then((permission) => {
-          if (permission === "granted") {
-            console.log("Notification permission granted.");
-            
-            // Get Token with your provided VAPID key
-            messaging.getToken({ 
-              vapidKey: "BMcnZnq4TDu23XvkA8icF4zxDeX_ctw-x42B73ulQb72rDTj-LOgK-rHAeKtoFozQXa7j5XMF82Ay8PE5G9ACUw",
-              serviceWorkerRegistration: registration
-            }).then((currentToken) => {
-              if (currentToken) {
-                console.log("FCM Token:", currentToken);
-                // Display the token on the page for testing
-                const tokenDisplay = document.createElement('div');
-                tokenDisplay.textContent = `FCM Token: ${currentToken}`;
-                document.body.appendChild(tokenDisplay);
-              } else {
-                console.warn("No registration token available");
-              }
-            }).catch((err) => {
-              console.error("An error occurred while retrieving token: ", err);
-              // Log more details about the error
-              console.error("Error code:", err.code);
-              console.error("Error message:", err.message);
-            });
-          } else {
-            console.warn("Notification permission denied");
-          }
-        });
+        permissionButton.onclick = function() {
+          Notification.requestPermission().then((permission) => {
+            if (permission === "granted") {
+              statusElement.textContent = "Permission granted! Getting token...";
+              permissionButton.style.display = 'none';
+              
+              // Get Token with your provided VAPID key
+              messaging.getToken({ 
+                vapidKey: "BMcnZnq4TDu23XvkA8icF4zxDeX_ctw-x42B73ulQb72rDTj-LOgK-rHAeKtoFozQXa7j5XMF82Ay8PE5G9ACUw",
+                serviceWorkerRegistration: registration
+              }).then((currentToken) => {
+                if (currentToken) {
+                  console.log("FCM Token:", currentToken);
+                  statusElement.textContent = "Notifications enabled successfully!";
+                  
+                  // Display the token
+                  const tokenDisplay = document.createElement('div');
+                  tokenDisplay.style.wordBreak = 'break-all';
+                  tokenDisplay.style.backgroundColor = '#f5f5f5';
+                  tokenDisplay.style.padding = '10px';
+                  tokenDisplay.style.marginTop = '10px';
+                  tokenDisplay.style.fontSize = '12px';
+                  tokenDisplay.textContent = `Token: ${currentToken}`;
+                  container.appendChild(tokenDisplay);
+                } else {
+                  statusElement.textContent = "Failed to get token";
+                }
+              }).catch((err) => {
+                statusElement.textContent = "Error: " + err.message;
+                console.error("Error getting token:", err);
+              });
+            } else {
+              statusElement.textContent = "Notification permission denied";
+              permissionButton.textContent = "Permission Denied";
+              permissionButton.style.backgroundColor = "#f44336";
+            }
+          });
+        };
       })
       .catch(err => {
+        statusElement.textContent = 'Service Worker registration failed: ' + err.message;
         console.error('Service Worker registration failed:', err);
       });
   } else {
-    console.warn('Service Workers not supported in this browser');
+    statusElement.textContent = 'Service Workers not supported in this browser';
   }
-});
+}
 
 // Handle foreground messages
 messaging.onMessage((payload) => {
   console.log('Message received in foreground:', payload);
-  // Create a notification for foreground messages
+  // Display notification
   const notificationTitle = payload.notification?.title || 'New Message';
   const notificationOptions = {
     body: payload.notification?.body || 'You have a new notification',
-    icon: '/logo.png' // Replace with your icon path
+    icon: '/logo.png'
   };
   
   new Notification(notificationTitle, notificationOptions);
