@@ -136,24 +136,24 @@
                           return;
                         }
                         
-                        // Method 1: Using the Notification API directly
-                        const testNotification = new Notification('Test Notification', {
-                          body: 'This is a local test notification',
-                          icon: 'https://firebase.google.com/downloads/brand-guidelines/PNG/logo-logomark.png'
-                        });
-                        
-                        // Method 2: Using ServiceWorker showNotification (more reliable)
+                        // Using ServiceWorker showNotification (required when page is controlled by a service worker)
                         navigator.serviceWorker.ready.then(registration => {
-                          registration.showNotification('Test Notification via ServiceWorker', {
+                          statusElement.textContent = "Sending notification through ServiceWorker...";
+                          
+                          return registration.showNotification('Test Notification', {
                             body: 'This notification comes through the ServiceWorker',
                             icon: 'https://firebase.google.com/downloads/brand-guidelines/PNG/logo-logomark.png',
                             badge: 'https://firebase.google.com/downloads/brand-guidelines/PNG/logo-standard.png',
-                            vibrate: [200, 100, 200]
+                            vibrate: [200, 100, 200],
+                            tag: 'test-notification-' + new Date().getTime()
                           });
+                        }).then(() => {
+                          statusElement.textContent = "Test notification sent successfully - check your notifications";
+                          console.log('Test notification sent successfully');
+                        }).catch(error => {
+                          console.error('Error in ServiceWorker notification:', error);
+                          statusElement.textContent = "ServiceWorker notification error: " + error.message;
                         });
-                        
-                        statusElement.textContent = "Test notifications triggered - check your notifications";
-                        console.log('Test notifications sent through two methods');
                       } catch (error) {
                         console.error('Error showing notification:', error);
                         statusElement.textContent = "Error sending notification: " + error.message;
