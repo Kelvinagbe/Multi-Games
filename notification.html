@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Notification Activator</title>
+  
+  <!-- Firebase App SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-app-compat.js"></script>
+  <!-- Firebase Messaging SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-messaging-compat.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 500px;
+      margin: 0 auto;
+      padding: 20px;
+      text-align: center;
+    }
+    .notification-btn {
+      padding: 15px 30px;
+      background-color: #4285f4;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      margin: 20px 0;
+      transition: background-color 0.3s;
+    }
+    .notification-btn:hover {
+      background-color: #3367d6;
+    }
+    #status {
+      margin: 20px 0;
+      padding: 15px;
+      background-color: #f5f5f5;
+      border-radius: 8px;
+    }
+    .success {
+      color: #4caf50;
+      font-weight: bold;
+    }
+    .error {
+      color: #f44336;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>Enable Notifications</h1>
+  <p>Click the button below to activate push notifications</p>
+  
+  <button id="enable-notifications" class="notification-btn">Activate Notifications</button>
+  
+  <div id="status">Status: Ready to enable notifications</div>
+  
+  <script>
+    // Your Firebase Config
+    const firebaseConfig = {
+      apiKey: "AIzaSyBw1uA-kNKOZEufWKZ9AMBxvRGHNGF1lkA",
+      authDomain: "multi-games-a2561.firebaseapp.com",
+      databaseURL: "https://multi-games-a2561-default-rtdb.firebaseio.com",
+      projectId: "multi-games-a2561",
+      storageBucket: "multi-games-a2561.firebasestorage.app",
+      messagingSenderId: "150551898066",
+      appId: "1:150551898066:web:c852245737bde813140a0b",
+      measurementId: "G-DLQ4G0TTPL"
+    };
+
+    const statusElement = document.getElementById('status');
+    const enableButton = document.getElementById('enable-notifications');
+    let messaging;
+    
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    
+    // Function to update status with appropriate styling
+    function updateStatus(message, isError = false) {
+      statusElement.textContent = message;
+      statusElement.className = isError ? 'error' : '';
+      if (!isError && message.includes('Success')) {
+        statusElement.className = 'success';
+      }
+    }
+    
+    // Check if browser supports notifications
+    if (!('Notification' in window)) {
+      updateStatus('This browser does not support notifications', true);
+      enableButton.disabled = true;
+    } else if ('serviceWorker' in navigator) {
+      // Register service worker when page loads
+      navigator.serviceWorker.register('/firebase-messaging-sw.js')
+        .then(registration => {
+          // Initialize Firebase Cloud Messaging
+          messaging = firebase.messaging();
+          
+          // Set up notification handler for foreground messages
+          messaging.onMessage((payload) => {
+            console.log('Message received:', payload);
+            
+            // Display notification using the service worker
+            registration.showNotification(
+              payload.notification?.title || 'New Notification', 
+              {
+                body: payload.notification?.body || 'You have a new notification',
+                icon: payload.notification?.icon || '/notification-icon.png',
+                data: payload.data
+              }
+            );
+          });
+          
+          // Check if notifications are already enabled
+          if (Notification.permission === 'granted') {
+            getToken(registration);
+            updateStatus('Notifications are already enabled');
+            enableButton.textContent = 'Notifications Active';
+          }
+        })
+        .catch(error => {
+          console.error('Service Worker registration failed:', error);
+          updateStatus('Failed to set up notifications: ' + error.message, true);
+        });
+    } else {
+      updateStatus('Service Workers are not supported in this browser', true);
+      enableButton.disabled = true;
+    }
+    
+    // Function to get FCM token
+    function getToken(registration) {
+      messaging.getToken({ 
+        vapidKey: "BMcnZnq4TDu23XvkA8icF4zxDeX_ctw-x42B73ulQb72rDTj-LOgK-rHAeKtoFozQXa7j5XMF82Ay8PE5G9ACUw",
+        serviceWorkerRegistration: registration
+      }).then(token => {
+        if (token) {
+          console.log('FCM Token:', token);
+          updateStatus('Success! Notifications enabled.');
+          enableButton.textContent = 'Notifications Active';
+          
+          // Here you would typically send this token to your server
+          // saveTokenToServer(token);
+        } else {
+          updateStatus('Failed to get notification token', true);
+        }
+      }).catch(error => {
+        console.error('Error getting token:', error);
+        updateStatus('Error enabling notifications: ' + error.message, true);
+      });
+    }
+    
+    // Set up enable button click handler
+    enableButton.addEventListener('click', () => {
+      // If permission already granted, get token directly
+      if (Notification.permission === 'granted') {
+        navigator.serviceWorker.ready.then(registration => {
+          getToken(registration);
+        });
+        return;
+      }
+      
+      // Otherwise request permission
+      updateStatus('Requesting notification permission...');
+      Notification.requestPermission().then(permission => {
+        if (permission === 'granted') {
+          navigator.serviceWorker.ready.then(registration => {
+            updateStatus('Permission granted! Setting up notifications...');
+            getToken(registration);
+          });
+        } else {
+          console.warn('Notification permission denied');
+          updateStatus('Notification permission denied. Please enable notifications in your browser settings.', true);
+        }
+      });
+    });
+  </script>
+</body>
+</html>
