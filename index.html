@@ -1339,35 +1339,39 @@ document.addEventListener("DOMContentLoaded", function() {
 // PWA Installation Functionality
 function initPWAInstall() {
     const installButton = document.getElementById('installButton');
-    if (installButton) {
-        // Initially hide the button
+    const installBanner = document.getElementById('installBanner');
+    
+    if (installButton && installBanner) {
+        // Initially hide both the button and banner
         installButton.style.display = "none";
+        installBanner.style.display = "none";
         
         // Check if the app is already installed
         if (window.matchMedia('(display-mode: standalone)').matches || 
             window.navigator.standalone === true) {
-            // App is already installed, no need to show install button
+            // App is already installed, no need to show install button or banner
             return;
         }
         
         // Setup event listener for install button
-        installButton.addEventListener("click", () => {
+        installButton.addEventListener("click", async () => {
             if (deferredPrompt) {
                 // Show the install prompt
                 deferredPrompt.prompt();
                 
                 // Wait for the user to respond to the prompt
-                deferredPrompt.userChoice.then((choiceResult) => {
-                    if (choiceResult.outcome === "accepted") {
-                        console.log("User accepted the install prompt");
-                        // Hide the button after installation
-                        installButton.style.display = "none";
-                    } else {
-                        console.log("User dismissed the install prompt");
-                    }
-                    // Clear the saved prompt since it can't be used again
-                    deferredPrompt = null;
-                });
+                const { outcome } = await deferredPrompt.userChoice;
+                
+                if (outcome === "accepted") {
+                    console.log("User accepted the install prompt");
+                    // Hide the button and banner after installation
+                    installButton.style.display = "none";
+                    installBanner.style.display = "none";
+                } else {
+                    console.log("User dismissed the install prompt");
+                }
+                // Clear the saved prompt since it can't be used again
+                deferredPrompt = null;
             } else {
                 // If running on localhost, provide instructions for testing PWA
                 if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
@@ -1378,7 +1382,6 @@ function initPWAInstall() {
     }
 }
 
-
 // PWA Installation Prompt
 window.addEventListener("beforeinstallprompt", (e) => {
     // Prevent Chrome 67+ from automatically showing the prompt
@@ -1386,10 +1389,16 @@ window.addEventListener("beforeinstallprompt", (e) => {
     // Stash the event so it can be triggered later
     deferredPrompt = e;
     
-    // Update UI to show the install button
+    // Update UI to show the install button and banner
     const installButton = document.getElementById('installButton');
-    if (installButton) {
-        installButton.style.display = "block";
+    const installBanner = document.getElementById('installBanner');
+    
+    if (installButton && installBanner) {
+        // Only show if not already in standalone mode
+        if (!window.matchMedia('(display-mode: standalone)').matches) {
+            installButton.style.display = "block";
+            installBanner.style.display = "flex";
+        }
     }
     
     // Log that the prompt is available (for debugging)
@@ -1398,11 +1407,18 @@ window.addEventListener("beforeinstallprompt", (e) => {
 
 // When the app is successfully installed
 window.addEventListener('appinstalled', (evt) => {
-    // Hide the install button after successful installation
+    // Hide the install button and banner after successful installation
     const installButton = document.getElementById('installButton');
+    const installBanner = document.getElementById('installBanner');
+    
     if (installButton) {
         installButton.style.display = "none";
     }
+    
+    if (installBanner) {
+        installBanner.style.display = "none";
+    }
+    
     console.log('Application was successfully installed');
 });
 
@@ -1963,47 +1979,6 @@ function hideIframeLoader(container) {
         }, 300);
     }
 }
-</script>
-<script>
-  let deferredPrompt;
-  const installBanner = document.getElementById('installBanner');
-  const installButton = document.getElementById('installButton');
-
-  // Hide the banner initially
-  installBanner.style.display = 'none';
-
-  // Hide the banner if the app is already installed
-  window.addEventListener('appinstalled', () => {
-    installBanner.style.display = 'none';
-    deferredPrompt = null;
-  });
-
-  // Check if already in standalone mode (installed)
-  if (window.matchMedia('(display-mode: standalone)').matches) {
-    installBanner.style.display = 'none';
-  }
-
-  // Handle the install prompt
-  window.addEventListener('beforeinstallprompt', (e) => {
-    e.preventDefault();
-    deferredPrompt = e;
-
-    // Show banner only if not already installed
-    if (!window.matchMedia('(display-mode: standalone)').matches) {
-      installBanner.style.display = 'flex';
-    }
-  });
-
-  installButton.addEventListener('click', async () => {
-    if (deferredPrompt) {
-      deferredPrompt.prompt();
-      const { outcome } = await deferredPrompt.userChoice;
-      
-      // Hide banner after user makes a choice
-      installBanner.style.display = 'none';
-      deferredPrompt = null;
-    }
-  });
 </script>
 </body>
 </html>
