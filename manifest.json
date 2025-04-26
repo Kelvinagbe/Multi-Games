@@ -2,7 +2,7 @@
   "name": "Multi Games",
   "short_name": "MultiGames",
   "description": "A collection of fun games to play",
-  "start_url": "index.html",
+  "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#000000",
