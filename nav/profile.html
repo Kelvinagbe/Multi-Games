@@ -6,6 +6,8 @@
     <title>Gaming Profile</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.min.css" rel="stylesheet">
       <link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="notification.css">
+
 
 <!-- Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-PB8Y87E6XV"></script>
@@ -32,6 +34,9 @@
     </div>
 </div>
 
+  <!-- In-app notification container -->
+  <div id="in-app-notification-container" class="in-app-notification-container"></div>
+  
         <div class="profile-card">
             <div class="profile-header">
                 <div class="avatar-container">
@@ -157,11 +162,11 @@
         <span class="slider"></span>
     </label>
 </div>
-      <div class="form-group">
-                <label for="notifications-toggle">Notifications</label>
-                <div class="toggle-container">
-                    <input type="checkbox" id="notifications-toggle" class="toggle">
-                </div>
+   
+  <button id="enable-notifications" class="notification-btn inactive">Activate Notifications</button>
+  
+  <div id="status">Status: Ready to enable notifications</div>
+  
             </div>
             </div>
         </div>
@@ -219,7 +224,280 @@
     <!-- Hidden Input for Avatar Upload -->
     <input type="file" id="avatar-file-input" accept="image/*">
 
+  <!-- Firebase App SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-app-compat.js"></script>
+  <!-- Firebase Messaging SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-messaging-compat.js"></script>
+  <!-- Firebase Realtime Database SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-database-compat.js"></script>
+ 
+
+
+
 
     <script type="module" src="script.js"></script>
+<script>
+// Your Firebase Config
+    const firebaseConfig = {
+      apiKey: "AIzaSyBw1uA-kNKOZEufWKZ9AMBxvRGHNGF1lkA",
+      authDomain: "multi-games-a2561.firebaseapp.com",
+      databaseURL: "https://multi-games-a2561-default-rtdb.firebaseio.com",
+      projectId: "multi-games-a2561",
+      storageBucket: "multi-games-a2561.firebasestorage.app",
+      messagingSenderId: "150551898066",
+      appId: "1:150551898066:web:c852245737bde813140a0b",
+      measurementId: "G-DLQ4G0TTPL"
+    };
+
+    const statusElement = document.getElementById('status');
+    const enableButton = document.getElementById('enable-notifications');
+    const notificationContainer = document.getElementById('in-app-notification-container');
+    const testInAppButton = document.getElementById('test-in-app');
+    
+    let messaging;
+    let database;
+    
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    
+    // Initialize Firebase Realtime Database
+    database = firebase.database();
+    
+    // Function to update status with appropriate styling
+    function updateStatus(message, isError = false) {
+      statusElement.textContent = message;
+      statusElement.className = isError ? 'error' : '';
+      if (!isError && message.includes('Success')) {
+        statusElement.className = 'success';
+      }
+    }
+    
+    // Function to create and display in-app notification
+    function showInAppNotification(title, message, duration = 5000) {
+      // Create notification element
+      const notification = document.createElement('div');
+      notification.className = 'in-app-notification';
+      
+      // Create content
+      notification.innerHTML = `
+        <button class="notification-close">&times;</button>
+        <h4>${title}</h4>
+        <p>${message}</p>
+      `;
+      
+      // Add to container
+      notificationContainer.appendChild(notification);
+      
+      // Add event listener to close button
+      notification.querySelector('.notification-close').addEventListener('click', () => {
+        notification.style.transform = 'translateX(120%)';
+        setTimeout(() => notification.remove(), 300);
+      });
+      
+      // Auto remove after duration
+      if (duration) {
+        setTimeout(() => {
+          if (notification.parentNode) {
+            notification.style.transform = 'translateX(120%)';
+            setTimeout(() => notification.remove(), 300);
+          }
+        }, duration);
+      }
+      
+      return notification;
+    }
+    
+    // Function to update button state
+    function updateButtonState(isActive) {
+      if (isActive) {
+        enableButton.classList.remove('inactive');
+        enableButton.classList.add('active');
+        enableButton.textContent = 'Notifications Active';
+      } else {
+        enableButton.classList.remove('active');
+        enableButton.classList.add('inactive');
+        enableButton.textContent = 'Activate Notifications';
+      }
+    }
+    
+    // Check if browser supports notifications
+    if (!('Notification' in window)) {
+      updateStatus('This browser does not support notifications', true);
+      enableButton.disabled = true;
+    } else if ('serviceWorker' in navigator) {
+      // Register service worker when page loads
+      navigator.serviceWorker.register('/firebase-messaging-sw.js')
+        .then(registration => {
+          // Initialize Firebase Cloud Messaging
+          messaging = firebase.messaging();
+          
+          // Set up notification handler for foreground messages
+          messaging.onMessage((payload) => {
+            console.log('Message received:', payload);
+            
+            // Display notification using the service worker
+            registration.showNotification(
+              payload.notification?.title || 'New Notification', 
+              {
+                body: payload.notification?.body || 'You have a new notification',
+                icon: payload.notification?.icon || '/notification-icon.png',
+                data: payload.data
+              }
+            );
+          });
+          
+          // Check if notifications are already enabled
+          if (Notification.permission === 'granted') {
+            getToken(registration);
+            updateStatus('Notifications are already enabled');
+            updateButtonState(true);
+          }
+        })
+        .catch(error => {
+          console.error('Service Worker registration failed:', error);
+          updateStatus('Failed to set up notifications: ' + error.message, true);
+        });
+    } else {
+      updateStatus('Service Workers are not supported in this browser', true);
+      enableButton.disabled = true;
+    }
+    
+    // Function to get FCM token
+    function getToken(registration) {
+      messaging.getToken({ 
+        vapidKey: "BMcnZnq4TDu23XvkA8icF4zxDeX_ctw-x42B73ulQb72rDTj-LOgK-rHAeKtoFozQXa7j5XMF82Ay8PE5G9ACUw",
+        serviceWorkerRegistration: registration
+      }).then(token => {
+        if (token) {
+          console.log('FCM Token:', token);
+          updateStatus('Success! Notifications enabled.');
+          updateButtonState(true);
+          
+          // Save token to Firebase Realtime Database
+          const userId = 'user_' + Math.random().toString(36).substr(2, 9); // Generate a random user ID for demo
+          saveTokenToDatabase(userId, token);
+          
+          // Set up Firebase database listener for in-app notifications
+          setupInAppNotificationListener(userId);
+          
+          // Show success notification
+          showInAppNotification('Notifications Enabled', 'You will now receive both push and in-app notifications.');
+        } else {
+          updateStatus('Failed to get notification token', true);
+          updateButtonState(false);
+        }
+      }).catch(error => {
+        console.error('Error getting token:', error);
+        updateStatus('Error enabling notifications: ' + error.message, true);
+        updateButtonState(false);
+      });
+    }
+    
+    // Save the token to Firebase Database
+    function saveTokenToDatabase(userId, token) {
+      const tokenRef = database.ref('users/' + userId);
+      tokenRef.set({
+        token: token,
+        lastActive: new Date().toISOString(),
+        
+      });
+      
+      // Store user ID in local storage for persistent identification
+      localStorage.setItem('notificationUserId', userId);
+      
+      console.log('Token saved to database for user:', userId);
+    }
+    
+    // Set up a listener for in-app notifications from Firebase
+    function setupInAppNotificationListener(userId) {
+      // Listen for notifications addressed to this user
+      const notificationsRef = database.ref('notifications/' + userId);
+      notificationsRef.on('child_added', (snapshot) => {
+        const notification = snapshot.val();
+        console.log('Received in-app notification:', notification);
+        
+        // Display the in-app notification
+        showInAppNotification(
+          notification.title || 'New Notification', 
+          notification.message || 'You have a new notification'
+        );
+        
+        // Mark as read (optional)
+        snapshot.ref.update({ read: true });
+      });
+      
+      // Also listen for broadcast notifications
+      const broadcastRef = database.ref('notifications/broadcast');
+      broadcastRef.on('child_added', (snapshot) => {
+        const notification = snapshot.val();
+        
+        // Only show if within the last minute (to avoid showing old broadcasts)
+        const timestamp = notification.timestamp || 0;
+        const currentTime = new Date().getTime();
+        if (currentTime - timestamp < 60000) {
+          showInAppNotification(
+            notification.title || 'Broadcast', 
+            notification.message || 'Broadcast notification'
+          );
+        }
+      });
+    }
+    
+    // Set up enable button click handler
+    enableButton.addEventListener('click', () => {
+      // If permission already granted, get token directly
+      if (Notification.permission === 'granted') {
+        navigator.serviceWorker.ready.then(registration => {
+          getToken(registration);
+        });
+        return;
+      }
+      
+      // Otherwise request permission
+      updateStatus('Requesting notification permission...');
+      Notification.requestPermission().then(permission => {
+        if (permission === 'granted') {
+          navigator.serviceWorker.ready.then(registration => {
+            updateStatus('Permission granted! Setting up notifications...');
+            getToken(registration);
+          });
+        } else {
+          console.warn('Notification permission denied');
+          updateStatus('Notification permission denied. Please enable notifications in your browser settings.', true);
+          updateButtonState(false);
+        }
+      });
+    });
+    
+    // Set up test button for in-app notifications
+    testInAppButton.addEventListener('click', () => {
+      const userId = localStorage.getItem('notificationUserId');
+      
+      if (userId) {
+        // Create a test notification in the database
+        const notificationRef = database.ref('notifications/' + userId).push();
+        notificationRef.set({
+          title: 'Test Notification',
+          message: 'This is a test in-app notification',
+          timestamp: firebase.database.ServerValue.TIMESTAMP,
+          read: false
+        });
+      } else {
+        // If no user ID, show a local notification
+        showInAppNotification(
+          'Test Notification', 
+          'This is a local test notification. Enable notifications to receive real-time updates.'
+        );
+      }
+    });
+    
+    // Check for existing user ID in localStorage
+    const savedUserId = localStorage.getItem('notificationUserId');
+    if (savedUserId) {
+      console.log('Found saved user ID:', savedUserId);
+      // Set up notification listener for returning users
+      setupInAppNotificationListener(savedUserId);
+    }
+</script>
 </body>
 </html>
