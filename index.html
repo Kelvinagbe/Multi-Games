@@ -1969,9 +1969,23 @@ function hideIframeLoader(container) {
   const installBanner = document.getElementById('installBanner');
   const installButton = document.getElementById('installButton');
 
+  // Hide the banner if the app is already installed
+  window.addEventListener('appinstalled', () => {
+    installBanner.style.display = 'none';
+    deferredPrompt = null;
+  });
+
+  // Handle the install prompt
   window.addEventListener('beforeinstallprompt', (e) => {
     e.preventDefault();
     deferredPrompt = e;
+
+    // Show banner only if not already installed
+    if (window.matchMedia('(display-mode: standalone)').matches) {
+      // Already installed
+      return;
+    }
+
     installBanner.style.display = 'flex';
   });
 
