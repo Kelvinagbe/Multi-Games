@@ -127,14 +127,37 @@
                     
                     // Set up test notification button
                     notificationButton.addEventListener('click', () => {
-                      // This is just for testing locally
-                      // In a real app, notifications would come from your server
-                      const testNotification = new Notification('Test Notification', {
-                        body: 'This is a local test notification',
-                        icon: 'https://firebase.google.com/downloads/brand-guidelines/PNG/logo-logomark.png'
-                      });
-                      
-                      console.log('Test notification sent');
+                      try {
+                        console.log('Attempting to show test notification...');
+                        
+                        // First check if we have permission
+                        if (Notification.permission !== 'granted') {
+                          statusElement.textContent = "Cannot show notification: permission not granted";
+                          return;
+                        }
+                        
+                        // Method 1: Using the Notification API directly
+                        const testNotification = new Notification('Test Notification', {
+                          body: 'This is a local test notification',
+                          icon: 'https://firebase.google.com/downloads/brand-guidelines/PNG/logo-logomark.png'
+                        });
+                        
+                        // Method 2: Using ServiceWorker showNotification (more reliable)
+                        navigator.serviceWorker.ready.then(registration => {
+                          registration.showNotification('Test Notification via ServiceWorker', {
+                            body: 'This notification comes through the ServiceWorker',
+                            icon: 'https://firebase.google.com/downloads/brand-guidelines/PNG/logo-logomark.png',
+                            badge: 'https://firebase.google.com/downloads/brand-guidelines/PNG/logo-standard.png',
+                            vibrate: [200, 100, 200]
+                          });
+                        });
+                        
+                        statusElement.textContent = "Test notifications triggered - check your notifications";
+                        console.log('Test notifications sent through two methods');
+                      } catch (error) {
+                        console.error('Error showing notification:', error);
+                        statusElement.textContent = "Error sending notification: " + error.message;
+                      }
                     });
                     
                     // Here you can save the token to your server/database if you want
