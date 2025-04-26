@@ -9,26 +9,64 @@
   <script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-app-compat.js"></script>
   <!-- Firebase Messaging SDK -->
   <script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-messaging-compat.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    button {
+      padding: 10px 15px;
+      background-color: #4285f4;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+    #status {
+      margin: 20px 0;
+      padding: 10px;
+      background-color: #f1f1f1;
+      border-radius: 4px;
+    }
+    #token-display {
+      word-break: break-all;
+      background-color: #f8f8f8;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      margin-top: 20px;
+      font-family: monospace;
+      font-size: 12px;
+      display: none;
+    }
+  </style>
 </head>
 <body>
   <h1>Firebase Notifications Demo</h1>
   <p id="status">Initializing...</p>
+  <div id="token-display"></div>
+  <button id="show-notification" style="display:none;">Send Test Notification</button>
   
   <script>
     // Your Firebase Config
     const firebaseConfig = {
       apiKey: "AIzaSyBw1uA-kNKOZEufWKZ9AMBxvRGHNGF1lkA",
-    authDomain: "multi-games-a2561.firebaseapp.com",
-    databaseURL: "https://multi-games-a2561-default-rtdb.firebaseio.com",
-    projectId: "multi-games-a2561",
-    storageBucket: "multi-games-a2561.firebasestorage.app",
-    messagingSenderId: "150551898066",
-    appId: "1:150551898066:web:c852245737bde813140a0b",
-    measurementId: "G-DLQ4G0TTPL"
-  };
-
+      authDomain: "multi-games-a2561.firebaseapp.com",
+      databaseURL: "https://multi-games-a2561-default-rtdb.firebaseio.com",
+      projectId: "multi-games-a2561",
+      storageBucket: "multi-games-a2561.firebasestorage.app",
+      messagingSenderId: "150551898066",
+      appId: "1:150551898066:web:c852245737bde813140a0b",
+      measurementId: "G-DLQ4G0TTPL"
+    };
 
     const statusElement = document.getElementById('status');
+    const tokenDisplay = document.getElementById('token-display');
+    const notificationButton = document.getElementById('show-notification');
+    let messaging;
     
     // Check if the browser supports notifications
     if (!('Notification' in window)) {
@@ -46,7 +84,23 @@
             statusElement.textContent = 'Service Worker registered, initializing messaging...';
             
             // Initialize Firebase Cloud Messaging
-            const messaging = firebase.messaging();
+            messaging = firebase.messaging();
+            
+            // Set up foreground notification handler
+            messaging.onMessage((payload) => {
+              console.log('Message received in foreground:', payload);
+              
+              // Create notification options
+              const notificationTitle = payload.notification.title || 'New Notification';
+              const notificationOptions = {
+                body: payload.notification.body || 'This is a notification from Firebase',
+                icon: payload.notification.icon || '/firebase-logo.png',
+                data: payload.data
+              };
+              
+              // Show the notification
+              registration.showNotification(notificationTitle, notificationOptions);
+            });
             
             // Request permission and get token
             statusElement.textContent = 'Requesting notification permission...';
@@ -62,7 +116,27 @@
                 }).then((currentToken) => {
                   if (currentToken) {
                     console.log("FCM Token:", currentToken);
-                    statusElement.textContent = "Success! Token received.";
+                    statusElement.textContent = "Success! Token received. You can now receive notifications.";
+                    
+                    // Display token
+                    tokenDisplay.style.display = "block";
+                    tokenDisplay.textContent = currentToken;
+                    
+                    // Show notification button
+                    notificationButton.style.display = "block";
+                    
+                    // Set up test notification button
+                    notificationButton.addEventListener('click', () => {
+                      // This is just for testing locally
+                      // In a real app, notifications would come from your server
+                      const testNotification = new Notification('Test Notification', {
+                        body: 'This is a local test notification',
+                        icon: 'https://firebase.google.com/downloads/brand-guidelines/PNG/logo-logomark.png'
+                      });
+                      
+                      console.log('Test notification sent');
+                    });
+                    
                     // Here you can save the token to your server/database if you want
                   } else {
                     console.warn("No registration token available");
