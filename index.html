@@ -871,149 +871,9 @@ padding: 10px;
   }
 }
 </style>
-
-<!-- CSS Styles for the banner -->
-<style>
- /* Using a specific class prefix to avoid any CSS conflicts */
-  .pwa-install-banner {
-    display: none; /* Hidden by default, shown via JavaScript */
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    z-index: 99999; /* Very high z-index to ensure it's on top */
-    box-sizing: border-box;
-    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-    line-height: normal;
-    background: transparent; /* Transparent background */
-  }
-
-  .pwa-install-content {
-    max-width: 680px;
-    margin: 8px auto;
-    background: #ffffff;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    padding: 12px 16px;
-    display: flex;
-    align-items: center;
-    animation: pwa-slide-down 0.3s ease-out;
-  }
-
-  @keyframes pwa-slide-down {
-    from {
-      transform: translateY(-100%);
-      opacity: 0;
-    }
-    to {
-      transform: translateY(0);
-      opacity: 1;
-    }
-  }
-
-  .pwa-app-icon {
-    width: 36px;
-    height: 36px;
-    border-radius: 8px;
-    object-fit: cover;
-    margin-right: 12px;
-    flex-shrink: 0;
-  }
-
-  .pwa-app-info {
-    flex-grow: 1;
-    min-width: 0; /* Ensures text truncation works properly */
-  }
-
-  .pwa-app-title {
-    font-weight: 600;
-    font-size: 15px;
-    color: #333333;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .pwa-app-desc {
-    font-size: 13px;
-    color: #666666;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .pwa-install-btn {
-    background-color: #0f5132;
-    color: white;
-    border: none;
-    border-radius: 30px;
-    padding: 8px 16px;
-    font-weight: 500;
-    font-size: 14px;
-    cursor: pointer;
-    margin: 0 12px;
-    flex-shrink: 0;
-    transition: background-color 0.2s;
-  }
-
-  .pwa-install-btn:hover {
-    background-color: #0a3f26;
-  }
-
-  .pwa-close-btn {
-    background: none;
-    border: none;
-    color: #888888;
-    font-size: 16px;
-    cursor: pointer;
-    padding: 6px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    transition: color 0.2s;
-  }
-
-  .pwa-close-btn:hover {
-    color: #555555;
-  }
-
-  /* Media query for mobile devices */
-  @media (max-width: 600px) {
-    .pwa-install-content {
-      margin: 0;
-      width: 100%;
-      border-radius: 0;
-      padding: 10px 12px;
-    }
-    
-    .pwa-app-icon {
-      width: 32px;
-      height: 32px;
-    }
-    
-    .pwa-install-btn {
-      padding: 6px 12px;
-      margin: 0 8px;
-    }
-  }
-</style>
-  
 </head>
 <body>
 
-<!-- Clean Install Banner HTML -->
-<div id="installBanner" class="pwa-install-banner">
-  <div class="pwa-install-content">
-    <img src="./assets/favicon-32x32.png" alt="Multi Games" class="pwa-app-icon">
-    <div class="pwa-app-info">
-      <div class="pwa-app-title">Multi Games</div>
-      <div class="pwa-app-desc">Add to Home Screen</div>
-    </div>
-    <button id="installAppButton" class="pwa-install-btn">Install</button>
-    <button id="closeBannerButton" class="pwa-close-btn" aria-label="Close">✕</button>
-  </div>
-</div>
 
   <div id="adblockMessage" class="adblock-message">
         <span class="close-button" onclick="closeAdBlockMessage()">&times;</span>
@@ -1091,6 +951,29 @@ padding: 10px;
               <p>Sports</p>
           </div>
       </div>
+
+<!-- Floating Install App Button with Icon -->
+<button id="installButton"
+  style="
+    display: none;
+    position: fixed;
+    bottom: 80px;
+    right: 20px;
+    z-index: 1000;
+    background-color: #0f5132;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 56px;
+    height: 56px;
+    font-size: 20px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    cursor: pointer;
+  "
+  title="Install App"
+>
+  <i class="fas fa-download"></i>
+</button>
 
            <!-- Popular Games -->
         <div class="section-header">
@@ -1479,19 +1362,18 @@ function initPWAInstall() {
     }
 }
 
-// PWA Installation Prompt
-let deferredPrompt; // Make sure this is declared at a scope accessible to your install functions
 
+// PWA Installation Prompt
 window.addEventListener("beforeinstallprompt", (e) => {
     // Prevent Chrome 67+ from automatically showing the prompt
     e.preventDefault();
     // Stash the event so it can be triggered later
     deferredPrompt = e;
     
-    // Update UI to show the install banner instead of the button
-    const installBanner = document.getElementById('installBanner');
-    if (installBanner) {
-        installBanner.style.display = "flex";
+    // Update UI to show the install button
+    const installButton = document.getElementById('installButton');
+    if (installButton) {
+        installButton.style.display = "block";
     }
     
     // Log that the prompt is available (for debugging)
@@ -1500,84 +1382,13 @@ window.addEventListener("beforeinstallprompt", (e) => {
 
 // When the app is successfully installed
 window.addEventListener('appinstalled', (evt) => {
-    // Hide the install banner after successful installation
-    const installBanner = document.getElementById('installBanner');
-    if (installBanner) {
-        installBanner.style.display = "none";
+    // Hide the install button after successful installation
+    const installButton = document.getElementById('installButton');
+    if (installButton) {
+        installButton.style.display = "none";
     }
     console.log('Application was successfully installed');
 });
-
-// Handle install button click in the banner
-document.addEventListener('DOMContentLoaded', () => {
-    const installAppButton = document.getElementById('installAppButton');
-    if (installAppButton) {
-        installAppButton.addEventListener('click', async () => {
-            if (!deferredPrompt) {
-                console.log('The deferred prompt is not available.');
-                return;
-            }
-            
-            // Show the install prompt
-            deferredPrompt.prompt();
-            
-            // Wait for the user to respond to the prompt
-            const { outcome } = await deferredPrompt.userChoice;
-            console.log(`User response to the install prompt: ${outcome}`);
-            
-            // We've used the prompt, and can't use it again, so clear it
-            deferredPrompt = null;
-            
-            // Hide the install banner regardless of outcome
-            const installBanner = document.getElementById('installBanner');
-            if (installBanner) {
-                installBanner.style.display = "none";
-            }
-        });
-    }
-    
-    // Handle close button click
-    const closeBannerButton = document.getElementById('closeBannerButton');
-    if (closeBannerButton) {
-        closeBannerButton.addEventListener('click', () => {
-            const installBanner = document.getElementById('installBanner');
-            if (installBanner) {
-                installBanner.style.display = "none";
-            }
-            
-            // Optionally, set a flag in localStorage to not show the banner again for some time
-            localStorage.setItem('installBannerClosed', Date.now());
-        });
-    }
-    
-    // Check if we should show the banner (not recently closed)
-    const checkBannerDisplay = () => {
-        if (deferredPrompt) {
-            const lastClosed = localStorage.getItem('installBannerClosed');
-            const showAfter = 3 * 24 * 60 * 60 * 1000; // 3 days in milliseconds
-            
-            if (!lastClosed || (Date.now() - parseInt(lastClosed)) > showAfter) {
-                const installBanner = document.getElementById('installBanner');
-                if (installBanner) {
-                    installBanner.style.display = "flex";
-                }
-            }
-        }
-    };
-    
-    // Run the check after a short delay to let everything load
-    setTimeout(checkBannerDisplay, 2000);
-});
-
-// Also check for standalone mode to avoid showing the banner if already installed
-if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) {
-    console.log('Application is running in standalone mode (already installed)');
-    // Make sure banner doesn't show
-    const installBanner = document.getElementById('installBanner');
-    if (installBanner) {
-        installBanner.style.display = "none";
-    }
-}
 
 // Initialize Search Functionality
 function initSearch() {
