@@ -875,41 +875,16 @@ padding: 10px;
 <body>
 
 
-<!-- Install App Banner -->
-<div id="installBanner" style="
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  background-color: #0f5132;
-  color: white;
-  padding: 10px 20px;
-  z-index: 1000;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-family: sans-serif;
-">
-  <div style="display: flex; align-items: center;">
-    <img src="./assets/favicon-32x32.png" alt="App Logo" style="width: 40px; height: 40px; border-radius: 8px; margin-right: 10px;">
-    <div>
-      <div style="font-size: 16px; font-weight: bold;">Multi Games</div>
-      <div style="font-size: 12px;">Install this app for a better experience</div>
-    </div>
+ <!-- Install App Banner -->
+<div id="installBanner" style="display: none; position: fixed; top: 0; left: 0; width: 100%; background-color: #0f5132; color: white; padding: 10px 20px; z-index: 1000; box-shadow: 0 2px 6px rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: space-between; font-family: sans-serif;">
+<div style="display: flex; align-items: center;">
+ <img src="./assets/favicon-32x32.png" alt="App Logo" style="width: 40px; height: 40px; border-radius: 8px; margin-right: 10px;">
+  <div>
+   <div style="font-size: 16px; font-weight: bold;">Multi Games</div>
+   <div style="font-size: 12px;">Install this app for a better experience</div>
   </div>
-  <button id="installButton" style="
-    background-color: white;
-    color: #0f5132;
-    border: none;
-    padding: 8px 16px;
-    border-radius: 20px;
-    font-weight: bold;
-    cursor: pointer;
-  ">
-    Install
-  </button>
+ </div>
+<button id="installButton" style="background-color: white; color: #0f5132; border: none; padding: 8px 16px; border-radius: 20px; font-weight: bold; cursor: pointer;">Install</button>
 </div>
 
   <div id="adblockMessage" class="adblock-message">
@@ -1336,91 +1311,6 @@ document.addEventListener("DOMContentLoaded", function() {
     initPWAInstall();
 });
 
-// PWA Installation Functionality
-function initPWAInstall() {
-    const installButton = document.getElementById('installButton');
-    const installBanner = document.getElementById('installBanner');
-    
-    if (installButton && installBanner) {
-        // Initially hide both the button and banner
-        installButton.style.display = "none";
-        installBanner.style.display = "none";
-        
-        // Check if the app is already installed
-        if (window.matchMedia('(display-mode: standalone)').matches || 
-            window.navigator.standalone === true) {
-            // App is already installed, no need to show install button or banner
-            return;
-        }
-        
-        // Setup event listener for install button
-        installButton.addEventListener("click", async () => {
-            if (deferredPrompt) {
-                // Show the install prompt
-                deferredPrompt.prompt();
-                
-                // Wait for the user to respond to the prompt
-                const { outcome } = await deferredPrompt.userChoice;
-                
-                if (outcome === "accepted") {
-                    console.log("User accepted the install prompt");
-                    // Hide the button and banner after installation
-                    installButton.style.display = "none";
-                    installBanner.style.display = "none";
-                } else {
-                    console.log("User dismissed the install prompt");
-                }
-                // Clear the saved prompt since it can't be used again
-                deferredPrompt = null;
-            } else {
-                // If running on localhost, provide instructions for testing PWA
-                if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
-                    alert("To install this app during local development:\n1. Make sure your manifest.json is properly configured\n2. In Chrome DevTools, go to Application > Manifest\n3. Click 'Add to homescreen' for testing");
-                }
-            }
-        });
-    }
-}
-
-// PWA Installation Prompt
-window.addEventListener("beforeinstallprompt", (e) => {
-    // Prevent Chrome 67+ from automatically showing the prompt
-    e.preventDefault();
-    // Stash the event so it can be triggered later
-    deferredPrompt = e;
-    
-    // Update UI to show the install button and banner
-    const installButton = document.getElementById('installButton');
-    const installBanner = document.getElementById('installBanner');
-    
-    if (installButton && installBanner) {
-        // Only show if not already in standalone mode
-        if (!window.matchMedia('(display-mode: standalone)').matches) {
-            installButton.style.display = "block";
-            installBanner.style.display = "flex";
-        }
-    }
-    
-    // Log that the prompt is available (for debugging)
-    console.log("Install prompt is ready to be used");
-});
-
-// When the app is successfully installed
-window.addEventListener('appinstalled', (evt) => {
-    // Hide the install button and banner after successful installation
-    const installButton = document.getElementById('installButton');
-    const installBanner = document.getElementById('installBanner');
-    
-    if (installButton) {
-        installButton.style.display = "none";
-    }
-    
-    if (installBanner) {
-        installBanner.style.display = "none";
-    }
-    
-    console.log('Application was successfully installed');
-});
 
 // Initialize Search Functionality
 function initSearch() {
@@ -1979,6 +1869,54 @@ function hideIframeLoader(container) {
         }, 300);
     }
 }
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    // PWA Installation
+    let deferredPrompt;
+    const installBanner = document.getElementById('installBanner');
+    const installButton = document.getElementById('installButton');
+    
+    if (installBanner && installButton) {
+        // Initially hide the banner
+        installBanner.style.display = 'none';
+        
+        // Check if already installed
+        if (window.matchMedia('(display-mode: standalone)').matches || 
+            window.navigator.standalone === true) {
+            installBanner.style.display = 'none';
+        }
+        
+        // Before install prompt event
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            
+            // Only show if not in standalone mode
+            if (!window.matchMedia('(display-mode: standalone)').matches) {
+                installBanner.style.display = 'flex';
+            }
+        });
+        
+        // Install button click
+        installButton.addEventListener('click', async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                
+                // Hide banner after user makes a choice
+                installBanner.style.display = 'none';
+                deferredPrompt = null;
+            }
+        });
+        
+        // App installed event
+        window.addEventListener('appinstalled', () => {
+            installBanner.style.display = 'none';
+            deferredPrompt = null;
+        });
+    }
+});
 </script>
 </body>
 </html>
