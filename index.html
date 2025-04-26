@@ -875,6 +875,43 @@ padding: 10px;
 <body>
 
 
+<!-- Install App Banner -->
+<div id="installBanner" style="
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: #0f5132;
+  color: white;
+  padding: 10px 20px;
+  z-index: 1000;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: sans-serif;
+">
+  <div style="display: flex; align-items: center;">
+    <img src="/path-to-your-icon.png" alt="App Logo" style="width: 40px; height: 40px; border-radius: 8px; margin-right: 10px;">
+    <div>
+      <div style="font-size: 16px; font-weight: bold;">Multi Games</div>
+      <div style="font-size: 12px;">Install this app for a better experience</div>
+    </div>
+  </div>
+  <button id="installButton" style="
+    background-color: white;
+    color: #0f5132;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: bold;
+    cursor: pointer;
+  ">
+    Install
+  </button>
+</div>
+
   <div id="adblockMessage" class="adblock-message">
         <span class="close-button" onclick="closeAdBlockMessage()">&times;</span>
         <h3>Ad Blocker Detected</h3>
@@ -952,28 +989,7 @@ padding: 10px;
           </div>
       </div>
 
-<!-- Floating Install App Button with Icon -->
-<button id="installButton"
-  style="
-    display: none;
-    position: fixed;
-    bottom: 80px;
-    right: 20px;
-    z-index: 1000;
-    background-color: #0f5132;
-    color: white;
-    border: none;
-    border-radius: 50%;
-    width: 56px;
-    height: 56px;
-    font-size: 20px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-    cursor: pointer;
-  "
-  title="Install App"
->
-  <i class="fas fa-download"></i>
-</button>
+
 
            <!-- Popular Games -->
         <div class="section-header">
@@ -1947,6 +1963,26 @@ function hideIframeLoader(container) {
         }, 300);
     }
 }
+</script>
+<script>
+  let deferredPrompt;
+  const installBanner = document.getElementById('installBanner');
+  const installButton = document.getElementById('installButton');
+
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    installBanner.style.display = 'flex';
+  });
+
+  installButton.addEventListener('click', async () => {
+    installBanner.style.display = 'none';
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      deferredPrompt = null;
+    }
+  });
 </script>
 </body>
 </html>
