@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gaming Profile</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.min.css" rel="stylesheet">
+      <link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="notification.css">
+
+
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-PB8Y87E6XV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-PB8Y87E6XV');
+</script>
+</head>
+<body>
+    <div class="container">
+<header>
+<button id="auth-action-btn" class="btn">Login</button>
+ <button id="update-app" class="btn"><i class="ri-download-2-line"></i> Update App</button>
+        </header>
+
+
+<!-- Loading Overlay with Spinner -->
+<div id="loading-overlay" style="display: none;">
+    <div class="spinner-container">
+        <div class="spinner"></div>
+        <div class="loading-text">Loading...</div>
+    </div>
+</div>
+
+  <!-- In-app notification container -->
+  <div id="in-app-notification-container" class="in-app-notification-container"></div>
+  
+        <div class="profile-card">
+            <div class="profile-header">
+                <div class="avatar-container">
+                    <img id="user-avatar" src="https://i.postimg.cc/gJZr2MPG/images-20.jpg" alt="User Avatar">
+                    <div class="avatar-upload-icon">
+                        <i class="ri-camera-line"></i>
+                    </div>
+                </div>
+                <div class="user-info">
+                    <div id="username">Guest Player</div>
+                    <div id="user-email">Sign in to continue</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="wallet-section">
+            <div id="wallet-balance">Wallet: ₦0</div>
+            <div class="wallet-actions">
+                <div class="action-btn" id="withdraw-btn">
+                    <i class="ri-wallet-3-line"></i>
+                    <span>Withdraw</span>
+                </div>
+                      <div class="action-btn" id="play-games-btn">
+                    <i class="ri-gamepad-line"></i>
+                    <span>Play Games</span>
+                </div>
+                <div class="action-btn" id="leaderboard-btn">
+                    <i class="ri-bar-chart-line"></i>
+                    <span>Rankings</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="quick-actions">
+            <div class="quick-action" id="achievements-btn">
+                <i class="ri-medal-line"></i>
+                <span>Achievements</span>
+            </div>
+            <div class="quick-action" id="referral-btn">
+                <i class="ri-user-add-line"></i>
+                <span>Invite Friends</span>
+            </div>
+            <div class="quick-action" id="settings-btn">
+                <i class="ri-settings-3-line"></i>
+                <span>Settings</span>
+            </div>
+        </div>
+        
+        <div class="referral-section">
+            <div class="referral-header">
+                <h3>Referrals</h3>
+                <span id="referral-count">0</span>
+            </div>
+            <div class="referral-info">
+                <div>
+                    <strong>Your Code</strong>
+                    <div id="referral-code">Sign in to get code</div>
+                </div>
+                <div>
+                    <strong>Earnings</strong>
+                    <div>₦0</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="transaction-history">
+            <h3>Recent Activity</h3>
+            <div class="wallet-history">
+                <div class="no-transactions">No transactions yet</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal Containers -->
+    <div id="login-modal" class="modal-container">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Login</h2>
+                <button class="back-btn"><i class="ri-arrow-right-s-line"></i></button>
+            </div>
+            <iframe id="login-iframe" frameborder="0" width="100%" height="405px" style="display: none;"></iframe>
+        </div>
+    </div>
+    
+    <div id="register-modal" class="modal-container">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Create Account</h2>
+                <button class="back-btn"><i class="ri-arrow-right-s-line"></i></button>
+            </div>
+            <iframe id="register-iframe" frameborder="0" width="100%" height="400px" style="display: none;"></iframe>
+        </div>
+    </div>
+    
+    <div id="withdraw-modal" class="modal-container">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Withdraw Funds</h2>
+                <button class="back-btn"><i class="ri-arrow-right-s-line"></i></button>
+            </div>
+            <iframe id="withdraw-iframe" frameborder="0" width="100%" height="350px" style="display: none;"></iframe>
+        </div>
+    </div>
+    
+    <!-- Updated Settings Modal -->
+<div id="settings-modal" class="modal-container">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Settings</h2>
+            <button class="back-btn"><i class="ri-arrow-right-s-line"></i></button>
+        </div>
+        <div class="settings-content">
+            <div class="form-group">
+                <label for="change-fullname">Change Full Name</label>
+                <input type="text" id="change-fullname" placeholder="Enter your full name">
+                <button id="save-fullname" class="btn">Save Name</button>
+            </div>
+      
+  <div class="form-group">
+    <label for="dark-mode-toggle">Dark Mode</label>
+    <label class="toggle-switch">
+        <input type="checkbox" id="dark-mode-toggle">
+        <span class="slider"></span>
+    </label>
+</div>
+   
+  <button id="enable-notifications" class="notification-btn inactive">Activate Notifications</button>
+  
+  <div id="status">Status: Ready to enable notifications</div>
+  
+            </div>
+            </div>
+        </div>
+    </div>
+</div>
+       
+    
+    <div id="referral-modal" class="modal-container">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Invite Friends</h2>
+                <button class="back-btn"><i class="ri-arrow-right-s-line"></i></button>
+            </div>
+            <div class="referral-content">
+                <p>Share your referral code with friends. You'll earn ₦50 for each friend who signs up!</p>
+                <div class="form-group">
+                    <label>Your Referral Code</label>
+                    <input type="text" id="share-referral-code" readonly>
+                </div>
+                <div class="referral-input-section" style="display: none;">
+                    <p>Have a referral code? Enter it below:</p>
+                    <div class="form-group">
+                        <input type="text" id="input-referral-code" placeholder="Enter referral code">
+                    </div>
+                    <button class="btn" id="submit-referral">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+      <!-- Played Games Modal -->
+<div id="played-games-modal" class="modal-container">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2>Recently Played Games</h2>
+      <button class="back-btn"><i class="ri-arrow-right-s-line"></i></button>
+    </div>
+    <div class="modal-body">
+      <div id="played-games-list" class="games-list"></div>
+    </div>
+  </div>
+</div>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="spinner"></div>
+    </div>
+    
+    <!-- Notification -->
+    <div id="notification" class="notification">
+        <div id="notification-title" class="notification-title"></div>
+        <div id="notification-message"></div>
+    </div>
+    
+    <!-- Hidden Input for Avatar Upload -->
+    <input type="file" id="avatar-file-input" accept="image/*">
+
+  <!-- Firebase App SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-app-compat.js"></script>
+  <!-- Firebase Messaging SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-messaging-compat.js"></script>
+  <!-- Firebase Realtime Database SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-database-compat.js"></script>
+ 
+
+
+
+
+    <script type="module" src="script.js"></script>
+<script>
+// Your Firebase Config
+    const firebaseConfig = {
+      apiKey: "AIzaSyBw1uA-kNKOZEufWKZ9AMBxvRGHNGF1lkA",
+      authDomain: "multi-games-a2561.firebaseapp.com",
+      databaseURL: "https://multi-games-a2561-default-rtdb.firebaseio.com",
+      projectId: "multi-games-a2561",
+      storageBucket: "multi-games-a2561.firebasestorage.app",
+      messagingSenderId: "150551898066",
+      appId: "1:150551898066:web:c852245737bde813140a0b",
+      measurementId: "G-DLQ4G0TTPL"
+    };
+
+    const statusElement = document.getElementById('status');
+    const enableButton = document.getElementById('enable-notifications');
+    const notificationContainer = document.getElementById('in-app-notification-container');
+    const testInAppButton = document.getElementById('test-in-app');
+    
+    let messaging;
+    let database;
+    
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    
+    // Initialize Firebase Realtime Database
+    database = firebase.database();
+    
+    // Function to update status with appropriate styling
+    function updateStatus(message, isError = false) {
+      statusElement.textContent = message;
+      statusElement.className = isError ? 'error' : '';
+      if (!isError && message.includes('Success')) {
+        statusElement.className = 'success';
+      }
+    }
+    
+    // Function to create and display in-app notification
+    function showInAppNotification(title, message, duration = 5000) {
+      // Create notification element
+      const notification = document.createElement('div');
+      notification.className = 'in-app-notification';
+      
+      // Create content
+      notification.innerHTML = `
+        <button class="notification-close">&times;</button>
+        <h4>${title}</h4>
+        <p>${message}</p>
+      `;
+      
+      // Add to container
+      notificationContainer.appendChild(notification);
+      
+      // Add event listener to close button
+      notification.querySelector('.notification-close').addEventListener('click', () => {
+        notification.style.transform = 'translateX(120%)';
+        setTimeout(() => notification.remove(), 300);
+      });
+      
+      // Auto remove after duration
+      if (duration) {
+        setTimeout(() => {
+          if (notification.parentNode) {
+            notification.style.transform = 'translateX(120%)';
+            setTimeout(() => notification.remove(), 300);
+          }
+        }, duration);
+      }
+      
+      return notification;
+    }
+    
+    // Function to update button state
+    function updateButtonState(isActive) {
+      if (isActive) {
+        enableButton.classList.remove('inactive');
+        enableButton.classList.add('active');
+        enableButton.textContent = 'Notifications Active';
+      } else {
+        enableButton.classList.remove('active');
+        enableButton.classList.add('inactive');
+        enableButton.textContent = 'Activate Notifications';
+      }
+    }
+    
+    // Check if browser supports notifications
+    if (!('Notification' in window)) {
+      updateStatus('This browser does not support notifications', true);
+      enableButton.disabled = true;
+    } else if ('serviceWorker' in navigator) {
+      // Register service worker when page loads
+      navigator.serviceWorker.register('/firebase-messaging-sw.js')
+        .then(registration => {
+          // Initialize Firebase Cloud Messaging
+          messaging = firebase.messaging();
+          
+          // Set up notification handler for foreground messages
+          messaging.onMessage((payload) => {
+            console.log('Message received:', payload);
+            
+            // Display notification using the service worker
+            registration.showNotification(
+              payload.notification?.title || 'New Notification', 
+              {
+                body: payload.notification?.body || 'You have a new notification',
+                icon: payload.notification?.icon || '/notification-icon.png',
+                data: payload.data
+              }
+            );
+          });
+          
+          // Check if notifications are already enabled
+          if (Notification.permission === 'granted') {
+            getToken(registration);
+            updateStatus('Notifications are already enabled');
+            updateButtonState(true);
+          }
+        })
+        .catch(error => {
+          console.error('Service Worker registration failed:', error);
+          updateStatus('Failed to set up notifications: ' + error.message, true);
+        });
+    } else {
+      updateStatus('Service Workers are not supported in this browser', true);
+      enableButton.disabled = true;
+    }
+    
+    // Function to get FCM token
+    function getToken(registration) {
+      messaging.getToken({ 
+        vapidKey: "BMcnZnq4TDu23XvkA8icF4zxDeX_ctw-x42B73ulQb72rDTj-LOgK-rHAeKtoFozQXa7j5XMF82Ay8PE5G9ACUw",
+        serviceWorkerRegistration: registration
+      }).then(token => {
+        if (token) {
+          console.log('FCM Token:', token);
+          updateStatus('Success! Notifications enabled.');
+          updateButtonState(true);
+          
+          // Save token to Firebase Realtime Database
+          const userId = 'user_' + Math.random().toString(36).substr(2, 9); // Generate a random user ID for demo
+          saveTokenToDatabase(userId, token);
+          
+          // Set up Firebase database listener for in-app notifications
+          setupInAppNotificationListener(userId);
+          
+          // Show success notification
+          showInAppNotification('Notifications Enabled', 'You will now receive both push and in-app notifications.');
+        } else {
+          updateStatus('Failed to get notification token', true);
+          updateButtonState(false);
+        }
+      }).catch(error => {
+        console.error('Error getting token:', error);
+        updateStatus('Error enabling notifications: ' + error.message, true);
+        updateButtonState(false);
+      });
+    }
+    
+    // Save the token to Firebase Database
+    function saveTokenToDatabase(userId, token) {
+      const tokenRef = database.ref('users/' + userId);
+      tokenRef.set({
+        token: token,
+        lastActive: new Date().toISOString(),
+        
+      });
+      
+      // Store user ID in local storage for persistent identification
+      localStorage.setItem('notificationUserId', userId);
+      
+      console.log('Token saved to database for user:', userId);
+    }
+    
+    // Set up a listener for in-app notifications from Firebase
+    function setupInAppNotificationListener(userId) {
+      // Listen for notifications addressed to this user
+      const notificationsRef = database.ref('notifications/' + userId);
+      notificationsRef.on('child_added', (snapshot) => {
+        const notification = snapshot.val();
+        console.log('Received in-app notification:', notification);
+        
+        // Display the in-app notification
+        showInAppNotification(
+          notification.title || 'New Notification', 
+          notification.message || 'You have a new notification'
+        );
+        
+        // Mark as read (optional)
+        snapshot.ref.update({ read: true });
+      });
+      
+      // Also listen for broadcast notifications
+      const broadcastRef = database.ref('notifications/broadcast');
+      broadcastRef.on('child_added', (snapshot) => {
+        const notification = snapshot.val();
+        
+        // Only show if within the last minute (to avoid showing old broadcasts)
+        const timestamp = notification.timestamp || 0;
+        const currentTime = new Date().getTime();
+        if (currentTime - timestamp < 60000) {
+          showInAppNotification(
+            notification.title || 'Broadcast', 
+            notification.message || 'Broadcast notification'
+          );
+        }
+      });
+    }
+    
+    // Set up enable button click handler
+    enableButton.addEventListener('click', () => {
+      // If permission already granted, get token directly
+      if (Notification.permission === 'granted') {
+        navigator.serviceWorker.ready.then(registration => {
+          getToken(registration);
+        });
+        return;
+      }
+      
+      // Otherwise request permission
+      updateStatus('Requesting notification permission...');
+      Notification.requestPermission().then(permission => {
+        if (permission === 'granted') {
+          navigator.serviceWorker.ready.then(registration => {
+            updateStatus('Permission granted! Setting up notifications...');
+            getToken(registration);
+          });
+        } else {
+          console.warn('Notification permission denied');
+          updateStatus('Notification permission denied. Please enable notifications in your browser settings.', true);
+          updateButtonState(false);
+        }
+      });
+    });
+    
+    // Set up test button for in-app notifications
+    testInAppButton.addEventListener('click', () => {
+      const userId = localStorage.getItem('notificationUserId');
+      
+      if (userId) {
+        // Create a test notification in the database
+        const notificationRef = database.ref('notifications/' + userId).push();
+        notificationRef.set({
+          title: 'Test Notification',
+          message: 'This is a test in-app notification',
+          timestamp: firebase.database.ServerValue.TIMESTAMP,
+          read: false
+        });
+      } else {
+        // If no user ID, show a local notification
+        showInAppNotification(
+          'Test Notification', 
+          'This is a local test notification. Enable notifications to receive real-time updates.'
+        );
+      }
+    });
+    
+    // Check for existing user ID in localStorage
+    const savedUserId = localStorage.getItem('notificationUserId');
+    if (savedUserId) {
+      console.log('Found saved user ID:', savedUserId);
+      // Set up notification listener for returning users
+      setupInAppNotificationListener(savedUserId);
+    }
+</script>
+</body>
+</html>
