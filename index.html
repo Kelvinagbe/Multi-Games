@@ -1927,5 +1927,59 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 });
 </script>
+<script>
+  // Your Firebase Config
+  const firebaseConfig = {
+    apiKey: "AIzaSyBw1uA-kNKOZEufWKZ9AMBxvRGHNGF1lkA",
+    authDomain: "multi-games-a2561.firebaseapp.com",
+    databaseURL: "https://multi-games-a2561-default-rtdb.firebaseio.com",
+    projectId: "multi-games-a2561",
+    storageBucket: "multi-games-a2561.appspot.com",
+    messagingSenderId: "150551898066",
+    appId: "1:150551898066:web:4e8fb185f2321ba4140a0b",
+    measurementId: "G-PB8Y87E6XV"
+  };
+
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+
+  // Initialize Firebase Cloud Messaging
+  const messaging = firebase.messaging();
+
+  // Ask for Notification Permission
+  Notification.requestPermission().then((permission) => {
+    if (permission === "granted") {
+      console.log("Notification permission granted.");
+
+      // Get Token
+      messaging.getToken({ 
+        vapidKey: "BP7nzSjc1bjOZAz98-nRm8hs1Dvdjyfo1JnfXQ2ZVUVWJscK_GpeLEfpgwL4G3jZPO_GIvSkk2xpPAC8CvQrFH8" 
+      }).then((currentToken) => {
+        if (currentToken) {
+          console.log("FCM Token:", currentToken);
+          alert("FCM Token: " + currentToken);
+          // Here you can save the token to your server/database if you want
+        } else {
+          console.warn("No registration token available. Request permission to generate one.");
+        }
+      }).catch((err) => {
+        console.error("An error occurred while retrieving token. ", err);
+      });
+
+    } else {
+      console.warn("Notification permission not granted.");
+    }
+  });
+</script>
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('firebase-messaging-sw.js')
+    .then(function(registration) {
+      console.log('Service Worker registered with scope:', registration.scope);
+    }).catch(function(err) {
+      console.error('Service Worker registration failed:', err);
+    });
+  }
+</script>
 </body>
 </html>
