@@ -1938,100 +1938,84 @@ document.addEventListener("DOMContentLoaded", function() {
 <!-- Add this script block wherever you want in your index.html (preferably before the closing </body> tag) -->
 
 <script>
-  // Firebase configuration
-  const firebaseConfig = {
-    apiKey: "AIzaSyBw1uA-kNKOZEufWKZ9AMBxvRGHNGF1lkA",
-    authDomain: "multi-games-a2561.firebaseapp.com",
-    databaseURL: "https://multi-games-a2561-default-rtdb.firebaseio.com",
-    projectId: "multi-games-a2561",
-    storageBucket: "multi-games-a2561.appspot.com",
-    messagingSenderId: "150551898066",
-    appId: "1:150551898066:web:4e8fb185f2321ba4140a0b",
-    measurementId: "G-PB8Y87E6XV"
-  };
+// Firebase configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyBw1uA-kNKOZEufWKZ9AMBxvRGHNGF1lkA",
+  authDomain: "multi-games-a2561.firebaseapp.com",
+  databaseURL: "https://multi-games-a2561-default-rtdb.firebaseio.com",
+  projectId: "multi-games-a2561",
+  storageBucket: "multi-games-a2561.appspot.com",
+  messagingSenderId: "150551898066",
+  appId: "1:150551898066:web:4e8fb185f2321ba4140a0b",
+  measurementId: "G-PB8Y87E6XV"
+};
 
-  // Initialize Firebase
-  firebase.initializeApp(firebaseConfig);
-  const messaging = firebase.messaging();
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+const messaging = firebase.messaging();
 
-  // Wait for the DOM to be fully loaded
-  document.addEventListener('DOMContentLoaded', function() {
-    // Check if the browser supports service workers
-    if ('serviceWorker' in navigator) {
-      // Register the service worker
-      navigator.serviceWorker.register('/firebase-messaging-sw.js')
-        .then(registration => {
-          console.log('Service Worker registered with scope:', registration.scope);
-          
-          // Only request permission after service worker is registered
-          requestNotificationPermission();
-        })
-        .catch(err => {
-          console.error('Service Worker registration failed:', err);
+// Wait for the DOM to be fully loaded
+document.addEventListener('DOMContentLoaded', function() {
+  // Check if the browser supports service workers
+  if ('serviceWorker' in navigator) {
+    // Register the service worker
+    navigator.serviceWorker.register('./firebase-messaging-sw.js')
+      .then(registration => {
+        console.log('Service Worker registered with scope:', registration.scope);
+        
+        // Initialize Firebase Cloud Messaging
+        const messaging = firebase.messaging();
+        
+        // Request permission directly (as in your demo)
+        Notification.requestPermission().then((permission) => {
+          if (permission === "granted") {
+            console.log("Notification permission granted.");
+            
+            // Get Token with your provided VAPID key
+            messaging.getToken({ 
+              vapidKey: "BMcnZnq4TDu23XvkA8icF4zxDeX_ctw-x42B73ulQb72rDTj-LOgK-rHAeKtoFozQXa7j5XMF82Ay8PE5G9ACUw",
+              serviceWorkerRegistration: registration
+            }).then((currentToken) => {
+              if (currentToken) {
+                console.log("FCM Token:", currentToken);
+                // Display the token on the page for testing
+                const tokenDisplay = document.createElement('div');
+                tokenDisplay.textContent = `FCM Token: ${currentToken}`;
+                document.body.appendChild(tokenDisplay);
+              } else {
+                console.warn("No registration token available");
+              }
+            }).catch((err) => {
+              console.error("An error occurred while retrieving token: ", err);
+              // Log more details about the error
+              console.error("Error code:", err.code);
+              console.error("Error message:", err.message);
+            });
+          } else {
+            console.warn("Notification permission denied");
+          }
         });
-    } else {
-      console.warn('Service Workers not supported in this browser');
-    }
-  });
-
-  // Function to request notification permission
-  function requestNotificationPermission() {
-    console.log('Requesting notification permission...');
-    
-    // Add a visible button for better user experience
-    const permissionButton = document.createElement('button');
-    permissionButton.textContent = 'Enable Notifications';
-    permissionButton.style.padding = '10px 20px';
-    permissionButton.style.backgroundColor = '#4285F4';
-    permissionButton.style.color = 'white';
-    permissionButton.style.border = 'none';
-    permissionButton.style.borderRadius = '4px';
-    permissionButton.style.cursor = 'pointer';
-    permissionButton.style.margin = '20px';
-    
-    permissionButton.onclick = function() {
-      Notification.requestPermission().then(permission => {
-        if (permission === 'granted') {
-          console.log('Notification permission granted!');
-          
-          // Get FCM token
-          messaging.getToken({ 
-            vapidKey: "BMcnZnq4TDu23XvkA8icF4zxDeX_ctw-x42B73ulQb72rDTj-LOgK-rHAeKtoFozQXa7j5XMF82Ay8PE5G9ACUw"
-          }).then(token => {
-            if (token) {
-              console.log("FCM Token:", token);
-              // Display the token on the page for testing
-              const tokenDisplay = document.createElement('div');
-              tokenDisplay.textContent = `FCM Token: ${token}`;
-              document.body.appendChild(tokenDisplay);
-              
-              // Here you can save the token to your server
-            } else {
-              console.warn("No registration token available");
-            }
-          }).catch(err => {
-            console.error("Error getting token:", err);
-          });
-          
-          // Remove the button once permission is granted
-          permissionButton.remove();
-        } else {
-          console.warn("Notification permission denied");
-          permissionButton.textContent = 'Permission Denied';
-          permissionButton.style.backgroundColor = '#f44336';
-        }
+      })
+      .catch(err => {
+        console.error('Service Worker registration failed:', err);
       });
-    };
-    
-    // Add the button to the page
-    document.body.appendChild(permissionButton);
+  } else {
+    console.warn('Service Workers not supported in this browser');
   }
+});
+
+// Handle foreground messages
+messaging.onMessage((payload) => {
+  console.log('Message received in foreground:', payload);
+  // Create a notification for foreground messages
+  const notificationTitle = payload.notification?.title || 'New Message';
+  const notificationOptions = {
+    body: payload.notification?.body || 'You have a new notification',
+    icon: '/logo.png' // Replace with your icon path
+  };
   
-  // Handle foreground messages
-  messaging.onMessage((payload) => {
-    console.log('Message received in foreground:', payload);
-    // You can display a custom notification here
-  });
+  new Notification(notificationTitle, notificationOptions);
+});
 </script>
 <script>
   if ('serviceWorker' in navigator) {
