@@ -1,127 +1,143 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset
-      xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-      xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
-            http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
-<!-- created with Free Online Sitemap Generator www.xml-sitemaps.com -->
 
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
 
-<url>
-  <loc>https://multi-games-fawn.vercel.app/</loc>
-  <lastmod>2025-04-25T17:59:32+00:00</lastmod>
-  <priority>1.00</priority>
-</url>
-<url>
-  <loc>https://multi-games-fawn.vercel.app/truth.html</loc>
-  <lastmod>2025-04-25T17:59:33+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://multi-games-fawn.vercel.app/games/whack.html</loc>
-  <lastmod>2025-04-25T17:59:33+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://multi-games-fawn.vercel.app/games/truth.html</loc>
-  <lastmod>2025-04-25T17:59:34+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://multi-games-fawn.vercel.app/games/iframe-bubble.html</loc>
-  <lastmod>2025-04-25T17:59:34+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://multi-games-fawn.vercel.app/games/iframe-warrior.html</loc>
-  <lastmod>2025-04-25T17:59:34+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://multi-games-fawn.vercel.app/games/iframe-moto-X3M.html</loc>
-  <lastmod>2025-04-25T17:59:35+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://multi-games-fawn.vercel.app/games/iframe-ludo-legend.html</loc>
-  <lastmod>2025-04-25T17:59:35+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://multi-games-fawn.vercel.app/games/iframe-bike-rush.html</loc>
-  <lastmod>2025-04-25T17:59:35+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://multi-games-fawn.vercel.app/games/iframe-boat-race.html</loc>
-  <lastmod>2025-04-25T17:59:35+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://multi-games-fawn.vercel.app/games/iframe-subway.html</loc>
-  <lastmod>2025-04-25T17:59:35+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://multi-games-fawn.vercel.app/games/iframe-pubg.html</loc>
-  <lastmod>2025-04-25T17:59:35+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://multi-games-fawn.vercel.app/nav/categories/categories.html</loc>
-  <lastmod>2025-04-25T17:59:34+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://multi-games-fawn.vercel.app/nav/earn.html</loc>
-  <lastmod>2025-04-25T17:59:34+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://multi-games-fawn.vercel.app/nav/profile.html</loc>
-  <lastmod>2025-04-25T17:59:34+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://multi-games-fawn.vercel.app/nav/categories/arcade.html</loc>
-  <lastmod>2025-04-25T17:59:36+00:00</lastmod>
-  <priority>0.64</priority>
-</url>
-<url>
-  <loc>https://multi-games-fawn.vercel.app/nav/categories/puzzle.html</loc>
-  <lastmod>2025-04-25T17:59:36+00:00</lastmod>
-  <priority>0.64</priority>
-</url>
-<url>
-  <loc>https://multi-games-fawn.vercel.app/nav/categories/action.html</loc>
-  <lastmod>2025-04-25T17:59:36+00:00</lastmod>
-  <priority>0.64</priority>
-</url>
-<url>
-  <loc>https://multi-games-fawn.vercel.app/nav/categories/sports.html</loc>
-  <lastmod>2025-04-25T17:59:36+00:00</lastmod>
-  <priority>0.64</priority>
-</url>
-<url>
-  <loc>https://multi-games-fawn.vercel.app/nav/categories/racing.html</loc>
-  <lastmod>2025-04-25T17:59:36+00:00</lastmod>
-  <priority>0.64</priority>
-</url>
-<url>
-  <loc>https://multi-games-fawn.vercel.app/nav/categories/music.html</loc>
-  <lastmod>2025-04-25T17:59:36+00:00</lastmod>
-  <priority>0.64</priority>
-</url>
-<url>
-  <loc>https://multi-games-fawn.vercel.app/nav/categories/adventure.html</loc>
-  <lastmod>2025-04-25T17:59:36+00:00</lastmod>
-  <priority>0.64</priority>
-</url>
-<url>
-  <loc>https://multi-games-fawn.vercel.app/nav/categories/shooter.html</loc>
-  <lastmod>2025-04-25T17:59:36+00:00</lastmod>
-  <priority>0.64</priority>
-</url>
   <url>
-   
+       <loc>https://multi-games-fawn.vercel.app/</loc>
+       <lastmod>2025-04-27T18:07:40+00:00</lastmod>
+       <changefreq>daily</changefreq>
+       <priority>1.0000</priority>
+  </url>
+  <url>
+       <loc>https://multi-games-fawn.vercel.app/truth.html</loc>
+       <lastmod>2025-04-27T18:07:40+00:00</lastmod>
+       <changefreq>daily</changefreq>
+       <priority>0.8000</priority>
+  </url>
+  <url>
+       <loc>https://multi-games-fawn.vercel.app/games/whack.html</loc>
+       <lastmod>2025-04-27T18:07:40+00:00</lastmod>
+       <changefreq>daily</changefreq>
+       <priority>0.8000</priority>
+  </url>
+  <url>
+       <loc>https://multi-games-fawn.vercel.app/games/truth.html</loc>
+       <lastmod>2025-04-27T18:07:40+00:00</lastmod>
+       <changefreq>daily</changefreq>
+       <priority>0.8000</priority>
+  </url>
+  <url>
+       <loc>https://multi-games-fawn.vercel.app/games/iframe-bubble.html</loc>
+       <lastmod>2025-04-27T18:07:40+00:00</lastmod>
+       <changefreq>daily</changefreq>
+       <priority>0.8000</priority>
+  </url>
+  <url>
+       <loc>https://multi-games-fawn.vercel.app/games/iframe-warrior.html</loc>
+       <lastmod>2025-04-27T18:07:40+00:00</lastmod>
+       <changefreq>daily</changefreq>
+       <priority>0.8000</priority>
+  </url>
+  <url>
+       <loc>https://multi-games-fawn.vercel.app/games/iframe-moto-X3M.html</loc>
+       <lastmod>2025-04-27T18:07:40+00:00</lastmod>
+       <changefreq>daily</changefreq>
+       <priority>0.8000</priority>
+  </url>
+  <url>
+       <loc>https://multi-games-fawn.vercel.app/games/iframe-ludo-legend.html</loc>
+       <lastmod>2025-04-27T18:07:40+00:00</lastmod>
+       <changefreq>daily</changefreq>
+       <priority>0.8000</priority>
+  </url>
+  <url>
+       <loc>https://multi-games-fawn.vercel.app/games/iframe-bike-rush.html</loc>
+       <lastmod>2025-04-27T18:07:40+00:00</lastmod>
+       <changefreq>daily</changefreq>
+       <priority>0.8000</priority>
+  </url>
+  <url>
+       <loc>https://multi-games-fawn.vercel.app/games/iframe-boat-race.html</loc>
+       <lastmod>2025-04-27T18:07:40+00:00</lastmod>
+       <changefreq>daily</changefreq>
+       <priority>0.8000</priority>
+  </url>
+  <url>
+       <loc>https://multi-games-fawn.vercel.app/games/iframe-subway.html</loc>
+       <lastmod>2025-04-27T18:07:40+00:00</lastmod>
+       <changefreq>daily</changefreq>
+       <priority>0.8000</priority>
+  </url>
+  <url>
+       <loc>https://multi-games-fawn.vercel.app/games/iframe-pubg.html</loc>
+       <lastmod>2025-04-27T18:07:40+00:00</lastmod>
+       <changefreq>daily</changefreq>
+       <priority>0.8000</priority>
+  </url>
+  <url>
+       <loc>https://multi-games-fawn.vercel.app/nav/categories/categories.html</loc>
+       <lastmod>2025-04-27T18:07:40+00:00</lastmod>
+       <changefreq>daily</changefreq>
+       <priority>0.8000</priority>
+  </url>
+  <url>
+       <loc>https://multi-games-fawn.vercel.app/nav/earn.html</loc>
+       <lastmod>2025-04-27T18:07:40+00:00</lastmod>
+       <changefreq>daily</changefreq>
+       <priority>0.8000</priority>
+  </url>
+  <url>
+       <loc>https://multi-games-fawn.vercel.app/nav/profile.html</loc>
+       <lastmod>2025-04-27T18:07:40+00:00</lastmod>
+       <changefreq>daily</changefreq>
+       <priority>0.8000</priority>
+  </url>
+  <url>
+       <loc>https://multi-games-fawn.vercel.app/nav/categories/arcade.html</loc>
+       <lastmod>2025-04-27T18:07:40+00:00</lastmod>
+       <changefreq>daily</changefreq>
+       <priority>0.6400</priority>
+  </url>
+  <url>
+       <loc>https://multi-games-fawn.vercel.app/nav/categories/puzzle.html</loc>
+       <lastmod>2025-04-27T18:07:40+00:00</lastmod>
+       <changefreq>daily</changefreq>
+       <priority>0.6400</priority>
+  </url>
+  <url>
+       <loc>https://multi-games-fawn.vercel.app/nav/categories/action.html</loc>
+       <lastmod>2025-04-27T18:07:40+00:00</lastmod>
+       <changefreq>daily</changefreq>
+       <priority>0.6400</priority>
+  </url>
+  <url>
+       <loc>https://multi-games-fawn.vercel.app/nav/categories/sports.html</loc>
+       <lastmod>2025-04-27T18:07:40+00:00</lastmod>
+       <changefreq>daily</changefreq>
+       <priority>0.6400</priority>
+  </url>
+  <url>
+       <loc>https://multi-games-fawn.vercel.app/nav/categories/racing.html</loc>
+       <lastmod>2025-04-27T18:07:40+00:00</lastmod>
+       <changefreq>daily</changefreq>
+       <priority>0.6400</priority>
+  </url>
+  <url>
+       <loc>https://multi-games-fawn.vercel.app/nav/categories/music.html</loc>
+       <lastmod>2025-04-27T18:07:40+00:00</lastmod>
+       <changefreq>daily</changefreq>
+       <priority>0.6400</priority>
+  </url>
+  <url>
+       <loc>https://multi-games-fawn.vercel.app/nav/categories/adventure.html</loc>
+       <lastmod>2025-04-27T18:07:40+00:00</lastmod>
+       <changefreq>daily</changefreq>
+       <priority>0.6400</priority>
+  </url>
+  <url>
+       <loc>https://multi-games-fawn.vercel.app/nav/categories/shooter.html</loc>
+       <lastmod>2025-04-27T18:07:40+00:00</lastmod>
+       <changefreq>daily</changefreq>
+       <priority>0.6400</priority>
+  </url>
 </urlset>
