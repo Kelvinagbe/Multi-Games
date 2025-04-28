@@ -1,1 +1,791 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi Games Chat Assistant</title>
+    <style>
+        :root {
+    --primary-color: #10b981; /* Changed from purple (#6366f1) to green */
+    --primary-hover: #059669; /* Darker green for hover state */
+    --secondary-color: #94a3b8;
+    --background-color: #f1f5f9;
+    --chat-bg: #ffffff;
+    --user-message-bg: #dcfce7; /* Light green background for user messages */
+    --bot-message-bg: #f8fafc;
+    --text-color: #334155;
+    --border-color: #e2e8f0;
+    --shadow-color: rgba(15, 23, 42, 0.08);
+    --shadow-color-strong: rgba(15, 23, 42, 0.16);
+}
 
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    line-height: 1.5;
+    overflow: hidden;
+}
+
+/* Header */
+.header {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+    color: white;
+    padding: 16px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 4px var(--shadow-color);
+    z-index: 10;
+}
+
+.app-title {
+    font-weight: 600;
+    font-size: 1.25rem;
+    margin: 0;
+    letter-spacing: 0.01em;
+    margin-left: 40px;
+}
+
+#network-status {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: #10b981; /* Green for online */
+    transition: background-color 0.5s;
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.3);
+    margin-left: 12px;
+}
+
+#network-status.offline {
+    background-color: #ef4444; /* Red for offline */
+}
+
+.status-container {
+    display: flex;
+    align-items: center;
+}
+
+.status-text {
+    font-size: 0.85rem;
+    opacity: 0.9;
+    margin-right: 8px;
+}
+
+/* Main chat container */
+.main-container {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    overflow: hidden;
+}
+
+/* Chat messages area */
+#chat-messages {
+    flex: 1;
+    padding: 24px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    scroll-behavior: smooth;
+    max-width: 800px;
+    margin: 0 auto; /* Centers the container */
+    width: 100%;
+    box-sizing: border-box; /* Ensures padding is included in width calculation */
+}
+
+#chat-messages::-webkit-scrollbar {
+    width: 6px;
+}
+
+#chat-messages::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+#chat-messages::-webkit-scrollbar-thumb {
+    background-color: var(--border-color);
+    border-radius: 20px;
+}
+
+/* Speech bubble message styles */
+.message {
+    padding: 12px 16px;
+    border-radius: 12px;
+    max-width: 80%;
+    width: fit-content;
+    word-wrap: break-word;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    box-shadow: 0 1px 2px var(--shadow-color);
+    animation: fadeIn 0.3s forwards;
+    box-sizing: border-box;
+    position: relative; /* For the speech bubble pointer */
+}
+
+.bot-message {
+    background-color: var(--bot-message-bg);
+    border: 1px solid var(--border-color);
+    align-self: flex-start;
+    color: var(--text-color);
+    border-radius: 12px 12px 12px 0; /* Rounded corners except bottom left */
+}
+
+.bot-message::before {
+    content: "";
+    position: absolute;
+    bottom: -10px;
+    left: 0;
+    width: 0;
+    height: 0;
+    border-left: 0px solid transparent;
+    border-right: 12px solid transparent;
+    border-top: 10px solid var(--bot-message-bg);
+    border-bottom: 0;
+    transform: rotate(180deg); /* Flip to point upward */
+}
+
+.user-message {
+    background-color: var(--user-message-bg);
+    border: 1px solid rgba(16, 185, 129, 0.2); /* Green border to match theme */
+    color: #1e293b;
+    align-self: flex-end;
+    border-radius: 12px 12px 0 12px; /* Rounded corners except bottom right */
+}
+
+.user-message::before {
+    content: "";
+    position: absolute;
+    bottom: -10px;
+    right: 0;
+    width: 0;
+    height: 0;
+    border-left: 12px solid transparent;
+    border-right: 0px solid transparent;
+    border-top: 10px solid var(--user-message-bg);
+    border-bottom: 0;
+    transform: rotate(180deg); /* Flip to point upward */
+}
+
+/* Quick responses */
+.quick-responses {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 12px;
+    width: 100%;
+    justify-content: left; /* Center the quick responses */
+}
+
+.quick-response {
+    background-color: rgba(16, 185, 129, 0.1); /* Light green background */
+    color: var(--primary-color);
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    animation: fadeIn 0.3s forwards;
+    border: 1px solid rgba(16, 185, 129, 0.2); /* Green border */
+    font-weight: 500;
+}
+
+.quick-response:hover {
+    background-color: rgba(16, 185, 129, 0.15);
+    transform: translateY(-1px);
+}
+
+.quick-response:active {
+    transform: translateY(1px);
+}
+
+/* Typing indicator */
+#typing-indicator {
+    display: none;
+    padding: 12px 16px;
+    background-color: var(--bot-message-bg);
+    border-radius: 12px;
+    width: fit-content;
+    margin-bottom: 8px;
+    align-self: flex-start;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 1px 2px var(--shadow-color);
+    border-radius: 12px 12px 12px 0; /* Match bot message style */
+    position: relative;
+}
+
+#typing-indicator::before {
+    content: "";
+    position: absolute;
+    bottom: -10px;
+    left: 0;
+    width: 0;
+    height: 0;
+    border-left: 0px solid transparent;
+    border-right: 12px solid transparent;
+    border-top: 10px solid var(--bot-message-bg);
+    border-bottom: 0;
+    transform: rotate(180deg); /* Flip to point upward */
+}
+
+.typing-dots {
+    display: flex;
+    gap: 4px;
+    padding: 4px 0;
+}
+
+.dot {
+    width: 8px;
+    height: 8px;
+    background-color: var(--secondary-color);
+    border-radius: 50%;
+    animation: pulse 1.5s infinite;
+}
+
+.dot:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.dot:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+/* Chat input area */
+.chat-input-container {
+    padding: 24px;
+    background-color: var(--chat-bg);
+    border-top: 1px solid var(--border-color);
+    position: relative;
+}
+
+.chat-input-area {
+    display: flex;
+    max-width: 800px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+#user-input {
+    flex: 1;
+    padding: 16px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    outline: none;
+    font-size: 1rem;
+    transition: all 0.2s;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.05);
+}
+
+#user-input:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2); /* Green glow */
+}
+
+#send-btn {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    width: 48px;
+    height: 48px;
+    border-radius: 8px;
+    margin-left: 12px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.2s;
+    box-shadow: 0 2px 4px var(--shadow-color);
+}
+
+#send-btn:hover {
+    background-color: var(--primary-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 3px 6px var(--shadow-color);
+}
+
+#send-btn:active {
+    transform: translateY(1px);
+    box-shadow: 0 1px 2px var(--shadow-color);
+}
+
+/* Welcome message */
+.welcome-container {
+    text-align: center;
+    padding: 20px;
+    max-width: 600px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 100%;
+}
+
+.welcome-title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 16px;
+    background: linear-gradient(90deg, var(--primary-color), var(--primary-hover));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.welcome-text {
+    font-size: 1.1rem;
+    margin-bottom: 32px;
+    color: var(--secondary-color);
+}
+
+/* Placeholder text for empty chat */
+.empty-chat-placeholder {
+    text-align: center;
+    color: var(--secondary-color);
+    margin-top: auto;
+    margin-bottom: auto;
+    font-size: 1.1rem;
+    opacity: 0.7;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(0.7);
+        opacity: 0.5;
+    }
+    50% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* For small screens */
+@media (max-width: 640px) {
+    #chat-messages {
+        padding: 16px;
+    }
+    
+    .chat-input-container {
+        padding: 16px;
+    }
+    
+    .message {
+        max-width: 90%;
+    }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --background-color: #0f172a;
+        --chat-bg: #1e293b;
+        --user-message-bg: #064e3b; /* Darker green for dark mode */
+        --bot-message-bg: #334155;
+        --text-color: #e2e8f0;
+        --border-color: #475569;
+        --shadow-color: rgba(0, 0, 0, 0.2);
+        --shadow-color-strong: rgba(0, 0, 0, 0.3);
+    }
+    
+    #user-input {
+        background-color: #1e293b;
+        color: #e2e8f0;
+        border-color: #475569;
+    }
+    
+    .quick-response {
+        background-color: rgba(16, 185, 129, 0.15);
+        border-color: rgba(16, 185, 129, 0.3);
+    }
+    
+    .user-message {
+        color: #f1f5f9;
+        border-color: rgba(16, 185, 129, 0.3);
+    }
+    
+    .bot-message {
+        border-color: #475569;
+    }
+
+    .user-message::before {
+        border-top-color: #064e3b; /* Match dark mode user message bg */
+    }
+}
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <h1 class="app-title">Multi Games Assistant</h1>
+        <div class="status-container">
+            <span class="status-text" id="status-text">Online</span>
+            <div id="network-status" title="Network Status"></div>
+        </div>
+    </div>
+
+    <!-- Main container -->
+    <div class="main-container">
+        <div id="chat-messages">
+            <!-- Empty chat placeholder -->
+            <div class="empty-chat-placeholder">
+                Type a message to start chatting with Multi Games Assistant
+            </div>
+        </div>
+
+        <div id="typing-indicator">
+            <div class="typing-dots">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Input area -->
+    <div class="chat-input-container">
+        <div class="chat-input-area">
+            <input type="text" id="user-input" placeholder="Type your message..." aria-label="Type your message">
+            <button id="send-btn" aria-label="Send message">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="22" y1="2" x2="11" y2="13"></line>
+                    <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Constants
+            const GROQ_API_KEY = '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';
+            const GROQ_API_URL = 'https://api.groq.com/openai/v1/chat/completions';
+            const MODEL = 'llama-3.3-70b-versatile';
+            
+            // DOM elements
+            const chatMessages = document.getElementById('chat-messages');
+            const userInput = document.getElementById('user-input');
+            const sendBtn = document.getElementById('send-btn');
+            const typingIndicator = document.getElementById('typing-indicator');
+            const networkStatus = document.getElementById('network-status');
+            const statusText = document.getElementById('status-text');
+            
+            // State variables
+            let isOnline = navigator.onLine;
+            let conversationHistory = [
+                { 
+                    role: "system", 
+                    content: "You are Multi Games 1.0, a helpful gaming assistant. Provide friendly, concise responses about games, account management, and technical support. Keep responses under 3 sentences when possible." 
+                }
+            ];
+            let isFirstMessage = true;
+            
+            // Set initial network status
+            updateNetworkStatus();
+
+            // Event listeners for network status
+            window.addEventListener('online', updateNetworkStatus);
+            window.addEventListener('offline', updateNetworkStatus);
+
+            // Send message on button click
+            sendBtn.addEventListener('click', sendMessage);
+
+            // Send message on Enter key press
+            userInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    sendMessage();
+                }
+            });
+
+            // Function to update network status indicator
+            function updateNetworkStatus() {
+                isOnline = navigator.onLine;
+                if (isOnline) {
+                    networkStatus.classList.remove('offline');
+                    networkStatus.title = 'Online - Using Groq API';
+                    statusText.textContent = 'Online';
+                } else {
+                    networkStatus.classList.add('offline');
+                    networkStatus.title = 'Offline - Using local responses';
+                    statusText.textContent = 'Offline';
+                }
+            }
+
+            // Function to send message
+            function sendMessage() {
+                const message = userInput.value.trim();
+                if (message !== '') {
+                    // Clear the placeholder text if this is the first message
+                    if (isFirstMessage) {
+                        chatMessages.innerHTML = '';
+                        isFirstMessage = false;
+                    }
+                    
+                    // Add user message to chat
+                    addUserMessage(message);
+                    // Add to conversation history
+                    conversationHistory.push({ role: "user", content: message });
+                    // Clear input
+                    userInput.value = '';
+                    // Show typing indicator
+                    showTypingIndicator();
+                    
+                    // Process the message based on network status
+                    if (isOnline) {
+                        // Use Groq API for online responses
+                        getGroqResponse(message);
+                    } else {
+                        // Use local responses for offline mode
+                        setTimeout(() => {
+                            processLocalMessage(message);
+                        }, 1000);
+                    }
+                }
+            }
+
+            // Function to get response from Groq API
+            async function getGroqResponse(message) {
+                try {
+                    const response = await fetch(GROQ_API_URL, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${GROQ_API_KEY}`
+                        },
+                        body: JSON.stringify({
+                            model: MODEL,
+                            messages: conversationHistory,
+                            max_tokens: 800,
+                            temperature: 0.7
+                        })
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`API request failed with status ${response.status}`);
+                    }
+
+                    const data = await response.json();
+                    const botResponse = data.choices[0].message.content;
+                    
+                    // Add bot response to conversation history
+                    conversationHistory.push({ role: "assistant", content: botResponse });
+                    
+                    // Add bot message to chat
+                    addBotMessage(botResponse);
+                    
+                    // Show quick responses based on context
+                    showContextualQuickResponses(message, botResponse);
+                    
+                } catch (error) {
+                    console.error('Error fetching from Groq API:', error);
+                    // Fallback to local processing if API fails
+                    processLocalMessage(message);
+                }
+            }
+
+            // Add a user message to the chat
+            function addUserMessage(message) {
+                const messageElement = document.createElement('div');
+                messageElement.classList.add('message', 'user-message');
+                messageElement.textContent = message;
+                chatMessages.appendChild(messageElement);
+                scrollToBottom();
+            }
+
+            // Add a bot message to the chat with typing animation
+            function addBotMessage(message) {
+                hideTypingIndicator();
+                const messageElement = document.createElement('div');
+                messageElement.classList.add('message', 'bot-message');
+                messageElement.textContent = '';
+                chatMessages.appendChild(messageElement);
+                scrollToBottom();
+                
+                // Type out the message character by character
+                let i = 0;
+                const typingSpeed = 20; // milliseconds per character
+                const typeWriter = () => {
+                    if (i < message.length) {
+                        messageElement.textContent += message.charAt(i);
+                        i++;
+                        scrollToBottom();
+                        setTimeout(typeWriter, typingSpeed);
+                    }
+                };
+                typeWriter();
+            }
+
+            // Show quick response options
+            function showQuickResponses(responses) {
+                const quickResponsesContainer = document.createElement('div');
+                quickResponsesContainer.classList.add('quick-responses');
+                
+                responses.forEach(response => {
+                    const responseElement = document.createElement('div');
+                    responseElement.classList.add('quick-response');
+                    responseElement.textContent = response;
+                    responseElement.addEventListener('click', function() {
+                        // Clear the placeholder text if this is the first message
+                        if (isFirstMessage) {
+                            chatMessages.innerHTML = '';
+                            isFirstMessage = false;
+                        }
+                        
+                        addUserMessage(response);
+                        // Add to conversation history
+                        conversationHistory.push({ role: "user", content: response });
+                        showTypingIndicator();
+                        
+                        // Process based on network status
+                        if (isOnline) {
+                            getGroqResponse(response);
+                        } else {
+                            setTimeout(() => {
+                                processLocalMessage(response);
+                            }, 1000);
+                        }
+                    });
+                    quickResponsesContainer.appendChild(responseElement);
+                });
+                
+                chatMessages.appendChild(quickResponsesContainer);
+                scrollToBottom();
+            }
+
+            // Show contextual quick responses based on message content
+            function showContextualQuickResponses(userMessage, botResponse) {
+                const lowerUserMsg = userMessage.toLowerCase();
+                const lowerBotMsg = botResponse.toLowerCase();
+                
+                // Default responses
+                let responses = ["Tell me more", "Game recommendations", "Account help"];
+                
+              // Customize responses based on context
+                if (lowerUserMsg.includes('game') || lowerBotMsg.includes('game')) {
+                    if (lowerBotMsg.includes('pixel adventure') || lowerUserMsg.includes('pixel adventure')) {
+                        responses = ["Play Pixel Adventure", "Game controls", "Other similar games"];
+                    } else if (lowerBotMsg.includes('space warriors') || lowerUserMsg.includes('space warriors')) {
+                        responses = ["Play Space Warriors", "Ship upgrades", "Multiplayer guide"];
+                    } else if (lowerBotMsg.includes('mystery dungeon') || lowerUserMsg.includes('mystery dungeon')) {
+                        responses = ["Play Mystery Dungeon", "Character classes", "Dungeon tips"];
+                    } else {
+                        responses = ["Popular games", "New releases", "Game categories"];
+                    }
+                } else if (lowerUserMsg.includes('account') || lowerBotMsg.includes('account')) {
+                    responses = ["Create account", "Account benefits", "Password reset"];
+                } else if (lowerUserMsg.includes('help') || lowerBotMsg.includes('support')) {
+                    responses = ["Technical support", "Contact us", "FAQ"];
+                }
+                
+                showQuickResponses(responses);
+            }
+
+            // Show typing indicator
+            function showTypingIndicator() {
+                typingIndicator.style.display = 'block';
+                scrollToBottom();
+            }
+
+            // Hide typing indicator
+            function hideTypingIndicator() {
+                typingIndicator.style.display = 'none';
+            }
+
+            // Scroll to the bottom of the chat
+            function scrollToBottom() {
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+            
+            // Process the user message locally and generate a response (for offline mode)
+            function processLocalMessage(message) {
+                const lowerMessage = message.toLowerCase();
+                
+                // Add local response to conversation history
+                let botResponse = "";
+                
+                // Check for common gaming queries
+                if (lowerMessage.includes('game') && (lowerMessage.includes('recommend') || lowerMessage.includes('suggestion'))) {
+                    botResponse = "Based on our most popular games, I'd recommend checking out 'Pixel Adventure', 'Space Warriors', or 'Mystery Dungeon'. Would you like more details about any of these?";
+                    addBotMessage(botResponse);
+                    showQuickResponses(["Pixel Adventure details", "Space Warriors details", "Mystery Dungeon details"]);
+                }
+                else if (lowerMessage.includes('what games') || lowerMessage.includes('available games') || lowerMessage.includes('games do you have')) {
+                    botResponse = "We have a variety of games across different genres! Some of our popular titles include action games like 'Pixel Adventure' and 'Ninja Run', strategy games like 'Empire Builder', racing games like 'Speed Demons', and many more. You can browse all games by category on our homepage.";
+                    addBotMessage(botResponse);
+                    showQuickResponses(["Action games", "Strategy games", "Racing games"]);
+                }
+                else if (lowerMessage.includes('account') && (lowerMessage.includes('create') || lowerMessage.includes('sign up') || lowerMessage.includes('register'))) {
+                    botResponse = "Creating an account is easy! Click on the 'Sign Up' button in the top right corner of our website. You'll need to provide an email address, choose a username, and create a password. Verified accounts get access to exclusive games and can save their progress across devices!";
+                    addBotMessage(botResponse);
+                    showQuickResponses(["Benefits of account", "Login issues", "Password reset"]);
+                }
+                else if (lowerMessage.includes('pixel adventure')) {
+                    botResponse = "'Pixel Adventure' is one of our most popular platformers! It features beautiful pixel art, challenging levels, and collectible items. The game has 4 worlds with 10 levels each. Would you like to try it out?";
+                    addBotMessage(botResponse);
+                    showQuickResponses(["Play Pixel Adventure", "Game controls", "Other similar games"]);
+                }
+                else if (lowerMessage.includes('space warriors')) {
+                    botResponse = "'Space Warriors' is an exciting space shooter with multiplayer capability. Customize your spaceship, upgrade weapons, and compete against players worldwide. It has stunning graphics and intense gameplay!";
+                    addBotMessage(botResponse);
+                    showQuickResponses(["Play Space Warriors", "Ship upgrades", "Multiplayer guide"]);
+                }
+                else if (lowerMessage.includes('mystery dungeon')) {
+                    botResponse = "'Mystery Dungeon' is a roguelike adventure with procedurally generated levels, meaning every playthrough is unique! Explore dungeons, collect magical items, and defeat powerful bosses as you uncover the ancient mystery.";
+                    addBotMessage(botResponse);
+                    showQuickResponses(["Play Mystery Dungeon", "Character classes", "Dungeon tips"]);
+                }
+                else if (lowerMessage.includes('login') && (lowerMessage.includes('issue') || lowerMessage.includes('problem') || lowerMessage.includes('can\'t'))) {
+                    botResponse = "I'm sorry to hear you're having login issues. Here are some common solutions: 1) Make sure caps lock is off 2) Try resetting your password 3) Clear your browser cookies. If you're still having trouble, you can contact our support team at support@multigames.com";
+                    addBotMessage(botResponse);
+                    showQuickResponses(["Reset password", "Contact support", "Back to games"]);
+                }
+                else if (lowerMessage.includes('password') && lowerMessage.includes('reset')) {
+                    botResponse = "To reset your password, click on the 'Login' button, then select 'Forgot Password'. Enter the email associated with your account, and we'll send you a password reset link that's valid for 24 hours.";
+                    addBotMessage(botResponse);
+                    showQuickResponses(["Login issues", "Contact support", "Back to games"]);
+                }
+                else if (lowerMessage.includes('hi') || lowerMessage.includes('hello') || lowerMessage.includes('hey')) {
+                    botResponse = "Hello there! Welcome to Multi Games. I'm here to help you find games you'll love or assist with any questions about our platform. What can I help you with today?";
+                    addBotMessage(botResponse);
+                    showQuickResponses(["Popular games", "New releases", "Account help"]);
+                }
+                else if (lowerMessage.includes('thank')) {
+                    botResponse = "You're welcome! If you have any other questions, feel free to ask. Happy gaming!";
+                    addBotMessage(botResponse);
+                    showQuickResponses(["Explore more games", "Account settings", "Game support"]);
+                }
+                else if (lowerMessage.includes('bye') || lowerMessage.includes('goodbye')) {
+                    botResponse = "Thanks for chatting! Have a great day and enjoy your gaming experience. Come back anytime you need assistance!";
+                    addBotMessage(botResponse);
+                }
+                else {
+                    // Default response
+                    botResponse = "You're currently offline. Thanks for your message! I'm here to help with anything related to our games and platform. Is there something specific you'd like to know about our games, account features, or technical support?";
+                    addBotMessage(botResponse);
+                    showQuickResponses(["Game recommendations", "Account help", "Technical support"]);
+                }
+                
+                // Add bot response to conversation history
+                conversationHistory.push({ role: "assistant", content: botResponse });
+            }
+        });
+    </script>
+</body>
+</html>
+    
