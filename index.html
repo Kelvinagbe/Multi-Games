@@ -25,7 +25,7 @@
 <!-- Firebase Messaging SDK -->
 <script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-messaging-compat.js"></script>
 
-
+<link rel="canonical" href="https://multi-games-fawn.vercel.app/index.html">
 
 <!-- Improve viewport for iOS full screen (for notches) -->
 
@@ -627,6 +627,38 @@ padding: 10px;
   font-size: 18px;
 }
 
+/* Slide Animations */
+@keyframes slideInPage {
+  0% {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideOutPage {
+  0% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+}
+
+/* Animation classes */
+.page-slide-in {
+  animation: slideInPage 0.4s ease forwards;
+}
+
+.page-slide-out {
+  animation: slideOutPage 0.4s ease forwards;
+}
+
 /* Adblock Message */
 .adblock-message {
   position: fixed;
@@ -885,6 +917,50 @@ padding: 10px;
     padding-bottom: env(safe-area-inset-bottom);
   }
 }
+
+
+        .chat-toggle {
+            position: fixed;
+            bottom: 80px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background-color: var(--primary-color);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            cursor: pointer;
+            box-shadow: var(--shadow);
+            z-index: 999;
+            font-size: 1.5rem;
+            transition: all 0.3s;
+        }
+
+        .chat-toggle:hover {
+            transform: scale(1.05);
+            background-color: var(--secondary-color);
+        }
+
+        .chat-container.hidden {
+            display: none;
+        }
+
+        .chat-container.visible {
+            animation: slideIn 0.3s ease forwards;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
 </style>
 </head>
 <body>
@@ -902,6 +978,7 @@ padding: 10px;
 <button id="installButton" style="background-color: white; color: #0f5132; border: none; padding: 8px 16px; border-radius: 20px; font-weight: bold; cursor: pointer;">Install</button>
 </div>
 
+   
   <div id="adblockMessage" class="adblock-message">
         <span class="close-button" onclick="closeAdBlockMessage()">&times;</span>
         <h3>Ad Blocker Detected</h3>
@@ -922,6 +999,7 @@ padding: 10px;
   </div>
 
 
+
 <!-- Updated HTML without a search button -->
 <div class="floating-search" id="floating-search">
     <div class="search-bar">
@@ -935,6 +1013,11 @@ padding: 10px;
     <div id="floating-suggestions" class="suggestions-container"></div>
 </div>
 
+
+    
+
+
+
   <!-- Main Content Container -->
   <div class="container main-content" id="main-content">
       <!-- Featured Game -->
@@ -946,7 +1029,17 @@ padding: 10px;
               <a href="truth.html" class="featured-btn">Play Now</a>
           </div>
       </div>
-      
+
+
+<!-- Chat toggle button -->
+    <div class="chat-toggle" id="chat-toggle">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+        </svg>
+    </div>
+
+
+
       <!-- Categories Horizontal Scroll -->
       <div class="section-header">
           <h2>Categories</h2>
@@ -979,7 +1072,7 @@ padding: 10px;
           </div>
       </div>
 
-
+ 
 
            <!-- Popular Games -->
         <div class="section-header">
@@ -1246,6 +1339,30 @@ padding: 10px;
             (adsbygoogle = window.adsbygoogle || []).push({});
         </script>
 
+<!-- Chatbot Iframe Container -->
+<div id="chatbot-iframe-container" class="page-content">
+    <!-- Back Button -->
+    <div class="back-button" id="close-chatbot">
+        <i class="fas fa-arrow-left"></i> <!-- Using FontAwesome for back icon -->
+    </div>
+
+    <!-- The iframe will be injected by JavaScript -->
+<div id="chatbot-loader" style="
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 1.2rem;
+  color: var(--primary-color);
+">
+  Loading...
+</div>
+</div>
+
   <!-- earn Page Content (Full Screen) -->
   <div class="page-content" id="earn-content">
     <div class="back-button" id="earn-back"><i class="fas fa-chevron-left"></i></div>
@@ -1271,6 +1388,7 @@ padding: 10px;
       <a href="#" id="earn-nav"><i class="fas fa-sack-dollar"></i> Earn</a>
       <a href="#" id="profile-nav"><i class="fas fa-user"></i> Profile</a>
   </div>
+
 
 <!-- dark mode script -->
 <script src="darkmode.js"></script>
@@ -2072,5 +2190,57 @@ messaging.onMessage((payload) => {
     });
   }
 </script>
+<script>
+ 
+            // Request permission and get token
+            statusElement.textContent = 'Requesting notification permission...';
+            Notification.requestPermission().then((permission) => {
+              if (permission === "granted") {
+</script>
+<script>
+function openChatbotIframe() {
+    const container = document.getElementById('chatbot-iframe-container');
+    const chatToggle = document.getElementById('chat-toggle');
+    const loader = document.getElementById('chatbot-loader');
+
+    // Hide chat toggle button
+    chatToggle.style.display = 'none';
+
+    // Show loader
+    loader.style.display = 'flex';
+
+    // If iframe not created yet, create it
+    if (!container.querySelector('iframe')) {
+        const iframe = document.createElement('iframe');
+        iframe.src = './bot/chatbot.html';
+        iframe.className = 'page-iframe';
+        iframe.onload = () => {
+            // Hide loader once iframe is fully loaded
+            loader.style.display = 'none';
+        };
+        container.appendChild(iframe);
+    } else {
+        // If already created, still wait for load and hide loader
+        loader.style.display = 'none';
+    }
+
+    container.style.display = 'flex'; // Show the page-content fullscreen
+}
+
+function closeChatbotIframe() {
+    const container = document.getElementById('chatbot-iframe-container');
+    const chatToggle = document.getElementById('chat-toggle');
+
+    container.style.display = 'none'; // Hide the iframe page
+    chatToggle.style.display = 'flex'; // Show back the chat toggle button
+}
+
+// Open chatbot iframe when clicking the chat-toggle button
+document.getElementById('chat-toggle').addEventListener('click', openChatbotIframe);
+
+// Close chatbot iframe when clicking the back button
+document.getElementById('close-chatbot').addEventListener('click', closeChatbotIframe);
+</script>
+
 </body>
 </html>
