@@ -392,41 +392,39 @@ body {
 }
 
 /* Dark mode support */
-@media (prefers-color-scheme: dark) {
-    :root {
-        --background-color: #0f172a;
-        --chat-bg: #1e293b;
-        --user-message-bg: #064e3b; /* Darker green for dark mode */
-        --bot-message-bg: #334155;
-        --text-color: #e2e8f0;
-        --border-color: #475569;
-        --shadow-color: rgba(0, 0, 0, 0.2);
-        --shadow-color-strong: rgba(0, 0, 0, 0.3);
-    }
-    
-    #user-input {
-        background-color: #1e293b;
-        color: #e2e8f0;
-        border-color: #475569;
-    }
-    
-    .quick-response {
-        background-color: rgba(16, 185, 129, 0.15);
-        border-color: rgba(16, 185, 129, 0.3);
-    }
-    
-    .user-message {
-        color: #f1f5f9;
-        border-color: rgba(16, 185, 129, 0.3);
-    }
-    
-    .bot-message {
-        border-color: #475569;
-    }
+body.dark-mode {
+    --background-color: #0f172a;
+    --chat-bg: #1e293b;
+    --user-message-bg: #064e3b;
+    --bot-message-bg: #334155;
+    --text-color: #e2e8f0;
+    --border-color: #475569;
+    --shadow-color: rgba(0, 0, 0, 0.2);
+    --shadow-color-strong: rgba(0, 0, 0, 0.3);
+}
 
-    .user-message::before {
-        border-top-color: #064e3b; /* Match dark mode user message bg */
-    }
+body.dark-mode #user-input {
+    background-color: #1e293b;
+    color: #e2e8f0;
+    border-color: #475569;
+}
+
+body.dark-mode .quick-response {
+    background-color: rgba(16, 185, 129, 0.15);
+    border-color: rgba(16, 185, 129, 0.3);
+}
+
+body.dark-mode .user-message {
+    color: #f1f5f9;
+    border-color: rgba(16, 185, 129, 0.3);
+}
+
+body.dark-mode .bot-message {
+    border-color: #475569;
+}
+
+body.dark-mode .user-message::before {
+    border-top-color: #064e3b;
 }
     </style>
 </head>
@@ -471,6 +469,21 @@ body {
         </div>
     </div>
 
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    // Function to apply dark mode based on localStorage
+    function applyDarkModeSetting() {
+        const isDarkMode = localStorage.getItem('darkMode') === 'enabled';
+        document.body.classList.toggle('dark-mode', isDarkMode);
+    }
+
+    // Apply dark mode on page load
+    applyDarkModeSetting();
+
+    // Optional: re-check every 3 seconds in case another tab changes it
+    setInterval(applyDarkModeSetting, 3000);
+});
+</script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
     // Constants
@@ -1198,12 +1211,16 @@ Remember to enforce chat limits strictly. After 20 messages in a 3-hour window, 
                 lowerMessage.includes(game.title.toLowerCase())
             );
             
-            if (mentionedGame) {
-                botResponse = `'${mentionedGame.title}' is ${mentionedGame.description} This game is in the ${mentionedGame.category} category. Would you like to try it out?`;
-                addBotMessage(botResponse);
-                showQuickResponses([`Play ${mentionedGame.title}`, "Game controls", "Other similar games"]);
-                return;
-            }
+         if (mentionedGame) {
+    const title = mentionedGame.title?.trim() || 'This game';
+    const description = mentionedGame.description?.trim() || 'a fun and exciting game.';
+    const category = mentionedGame.category?.trim() || 'Miscellaneous';
+
+    botResponse = `'${title}' is ${description}. This game is in the ${category} category. Would you like to try it out?`;
+    addBotMessage(botResponse);
+    showQuickResponses([`Play ${title}`, "Game controls", "Other similar games"]);
+    return;
+}
             
             // Check if asking about FAQs
             const mentionedFaq = siteContent.faqs?.find(faq => 
