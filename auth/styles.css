@@ -331,3 +331,130 @@ input:focus {
     cursor: pointer;
     transform: rotate(90deg);
 }
+
+/* Dark Mode Variables - Inspired by Claude.ai and ChatGPT */
+body.dark-mode {
+    --bg:  #fffffff;             /* Slightly lighter background */
+    --text: #e6e8ef;           /* Off-white text for better readability */
+    --card-bg: #25272e;        /* Less harsh card background */
+    --text-secondary: #abb0bf; /* Secondary text */
+    --text-muted: #8b90a0;     /* Muted text color */
+    --primary: #0f5132;        /* Vibrant primary blue */
+    --accent: #10a37f;         /* ChatGPT-like green */
+    --primary-dark: #2d3748;   /* Less harsh primary dark */
+    --border: #393b44;         /* Subtle border color */
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.1);
+    --shadow-md: 0 3px 6px rgba(0, 0, 0, 0.15);
+}
+
+/* Apply dark variables */
+body.dark-mode {
+    background-color: var(--bg);
+    color: var(--text);
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+body.dark-mode input,
+body.dark-mode .modal-content,
+body.dark-mode .profile-card,
+body.dark-mode .transaction-history,
+body.dark-mode .referral-section,
+body.dark-mode .quick-action {
+    background-color: var(--card-bg);
+    color: var(--text);
+    border-color: var(--border);
+    box-shadow: var(--shadow-sm);
+}
+
+body.dark-mode input {
+    border: 1px solid var(--border);
+}
+
+body.dark-mode input::placeholder {
+    color: var(--text-muted);
+}
+
+body.dark-mode .wallet-section {
+    background-color: var(--primary-dark);
+    color: white;
+    box-shadow: var(--shadow-md);
+}
+
+body.dark-mode .action-btn i,
+body.dark-mode .quick-action i {
+    color: var(--accent);
+}
+
+body.dark-mode .action-btn:hover i,
+body.dark-mode .quick-action:hover i {
+    color: #0d8a6a; /* Slightly darker accent on hover */
+}
+
+body.dark-mode .notification {
+    background-color: #333;
+    color: var(--accent);
+    border-left: 3px solid var(--accent);
+}
+
+body.dark-mode .spinner {
+    border-top-color: var(--accent);
+}
+
+/* Additional dark mode enhancements */
+body.dark-mode .section-title {
+    color: var(--text);
+}
+
+body.dark-mode .section-subtitle {
+    color: var(--text-muted);
+}
+
+body.dark-mode .transaction-item {
+    border-bottom: 1px solid var(--border);
+}
+
+body.dark-mode .transaction-item:last-child {
+    border-bottom: none;
+}
+
+body.dark-mode .transaction-amount.positive {
+    color: #10a37f;
+}
+
+body.dark-mode .transaction-amount.negative {
+    color: #e5484d;
+}
+
+body.dark-mode .button {
+    background-color: var(--accent);
+    color: white;
+}
+
+body.dark-mode .button:hover {
+    background-color: #0d8a6a;
+}
+
+body.dark-mode .button.secondary {
+    background-color: transparent;
+    border: 1px solid var(--border);
+    color: var(--text);
+}
+
+body.dark-mode .button.secondary:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* Fix for any inline styling */
+body.dark-mode [style*="background-color: white"],
+body.dark-mode [style*="background-color:#fff"],
+body.dark-mode [style*="background-color: #fff"],
+body.dark-mode [style*="background-color:#ffffff"],
+body.dark-mode [style*="background-color: #ffffff"],
+body.dark-mode [style*="background: white"],
+body.dark-mode [style*="background:#fff"],
+body.dark-mode [style*="background: #fff"],
+body.dark-mode [style*="background:#ffffff"],
+body.dark-mode [style*="background: #ffffff"] {
+    background-color: var(--card-bg) !important;
+    background: var(--card-bg) !important;
+}

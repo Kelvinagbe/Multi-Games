@@ -441,3 +441,5 @@ function showNotification(title, message, isError = false) {
 }
 
 console.log("Enhanced script loaded with modal closing functionality!");
+
+
