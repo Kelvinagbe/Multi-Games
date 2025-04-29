@@ -1,5 +1,5 @@
 :root {
-    --primary: #1a9e42;
+    --primary: #0f5132;
     --primary-dark: #0e7c2e;
     --secondary: #555555;
     --text: #333333;
@@ -100,11 +100,14 @@ header {
     align-items: center;
     justify-content: center;
     cursor: pointer;
+color:  white;
 }
 
 .user-info {
     flex: 1;
 }
+
+
 
 #username {
     font-size: 20px;
@@ -129,6 +132,7 @@ header {
     font-size: 24px;
     font-weight: bold;
     margin-bottom: 10px;
+    color:  white;
 }
 
 .wallet-actions {
@@ -474,12 +478,12 @@ input:checked + .slider:after {
 
 /* Dark Mode Variables - Inspired by Claude.ai and ChatGPT */
 body.dark-mode {
-    --bg: #1a1c21;             /* Slightly lighter background */
+    --bg:  #0f172a;             /* Slightly lighter background */
     --text: #e6e8ef;           /* Off-white text for better readability */
     --card-bg: #25272e;        /* Less harsh card background */
     --text-secondary: #abb0bf; /* Secondary text */
     --text-muted: #8b90a0;     /* Muted text color */
-    --primary: #5773ff;        /* Vibrant primary blue */
+    --primary: #0f5132;        /* Vibrant primary blue */
     --accent: #10a37f;         /* ChatGPT-like green */
     --primary-dark: #2d3748;   /* Less harsh primary dark */
     --border: #393b44;         /* Subtle border color */

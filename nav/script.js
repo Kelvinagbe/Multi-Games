@@ -311,7 +311,7 @@ async function updateProfileInfo(user) {
                     // Reset UI after logout
                     usernameEl.textContent = 'Guest Player';
                     userEmailEl.textContent = 'Sign in to continue';
-                    avatarEl.src = 'https://i.postimg.cc/gJZr2MPG/images-20.jpg';
+                    avatarEl.src = '../assets/icon-192.png';
                     walletBalanceEl.textContent = 'Wallet: ₦0';
                     referralCodeEl.textContent = 'Sign in to get code';
                     updateTransactionHistory([]);
