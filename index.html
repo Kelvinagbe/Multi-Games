@@ -61,6 +61,7 @@
     crossorigin="anonymous"></script>
 <script async src="https://fundingchoicesmessages.google.com/i/pub-5345992350931230?ers=1"></script><script>(function() {function signalGooglefcPresent() {if (!window.frames['googlefcPresent']) {if (document.body) {const iframe = document.createElement('iframe'); iframe.style = 'width: 0; height: 0; border: none; z-index: -1000; left: -1000px; top: -1000px;'; iframe.style.display = 'none'; iframe.name = 'googlefcPresent'; document.body.appendChild(iframe);} else {setTimeout(signalGooglefcPresent, 0);}}}signalGooglefcPresent();})();</script>
   <link rel="stylesheet" href="darkmode.css">
+<!-- WebSite Structured Data -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -72,7 +73,68 @@
     "name": "Kelvin Agbe"
   },
   "description": "Play free fun games on Multi Games – your favorite hub for endless gaming!",
-  "inLanguage": "en"
+  "inLanguage": "en",
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": "https://multi-games-fawn.vercel.app/search?q={search_term_string}",
+    "query-input": "required name=search_term_string"
+  }
+}
+</script>
+
+<!-- Organization Structured Data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Multi Games",
+  "url": "https://multi-games-fawn.vercel.app",
+  "logo": "https://multi-games-fawn.vercel.app/logo.png",
+  "founder": "Kelvin Agbe",
+  "foundingDate": "2024-01-01",
+  "contactPoint": {
+    "@type": "ContactPoint",
+    "email": "multigames0000@gmail.com",
+    "contactType": "Customer Support"
+  },
+  "sameAs": [
+    "https://facebook.com/multigames",
+    "https://twitter.com/multigames"
+  ]
+}
+</script>
+
+<!-- FAQ Structured Data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What is Multi Games?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Multi Games is a free gaming hub where you can play multiple games and earn rewards like airtime."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I earn airtime by playing?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes! You earn airtime by meeting daily gameplay targets."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is registration required?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No registration is needed. Just open the site and start playing!"
+      }
+    }
+  ]
 }
 </script>
 <!-- Google Analytics -->
