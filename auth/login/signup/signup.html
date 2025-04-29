@@ -10,6 +10,21 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 <link rel="stylesheet" href="styles.css">
+   <script>
+document.addEventListener('DOMContentLoaded', () => {
+    // Function to apply dark mode based on localStorage
+    function applyDarkModeSetting() {
+        const isDarkMode = localStorage.getItem('darkMode') === 'enabled';
+        document.body.classList.toggle('dark-mode', isDarkMode);
+    }
+
+    // Apply dark mode on page load
+    applyDarkModeSetting();
+
+    // Optional: re-check every 3 seconds in case another tab changes it
+    setInterval(applyDarkModeSetting, 300);
+});
+</script>
 </head>
 <body>
     <div class="container">
