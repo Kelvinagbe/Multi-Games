@@ -53,6 +53,13 @@
   <meta name="twitter:description" content="Collection of fun games to play online">
   <meta name="twitter:image" content="og-image.jpg">
 
+<!-- Owl Carousel CSS -->
+<link rel="stylesheet" href="assets/css/src/owl-carousel/owl.carousel.min.css">
+<link rel="stylesheet" href="assets/css/src/owl-carousel/owl.theme.default.css">
+<!-- Owl Carousel JS (place before your custom script) -->
+<script src="assets/js/plugins/owl-carousel/owl.carousel.min.js"></script>
+<script src="./js/startJS.js" defer></script>
+
   <script async custom-element="amp-auto-ads"
     src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
   </script>
@@ -60,7 +67,7 @@
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5345992350931230"
     crossorigin="anonymous"></script>
 <script async src="https://fundingchoicesmessages.google.com/i/pub-5345992350931230?ers=1"></script><script>(function() {function signalGooglefcPresent() {if (!window.frames['googlefcPresent']) {if (document.body) {const iframe = document.createElement('iframe'); iframe.style = 'width: 0; height: 0; border: none; z-index: -1000; left: -1000px; top: -1000px;'; iframe.style.display = 'none'; iframe.name = 'googlefcPresent'; document.body.appendChild(iframe);} else {setTimeout(signalGooglefcPresent, 0);}}}signalGooglefcPresent();})();</script>
-  <link rel="stylesheet" href="darkmode.css">
+
 <!-- WebSite Structured Data -->
 <script type="application/ld+json">
 {
@@ -178,16 +185,17 @@
 }
 
 .dark-mode {
-  --primary-color: #22c55e; /* Adjusted for dark mode */
+  --primary-color: #0f5132; /* Adjusted for dark mode */
   --primary-dark: #1a1c21;
   --primary-light: #20803c;
   --secondary-color: #052e16;
   --text-color: #e9ecef;
   --text-light: #adb5bd;
-  --background-color: #1a1c21;
+  --background-color: #0f172a;
   --card-color: #25272e;
   --shadow-color: rgba(0, 0, 0, 0.3);
   --border-color: #2c2c2c;
+ --back-button-color: white;
 }
 
 body {
@@ -685,7 +693,7 @@ padding: 10px;
 }
 
 .back-button i {
-  color: var(--primary-color);
+  color: var(--back-button-color);
   font-size: 18px;
 }
 
@@ -1463,6 +1471,7 @@ padding: 10px;
 
 
   <!-- JavaScript for Loader, Navigation, and Floating Search Bar Visibility -->
+
   <script>
    // Initialize Global Variables
 let gamesData = [];
