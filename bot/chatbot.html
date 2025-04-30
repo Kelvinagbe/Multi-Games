@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -707,17 +708,17 @@ body.dark-mode .status-container {
         </div>
     </div>
 
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
     // Constants
-    const GROQ_API_KEY = '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';
-    const GROQ_API_URL = 'https://api.groq.com/openai/v1/chat/completions';
-    const MODEL = 'llama-3.3-70b-versatile';
-    const LOCAL_STORAGE_KEY = 'multiGamesChat';
     const MESSAGE_LIMIT = 20; // Maximum number of messages allowed in a 3-hour window
-    const TIME_WINDOW = 3 * 60 * 60 * 1000; // 3 hours in milliseconds
-    const SITE_URL = 'https://multi-games-fawn.vercel.app/';
-    
+const TIME_WINDOW = 3 * 60 * 60 * 1000; // 3 hours in milliseconds
+const SITE_URL = 'https://multi-games-fawn.vercel.app/';
+const API_PROXY_URL = '../api/chat'; // Secure proxy path
+const MODEL = 'llama-3.3-70b-versatile';
+const LOCAL_STORAGE_KEY = 'multiGamesChat';
+
     // DOM elements
     const chatMessages = document.getElementById('chat-messages');
     const userInput = document.getElementById('user-input');
@@ -1131,20 +1132,19 @@ Remember to enforce chat limits strictly. After 20 messages in a 3-hour window, 
 
     // Function to get response from Groq API
     async function getGroqResponse(message) {
-        try {
-            const response = await fetch(GROQ_API_URL, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${GROQ_API_KEY}`
-                },
-                body: JSON.stringify({
-                    model: MODEL,
-                    messages: conversationHistory,
-                    max_tokens: 800,
-                    temperature: 0.7
-                })
-            });
+    try {
+        const response = await fetch(API_PROXY_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                model: MODEL,
+                messages: conversationHistory,
+                max_tokens: 800,
+                temperature: 0.7
+            })
+        });
 
             if (!response.ok) {
                 throw new Error(`API request failed with status ${response.status}`);
