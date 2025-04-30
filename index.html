@@ -2283,7 +2283,7 @@ function openChatbotIframe() {
     // If iframe not created yet, create it
     if (!container.querySelector('iframe')) {
         const iframe = document.createElement('iframe');
-        iframe.src = './bot/chatbot.html';
+        iframe.src = '/bot/chatbot.html';
         iframe.className = 'page-iframe';
         iframe.onload = () => {
             // Hide loader once iframe is fully loaded
