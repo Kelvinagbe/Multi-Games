@@ -1,13 +1,6 @@
 {
   "headers": [
     {
-      "source": "/bot/chatbot.html",
-      "headers": [
-        { "key": "X-Frame-Options", "value": "ALLOWALL" },
-        { "key": "Content-Security-Policy", "value": "frame-ancestors https://multi-games-fawn.vercel.app https://*.vercel.app http://localhost:* *;" }
-      ]
-    },
-    {
       "source": "/(.*)",
       "headers": [
         { "key": "Access-Control-Allow-Credentials", "value": "true" },
@@ -15,12 +8,12 @@
         { "key": "Access-Control-Allow-Methods", "value": "GET,OPTIONS,PATCH,POST,PUT" },
         { "key": "Access-Control-Allow-Headers", "value": "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version" },
         { "key": "X-Content-Type-Options", "value": "nosniff" },
-        { "key": "X-Frame-Options", "value": "ALLOWALL" }, 
+        { "key": "X-Frame-Options", "value": "ALLOWALL" },
         { "key": "X-XSS-Protection", "value": "1; mode=block" },
         { "key": "Strict-Transport-Security", "value": "max-age=63072000; includeSubDomains; preload" },
         { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
         { "key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=()" },
-        { "key": "Content-Security-Policy", "value": "default-src 'self'; frame-ancestors https://multi-games-fawn.vercel.app https://*.vercel.app *; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'" }
+        { "key": "Content-Security-Policy", "value": "frame-ancestors *;" }
       ]
     }
   ]
