@@ -16,5 +16,11 @@
         { "key": "Content-Security-Policy", "value": "frame-ancestors * https://multi-games-fawn.vercel.app;" }
       ]
     }
+  ],
+  "rewrites": [
+    {
+      "source": "/:path*",
+      "destination": "/:path*.html"
+    }
   ]
 }
