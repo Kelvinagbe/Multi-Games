@@ -1,6 +1,4 @@
-// Firebase Authentication Script - Client Side
-// Fully secure implementation with no API keys in client code
-
+// Firebase Configuration and Authentication Script
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
 import { 
     getAuth, 
@@ -12,17 +10,35 @@ import {
     signInWithPopup,
     sendPasswordResetEmail
 } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
+import { 
+    getDatabase, 
+    ref, 
+    set, 
+    get, 
+    child,
+    update,
+    serverTimestamp 
+} from "https://www.gstatic.com/firebasejs/11.4.0/firebase-database.js";
 
-// API endpoints for secure operations
-const AUTH_API_ENDPOINT = "/api/auth";
+// Initialize Firebase with minimal client config
+// The API key is still needed for client SDK, but we'll use it only for authentication
+// Other sensitive operations will go through our API
+const firebaseConfig = {
+    apiKey: "AIzaSyBw1uA-kNKOZEufWKZ9AMBxvRGHNGF1lkA",
+    authDomain: "multi-games-a2561.firebaseapp.com",
+    projectId: "multi-games-a2561",
+    databaseURL: "https://multi-games-a2561-default-rtdb.firebaseio.com"
+};
 
-// Global variables
-let app = null;
-let auth = null;
-let initializationAttempts = 0;
-const MAX_INITIALIZATION_ATTEMPTS = 3;
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const database = getDatabase(app);
 
-// DOM Elements
+// API endpoint for secure operations
+const API_ENDPOINT = "/api/auth";
+
+// DOM Elements - same as your original script
 const loginForm = document.getElementById('login-form');
 const emailInput = document.getElementById('email');
 const passwordInput = document.getElementById('password');
@@ -38,130 +54,24 @@ const emailError = document.getElementById('email-error');
 const passwordError = document.getElementById('password-error');
 const verificationBar = document.getElementById('verification-bar');
 const verifiedBadge = document.getElementById('verified-badge');
+const fullNameInput = document.getElementById('full-name');
+const usernameInput = document.getElementById('username');
+const referralCodeInput = document.getElementById('referral-code');
 const form = document.getElementById('login-form');
 const successMessage = document.getElementById('success-message');
 
-// Anti-spam verification setup
+// Anti-spam verification setup - same as your original script
 const verificationTime = 17; // seconds
 let verificationProgress = 0;
 let verificationInterval;
 let isVerified = false;
 
-// Get Firebase config from server API only - no fallback config in client code
-async function getFirebaseConfig() {
-    try {
-        console.log("Fetching Firebase config from server API");
-        const response = await fetch(AUTH_API_ENDPOINT, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                action: 'getClientConfig'
-            })
-        });
-        
-        if (!response.ok) {
-            throw new Error(`API response error: ${response.status}`);
-        }
-        
-        const config = await response.json();
-        
-        // Validate config has minimum required fields
-        if (!config || !config.apiKey || !config.authDomain || !config.projectId) {
-            throw new Error("Invalid Firebase configuration received from server");
-        }
-        
-        return config;
-    } catch (error) {
-        console.error("Error fetching Firebase config:", error);
-        throw error; // Re-throw to handle in calling function
-    }
-}
-
-// Initialize Firebase
-async function initializeFirebase() {
-    if (initializationAttempts >= MAX_INITIALIZATION_ATTEMPTS) {
-        showNotification("Error", "Failed to initialize authentication after multiple attempts. Please try again later.", true);
-        hideLoading();
-        return false;
-    }
-    
-    initializationAttempts++;
-    showLoading();
-    
-    try {
-        console.log("Initializing Firebase, attempt #" + initializationAttempts);
-        
-        // Get config from server API
-        const firebaseConfig = await getFirebaseConfig();
-        
-        // Initialize Firebase with the config
-        app = initializeApp(firebaseConfig);
-        auth = getAuth(app);
-        
-        console.log("Firebase initialized successfully");
-        
-        // Check if user is already logged in
-        onAuthStateChanged(auth, async (user) => {
-            if (user) {
-                console.log("User is already logged in:", user.email);
-                try {
-                    // Update last login timestamp
-                    await updateUserLogin(user);
-                    
-                    // Show success message and notify parent to close modal
-                    if (form) form.style.display = 'none';
-                    if (successMessage) successMessage.style.display = 'block';
-                    
-                    // Send message to parent to close login modal
-                    window.parent.postMessage({ action: 'close-login-modal' }, '*');
-                } catch (error) {
-                    console.error("Error after authentication:", error);
-                    // Still close modal even if update fails
-                    window.parent.postMessage({ action: 'close-login-modal' }, '*');
-                }
-            } else {
-                console.log("No user currently logged in");
-            }
-        });
-        
-        hideLoading();
-        return true;
-    } catch (error) {
-        hideLoading();
-        console.error("Firebase initialization error:", error);
-        
-        // Only show notification if we've exhausted all attempts
-        if (initializationAttempts >= MAX_INITIALIZATION_ATTEMPTS) {
-            showNotification("Error", "Authentication initialization failed: " + error.message, true);
-            return false;
-        }
-        
-        // Wait before trying again
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        
-        // Try again recursively
-        return initializeFirebase();
-    }
-}
-
-// Call initialize on page load
-document.addEventListener('DOMContentLoaded', () => {
-    initializeFirebase();
-    startVerification();
-    setupEventListeners();
-});
-
-// Verification functions
+// Verification functions - same as your original script
 function startVerification() {
-    if (!verificationBar) return;
-    
     verificationProgress = 0;
     verificationBar.style.width = '0%';
-    
-    if (verifiedBadge) verifiedBadge.style.display = 'none';
-    if (loginBtn) loginBtn.disabled = true;
+    verifiedBadge.style.display = 'none';
+    loginBtn.disabled = true;
     
     const intervalTime = 100; // update every 100ms
     const increment = 100 / (verificationTime * 10); // 100% spread over 17 seconds with 10 updates per second
@@ -178,71 +88,26 @@ function startVerification() {
 
 function completeVerification() {
     clearInterval(verificationInterval);
-    
-    if (verificationBar) verificationBar.style.width = '100%';
-    
-    const verificationText = document.querySelector('.verification-text');
-    if (verificationText) verificationText.style.display = 'none';
-    
-    if (verifiedBadge) verifiedBadge.style.display = 'flex';
-    if (loginBtn) loginBtn.disabled = false;
-    
+    verificationBar.style.width = '100%';
+    document.querySelector('.verification-text').style.display = 'none';
+    verifiedBadge.style.display = 'flex';
+    loginBtn.disabled = false;
     isVerified = true;
 }
 
-// Setup all event listeners
-function setupEventListeners() {
-    // Email validation
-    if (emailInput) {
-        emailInput.addEventListener('input', validateEmail);
-    }
-    
-    // Password validation
-    if (passwordInput) {
-        passwordInput.addEventListener('input', validatePassword);
-    }
-    
-    // Login form submission
-    if (loginForm) {
-        loginForm.addEventListener('submit', handleLoginFormSubmit);
-    }
-    
-    // Google Sign In
-    if (googleLoginBtn) {
-        googleLoginBtn.addEventListener('click', () => {
-            if (!isVerified) {
-                showNotification("Error", "Please wait for device verification to complete", true);
-                return;
-            }
-            
-            const provider = new GoogleAuthProvider();
-            signInWithSocialProvider(provider, 'Google');
-        });
-    }
-    
-    // Facebook Sign In
-    if (facebookLoginBtn) {
-        facebookLoginBtn.addEventListener('click', () => {
-            if (!isVerified) {
-                showNotification("Error", "Please wait for device verification to complete", true);
-                return;
-            }
-            
-            const provider = new FacebookAuthProvider();
-            signInWithSocialProvider(provider, 'Facebook');
-        });
-    }
-    
-    // Forgot Password
-    if (forgotPasswordLink) {
-        forgotPasswordLink.addEventListener('click', handleForgotPassword);
-    }
-}
+// Reset verification on page load
+startVerification();
 
-// Email validation
+// Field validation - same as your original script
+emailInput.addEventListener('input', () => {
+    validateEmail();
+});
+
+passwordInput.addEventListener('input', () => {
+    validatePassword();
+});
+
 function validateEmail() {
-    if (!emailInput || !emailError) return true;
-    
     const email = emailInput.value.trim();
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     
@@ -260,10 +125,7 @@ function validateEmail() {
     }
 }
 
-// Password validation
 function validatePassword() {
-    if (!passwordInput || !passwordError) return true;
-    
     const password = passwordInput.value;
     
     if (!password) {
@@ -280,53 +142,74 @@ function validatePassword() {
     }
 }
 
-// Update user login timestamp via API
-async function updateUserLogin(user) {
+// Generate unique referral code for new users - same as your original script
+function generateReferralCode(email, userId) {
+    const emailPrefix = email.split('@')[0].substring(0, 4).toUpperCase();
+    const randomChars = Math.random().toString(36).substring(2, 5).toUpperCase();
+    const userIdPortion = userId.substring(0, 3).toUpperCase();
+    
+    return `${emailPrefix}${randomChars}${userIdPortion}`;
+}
+
+// Secure user profile update via API
+async function updateUserProfile(userId, userData) {
     try {
-        console.log("Updating user login timestamp");
-        
         // Get current user's ID token
-        const idToken = await user.getIdToken();
+        const idToken = await auth.currentUser.getIdToken();
         
-        try {
-            // Call our secure API to update user profile
-            const response = await fetch(AUTH_API_ENDPOINT, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${idToken}`
-                },
-                body: JSON.stringify({
-                    action: 'updateProfile',
-                    payload: {
-                        userId: user.uid,
-                        userData: {
-                            lastLogin: new Date().toISOString()
-                        }
-                    }
-                })
-            });
-            
-            if (!response.ok) {
-                console.warn("API response not OK, but continuing login process");
-                return { success: true, warning: "Login successful but profile update failed" };
-            }
-            
-            return await response.json();
-        } catch (apiError) {
-            // If API call fails, log it but don't fail the login
-            console.warn("API call failed, but continuing login process:", apiError);
-            return { success: true, warning: "Login successful but couldn't reach API" };
+        // Call our secure API to update user profile
+        const response = await fetch(`${API_ENDPOINT}/profile`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${idToken}`
+            },
+            body: JSON.stringify({
+                action: 'updateProfile',
+                payload: {
+                    userId: userId,
+                    userData: userData
+                }
+            })
+        });
+        
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || 'Failed to update profile');
         }
+        
+        return await response.json();
     } catch (error) {
-        console.error("Error in updateUserLogin function:", error);
-        // Don't throw the error - just return warning
-        return { success: true, warning: "Login processed with warnings" };
+        console.error("Error updating user profile:", error);
+        throw error;
     }
 }
 
-// Handle login form submission
-async function handleLoginFormSubmit(e) {
+// Check if user is already logged in
+onAuthStateChanged(auth, async (user) => {
+    if (user) {
+        try {
+            // Update last login via API instead of direct database access
+            await updateUserProfile(user.uid, {
+                lastLogin: new Date().toISOString()
+            });
+            
+            // Show success message and notify parent to close modal
+            if (form) form.style.display = 'none';
+            if (successMessage) successMessage.style.display = 'block';
+            
+            // Send message to parent to close login modal
+            window.parent.postMessage({ action: 'close-login-modal' }, '*');
+        } catch (error) {
+            console.error("Error updating login timestamp:", error);
+            // Still close modal even if update fails
+            window.parent.postMessage({ action: 'close-login-modal' }, '*');
+        }
+    }
+});
+
+// Login with Email and Password
+loginForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     
     if (!isVerified) {
@@ -343,31 +226,17 @@ async function handleLoginFormSubmit(e) {
     
     // Show loading
     showLoading();
-    console.log("Attempting to sign in with email and password");
     
     try {
-        // Make sure Firebase is initialized
-        if (!auth) {
-            console.log("Auth not initialized, attempting to reinitialize");
-            const initialized = await initializeFirebase();
-            
-            if (!initialized || !auth) {
-                throw new Error("Authentication service is not available");
-            }
-        }
-        
-        // Sign in with email and password
+        // Sign in with email and password - this is still direct to Firebase Auth
+        // This is acceptable because we're only using Firebase Auth service here
         const userCredential = await signInWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
         
-        console.log("Email/password sign-in successful");
-        
-        try {
-            // Update last login timestamp
-            await updateUserLogin(user);
-        } catch (updateError) {
-            console.warn("Login timestamp update failed, but continuing login process");
-        }
+        // Update last login timestamp via our secure API
+        await updateUserProfile(user.uid, {
+            lastLogin: new Date().toISOString()
+        });
         
         hideLoading();
         
@@ -379,7 +248,6 @@ async function handleLoginFormSubmit(e) {
         window.parent.postMessage({ action: 'close-login-modal' }, '*');
     } catch (error) {
         hideLoading();
-        console.error("Email/password sign-in error:", error);
         
         // Handle errors
         let errorMessage = "Failed to sign in. Please check your credentials.";
@@ -396,16 +264,140 @@ async function handleLoginFormSubmit(e) {
         // Show error notification
         showNotification("Error", errorMessage, true);
     }
-}
+});
 
-// Handle forgot password
-async function handleForgotPassword(e) {
-    e.preventDefault();
-    
-    if (!emailInput) {
-        showNotification("Error", "Email input field not found.", true);
+// Google Sign In
+googleLoginBtn.addEventListener('click', () => {
+    if (!isVerified) {
+        showNotification("Error", "Please wait for device verification to complete", true);
         return;
     }
+    
+    const provider = new GoogleAuthProvider();
+    signInWithSocialProvider(provider, 'Google');
+});
+
+// Facebook Sign In
+facebookLoginBtn.addEventListener('click', () => {
+    if (!isVerified) {
+        showNotification("Error", "Please wait for device verification to complete", true);
+        return;
+    }
+    
+    const provider = new FacebookAuthProvider();
+    signInWithSocialProvider(provider, 'Facebook');
+});
+
+// Social Sign In Function
+async function signInWithSocialProvider(provider, providerName) {
+    showLoading();
+    
+    try {
+        const result = await signInWithPopup(auth, provider);
+        const user = result.user;
+        
+        // Check if this is a new user
+        const isNewUser = result._tokenResponse.isNewUser;
+        
+        if (isNewUser) {
+            // Create user profile via our secure API
+            await createUserProfile(user);
+        } else {
+            // Update last login for existing user via our secure API
+            await updateUserProfile(user.uid, {
+                lastLogin: new Date().toISOString()
+            });
+        }
+        
+        hideLoading();
+        
+        // Show success message and notify parent to close modal
+        if (form) form.style.display = 'none';
+        if (successMessage) successMessage.style.display = 'block';
+        
+        // Send message to parent to close login modal
+        window.parent.postMessage({ action: 'close-login-modal' }, '*');
+    } catch (error) {
+        hideLoading();
+        
+        // Handle errors
+        let errorMessage = `Failed to sign in with ${providerName}. Please try again.`;
+        if (error.code === 'auth/popup-closed-by-user') {
+            errorMessage = `${providerName} sign-in was cancelled. Please try again.`;
+        } else if (error.code === 'auth/account-exists-with-different-credential') {
+            errorMessage = `An account already exists with the same email address but different sign-in credentials.`;
+        }
+        
+        // Show error notification
+        showNotification("Error", errorMessage, true);
+    }
+}
+
+// Create user profile via API instead of direct database access
+async function createUserProfile(user) {
+    try {
+        // Generate a unique referral code for the user
+        const referralCode = generateReferralCode(user.email, user.uid);
+        
+        // Get full name and username if available
+        const fullName = (fullNameInput && fullNameInput.value.trim()) || user.displayName || '';
+        const username = (usernameInput && usernameInput.value.trim()) || user.email.split('@')[0];
+        const referredBy = (referralCodeInput && referralCodeInput.value.trim()) || null;
+        
+        // Get photo URL or use default avatar
+        const photoURL = user.photoURL || 'assets/default-avatar.png';
+        
+        // Set comprehensive user data
+        const userData = {
+            email: user.email,
+            fullName: fullName,
+            username: username,
+            photoURL: photoURL,
+            walletBalance: 0,
+            createdAt: new Date().toISOString(),
+            dateJoined: new Date().toISOString().split('T')[0],
+            lastLogin: new Date().toISOString(),
+            referralCode: referralCode,
+            referredBy: referredBy,
+            referrals: 0,
+            airtimeBalance: 0,
+            airtimeScore: 0
+        };
+        
+        // Get ID token for authorization
+        const idToken = await user.getIdToken();
+        
+        // Call our secure API to create the user profile
+        const response = await fetch(`${API_ENDPOINT}/profile`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${idToken}`
+            },
+            body: JSON.stringify({
+                action: 'createProfile',
+                payload: {
+                    userId: user.uid,
+                    userData: userData
+                }
+            })
+        });
+        
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || 'Failed to create profile');
+        }
+        
+        return await response.json();
+    } catch (error) {
+        console.error("Error creating user profile:", error);
+        throw error;
+    }
+}
+
+// Forgot Password
+forgotPasswordLink.addEventListener('click', async (e) => {
+    e.preventDefault();
     
     const email = emailInput.value.trim();
     
@@ -418,16 +410,7 @@ async function handleForgotPassword(e) {
     showLoading();
     
     try {
-        // Make sure Firebase is initialized
-        if (!auth) {
-            console.log("Auth not initialized, attempting to reinitialize");
-            const initialized = await initializeFirebase();
-            
-            if (!initialized || !auth) {
-                throw new Error("Authentication service is not available");
-            }
-        }
-        
+        // This operation can stay with Firebase Auth client
         await sendPasswordResetEmail(auth, email);
         hideLoading();
         showNotification("Success", "Password reset email sent. Please check your inbox.", false);
@@ -443,75 +426,18 @@ async function handleForgotPassword(e) {
         
         showNotification("Error", errorMessage, true);
     }
-}
-
-// Social Sign In Function
-async function signInWithSocialProvider(provider, providerName) {
-    showLoading();
-    
-    try {
-        console.log(`Attempting to sign in with ${providerName}`);
-        
-        // Make sure Firebase is initialized
-        if (!auth) {
-            console.log("Auth not initialized, attempting to reinitialize");
-            const initialized = await initializeFirebase();
-            
-            if (!initialized || !auth) {
-                throw new Error("Authentication service is not available");
-            }
-        }
-        
-        const result = await signInWithPopup(auth, provider);
-        const user = result.user;
-        
-        console.log(`${providerName} sign-in successful for: ${user.email}`);
-        
-        try {
-            // Update login timestamp
-            await updateUserLogin(user);
-        } catch (updateError) {
-            console.warn("Could not update login timestamp, but continuing login process");
-        }
-        
-        hideLoading();
-        
-        // Show success message and notify parent to close modal
-        if (form) form.style.display = 'none';
-        if (successMessage) successMessage.style.display = 'block';
-        
-        // Send message to parent to close login modal
-        window.parent.postMessage({ action: 'close-login-modal' }, '*');
-    } catch (error) {
-        hideLoading();
-        
-        console.error(`${providerName} sign-in error:`, error);
-        
-        // Handle errors
-        let errorMessage = `Failed to sign in with ${providerName}. Please try again.`;
-        if (error.code === 'auth/popup-closed-by-user') {
-            errorMessage = `${providerName} sign-in was cancelled. Please try again.`;
-        } else if (error.code === 'auth/account-exists-with-different-credential') {
-            errorMessage = `An account already exists with the same email address but different sign-in credentials.`;
-        }
-        
-        // Show error notification
-        showNotification("Error", errorMessage, true);
-    }
-}
+});
 
 // Helper functions
 function showLoading() {
-    if (loadingOverlay) loadingOverlay.style.display = 'flex';
+    loadingOverlay.style.display = 'flex';
 }
 
 function hideLoading() {
-    if (loadingOverlay) loadingOverlay.style.display = 'none';
+    loadingOverlay.style.display = 'none';
 }
 
 function showNotification(title, message, isError = false) {
-    if (!notification || !notificationTitle || !notificationMessage) return;
-    
     notificationTitle.textContent = title;
     notificationMessage.textContent = message;
     
@@ -531,4 +457,4 @@ function showNotification(title, message, isError = false) {
     }, 5000);
 }
 
-console.log("Fully secure authentication script loaded!");
+console.log("Enhanced script loaded with secure API integration!");
