@@ -1,33 +1,75 @@
-import { initializeApp, cert, getApps, getApp } from 'firebase-admin/app';
-import { getDatabase } from 'firebase-admin/database';
 
+import { initializeApp, cert } from 'firebase-admin/app';
+import { getAuth } from 'firebase-admin/auth';
+
+// Initialize Firebase Admin SDK
 const firebaseAdminConfig = {
   credential: cert({
     projectId: process.env.FIREBASE_PROJECT_ID,
     clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-    privateKey: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n'),
+    privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n')
   }),
-  databaseURL: process.env.FIREBASE_DATABASE_URL,
+  databaseURL: process.env.FIREBASE_DATABASE_URL
 };
 
-const app = getApps().length === 0 ? initializeApp(firebaseAdminConfig) : getApp();
-const db = getDatabase(app);
+// Initialize the app only once
+let app;
+try {
+  app = initializeApp(firebaseAdminConfig);
+} catch (error) {
+  // App might already be initialized
+  app = getApp();
+}
+
+const auth = getAuth(app);
 
 export default async function handler(req, res) {
-  if (req.method === 'POST') {
-    const { action } = req.body;
-
-    if (action === 'getClientConfig') {
-      return res.status(200).json({
-        apiKey: process.env.FIREBASE_API_KEY,
-        authDomain: process.env.FIREBASE_AUTH_DOMAIN,
-        projectId: process.env.FIREBASE_PROJECT_ID,
-        databaseURL: process.env.FIREBASE_DATABASE_URL,
-      });
-    }
-
-    return res.status(400).json({ error: 'Invalid action' });
+  // Set CORS headers to allow requests only from your domain
+  res.setHeader('Access-Control-Allow-Origin', process.env.ALLOWED_ORIGIN || '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  
+  // Handle preflight request
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
   }
-
-  res.status(405).json({ error: 'Method not allowed' });
+  
+  // Only allow POST requests
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method not allowed' });
+  }
+  
+  const { action, payload } = req.body;
+  
+  try {
+    switch (action) {
+      case 'createCustomToken':
+        // Authenticate user and create a custom token
+        if (!payload.uid) {
+          return res.status(400).json({ error: 'User ID is required' });
+        }
+        
+        const customToken = await auth.createCustomToken(payload.uid);
+        return res.status(200).json({ token: customToken });
+        
+      case 'verifyIdToken':
+        // Verify the ID token
+        if (!payload.idToken) {
+          return res.status(400).json({ error: 'ID token is required' });
+        }
+        
+        const decodedToken = await auth.verifyIdToken(payload.idToken);
+        return res.status(200).json({ uid: decodedToken.uid });
+        
+      // Add more actions as needed
+        
+      default:
+        return res.status(400).json({ error: 'Invalid action' });
+    }
+  } catch (error) {
+    console.error('Firebase auth error:', error);
+    return res.status(500).json({ error: error.message });
+  }
 }
+
+
