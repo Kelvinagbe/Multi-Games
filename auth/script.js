@@ -1,44 +1,37 @@
-// Firebase Configuration and Authentication Script
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
+// Enhanced Firebase Authentication Client Code
+import { initializeApp } from "firebase/app";
 import { 
     getAuth, 
     onAuthStateChanged, 
     signOut, 
     signInWithEmailAndPassword,
+    createUserWithEmailAndPassword,
     GoogleAuthProvider,
     FacebookAuthProvider,
     signInWithPopup,
     sendPasswordResetEmail
-} from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
-import { 
-    getDatabase, 
-    ref, 
-    set, 
-    get, 
-    child,
-    update,
-    serverTimestamp 
-} from "https://www.gstatic.com/firebasejs/11.4.0/firebase-database.js";
+} from "firebase/auth";
 
-// Initialize Firebase with minimal client config
-// The API key is still needed for client SDK, but we'll use it only for authentication
-// Other sensitive operations will go through our API
+// Initialize Firebase with the complete client config
 const firebaseConfig = {
     apiKey: "AIzaSyBw1uA-kNKOZEufWKZ9AMBxvRGHNGF1lkA",
     authDomain: "multi-games-a2561.firebaseapp.com",
     projectId: "multi-games-a2561",
-    databaseURL: "https://multi-games-a2561-default-rtdb.firebaseio.com"
+    databaseURL: "https://multi-games-a2561-default-rtdb.firebaseio.com",
+    storageBucket: "multi-games-a2561.appspot.com",
+    messagingSenderId: "150551898066",
+    appId: "1:150551898066:web:4e8fb185f2321ba4140a0b",
+    measurementId: "G-PB8Y87E6XV"
 };
+
+// API endpoint for secure backend operations
+const API_ENDPOINT = "/api/auth";
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-const database = getDatabase(app);
 
-// API endpoint for secure operations
-const API_ENDPOINT = "/api/auth";
-
-// DOM Elements - same as your original script
+// DOM Elements
 const loginForm = document.getElementById('login-form');
 const emailInput = document.getElementById('email');
 const passwordInput = document.getElementById('password');
@@ -60,13 +53,13 @@ const referralCodeInput = document.getElementById('referral-code');
 const form = document.getElementById('login-form');
 const successMessage = document.getElementById('success-message');
 
-// Anti-spam verification setup - same as your original script
+// Anti-spam verification setup
 const verificationTime = 17; // seconds
 let verificationProgress = 0;
 let verificationInterval;
 let isVerified = false;
 
-// Verification functions - same as your original script
+// Verification functions
 function startVerification() {
     verificationProgress = 0;
     verificationBar.style.width = '0%';
@@ -98,7 +91,7 @@ function completeVerification() {
 // Reset verification on page load
 startVerification();
 
-// Field validation - same as your original script
+// Field validation
 emailInput.addEventListener('input', () => {
     validateEmail();
 });
@@ -142,7 +135,7 @@ function validatePassword() {
     }
 }
 
-// Generate unique referral code for new users - same as your original script
+// Generate unique referral code
 function generateReferralCode(email, userId) {
     const emailPrefix = email.split('@')[0].substring(0, 4).toUpperCase();
     const randomChars = Math.random().toString(36).substring(2, 5).toUpperCase();
@@ -151,36 +144,32 @@ function generateReferralCode(email, userId) {
     return `${emailPrefix}${randomChars}${userIdPortion}`;
 }
 
-// Secure user profile update via API
-async function updateUserProfile(userId, userData) {
+// API helper function for secure operations
+async function callSecureApi(action, payload, idToken = null) {
     try {
-        // Get current user's ID token
-        const idToken = await auth.currentUser.getIdToken();
+        const headers = {
+            'Content-Type': 'application/json'
+        };
         
-        // Call our secure API to update user profile
-        const response = await fetch(`${API_ENDPOINT}/profile`, {
+        // Add authorization if token is provided
+        if (idToken) {
+            headers['Authorization'] = `Bearer ${idToken}`;
+        }
+        
+        const response = await fetch(API_ENDPOINT, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${idToken}`
-            },
-            body: JSON.stringify({
-                action: 'updateProfile',
-                payload: {
-                    userId: userId,
-                    userData: userData
-                }
-            })
+            headers: headers,
+            body: JSON.stringify({ action, payload })
         });
         
         if (!response.ok) {
             const errorData = await response.json();
-            throw new Error(errorData.error || 'Failed to update profile');
+            throw new Error(errorData.error || `API error: ${response.status}`);
         }
         
         return await response.json();
     } catch (error) {
-        console.error("Error updating user profile:", error);
+        console.error(`API error (${action}):`, error);
         throw error;
     }
 }
@@ -189,17 +178,18 @@ async function updateUserProfile(userId, userData) {
 onAuthStateChanged(auth, async (user) => {
     if (user) {
         try {
-            // Update last login via API instead of direct database access
-            await updateUserProfile(user.uid, {
-                lastLogin: new Date().toISOString()
-            });
+            // Get ID token for API authentication
+            const idToken = await user.getIdToken();
+            
+            // Update last login via secure API
+            await callSecureApi('updateLogin', { userId: user.uid }, idToken);
             
             // Show success message and notify parent to close modal
             if (form) form.style.display = 'none';
             if (successMessage) successMessage.style.display = 'block';
             
             // Send message to parent to close login modal
-            window.parent.postMessage({ action: 'close-login-modal' }, '*');
+            window.parent.postMessage({ action: 'close-login-modal', userId: user.uid }, '*');
         } catch (error) {
             console.error("Error updating login timestamp:", error);
             // Still close modal even if update fails
@@ -228,15 +218,15 @@ loginForm.addEventListener('submit', async (e) => {
     showLoading();
     
     try {
-        // Sign in with email and password - this is still direct to Firebase Auth
-        // This is acceptable because we're only using Firebase Auth service here
+        // Sign in with Firebase Auth
         const userCredential = await signInWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
         
-        // Update last login timestamp via our secure API
-        await updateUserProfile(user.uid, {
-            lastLogin: new Date().toISOString()
-        });
+        // Get ID token for API authentication
+        const idToken = await user.getIdToken();
+        
+        // Update last login via secure API
+        await callSecureApi('updateLogin', { userId: user.uid }, idToken);
         
         hideLoading();
         
@@ -245,9 +235,10 @@ loginForm.addEventListener('submit', async (e) => {
         if (successMessage) successMessage.style.display = 'block';
         
         // Send message to parent to close login modal
-        window.parent.postMessage({ action: 'close-login-modal' }, '*');
+        window.parent.postMessage({ action: 'close-login-modal', userId: user.uid }, '*');
     } catch (error) {
         hideLoading();
+        console.error("Authentication error:", error);
         
         // Handle errors
         let errorMessage = "Failed to sign in. Please check your credentials.";
@@ -265,6 +256,35 @@ loginForm.addEventListener('submit', async (e) => {
         showNotification("Error", errorMessage, true);
     }
 });
+
+// Sign Up with Email and Password (if needed)
+// This function can be used if you have a sign-up form
+async function signUpWithEmailPassword(email, password, userData) {
+    try {
+        // Create user with Firebase Auth
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+        
+        // Get ID token for API authentication
+        const idToken = await user.getIdToken();
+        
+        // Create user profile via secure API
+        await callSecureApi('createProfile', {
+            userId: user.uid,
+            userData: {
+                ...userData,
+                email: user.email,
+                createdAt: new Date().toISOString(),
+                lastLogin: new Date().toISOString()
+            }
+        }, idToken);
+        
+        return user;
+    } catch (error) {
+        console.error("Sign up error:", error);
+        throw error;
+    }
+}
 
 // Google Sign In
 googleLoginBtn.addEventListener('click', () => {
@@ -295,18 +315,41 @@ async function signInWithSocialProvider(provider, providerName) {
     try {
         const result = await signInWithPopup(auth, provider);
         const user = result.user;
-        
-        // Check if this is a new user
         const isNewUser = result._tokenResponse.isNewUser;
         
+        // Get ID token for API authentication
+        const idToken = await user.getIdToken();
+        
         if (isNewUser) {
-            // Create user profile via our secure API
-            await createUserProfile(user);
+            // For new users, prepare profile data
+            const fullName = (fullNameInput && fullNameInput.value.trim()) || user.displayName || '';
+            const username = (usernameInput && usernameInput.value.trim()) || user.email.split('@')[0];
+            const referredBy = (referralCodeInput && referralCodeInput.value.trim()) || null;
+            const referralCode = generateReferralCode(user.email, user.uid);
+            const photoURL = user.photoURL || 'assets/default-avatar.png';
+            
+            // Create user profile via secure API
+            await callSecureApi('createProfile', {
+                userId: user.uid,
+                userData: {
+                    email: user.email,
+                    fullName: fullName,
+                    username: username,
+                    photoURL: photoURL,
+                    walletBalance: 0,
+                    createdAt: new Date().toISOString(),
+                    dateJoined: new Date().toISOString().split('T')[0],
+                    lastLogin: new Date().toISOString(),
+                    referralCode: referralCode,
+                    referredBy: referredBy,
+                    referrals: 0,
+                    airtimeBalance: 0,
+                    airtimeScore: 0
+                }
+            }, idToken);
         } else {
-            // Update last login for existing user via our secure API
-            await updateUserProfile(user.uid, {
-                lastLogin: new Date().toISOString()
-            });
+            // Update last login for existing users
+            await callSecureApi('updateLogin', { userId: user.uid }, idToken);
         }
         
         hideLoading();
@@ -316,9 +359,10 @@ async function signInWithSocialProvider(provider, providerName) {
         if (successMessage) successMessage.style.display = 'block';
         
         // Send message to parent to close login modal
-        window.parent.postMessage({ action: 'close-login-modal' }, '*');
+        window.parent.postMessage({ action: 'close-login-modal', userId: user.uid }, '*');
     } catch (error) {
         hideLoading();
+        console.error(`${providerName} sign-in error:`, error);
         
         // Handle errors
         let errorMessage = `Failed to sign in with ${providerName}. Please try again.`;
@@ -330,68 +374,6 @@ async function signInWithSocialProvider(provider, providerName) {
         
         // Show error notification
         showNotification("Error", errorMessage, true);
-    }
-}
-
-// Create user profile via API instead of direct database access
-async function createUserProfile(user) {
-    try {
-        // Generate a unique referral code for the user
-        const referralCode = generateReferralCode(user.email, user.uid);
-        
-        // Get full name and username if available
-        const fullName = (fullNameInput && fullNameInput.value.trim()) || user.displayName || '';
-        const username = (usernameInput && usernameInput.value.trim()) || user.email.split('@')[0];
-        const referredBy = (referralCodeInput && referralCodeInput.value.trim()) || null;
-        
-        // Get photo URL or use default avatar
-        const photoURL = user.photoURL || 'assets/default-avatar.png';
-        
-        // Set comprehensive user data
-        const userData = {
-            email: user.email,
-            fullName: fullName,
-            username: username,
-            photoURL: photoURL,
-            walletBalance: 0,
-            createdAt: new Date().toISOString(),
-            dateJoined: new Date().toISOString().split('T')[0],
-            lastLogin: new Date().toISOString(),
-            referralCode: referralCode,
-            referredBy: referredBy,
-            referrals: 0,
-            airtimeBalance: 0,
-            airtimeScore: 0
-        };
-        
-        // Get ID token for authorization
-        const idToken = await user.getIdToken();
-        
-        // Call our secure API to create the user profile
-        const response = await fetch(`${API_ENDPOINT}/profile`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${idToken}`
-            },
-            body: JSON.stringify({
-                action: 'createProfile',
-                payload: {
-                    userId: user.uid,
-                    userData: userData
-                }
-            })
-        });
-        
-        if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.error || 'Failed to create profile');
-        }
-        
-        return await response.json();
-    } catch (error) {
-        console.error("Error creating user profile:", error);
-        throw error;
     }
 }
 
@@ -410,12 +392,13 @@ forgotPasswordLink.addEventListener('click', async (e) => {
     showLoading();
     
     try {
-        // This operation can stay with Firebase Auth client
+        // Firebase Auth password reset (client-side is fine for this operation)
         await sendPasswordResetEmail(auth, email);
         hideLoading();
         showNotification("Success", "Password reset email sent. Please check your inbox.", false);
     } catch (error) {
         hideLoading();
+        console.error("Password reset error:", error);
         
         let errorMessage = "Failed to send password reset email. Please try again.";
         if (error.code === 'auth/user-not-found') {
@@ -427,6 +410,17 @@ forgotPasswordLink.addEventListener('click', async (e) => {
         showNotification("Error", errorMessage, true);
     }
 });
+
+// Sign out function
+async function signOutUser() {
+    try {
+        await signOut(auth);
+        console.log("User signed out successfully");
+        // Additional sign-out logic here
+    } catch (error) {
+        console.error("Sign out error:", error);
+    }
+}
 
 // Helper functions
 function showLoading() {
@@ -457,4 +451,13 @@ function showNotification(title, message, isError = false) {
     }, 5000);
 }
 
-console.log("Enhanced script loaded with secure API integration!");
+// Export functions that might be needed elsewhere
+export {
+    auth,
+    signOutUser,
+    signInWithEmailAndPassword,
+    signUpWithEmailPassword,
+    onAuthStateChanged
+};
+
+console.log("Enhanced Firebase Authentication client loaded!");
