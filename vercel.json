@@ -22,5 +22,12 @@
       "source": "/:path*",
       "destination": "/:path*.html"
     }
+  ],
+  "redirects": [
+    {
+      "source": "/404",
+      "destination": "/404.html",
+      "statusCode": 404
+    }
   ]
 }
