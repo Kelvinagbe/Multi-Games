@@ -18,9 +18,20 @@
     }
   ],
   "rewrites": [
+    // General rewrite rule for all JavaScript files in /js
     {
-      "source": "/:path*",
-      "destination": "/:path*.html"
+      "source": "/js/:filename",
+      "destination": "/js/:filename.js"
+    },
+    // For login page, you still want to map to login.html
+    {
+      "source": "/auth/login",
+      "destination": "/auth/login.html"
+    },
+    // Optional: Handle other assets like CSS if needed
+    {
+      "source": "/css/style",
+      "destination": "/css/style.css"
     }
   ],
   "redirects": [
