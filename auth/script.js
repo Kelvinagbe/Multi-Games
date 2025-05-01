@@ -1,31 +1,30 @@
-// Enhanced Firebase Authentication Client Code
-import { initializeApp } from "firebase/app";
+// Firebase Authentication Client Script
+// This script should be included in your login form page
+
+// Import Firebase SDK
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
 import { 
     getAuth, 
     onAuthStateChanged, 
     signOut, 
     signInWithEmailAndPassword,
-    createUserWithEmailAndPassword,
     GoogleAuthProvider,
     FacebookAuthProvider,
     signInWithPopup,
     sendPasswordResetEmail
-} from "firebase/auth";
+} from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
 
-// Initialize Firebase with the complete client config
+// Firebase Configuration - Move this to environment variables in production
+// For frontend, use a config that only contains public data
 const firebaseConfig = {
-    apiKey: "AIzaSyBw1uA-kNKOZEufWKZ9AMBxvRGHNGF1lkA",
+    apiKey: process.env.FIREBASE_API_KEY || "your-api-key",
     authDomain: "multi-games-a2561.firebaseapp.com",
     projectId: "multi-games-a2561",
-    databaseURL: "https://multi-games-a2561-default-rtdb.firebaseio.com",
     storageBucket: "multi-games-a2561.appspot.com",
     messagingSenderId: "150551898066",
     appId: "1:150551898066:web:4e8fb185f2321ba4140a0b",
-    measurementId: "G-PB8Y87E6XV"
+    databaseURL: "https://multi-games-a2561-default-rtdb.firebaseio.com"
 };
-
-// API endpoint for secure backend operations
-const API_ENDPOINT = "/api/auth";
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
@@ -59,7 +58,7 @@ let verificationProgress = 0;
 let verificationInterval;
 let isVerified = false;
 
-// Verification functions
+// Start verification process
 function startVerification() {
     verificationProgress = 0;
     verificationBar.style.width = '0%';
@@ -79,6 +78,7 @@ function startVerification() {
     }, intervalTime);
 }
 
+// Complete verification
 function completeVerification() {
     clearInterval(verificationInterval);
     verificationBar.style.width = '100%';
@@ -135,63 +135,37 @@ function validatePassword() {
     }
 }
 
-// Generate unique referral code
-function generateReferralCode(email, userId) {
-    const emailPrefix = email.split('@')[0].substring(0, 4).toUpperCase();
-    const randomChars = Math.random().toString(36).substring(2, 5).toUpperCase();
-    const userIdPortion = userId.substring(0, 3).toUpperCase();
-    
-    return `${emailPrefix}${randomChars}${userIdPortion}`;
-}
-
-// API helper function for secure operations
-async function callSecureApi(action, payload, idToken = null) {
-    try {
-        const headers = {
-            'Content-Type': 'application/json'
-        };
-        
-        // Add authorization if token is provided
-        if (idToken) {
-            headers['Authorization'] = `Bearer ${idToken}`;
-        }
-        
-        const response = await fetch(API_ENDPOINT, {
-            method: 'POST',
-            headers: headers,
-            body: JSON.stringify({ action, payload })
-        });
-        
-        if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.error || `API error: ${response.status}`);
-        }
-        
-        return await response.json();
-    } catch (error) {
-        console.error(`API error (${action}):`, error);
-        throw error;
-    }
-}
-
 // Check if user is already logged in
 onAuthStateChanged(auth, async (user) => {
     if (user) {
         try {
-            // Get ID token for API authentication
+            // Get the ID token
             const idToken = await user.getIdToken();
             
-            // Update last login via secure API
-            await callSecureApi('updateLogin', { userId: user.uid }, idToken);
+            // Update last login via server API instead of direct DB access
+            await fetch('/api/auth', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${idToken}`
+                },
+                body: JSON.stringify({
+                    action: 'updateLogin',
+                    payload: {
+                        userId: user.uid
+                    }
+                })
+            });
             
-            // Show success message and notify parent to close modal
+            // Success handling - close modal
             if (form) form.style.display = 'none';
             if (successMessage) successMessage.style.display = 'block';
             
             // Send message to parent to close login modal
-            window.parent.postMessage({ action: 'close-login-modal', userId: user.uid }, '*');
+            window.parent.postMessage({ action: 'close-login-modal' }, '*');
+            
         } catch (error) {
-            console.error("Error updating login timestamp:", error);
+            console.error("Error updating login:", error);
             // Still close modal even if update fails
             window.parent.postMessage({ action: 'close-login-modal' }, '*');
         }
@@ -218,15 +192,27 @@ loginForm.addEventListener('submit', async (e) => {
     showLoading();
     
     try {
-        // Sign in with Firebase Auth
+        // Sign in with email and password
         const userCredential = await signInWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
         
-        // Get ID token for API authentication
+        // Get ID token
         const idToken = await user.getIdToken();
         
-        // Update last login via secure API
-        await callSecureApi('updateLogin', { userId: user.uid }, idToken);
+        // Update last login via server API
+        await fetch('/api/auth', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${idToken}`
+            },
+            body: JSON.stringify({
+                action: 'updateLogin',
+                payload: {
+                    userId: user.uid
+                }
+            })
+        });
         
         hideLoading();
         
@@ -235,10 +221,10 @@ loginForm.addEventListener('submit', async (e) => {
         if (successMessage) successMessage.style.display = 'block';
         
         // Send message to parent to close login modal
-        window.parent.postMessage({ action: 'close-login-modal', userId: user.uid }, '*');
+        window.parent.postMessage({ action: 'close-login-modal' }, '*');
+        
     } catch (error) {
         hideLoading();
-        console.error("Authentication error:", error);
         
         // Handle errors
         let errorMessage = "Failed to sign in. Please check your credentials.";
@@ -256,35 +242,6 @@ loginForm.addEventListener('submit', async (e) => {
         showNotification("Error", errorMessage, true);
     }
 });
-
-// Sign Up with Email and Password (if needed)
-// This function can be used if you have a sign-up form
-async function signUpWithEmailPassword(email, password, userData) {
-    try {
-        // Create user with Firebase Auth
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        const user = userCredential.user;
-        
-        // Get ID token for API authentication
-        const idToken = await user.getIdToken();
-        
-        // Create user profile via secure API
-        await callSecureApi('createProfile', {
-            userId: user.uid,
-            userData: {
-                ...userData,
-                email: user.email,
-                createdAt: new Date().toISOString(),
-                lastLogin: new Date().toISOString()
-            }
-        }, idToken);
-        
-        return user;
-    } catch (error) {
-        console.error("Sign up error:", error);
-        throw error;
-    }
-}
 
 // Google Sign In
 googleLoginBtn.addEventListener('click', () => {
@@ -315,41 +272,60 @@ async function signInWithSocialProvider(provider, providerName) {
     try {
         const result = await signInWithPopup(auth, provider);
         const user = result.user;
-        const isNewUser = result._tokenResponse.isNewUser;
         
-        // Get ID token for API authentication
+        // Get ID token
         const idToken = await user.getIdToken();
         
+        // Check if this is a new user
+        const isNewUser = result._tokenResponse.isNewUser;
+        
         if (isNewUser) {
-            // For new users, prepare profile data
+            // Get full name and username
             const fullName = (fullNameInput && fullNameInput.value.trim()) || user.displayName || '';
             const username = (usernameInput && usernameInput.value.trim()) || user.email.split('@')[0];
             const referredBy = (referralCodeInput && referralCodeInput.value.trim()) || null;
-            const referralCode = generateReferralCode(user.email, user.uid);
-            const photoURL = user.photoURL || 'assets/default-avatar.png';
             
-            // Create user profile via secure API
-            await callSecureApi('createProfile', {
-                userId: user.uid,
-                userData: {
-                    email: user.email,
-                    fullName: fullName,
-                    username: username,
-                    photoURL: photoURL,
-                    walletBalance: 0,
-                    createdAt: new Date().toISOString(),
-                    dateJoined: new Date().toISOString().split('T')[0],
-                    lastLogin: new Date().toISOString(),
-                    referralCode: referralCode,
-                    referredBy: referredBy,
-                    referrals: 0,
-                    airtimeBalance: 0,
-                    airtimeScore: 0
-                }
-            }, idToken);
+            // Create user profile via server API
+            await fetch('/api/auth', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${idToken}`
+                },
+                body: JSON.stringify({
+                    action: 'createProfile',
+                    payload: {
+                        userId: user.uid,
+                        userData: {
+                            email: user.email,
+                            fullName: fullName,
+                            username: username,
+                            photoURL: user.photoURL || 'assets/default-avatar.png',
+                            walletBalance: 0,
+                            dateJoined: new Date().toISOString().split('T')[0],
+                            referredBy: referredBy,
+                            referrals: 0,
+                            airtimeBalance: 0,
+                            airtimeScore: 0
+                        }
+                    }
+                })
+            });
         } else {
-            // Update last login for existing users
-            await callSecureApi('updateLogin', { userId: user.uid }, idToken);
+            // Update last login for existing user
+            await fetch('/api/auth', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${idToken}`
+                },
+                body: JSON.stringify({
+                    action: 'updateLogin',
+                    payload: {
+                        userId: user.uid
+                    }
+                })
+            });
         }
         
         hideLoading();
@@ -359,10 +335,10 @@ async function signInWithSocialProvider(provider, providerName) {
         if (successMessage) successMessage.style.display = 'block';
         
         // Send message to parent to close login modal
-        window.parent.postMessage({ action: 'close-login-modal', userId: user.uid }, '*');
+        window.parent.postMessage({ action: 'close-login-modal' }, '*');
+        
     } catch (error) {
         hideLoading();
-        console.error(`${providerName} sign-in error:`, error);
         
         // Handle errors
         let errorMessage = `Failed to sign in with ${providerName}. Please try again.`;
@@ -392,13 +368,11 @@ forgotPasswordLink.addEventListener('click', async (e) => {
     showLoading();
     
     try {
-        // Firebase Auth password reset (client-side is fine for this operation)
         await sendPasswordResetEmail(auth, email);
         hideLoading();
         showNotification("Success", "Password reset email sent. Please check your inbox.", false);
     } catch (error) {
         hideLoading();
-        console.error("Password reset error:", error);
         
         let errorMessage = "Failed to send password reset email. Please try again.";
         if (error.code === 'auth/user-not-found') {
@@ -411,26 +385,17 @@ forgotPasswordLink.addEventListener('click', async (e) => {
     }
 });
 
-// Sign out function
-async function signOutUser() {
-    try {
-        await signOut(auth);
-        console.log("User signed out successfully");
-        // Additional sign-out logic here
-    } catch (error) {
-        console.error("Sign out error:", error);
-    }
-}
-
-// Helper functions
+// Show loading overlay
 function showLoading() {
     loadingOverlay.style.display = 'flex';
 }
 
+// Hide loading overlay
 function hideLoading() {
     loadingOverlay.style.display = 'none';
 }
 
+// Show notification
 function showNotification(title, message, isError = false) {
     notificationTitle.textContent = title;
     notificationMessage.textContent = message;
@@ -451,13 +416,4 @@ function showNotification(title, message, isError = false) {
     }, 5000);
 }
 
-// Export functions that might be needed elsewhere
-export {
-    auth,
-    signOutUser,
-    signInWithEmailAndPassword,
-    signUpWithEmailPassword,
-    onAuthStateChanged
-};
-
-console.log("Enhanced Firebase Authentication client loaded!");
+console.log("Secure Firebase authentication loaded!");
