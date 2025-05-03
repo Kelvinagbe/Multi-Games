@@ -1,0 +1,150 @@
+        /* Ad container - will contain both placeholder and actual ad */
+        .ad-wrapper {
+            width: 100%;
+            position: relative;
+            margin: 20px 0;
+            min-height: 250px; /* Default minimum height */
+            overflow: hidden;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Placeholder styling */
+        .ad-placeholder {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #f9f9f9;
+            z-index: 1;
+            padding: 15px;
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+        
+        /* Flashing elements */
+        .placeholder-item {
+            background-color: #e0e0e0;
+            border-radius: 4px;
+            animation: flash 1.5s infinite;
+        }
+        
+        .placeholder-header {
+            height: 60%;
+            max-height: 120px;
+            margin-bottom: 15px;
+        }
+        
+        .placeholder-title {
+            height: 24px;
+            width: 70%;
+            margin-bottom: 15px;
+        }
+        
+        .placeholder-text {
+            height: 14px;
+            margin-bottom: 10px;
+        }
+        
+        .placeholder-text.line-1 {
+            width: 90%;
+            animation-delay: 0.1s;
+        }
+        
+        .placeholder-text.line-2 {
+            width: 80%;
+            animation-delay: 0.2s;
+        }
+        
+        .placeholder-button {
+            height: 32px;
+            width: 120px;
+            margin-top: 15px;
+            animation-delay: 0.3s;
+        }
+        
+        /* Flash animation */
+        @keyframes flash {
+            0% {
+                background-color: #e0e0e0;
+            }
+            50% {
+                background-color: #f0f0f0;
+            }
+            100% {
+                background-color: #e0e0e0;
+            }
+        }
+        
+        /* Label for ad content */
+        .ad-label {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            font-size: 10px;
+            padding: 2px 5px;
+            border-radius: 3px;
+            z-index: 2;
+        }
+        
+        /* AdSense container */
+        .adsbygoogle-container {
+            width: 100%; 
+            min-height: 250px;
+            position: relative;
+            z-index: 0;
+        }
+        
+        /* Additional flashing elements for variety */
+        .placeholder-image {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            bottom: 15px;
+            right: 15px;
+            animation: flash 1.8s infinite;
+        }
+        
+        .placeholder-badge {
+            position: absolute;
+            width: 60px;
+            height: 20px;
+            border-radius: 10px;
+            top: 15px;
+            left: 15px;
+            animation: flash 2s infinite;
+            animation-delay: 0.5s;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .ad-wrapper {
+                min-height: 200px;
+            }
+            
+            .placeholder-header {
+                height: 50%;
+            }
+            
+            .placeholder-title {
+                height: 20px;
+            }
+            
+            .placeholder-text {
+                height: 12px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .ad-wrapper {
+                min-height: 180px;
+            }
+            
+            .placeholder-header {
+                height: 40%;
+            }
+        }
