@@ -3,7 +3,7 @@
             width: 100%;
             position: relative;
             margin: 20px 0;
-            min-height: 250px; /* Default minimum height */
+            min-height: 100px; /* Default minimum height */
             overflow: hidden;
             border-radius: 8px;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
