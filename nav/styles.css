@@ -1,5 +1,5 @@
 :root {
-    --primary: #0f5132;
+    --primary: #1a9e42;
     --primary-dark: #0e7c2e;
     --secondary: #555555;
     --text: #333333;
@@ -100,14 +100,11 @@ header {
     align-items: center;
     justify-content: center;
     cursor: pointer;
-color:  white;
 }
 
 .user-info {
     flex: 1;
 }
-
-
 
 #username {
     font-size: 20px;
@@ -132,7 +129,6 @@ color:  white;
     font-size: 24px;
     font-weight: bold;
     margin-bottom: 10px;
-    color:  white;
 }
 
 .wallet-actions {
@@ -387,7 +383,6 @@ input:checked + .slider:after {
     right: 7px;
 }
 
-/* Loading Overlay with Syncing Animation */
 .loading-overlay {
     position: fixed;
     top: 0;
@@ -399,70 +394,19 @@ input:checked + .slider:after {
     justify-content: center;
     align-items: center;
     z-index: 1000;
-    flex-direction: column;
 }
 
-.spinner-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 15px;
-}
-
-.syncing-loader {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 120px;
+.spinner {
+    width: 40px;
     height: 40px;
-}
-
-.syncing-dot {
-    width: 12px;
-    height: 12px;
-    margin: 0 5px;
-    background-color: var(--primary);
+    border: 4px solid rgba(0, 0, 0, 0.1);
     border-radius: 50%;
-    animation: syncing-wave 1.5s infinite ease-in-out;
+    border-top-color: green;
+    animation: spin 1s ease-in-out infinite;
 }
 
-.syncing-dot:nth-child(1) {
-    animation-delay: 0s;
-}
-
-.syncing-dot:nth-child(2) {
-    animation-delay: 0.2s;
-}
-
-.syncing-dot:nth-child(3) {
-    animation-delay: 0.4s;
-}
-
-.syncing-dot:nth-child(4) {
-    animation-delay: 0.6s;
-}
-
-.syncing-dot:nth-child(5) {
-    animation-delay: 0.8s;
-}
-
-@keyframes syncing-wave {
-    0%, 100% {
-        transform: translateY(0);
-        opacity: 0.3;
-    }
-    50% {
-        transform: translateY(-15px);
-        opacity: 1;
-    }
-}
-
-.loading-text {
-    color: var(--primary);
-    font-weight: 600;
-    text-align: center;
-    font-size: 16px;
-    margin-top: 10px;
+@keyframes spin {
+    to { transform: rotate(360deg); }
 }
 
 .notification {
@@ -530,12 +474,12 @@ input:checked + .slider:after {
 
 /* Dark Mode Variables - Inspired by Claude.ai and ChatGPT */
 body.dark-mode {
-    --bg:  #0f172a;             /* Slightly lighter background */
+    --bg: #1a1c21;             /* Slightly lighter background */
     --text: #e6e8ef;           /* Off-white text for better readability */
     --card-bg: #25272e;        /* Less harsh card background */
     --text-secondary: #abb0bf; /* Secondary text */
     --text-muted: #8b90a0;     /* Muted text color */
-    --primary: #0f5132;        /* Vibrant primary blue */
+    --primary: #5773ff;        /* Vibrant primary blue */
     --accent: #10a37f;         /* ChatGPT-like green */
     --primary-dark: #2d3748;   /* Less harsh primary dark */
     --border: #393b44;         /* Subtle border color */
@@ -592,16 +536,8 @@ body.dark-mode .notification {
     border-left: 3px solid var(--accent);
 }
 
-body.dark-mode .loading-overlay {
-    background-color: rgba(15, 23, 42, 0.8);
-}
-
-body.dark-mode .syncing-dot {
-    background-color: var(--accent);
-}
-
-body.dark-mode .loading-text {
-    color: var(--accent);
+body.dark-mode .spinner {
+    border-top-color: var(--accent);
 }
 
 /* Additional dark mode enhancements */
