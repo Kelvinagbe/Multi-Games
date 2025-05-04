@@ -41,5 +41,7 @@
       "destination": "/404.html",
       "statusCode": 404
     }
-  ]
+  ],
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist"
 }
