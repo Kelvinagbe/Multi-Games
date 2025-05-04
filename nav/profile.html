@@ -25,12 +25,17 @@
  <button id="update-app" class="btn"><i class="ri-download-2-line"></i> Update App</button>
         </header>
 
-
-<!-- Loading Overlay with Spinner -->
-<div id="loading-overlay" style="display: none;">
+<!-- Loading Overlay with Syncing Animation -->
+<div id="loading-overlay" class="loading-overlay">
     <div class="spinner-container">
-        <div class="spinner"></div>
-        <div class="loading-text">Loading...</div>
+        <div class="syncing-loader">
+            <div class="syncing-dot"></div>
+            <div class="syncing-dot"></div>
+            <div class="syncing-dot"></div>
+            <div class="syncing-dot"></div>
+            <div class="syncing-dot"></div>
+        </div>
+        <div class="loading-text">Syncing...</div>
     </div>
 </div>
 
