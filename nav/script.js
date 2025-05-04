@@ -944,7 +944,7 @@ body.dark-mode .iframe-loading-text {
             if (!container.querySelector('.iframe-loader')) {
                 const loader = document.createElement('div');
                 loader.classList.add('iframe-loader');
-                loader.innerHTML = '<div class="center-loader">';
+                loader.innerHTML = '<div class="spinner-container">';
                 container.appendChild(loader);
             }
             
