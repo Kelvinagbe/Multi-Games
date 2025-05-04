@@ -944,16 +944,7 @@ body.dark-mode .iframe-loading-text {
             if (!container.querySelector('.iframe-loader')) {
                 const loader = document.createElement('div');
                 loader.classList.add('iframe-loader');
-                loader.innerHTML = '<div class="center-loader">
-    <div class="iframe-syncing-loader">
-        <div class="iframe-syncing-dot"></div>
-        <div class="iframe-syncing-dot"></div>
-        <div class="iframe-syncing-dot"></div>
-        <div class="iframe-syncing-dot"></div>
-        <div class="iframe-syncing-dot"></div>
-    </div>
-    <div class="iframe-loading-text">Processing...</div>
-</div>';
+                loader.innerHTML = '<div class="center-loader">';
                 container.appendChild(loader);
             }
             
