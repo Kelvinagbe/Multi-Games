@@ -1,5 +1,5 @@
 {
-  "name": "Multi Games",
+  "name": "my-html-project",
   "version": "1.0.0",
   "scripts": {
     "build": "posthtml *.html */*.html -o dist/"
