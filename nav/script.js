@@ -814,38 +814,113 @@ document.addEventListener('DOMContentLoaded', () => {
         const style = document.createElement('style');
         style.id = 'loader-styles';
         style.textContent = `
-            .iframe-container {
-                position: relative;
-                width: 100%;
-                height: 100%;
-            }
-            
-            .iframe-loader {
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                background-color: rgba(255, 255, 255, 0.8);
-                z-index: 10;
-            }
-            
-            .center-loader {
-                position: fixed;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                display: none;
-                justify-content: center;
-                align-items: center;
-                z-index: 9999;
-                background-color: rgba(255, 255, 255, 0.9);
-                border-radius: 0;
-                padding: 20px;
-            }
+       /* Iframe Loader Styles */
+.iframe-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.iframe-loader {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(255, 255, 255, 0.8);
+    z-index: 10;
+}
+
+.center-loader {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Syncing animation for iframe loaders */
+.iframe-syncing-loader {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 120px;
+    height: 40px;
+}
+
+.iframe-syncing-dot {
+    width: 12px;
+    height: 12px;
+    margin: 0 5px;
+    background-color: var(--primary);
+    border-radius: 50%;
+    animation: iframe-syncing-wave 1.5s infinite ease-in-out;
+}
+
+.iframe-syncing-dot:nth-child(1) {
+    animation-delay: 0s;
+}
+
+.iframe-syncing-dot:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.iframe-syncing-dot:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+.iframe-syncing-dot:nth-child(4) {
+    animation-delay: 0.6s;
+}
+
+.iframe-syncing-dot:nth-child(5) {
+    animation-delay: 0.8s;
+}
+
+@keyframes iframe-syncing-wave {
+    0%, 100% {
+        transform: translateY(0);
+        opacity: 0.3;
+    }
+    50% {
+        transform: translateY(-15px);
+        opacity: 1;
+    }
+}
+
+.iframe-loading-text {
+    color: var(--primary);
+    font-weight: 600;
+    text-align: center;
+    font-size: 16px;
+    margin-top: 15px;
+}
+
+/* Dark mode support for iframe loaders */
+body.dark-mode .iframe-loader,
+body.dark-mode .center-loader {
+    background-color: rgba(15, 23, 42, 0.8);
+}
+
+body.dark-mode .iframe-syncing-dot {
+    background-color: var(--accent);
+}
+
+body.dark-mode .iframe-loading-text {
+    color: var(--accent);
+}
         `;
         document.head.appendChild(style);
     }
