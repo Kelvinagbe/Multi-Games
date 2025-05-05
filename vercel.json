@@ -33,6 +33,14 @@
     {
       "source": "/:folder/:page",
       "destination": "/:folder/:page.html"
+    },
+    {
+      "source": "/:path*/:filename",
+      "destination": "/:path*/:filename.html"
+    },
+    {
+      "source": "/:filename",
+      "destination": "/:filename.html"
     }
   ],
   "redirects": [
@@ -42,7 +50,19 @@
       "statusCode": 404
     },
     {
-      "source": "/((?!blocked\\.html|api\\/).*)",
+      "source": "/nav/earn",
+      "has": [
+        {
+          "type": "header",
+          "key": "x-vercel-ip-country",
+          "value": "(?!NG).*"
+        }
+      ],
+      "destination": "/blocked.html",
+      "permanent": false
+    },
+    {
+      "source": "/nav/earn.html",
       "has": [
         {
           "type": "header",
