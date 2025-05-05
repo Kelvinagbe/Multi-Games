@@ -2,7 +2,7 @@
 const gameLibrary = {
     'truth': {
         title: 'Truth or Dare',
-        url: '../gsmes/truth.html',
+        url: '../games/truth.html',
         description: 'Control a snake to eat food and grow longer without hitting walls or yourself.',
         instructions: 'Use arrow keys to move the snake. Collect food to grow longer.',
         thumbnail: '../assets/images/truth.jpg',
