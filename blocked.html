@@ -5,35 +5,93 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Access Restricted</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f5f5f5;
-            color: #333;
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+        
+        * {
             margin: 0;
-            padding: 20px;
-            text-align: center;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f7f7f7;
+            height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            padding: 20px;
         }
-        .message {
+        
+        .container {
             background-color: white;
-            padding: 30px;
             border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            max-width: 500px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 480px;
+            overflow: hidden;
         }
+        
+        .header {
+            background-color: #e53935;
+            padding: 20px;
+            text-align: center;
+        }
+        
         h1 {
-            color: #d9534f;
+            color: white;
+            font-weight: 700;
+            font-size: 24px;
+            margin: 0;
+        }
+        
+        .content {
+            padding: 30px 25px;
+            text-align: center;
+        }
+        
+        .icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+        }
+        
+        .message {
+            margin-bottom: 10px;
+        }
+        
+        .message p {
+            color: #555;
+            line-height: 1.5;
+            margin-bottom: 10px;
+        }
+        
+        .footer {
+            padding: 15px;
+            background-color: #f5f5f5;
+            border-top: 1px solid #e0e0e0;
+            text-align: center;
+            font-size: 14px;
+            color: #757575;
         }
     </style>
 </head>
 <body>
-    <div class="message">
-        <h1>Access Restricted</h1>
-        <p>This content is only available to users in Nigeria.</p>
-        <p>Please try again if you are located in Nigeria.</p>
+    <div class="container">
+        <div class="header">
+            <h1>Access Restricted</h1>
+        </div>
+        
+        <div class="content">
+            <div class="icon">🚫</div>
+            <div class="message">
+                <p>This content is not available in your country.</p>
+                <p>🚫.           🚫.</p>
+            </div>
+        </div>
+        
+        <div class="footer">
+            If you need help, contact support.
+        </div>
     </div>
 </body>
 </html>
