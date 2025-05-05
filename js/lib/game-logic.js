@@ -2,15 +2,15 @@
 const gameLibrary = {
     'truth': {
         title: 'Truth or Dare',
-        url: 'assets/image/truth.html',
+        url: '../gsmes/truth.html',
         description: 'Control a snake to eat food and grow longer without hitting walls or yourself.',
         instructions: 'Use arrow keys to move the snake. Collect food to grow longer.',
-        thumbnail: 'images/thumbnails/snake.jpg',
+        thumbnail: '../assets/images/truth.jpg',
         category: 'arcade'
     },
-    'tetris': {
+    'pixel-shooter': {
         title: 'Tetris',
-        url: 'games/tetris.html',
+        url: '../games/iframe-pixel.html',
         description: 'The classic block stacking game.',
         instructions: 'Use arrow keys to move and rotate falling blocks. Complete lines to clear them.',
         thumbnail: 'images/thumbnails/tetris.jpg',
@@ -18,15 +18,15 @@ const gameLibrary = {
     },
     'flappy': {
         title: 'Flappy Bird',
-        url: 'games/flappy.html',
+        url: '../games/flappy.html',
         description: 'Navigate a bird through pipes without touching them.',
         instructions: 'Click or press spacebar to make the bird flap its wings and gain height.',
         thumbnail: 'images/thumbnails/flappy.jpg',
         category: 'arcade'
     },
-    'minesweeper': {
+    'subway': {
         title: 'Minesweeper',
-        url: 'games/minesweeper.html',
+        url: '../games/iframe-subway.html',
         description: 'Clear the minefield without triggering any mines.',
         instructions: 'Left-click to reveal a cell, right-click to flag a suspected mine.',
         thumbnail: 'images/thumbnails/minesweeper.jpg',
