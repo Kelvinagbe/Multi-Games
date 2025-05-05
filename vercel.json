@@ -46,11 +46,11 @@
   "geo": {
     "headers": [
       {
-        "country": ["!NG"],
+        "country": ["NG"],
         "source": "/(.*)",
         "headers": [
           {
-            "key": "X-Blocked-Region",
+            "key": "X-Allowed-Region",
             "value": "true"
           }
         ]
