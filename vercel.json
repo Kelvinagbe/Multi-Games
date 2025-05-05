@@ -42,7 +42,7 @@
       "statusCode": 404
     },
     {
-      "source": "/(.*)",
+      "source": "/((?!blocked\\.html|api\\/).*)",
       "has": [
         {
           "type": "header",
