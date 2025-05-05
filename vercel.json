@@ -40,28 +40,19 @@
       "source": "/404",
       "destination": "/404.html",
       "statusCode": 404
+    },
+    {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "header",
+          "key": "x-vercel-ip-country",
+          "value": "(?!NG).*"
+        }
+      ],
+      "destination": "/blocked.html",
+      "permanent": false
     }
   ],
-  "regions": ["dub1"],
-  "geo": {
-    "headers": [
-      {
-        "country": ["NG"],
-        "source": "/(.*)",
-        "headers": [
-          {
-            "key": "X-Allowed-Region",
-            "value": "true"
-          }
-        ]
-      }
-    ],
-    "redirects": [
-      {
-        "source": "/(.*)",
-        "destination": "/blocked.html",
-        "country": ["!NG"]
-      }
-    ]
-  }
+  "regions": ["dub1"]
 }
