@@ -41,5 +41,27 @@
       "destination": "/404.html",
       "statusCode": 404
     }
-  ]
+  ],
+  "regions": ["dub1"],
+  "geo": {
+    "headers": [
+      {
+        "country": ["!NG"],
+        "source": "/(.*)",
+        "headers": [
+          {
+            "key": "X-Blocked-Region",
+            "value": "true"
+          }
+        ]
+      }
+    ],
+    "redirects": [
+      {
+        "source": "/(.*)",
+        "destination": "/blocked.html",
+        "country": ["!NG"]
+      }
+    ]
+  }
 }
