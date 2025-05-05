@@ -14,7 +14,7 @@ const games = [
     title: "Pixel Shooter",
     rating: "4.6",
     players: "8k+",
-    image: "../assets/images/pixel-shooter.png",
+    image: "../assets/images/pixel-shooter.jpg",
     new: false
   },
   {
