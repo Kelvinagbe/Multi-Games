@@ -22,7 +22,7 @@ const games = [
     title: "Subway Surfers Helloween",
     rating: "4.9",
     players: "20k+",
-    image: "../assest/images/subway.png",
+    image: "../assest/images/subway.jpg",
     new: true
   }
 ];
