@@ -14,7 +14,7 @@ const games = [
     title: "Pixel Shooter",
     rating: "4.6",
     players: "8k+",
-    image: "../assets/images/pixel-shooter.jpg",
+    image: "../assets/image/pixel-shooter.jpg",
     new: false
   },
   {
@@ -22,7 +22,7 @@ const games = [
     title: "Subway Surfers Helloween",
     rating: "4.9",
     players: "20k+",
-    image: "../assets/images/subway.jpg",
+    image: "../assets/image/subway.jpg",
     new: true
   }
 ];
