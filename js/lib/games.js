@@ -74,61 +74,149 @@ function addErrorStyles() {
 
 // Define all available games and their properties
 const gameLibrary = {
-    'truth': {
+    '01': {
         title: 'Truth or Dare',
         url: '../games/truth.html',
-        description: 'Control a snake to eat food and grow longer without hitting walls or yourself.',
-        instructions: 'Use arrow keys to move the snake. Collect food to grow longer.',
-        thumbnail: '../assets/images/truth.jpg',
-        category: 'arcade'
+        thumbnail: '../assets/image/01.png',
+        category: 'multiplayer'
     },
-    'pixel-shooter': {
-        title: 'Tetris',
-        url: '../games/iframe-pixel.html',
-        description: 'The classic block stacking game.',
-        instructions: 'Use arrow keys to move and rotate falling blocks. Complete lines to clear them.',
-        thumbnail: 'images/thumbnails/tetris.jpg',
+    '02': {
+        title: 'Memory Card',
+        url: '../games/memory.html',
+        thumbnail: '../assets/image/02.png',
         category: 'puzzle'
     },
-    'flappy': {
-        title: 'Flappy Bird',
-        url: '../games/flappy.html',
-        description: 'Navigate a bird through pipes without touching them.',
-        instructions: 'Click or press spacebar to make the bird flap its wings and gain height.',
-        thumbnail: 'images/thumbnails/flappy.jpg',
+    '03': {
+        title: 'Whack Mole',
+        url: '../games/whack.html',
+        thumbnail: '../assets/image/03.png',
         category: 'arcade'
     },
-    'subway': {
-        title: 'Minesweeper',
+    '04': {
+        title: 'Tic Tac Toe',
+        url: '../games/tic-tac-toe.html',
+        thumbnail: '../assets/image/04.png',
+        category: 'puzzle'
+    },
+    '05': {
+        title: 'Bubble Shoot',
+        url: '../games/iframe-bubble.html',
+        thumbnail: '../assets/image/05.png',
+        category: 'arcade'
+    },
+    '06': {
+        title: 'Macthman Warrior',
+        url: '../games/iframe-warrior.html',
+        thumbnail: '../assets/image/06.png',
+        category: 'action'
+    },
+    '07': {
+        title: 'Moto X3M Christmas',
+        url: '../games/iframe-moto-X3M.html',
+        thumbnail: '../assets/image/07.png',
+        category: 'action'
+    },
+    '08': {
+        title: 'Ludo Legend',
+        url: '../games/iframe-ludo-legend.html',
+        thumbnail: '../assets/image/08.png',
+        category: 'card games'
+    },
+    '09': {
+        title: 'Bike Rush 3D',
+        url: '../games/iframe-bike-rush.html',
+        thumbnail: '../assets/image/09.png',
+        category: 'action'
+    },
+    '10': {
+        title: 'Boat Race',
+        url: '../games/iframe-boat-race.html',
+        thumbnail: '../assets/image/10.png',
+        category: 'sports'
+    },
+    '11': {
+        title: 'Subway Surfers Halloween',
         url: '../games/iframe-subway.html',
-        description: 'Clear the minefield without triggering any mines.',
-        instructions: 'Left-click to reveal a cell, right-click to flag a suspected mine.',
-        thumbnail: 'images/thumbnails/minesweeper.jpg',
-        category: 'puzzle'
+        thumbnail: '../assets/image/11.png',
+        category: 'action'
     },
-    'racing': {
-        title: 'Racing Game',
-        url: 'games/racing.html',
-        description: 'Drive a car and avoid obstacles to reach the finish line.',
-        instructions: 'Use arrow keys to steer and control speed.',
-        thumbnail: 'images/thumbnails/racing.jpg',
-        category: 'racing'
+    '12': {
+        title: 'Pubg Mobile',
+        url: '../games/iframe-pubg.html',
+        thumbnail: '../assets/image/12.png',
+        category: 'action'
     },
-    'space-shooter': {
-        title: 'Space Shooter',
-        url: 'games/space-shooter.html',
-        description: 'Shoot enemies and avoid their attacks in space.',
-        instructions: 'Use arrow keys to move and spacebar to shoot.',
-        thumbnail: 'images/space-shooter.jpg',
+    '13': {
+        title: 'Pixel Shooter',
+        url: '../games/iframe-pixel.html',
+        thumbnail: '../assets/image/13.png',
+        category: 'action'
+    },
+    '14': {
+        title: 'Relic Run Away',
+        url: '../games/iframe-runaway.html',
+        thumbnail: '../assets/image/14.png',
+        category: 'action'
+    },
+    '15': {
+        title: 'Hunter Assassin',
+        url: '../games/iframe-hunter.html',
+        thumbnail: '../assets/image/15.png',
+        category: 'action'
+    },
+    '16': {
+        title: 'Squid Survival',
+        url: '../games/iframe-squidsurvival.html',
+        thumbnail: '../assets/image/16.png',
+        category: 'action'
+    },
+    '17': {
+        title: 'Piano Music Tiles',
+        url: '../games/iframe-pianotiles.html',
+        thumbnail: '../assets/image/17.png',
         category: 'arcade'
     },
-    'escape-runner': {
-        title: 'Escape Runner',
-        url: 'games/escape-runner.html',
-        description: 'Run as far as you can while avoiding obstacles.',
-        instructions: 'Use arrow keys or swipe to jump, slide, and move.',
-        thumbnail: 'images/escape-runner.jpg',
+    '18': {
+        title: 'Sniper Simulator',
+        url: '../games/iframe-snipersimulator.html',
+        thumbnail: '../assets/image/18.png',
+        category: 'action'
+    },
+    '19': {
+        title: 'Wild Hunt Hunting',
+        url: '../games/iframe-wildhunt.html',
+        thumbnail: '../assets/image/19.png',
+        category: 'action'
+    },
+    '20': {
+        title: 'Egg Super Adventure',
+        url: '../games/iframe-eggadventure.html',
+        thumbnail: '../assets/image/20.png',
+        category: 'action'
+    },
+    '21': {
+        title: 'Rac Simulator 1',
+        url: '../games/iframe-racesimulator-1.html',
+        thumbnail: '../assets/image/21.png',
+        category: 'sports'
+    },
+    '22': {
+        title: 'Smash Colors Music Ball',
+        url: '../games/iframe-musicball.html',
+        thumbnail: '../assets/image/22.png',
         category: 'arcade'
+    },
+    '23': {
+        title: 'Subway Surfers Holiday',
+        url: '../games/iframe-subway-surfers-holiday.html',
+        thumbnail: '../assets/image/23.png',
+        category: 'action'
+    },
+    '24': {
+        title: 'ORV Racing',
+        url: '../games/iframe-ORV-Racing.html',
+        thumbnail: '../assets/image/24.png',
+        category: 'sports'
     }
 };
 
