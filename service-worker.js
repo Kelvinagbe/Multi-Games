@@ -80,6 +80,8 @@ const assetsToCache = [
   './nav/withdraw/script.js',
   './nav/withdraw/styles.css',
   './nav/withdraw/withdraw.html',
+  './assets/image/subway.jpg',
+  './assets/image/pixe-shooter.jpg',
 
 ];
 
