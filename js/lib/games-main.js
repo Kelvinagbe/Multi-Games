@@ -8,7 +8,7 @@ const games = [
     title: "Truth or Dare",
     rating: "4.9",
     players: "20k+",
-    image: "../assets/image/01.jpg",
+    image: "../assets/image/01.png",
     new: false
   },
   
@@ -18,7 +18,7 @@ const games = [
     title: "Games james",
     rating: "4.8",
     players: "10k+",
-    image: "../assets/image/02.jpg",
+    image: "../assets/image/02.png",
     new: true
   },
   {
@@ -26,7 +26,7 @@ const games = [
     title: "Whack Mole",
     rating: "4.5",
     players: "8k+",
-    image: "../assets/image/03.jpg",
+    image: "../assets/image/03.png",
     new: true
   },
   {
@@ -34,7 +34,7 @@ const games = [
     title: "Tic Tac Toe",
     rating: "4.7",
     players: "15k+",
-    image: "../assets/image/04.jpg",
+    image: "../assets/image/04.png",
     new: false
   },
   
@@ -44,7 +44,7 @@ const games = [
     title: "Bubble Shoot",
     rating: "4.3",
     players: "5k+",
-    image: "../assets/image/05.jpg",
+    image: "../assets/image/05.png",
     new: true
   },
   {
@@ -52,7 +52,7 @@ const games = [
     title: "Macthman Warrior",
     rating: "4.6",
     players: "3k+",
-    image: "../assets/image/06.jpg",
+    image: "../assets/image/06.png",
     new: true
   },
   {
@@ -76,7 +76,7 @@ const games = [
     title: "Bike Rush 3D",
     rating: "4.6",
     players: "6k+",
-    image: "../assets/image/09.jpg",
+    image: "../assets/image/09.png",
     new: true
   },
   {
@@ -94,7 +94,7 @@ const games = [
     title: "Subway Surfers Halloween",
     rating: "4.8",
     players: "10k+",
-    image: "../assets/image/11.jpg",
+    image: "../assets/image/11.png",
     new: true
   },
   {
@@ -102,7 +102,7 @@ const games = [
     title: "Pubg Mobile",
     rating: "4.5",
     players: "8k+",
-    image: "../assets/image/12.jpg",
+    image: "../assets/image/12.png",
     new: false
   },
   {
@@ -110,7 +110,7 @@ const games = [
     title: "Pixel Shooter",
     rating: "4.5",
     players: "8k+",
-    image: "../assets/image/13.jpg",
+    image: "../assets/image/13.png",
     new: false
   },
   {
@@ -118,7 +118,7 @@ const games = [
     title: "Relic Run Away",
     rating: "4.5",
     players: "8k+",
-    image: "../assets/image/14.jpg",
+    image: "../assets/image/14.png",
     new: false
   },
   {
@@ -126,7 +126,7 @@ const games = [
     title: "Hunter Assassin",
     rating: "4.9",
     players: "25k+",
-    image: "../assets/image/15.jpg",
+    image: "../assets/image/15.png",
     new: true,
     hot: true
   },
@@ -144,7 +144,7 @@ const games = [
     title: "Piano Music Tiles",
     rating: "4.9",
     players: "25k+",
-    image: "../assets/image/17.webp",
+    image: "../assets/image/17.png",
     new: false,
     hot: true
   },
@@ -153,7 +153,7 @@ const games = [
     title: "Sniper Simulator",
     rating: "1.8k", // Note: This seems to show rating count rather than score
     players: "25k+",
-    image: "../assets/image/18.jpg",
+    image: "../assets/image/18.png",
     new: false,
     hot: true
   },
@@ -171,7 +171,7 @@ const games = [
     title: "Egg Super Adventure",
     rating: "1.0k",
     players: "2k+",
-    image: "../assets/image/20.jpg",
+    image: "../assets/image/20.png",
     new: false,
     hot: true
   },
