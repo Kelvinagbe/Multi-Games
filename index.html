@@ -605,32 +605,7 @@ function initNavigation() {
         document.getElementById('categories-nav').click();
     });
 
-    // Earn Navigation
-    document.getElementById('earn-nav').addEventListener('click', function(e) {
-        e.preventDefault();
-        
-        // Hide all containers first
-        document.querySelectorAll('.container').forEach(container => {
-            container.style.display = 'none';
-        });
-        
-        const earnContent = document.getElementById('earn-content');
-        earnContent.style.display = 'flex';
-
-        // Show iframe loader
-        showIframeLoader(earnContent);
-
-        const earnIframe = document.getElementById('earn-iframe');
-        earnIframe.style.opacity = '0'; // Hide iframe initially
-        earnIframe.src = 'nav/earn.html';
-
-        // Handle iframe load completion
-        earnIframe.onload = function() {
-            hideIframeLoader(earnContent);
-            earnIframe.style.opacity = '1'; // Show iframe with fade effect
-
-            // Apply slide-in animation
-            earnIframe.style.transform = 'translateX(-100%)';
+translateX(-100%)';
             setTimeout(() => {
                 earnIframe.style.transition = 'transform 0.5s ease-out';
                 earnIframe.style.transform = 'translateX(0)';
@@ -644,9 +619,11 @@ function initNavigation() {
 
     document.getElementById('earn-back').addEventListener('click', function() {
         const iframe = document.getElementById('earn-iframe');
-        // Slide out animation
-        iframe.style.transition = 'transform 0.5s ease-in';
-        iframe.style.transform = 'translateX(100%)';
+        if (iframe) {
+            // Slide out animation
+            iframe.style.transition = 'transform 0.5s ease-in';
+            iframe.style.transform = 'translateX(100%)';
+        }
 
         setTimeout(() => {
             document.getElementById('earn-content').style.display = 'none';
@@ -672,20 +649,49 @@ function initNavigation() {
         const profileIframe = document.getElementById('profile-iframe');
         profileIframe.style.opacity = '0'; // Hide iframe initially
         
+        // Make sure iframe exists before setting properties
+        if (!profileIframe) {
+            console.error('Profile iframe element not found');
+            hideIframeLoader(profileContent);
+            return;
+        }
+        
+        // Force iframe reload by removing and recreating
+        const parentContainer = profileIframe.parentNode;
+        parentContainer.removeChild(profileIframe);
+        
+        const newProfileIframe = document.createElement('iframe');
+        newProfileIframe.id = 'profile-iframe';
+        newProfileIframe.style.opacity = '0';
+        newProfileIframe.style.width = '100%';
+        newProfileIframe.style.height = '100%';
+        newProfileIframe.style.border = 'none';
+        parentContainer.appendChild(newProfileIframe);
+        
         // Set the correct path to the profile.html file
-        profileIframe.src = 'nav/profile.html';
+        newProfileIframe.src = 'nav/profile.html';
+        
+        // Debug
+        console.log('Loading profile iframe with src:', newProfileIframe.src);
         
         // Handle iframe load completion
-        profileIframe.onload = function() {
+        newProfileIframe.onload = function() {
+            console.log('Profile iframe loaded successfully');
             hideIframeLoader(profileContent);
-            profileIframe.style.opacity = '1'; // Show iframe with fade effect
+            newProfileIframe.style.opacity = '1'; // Show iframe with fade effect
 
             // Apply slide-in animation
-            profileIframe.style.transform = 'translateX(-100%)';
+            newProfileIframe.style.transform = 'translateX(-100%)';
             setTimeout(() => {
-                profileIframe.style.transition = 'transform 0.5s ease-out';
-                profileIframe.style.transform = 'translateX(0)';
+                newProfileIframe.style.transition = 'transform 0.5s ease-out';
+                newProfileIframe.style.transform = 'translateX(0)';
             }, 50);
+        };
+        
+        // Add error handling
+        newProfileIframe.onerror = function() {
+            console.error('Failed to load profile iframe');
+            hideIframeLoader(profileContent);
         };
 
         // Keep navigation bar visible
@@ -695,9 +701,11 @@ function initNavigation() {
 
     document.getElementById('profile-back').addEventListener('click', function() {
         const iframe = document.getElementById('profile-iframe');
-        // Slide out animation
-        iframe.style.transition = 'transform 0.5s ease-in';
-        iframe.style.transform = 'translateX(100%)';
+        if (iframe) {
+            // Slide out animation
+            iframe.style.transition = 'transform 0.5s ease-in';
+            iframe.style.transform = 'translateX(100%)';
+        }
 
         setTimeout(() => {
             document.getElementById('profile-content').style.display = 'none';
