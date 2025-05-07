@@ -11,16 +11,6 @@ const games = [
     image: "../assets/image/01.png",
     new: false
   },
-  
-  // Popular Games
-  {
-    id: "02",
-    title: "Games james",
-    rating: "4.8",
-    players: "10k+",
-    image: "../assets/image/02.png",
-    new: true
-  },
   {
     id: "03",
     title: "Whack Mole",
