@@ -1,12 +1,12 @@
-// Add the error styles directly to the document head
+// Define function to add error styles that was missing in the original code
 function addErrorStyles() {
-  // Check if styles are already added
+  // Check if styles already exist
   if (document.getElementById('game-error-styles')) return;
   
-  const styleElement = document.createElement('style');
-  styleElement.id = 'game-error-styles';
-  styleElement.textContent = `
-    /* Game Error Styles */
+  // Create style element
+  const style = document.createElement('style');
+  style.id = 'game-error-styles';
+  style.textContent = `
     .game-error {
       display: flex;
       flex-direction: column;
@@ -14,47 +14,46 @@ function addErrorStyles() {
       justify-content: center;
       height: 100%;
       text-align: center;
-      padding: 2rem;
+      padding: 20px;
       background-color: #f8f9fa;
-      color: #343a40;
+      border-radius: 8px;
     }
     
     .error-icon {
-      font-size: 5rem;
-      margin-bottom: 1.5rem;
+      font-size: 48px;
+      margin-bottom: 20px;
       color: #dc3545;
-    }
-    
-    .game-not-found .error-icon {
-      font-weight: bold;
-      font-family: Arial, sans-serif;
-    }
-    
-    .network-error .error-icon {
-      font-size: 4rem;
+      width: 80px;
+      height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background-color: rgba(220, 53, 69, 0.1);
     }
     
     .game-error h3 {
-      font-size: 1.8rem;
-      margin-bottom: 1rem;
+      font-size: 24px;
+      margin-bottom: 10px;
+      color: #343a40;
     }
     
     .game-error p {
-      font-size: 1.1rem;
-      margin-bottom: 2rem;
       color: #6c757d;
+      margin-bottom: 20px;
+      max-width: 80%;
     }
     
     .error-btn {
-      padding: 0.75rem 1.5rem;
-      margin: 0.5rem;
+      padding: 10px 20px;
       border: none;
       border-radius: 4px;
       background-color: #007bff;
       color: white;
-      font-size: 1rem;
       cursor: pointer;
+      font-weight: bold;
       transition: background-color 0.3s;
+      margin: 5px;
     }
     
     .error-btn:hover {
@@ -69,7 +68,9 @@ function addErrorStyles() {
       background-color: #218838;
     }
   `;
-  document.head.appendChild(styleElement);
+  
+  // Add style to document head
+  document.head.appendChild(style);
 }
 
 // Define all available games and their properties
@@ -219,6 +220,8 @@ const gameLibrary = {
         category: 'sports'
     }
 };
+
+// Games for index page
 
 // Function to render game cards on index page
 function renderGames() {
