@@ -1,75 +1,64 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="&#101;&#110;">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Forgot Password - Multi Games</title>
+    <meta charset="&#85;&#84;&#70;&#45;&#56;">
+    <meta name="&#118;&#105;&#101;&#119;&#112;&#111;&#114;&#116;" content="&#119;&#105;&#100;&#116;&#104;&#61;&#100;&#101;&#118;&#105;&#99;&#101;&#45;&#119;&#105;&#100;&#116;&#104;&#44;&#32;&#105;&#110;&#105;&#116;&#105;&#97;&#108;&#45;&#115;&#99;&#97;&#108;&#101;&#61;&#49;&#46;&#48;">
+    <title>&#70;&#111;&#114;&#103;&#111;&#116;&#32;&#80;&#97;&#115;&#115;&#119;&#111;&#114;&#100;&#32;&#45;&#32;&#77;&#117;&#108;&#116;&#105;&#32;&#71;&#97;&#109;&#101;&#115;</title>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-      <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css">
+    <script>
+    function _0x2d7a(){var _0x5a58=['4214412LtsRAY','1981370OJwvSq','2610440UswoXH','2022965oumufH','4049940pVnLJj','7jQQafo','6324840LhGKAG','9DkKkQY','1138488znExqd'];_0x2d7a=function(){return _0x5a58;};return _0x2d7a();}(function(_0x5b64c7,_0x39e04a){var _0x226b0c=_0x374e,_0x49ab4b=_0x5b64c7();while(!![]){try{var _0x13fd9d=-parseInt(_0x226b0c(0x130))/0x1+-parseInt(_0x226b0c(0x134))/0x2+-parseInt(_0x226b0c(0x136))/0x3*(-parseInt(_0x226b0c(0x131))/0x4)+-parseInt(_0x226b0c(0x138))/0x5+-parseInt(_0x226b0c(0x132))/0x6+-parseInt(_0x226b0c(0x135))/0x7+-parseInt(_0x226b0c(0x133))/0x8*(-parseInt(_0x226b0c(0x137))/0x9);if(_0x13fd9d===_0x39e04a)break;else _0x49ab4b['push'](_0x49ab4b['shift']());}catch(_0x4df6c1){_0x49ab4b['push'](_0x49ab4b['shift']());}}}(_0x2d7a,0xc348d));function _0x374e(_0x506efe,_0x3bfc02){var _0x2d7a0a=_0x2d7a();return _0x374e=function(_0x374ebd,_0x27fbd8){_0x374ebd=_0x374ebd-0x130;var _0x4e0438=_0x2d7a0a[_0x374ebd];return _0x4e0438;},_0x374e(_0x506efe,_0x3bfc02);}
+    </script>
 </head>
 <body>
-    <div class="login-card">
-        <div class="login-header">
-            <h1>Reset Password</h1>
-            <p>Enter your email to receive a password reset link</p>
+    <div class="&#108;&#111;&#103;&#105;&#110;&#45;&#99;&#97;&#114;&#100;">
+        <div class="&#108;&#111;&#103;&#105;&#110;&#45;&#104;&#101;&#97;&#100;&#101;&#114;">
+            <h1>&#82;&#101;&#115;&#101;&#116;&#32;&#80;&#97;&#115;&#115;&#119;&#111;&#114;&#100;</h1>
+            <p>&#69;&#110;&#116;&#101;&#114;&#32;&#121;&#111;&#117;&#114;&#32;&#101;&#109;&#97;&#105;&#108;&#32;&#116;&#111;&#32;&#114;&#101;&#99;&#101;&#105;&#118;&#101;&#32;&#97;&#32;&#112;&#97;&#115;&#115;&#119;&#111;&#114;&#100;&#32;&#114;&#101;&#115;&#101;&#116;&#32;&#108;&#105;&#110;&#107;</p>
         </div>
 
-        <div id="notification" class="notification"></div>
+        <div id="&#110;&#111;&#116;&#105;&#102;&#105;&#99;&#97;&#116;&#105;&#111;&#110;" class="&#110;&#111;&#116;&#105;&#102;&#105;&#99;&#97;&#116;&#105;&#111;&#110;"></div>
 
-        <form id="resetForm">
-            <div class="form-group">
-                <label for="email">Email address</label>
-                <input type="email" id="email" name="email" required>
+        <form id="&#114;&#101;&#115;&#101;&#116;&#70;&#111;&#114;&#109;">
+            <div class="&#102;&#111;&#114;&#109;&#45;&#103;&#114;&#111;&#117;&#112;">
+                <label for="&#101;&#109;&#97;&#105;&#108;">&#69;&#109;&#97;&#105;&#108;&#32;&#97;&#100;&#100;&#114;&#101;&#115;&#115;</label>
+                <input type="&#101;&#109;&#97;&#105;&#108;" id="&#101;&#109;&#97;&#105;&#108;" name="&#101;&#109;&#97;&#105;&#108;" required>
             </div>
 
-            <div class="verification-container">
-                <div class="verification-text">Please complete the verification</div>
-                <div id="recaptcha-checkbox"></div>
-                <div id="verification-status" class="verification-status">Verification in progress...</div>
+            <div class="&#118;&#101;&#114;&#105;&#102;&#105;&#99;&#97;&#116;&#105;&#111;&#110;&#45;&#99;&#111;&#110;&#116;&#97;&#105;&#110;&#101;&#114;">
+                <div class="&#118;&#101;&#114;&#105;&#102;&#105;&#99;&#97;&#116;&#105;&#111;&#110;&#45;&#116;&#101;&#120;&#116;">&#80;&#108;&#101;&#97;&#115;&#101;&#32;&#99;&#111;&#109;&#112;&#108;&#101;&#116;&#101;&#32;&#116;&#104;&#101;&#32;&#118;&#101;&#114;&#105;&#102;&#105;&#99;&#97;&#116;&#105;&#111;&#110;</div>
+                <div id="&#114;&#101;&#99;&#97;&#112;&#116;&#99;&#104;&#97;&#45;&#99;&#104;&#101;&#99;&#107;&#98;&#111;&#120;"></div>
+                <div id="&#118;&#101;&#114;&#105;&#102;&#105;&#99;&#97;&#116;&#105;&#111;&#110;&#45;&#115;&#116;&#97;&#116;&#117;&#115;" class="&#118;&#101;&#114;&#105;&#102;&#105;&#99;&#97;&#116;&#105;&#111;&#110;&#45;&#115;&#116;&#97;&#116;&#117;&#115;">&#86;&#101;&#114;&#105;&#102;&#105;&#99;&#97;&#116;&#105;&#111;&#110;&#32;&#105;&#110;&#32;&#112;&#114;&#111;&#103;&#114;&#101;&#115;&#115;&#46;&#46;&#46;</div>
             </div>
 
-            <div id="timer"></div>
+            <div id="&#116;&#105;&#109;&#101;&#114;"></div>
 
-            <button type="submit" id="submit-button" class="btn" disabled>
-                Complete CAPTCHA to Continue
+            <button type="&#115;&#117;&#98;&#109;&#105;&#116;" id="&#115;&#117;&#98;&#109;&#105;&#116;&#45;&#98;&#117;&#116;&#116;&#111;&#110;" class="&#98;&#116;&#110;" disabled>
+                &#67;&#111;&#109;&#112;&#108;&#101;&#116;&#101;&#32;&#67;&#65;&#80;&#84;&#67;&#72;&#65;&#32;&#116;&#111;&#32;&#67;&#111;&#110;&#116;&#105;&#110;&#117;&#101;
             </button>
         </form>
 
-        <div class="recaptcha-terms">
-            This site is protected by reCAPTCHA and the Google
-            <a href="https://policies.google.com/privacy" target="_blank">Privacy Policy</a> and
-            <a href="https://policies.google.com/terms" target="_blank">Terms of Service</a> apply.
+        <div class="&#114;&#101;&#99;&#97;&#112;&#116;&#99;&#104;&#97;&#45;&#116;&#101;&#114;&#109;&#115;">
+            &#84;&#104;&#105;&#115;&#32;&#115;&#105;&#116;&#101;&#32;&#105;&#115;&#32;&#112;&#114;&#111;&#116;&#101;&#99;&#116;&#101;&#100;&#32;&#98;&#121;&#32;&#114;&#101;&#67;&#65;&#80;&#84;&#67;&#72;&#65;&#32;&#97;&#110;&#100;&#32;&#116;&#104;&#101;&#32;&#71;&#111;&#111;&#103;&#108;&#101;
+            <a href="https://policies.google.com/privacy" target="_&#98;&#108;&#97;&#110;&#107;">&#80;&#114;&#105;&#118;&#97;&#99;&#121;&#32;&#80;&#111;&#108;&#105;&#99;&#121;</a> &#97;&#110;&#100;
+            <a href="https://policies.google.com/terms" target="_&#98;&#108;&#97;&#110;&#107;">&#84;&#101;&#114;&#109;&#115;&#32;&#111;&#102;&#32;&#83;&#101;&#114;&#118;&#105;&#99;&#101;</a> &#97;&#112;&#112;&#108;&#121;&#46;
         </div>
 
-        <div class="back-to-login">
-            <a href="../auth/login.html">
-                <i class="fas fa-arrow-left"></i> Back to Login
+        <div class="&#98;&#97;&#99;&#107;&#45;&#116;&#111;&#45;&#108;&#111;&#103;&#105;&#110;">
+            <a href="&#108;&#111;&#103;&#105;&#110;&#46;&#104;&#116;&#109;&#108;">
+                <i class="&#102;&#97;&#115;&#32;&#102;&#97;&#45;&#97;&#114;&#114;&#111;&#119;&#45;&#108;&#101;&#102;&#116;"></i> &#66;&#97;&#99;&#107;&#32;&#116;&#111;&#32;&#76;&#111;&#103;&#105;&#110;
             </a>
         </div>
     </div>
 
-    <div class="loading-overlay" id="loading-overlay">
-        <div class="spinner"></div>
+    <div class="&#108;&#111;&#97;&#100;&#105;&#110;&#103;&#45;&#111;&#118;&#101;&#114;&#108;&#97;&#121;" id="&#108;&#111;&#97;&#100;&#105;&#110;&#103;&#45;&#111;&#118;&#101;&#114;&#108;&#97;&#121;">
+        <div class="&#115;&#112;&#105;&#110;&#110;&#101;&#114;"></div>
     </div>
 
     <script type="module" src="script.js"></script>
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-    // Function to apply dark mode based on localStorage
-    function applyDarkModeSetting() {
-        const isDarkMode = localStorage.getItem('darkMode') === 'enabled';
-        document.body.classList.toggle('dark-mode', isDarkMode);
-    }
-
-    // Apply dark mode on page load
-    applyDarkModeSetting();
-
-    // Optional: re-check every 3 seconds in case another tab changes it
-    setInterval(applyDarkModeSetting, 300);
-});
-</script>
+    <!-- -->
 </body>
 </html>
