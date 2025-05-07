@@ -543,8 +543,8 @@ document.addEventListener("DOMContentLoaded", function() {
     // Lazy load images
     lazyLoadImages();
 
-    // Set up the install prompt
-    initInstallPrompt();
+    // Set up the install prompt - simplified to use Chrome's native prompt
+    initNativeInstallPrompt();
 });
 
 // Initialize Navigation
@@ -654,7 +654,7 @@ function initNavigation() {
         }, 500);
     });
 
-    // Profile Navigation
+    // Profile Navigation - Fixed to correctly load the profile page
     document.getElementById('profile-nav').addEventListener('click', function(e) {
         e.preventDefault();
         
@@ -671,8 +671,10 @@ function initNavigation() {
 
         const profileIframe = document.getElementById('profile-iframe');
         profileIframe.style.opacity = '0'; // Hide iframe initially
+        
+        // Set the correct path to the profile.html file
         profileIframe.src = 'nav/profile.html';
-
+        
         // Handle iframe load completion
         profileIframe.onload = function() {
             hideIframeLoader(profileContent);
@@ -868,79 +870,16 @@ function lazyLoadImages() {
     }
 }
 
-// Initialize the install prompt functionality
-function initInstallPrompt() {
-    let deferredPrompt;
-    const installButton = document.createElement('button');
-    installButton.id = 'install-button';
-    installButton.textContent = 'Install App';
-    installButton.style.display = 'none';
-    document.body.appendChild(installButton);
-
-    window.addEventListener('beforeinstallprompt', (e) => {
-        // Prevent Chrome 67 and earlier from automatically showing the prompt
-        e.preventDefault();
-        // Stash the event so it can be triggered later
-        deferredPrompt = e;
-        // Update UI to notify the user they can add to home screen
-        installButton.style.display = 'block';
-
-        // Show install banner
-        const banner = document.createElement('div');
-        banner.className = 'install-banner';
-        banner.innerHTML = `
-            <p>Install our app for the best experience!</p>
-            <button id="install-banner-button">Install Now</button>
-            <button id="close-banner-button">Later</button>
-        `;
-        document.body.appendChild(banner);
-
-        // Set up banner button actions
-        document.getElementById('install-banner-button').addEventListener('click', () => {
-            // Hide the banner
-            banner.style.display = 'none';
-            // Show the prompt
-            deferredPrompt.prompt();
-            // Wait for the user to respond to the prompt
-            deferredPrompt.userChoice.then((choiceResult) => {
-                if (choiceResult.outcome === 'accepted') {
-                    console.log('User accepted the install prompt');
-                } else {
-                    console.log('User dismissed the install prompt');
-                }
-                deferredPrompt = null;
-            });
-        });
-
-        document.getElementById('close-banner-button').addEventListener('click', () => {
-            banner.style.display = 'none';
-        });
-    });
-
-    // Manual install button event
-    installButton.addEventListener('click', () => {
-        if (deferredPrompt) {
-            deferredPrompt.prompt();
-            deferredPrompt.userChoice.then((choiceResult) => {
-                if (choiceResult.outcome === 'accepted') {
-                    console.log('User accepted the install prompt');
-                } else {
-                    console.log('User dismissed the install prompt');
-                }
-                deferredPrompt = null;
-                installButton.style.display = 'none';
-            });
-        }
-    });
-
-    // When the app is successfully installed
+// Initialize Native Install Prompt functionality
+// This relies on Chrome's built-in installation prompt instead of a custom banner
+function initNativeInstallPrompt() {
+    // This empty function simply allows Chrome to handle its own install prompt
+    // No need to interfere with Chrome's native install banner
+    
+    // We'll just log when the app is installed
     window.addEventListener('appinstalled', (evt) => {
         // Log install to analytics
         console.log('App was installed successfully');
-        installButton.style.display = 'none';
-        // Remove any install banners that might be showing
-        const banners = document.querySelectorAll('.install-banner');
-        banners.forEach(banner => banner.remove());
     });
 }
 
@@ -1024,63 +963,6 @@ function addIframeLoaderStyles() {
         
         .iframe-container iframe {
             transition: opacity 0.3s ease, transform 0.5s ease-out;
-        }
-        
-        /* Add styles for install banner */
-        .install-banner {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            background-color: #f8f9fa;
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
-            padding: 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            z-index: 1000;
-        }
-        
-        .dark-mode .install-banner {
-            background-color: #333;
-            color: #fff;
-        }
-        
-        .install-banner p {
-            margin: 0;
-            flex-grow: 1;
-        }
-        
-        .install-banner button {
-            margin-left: 10px;
-            padding: 8px 15px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        
-        #install-banner-button {
-            background-color: #4CAF50;
-            color: white;
-        }
-        
-        #close-banner-button {
-            background-color: #f1f1f1;
-            color: #333;
-        }
-        
-        #install-button {
-            position: fixed;
-            bottom: 70px;
-            right: 20px;
-            padding: 10px 15px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-            cursor: pointer;
-            z-index: 100;
         }
     `;
     document.head.appendChild(styleEl);
