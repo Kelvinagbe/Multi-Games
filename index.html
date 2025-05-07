@@ -487,8 +487,6 @@
 <a href="#" id="earn-nav"><i class="fas fa-sack-dollar"></i> Earn</a>
       <a href="#" id="profile-nav"><i class="fas fa-user"></i> Profile</a>
   </div>
-
-     <!-- <a href="#" id="trending-nav"><i class="fas fa-fire"></i> Trending</a> -->
       
 
 
@@ -833,6 +831,22 @@ function initNavigation() {
         document.querySelector('.bottom-nav').style.display = 'flex';
         updateActiveNav('profile-nav');
     });
+    
+    // Add event listener for profile-back if it exists
+    const profileBackButton = document.getElementById('profile-back');
+    if (profileBackButton) {
+        profileBackButton.addEventListener('click', function() {
+            const iframe = document.getElementById('profile-iframe');
+            // Slide out animation
+            iframe.style.transition = 'transform 0.5s ease-in';
+            iframe.style.transform = 'translateX(100%)';
+            
+            setTimeout(() => {
+                document.getElementById('profile-content').style.display = 'none';
+                showMainContent(); // Reset to main content when back button is pressed
+            }, 500);
+        });
+    }
     
     document.getElementById('profile-back').addEventListener('click', function() {
         const iframe = document.getElementById('profile-iframe');
