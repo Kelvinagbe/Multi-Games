@@ -126,7 +126,7 @@ const games = [
     title: "Hunter Assassin",
     rating: "4.9",
     players: "25k+",
-    image: "../assets/image/15.png",
+    image: "../assets/image/15.jpg",
     new: true,
     hot: true
   },
