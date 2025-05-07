@@ -524,28 +524,152 @@ document.addEventListener("DOMContentLoaded", function() {
             document.getElementById('loader').style.display = 'none';
         }, 500);
     }, loaderDelay);
-
+    
     // Add CSS for iframe loaders
     addIframeLoaderStyles();
 
+    // Initialize search functionality
+    initSearch();
+    
     // Initialize navigation
     initNavigation();
-
+    
     // Initialize dark mode
     initDarkMode();
-
+    
     // Initialize real ad block detection
     detectAdBlockReal();
-
+    
     // Show welcome popup for new users
     checkForFirstVisit();
-
+    
     // Lazy load images
     lazyLoadImages();
-
-    // Set up the install prompt - simplified to use Chrome's native prompt
-    initNativeInstallPrompt();
 });
+
+
+// Initialize Search Functionality
+function initSearch() {
+    const searchInput = document.getElementById('floating-search-input');
+    const suggestionsContainer = document.getElementById('floating-suggestions');
+    
+    // Fetch games data (mocked here, should be replaced with actual data)
+    fetchGamesData();
+    
+    searchInput.addEventListener('focus', function() {
+        document.getElementById('floating-search').style.width = '95%';
+        
+        // Open Categories nav when search is tapped
+        const categoriesContent = document.getElementById('categories-content');
+        categoriesContent.style.display = 'flex';
+        
+        // Show iframe loader
+        showIframeLoader(categoriesContent);
+        
+        const categoriesIframe = document.getElementById('categories-iframe');
+        categoriesIframe.style.opacity = '0'; // Hide iframe initially
+        categoriesIframe.src = 'nav/categories/categories.html';
+        
+        // Handle iframe load completion
+        categoriesIframe.onload = function() {
+            hideIframeLoader(categoriesContent);
+            categoriesIframe.style.opacity = '1'; // Show iframe with fade effect
+            
+            // Apply slide-in animation
+            categoriesIframe.style.transform = 'translateX(-100%)';
+            setTimeout(() => {
+                categoriesIframe.style.transition = 'transform 0.5s ease-out';
+                categoriesIframe.style.transform = 'translateX(0)';
+            }, 50);
+        };
+        
+        // Keep navigation bar visible
+        document.querySelector('.bottom-nav').style.display = 'flex';
+        updateActiveNav('categories-nav');
+    });
+    
+    searchInput.addEventListener('input', function() {
+        clearTimeout(searchTimeout);
+        const query = this.value.trim();
+        
+        if (query.length > 0) {
+            searchTimeout = setTimeout(() => {
+                searchGames(query);
+            }, 300);
+        } else {
+            suggestionsContainer.innerHTML = '';
+            suggestionsContainer.classList.remove('show');
+        }
+    });
+    
+    // Close search when clicking outside
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('.floating-search')) {
+            suggestionsContainer.classList.remove('show');
+        }
+    });
+}
+
+// Fetch Games Data
+function fetchGamesData() {
+    // This would normally be an API call - for now we'll use data from the HTML
+    const gameCards = document.querySelectorAll('.game-card');
+    gameCards.forEach(card => {
+        const img = card.querySelector('img');
+        const title = card.querySelector('.game-info p').textContent;
+        const rating = card.querySelector('.game-meta i').nextSibling.textContent.trim();
+        const link = card.querySelector('.play-btn').getAttribute('href');
+        
+        gamesData.push({
+            title: title,
+            image: img.src,
+            rating: rating,
+            link: link
+        });
+    });
+}
+
+// Search Games
+function searchGames(query) {
+    const suggestionsContainer = document.getElementById('floating-suggestions');
+    suggestionsContainer.innerHTML = '';
+    
+    const filteredGames = gamesData.filter(game => 
+        game.title.toLowerCase().includes(query.toLowerCase())
+    );
+    
+    if (filteredGames.length > 0) {
+        filteredGames.forEach(game => {
+            const suggestionItem = document.createElement('div');
+            suggestionItem.className = 'suggestion-item';
+            suggestionItem.innerHTML = `
+                <img src="${game.image}" alt="${game.title}">
+                <div class="suggestion-text">
+                    <div class="suggestion-title">${game.title}</div>
+                    <div class="suggestion-meta">Rating: ${game.rating}</div>
+                </div>
+            `;
+            
+            suggestionItem.addEventListener('click', () => {
+                window.location.href = game.link;
+            });
+            
+            suggestionsContainer.appendChild(suggestionItem);
+        });
+        
+        suggestionsContainer.classList.add('show');
+    } else {
+        const noResults = document.createElement('div');
+        noResults.className = 'suggestion-item';
+        noResults.innerHTML = `
+            <div class="suggestion-text">
+                <div class="suggestion-title">No games found</div>
+            </div>
+        `;
+        suggestionsContainer.appendChild(noResults);
+        suggestionsContainer.classList.add('show');
+    }
+}
 
 // Initialize Navigation
 function initNavigation() {
@@ -554,25 +678,25 @@ function initNavigation() {
         e.preventDefault();
         showMainContent();
     });
-
+    
     // Categories Navigation
     document.getElementById('categories-nav').addEventListener('click', function(e) {
         e.preventDefault();
         const categoriesContent = document.getElementById('categories-content');
         categoriesContent.style.display = 'flex';
-
+        
         // Show iframe loader
         showIframeLoader(categoriesContent);
-
+        
         const categoriesIframe = document.getElementById('categories-iframe');
         categoriesIframe.style.opacity = '0'; // Hide iframe initially
         categoriesIframe.src = 'nav/categories/categories.html';
-
+        
         // Handle iframe load completion
         categoriesIframe.onload = function() {
             hideIframeLoader(categoriesContent);
             categoriesIframe.style.opacity = '1'; // Show iframe with fade effect
-
+            
             // Apply slide-in animation
             categoriesIframe.style.transform = 'translateX(-100%)';
             setTimeout(() => {
@@ -580,61 +704,103 @@ function initNavigation() {
                 categoriesIframe.style.transform = 'translateX(0)';
             }, 50);
         };
-
+        
         // Keep navigation bar visible
         document.querySelector('.bottom-nav').style.display = 'flex';
         updateActiveNav('categories-nav');
     });
-
+    
     document.getElementById('categories-back').addEventListener('click', function() {
         const iframe = document.getElementById('categories-iframe');
         // Slide out animation
         iframe.style.transition = 'transform 0.5s ease-in';
         iframe.style.transform = 'translateX(100%)';
-
+        
         setTimeout(() => {
             document.getElementById('categories-content').style.display = 'none';
             showMainContent(); // Reset to main content when back button is pressed
         }, 500);
     });
-
+    
     // View All Categories
     document.getElementById('view-all-categories').addEventListener('click', function(e) {
         e.preventDefault();
-        // Trigger the categories navigation click event
-        document.getElementById('categories-nav').click();
+        const categoriesContent = document.getElementById('categories-content');
+        categoriesContent.style.display = 'flex';
+        
+        // Show iframe loader
+        showIframeLoader(categoriesContent);
+        
+        const categoriesIframe = document.getElementById('categories-iframe');
+        categoriesIframe.style.opacity = '0'; // Hide iframe initially
+        categoriesIframe.src = 'nav/categories/categories.html';
+        
+        // Handle iframe load completion
+        categoriesIframe.onload = function() {
+            hideIframeLoader(categoriesContent);
+            categoriesIframe.style.opacity = '1'; // Show iframe with fade effect
+            
+            // Apply slide-in animation
+            categoriesIframe.style.transform = 'translateX(-100%)';
+            setTimeout(() => {
+                categoriesIframe.style.transition = 'transform 0.5s ease-out';
+                categoriesIframe.style.transform = 'translateX(0)';
+            }, 50);
+        };
+        
+        // Keep navigation bar visible
+        document.querySelector('.bottom-nav').style.display = 'flex';
+        updateActiveNav('categories-nav');
     });
-
-translateX(-100%)';
+    
+    // Earn Navigation
+    document.getElementById('earn-nav').addEventListener('click', function(e) {
+        e.preventDefault();
+        const earnContent = document.getElementById('earn-content');
+        earnContent.style.display = 'flex';
+        
+        // Show iframe loader
+        showIframeLoader(earnContent);
+        
+        const earnIframe = document.getElementById('earn-iframe');
+        earnIframe.style.opacity = '0'; // Hide iframe initially
+        earnIframe.src = 'nav/earn.html';
+        
+        // Handle iframe load completion
+        earnIframe.onload = function() {
+            hideIframeLoader(earnContent);
+            earnIframe.style.opacity = '1'; // Show iframe with fade effect
+            
+            // Apply slide-in animation
+            earnIframe.style.transform = 'translateX(-100%)';
             setTimeout(() => {
                 earnIframe.style.transition = 'transform 0.5s ease-out';
                 earnIframe.style.transform = 'translateX(0)';
             }, 50);
         };
-
+        
         // Ensure navigation bar is visible
         document.querySelector('.bottom-nav').style.display = 'flex';
         updateActiveNav('earn-nav');
     });
-
+    
     document.getElementById('earn-back').addEventListener('click', function() {
-        const iframe = document.getElementById('earn-iframe');
-        if (iframe) {
+        if (this.parentElement) {
+            const iframe = document.getElementById('earn-iframe');
             // Slide out animation
             iframe.style.transition = 'transform 0.5s ease-in';
             iframe.style.transform = 'translateX(100%)';
+            
+            setTimeout(() => {
+                document.getElementById('earn-content').style.display = 'none';
+                showMainContent(); // Reset to main content when back button is pressed
+            }, 500);
         }
-
-        setTimeout(() => {
-            document.getElementById('earn-content').style.display = 'none';
-            showMainContent(); // Reset to main content when back button is pressed
-        }, 500);
     });
-
-    // Profile Navigation - Fixed to correctly load the profile page
+    
+    // Profile Navigation
     document.getElementById('profile-nav').addEventListener('click', function(e) {
         e.preventDefault();
-        
         // Hide all containers first
         document.querySelectorAll('.container').forEach(container => {
             container.style.display = 'none';
@@ -642,71 +808,38 @@ translateX(-100%)';
         
         const profileContent = document.getElementById('profile-content');
         profileContent.style.display = 'flex';
-
+        
         // Show iframe loader
         showIframeLoader(profileContent);
-
+        
         const profileIframe = document.getElementById('profile-iframe');
         profileIframe.style.opacity = '0'; // Hide iframe initially
-        
-        // Make sure iframe exists before setting properties
-        if (!profileIframe) {
-            console.error('Profile iframe element not found');
-            hideIframeLoader(profileContent);
-            return;
-        }
-        
-        // Force iframe reload by removing and recreating
-        const parentContainer = profileIframe.parentNode;
-        parentContainer.removeChild(profileIframe);
-        
-        const newProfileIframe = document.createElement('iframe');
-        newProfileIframe.id = 'profile-iframe';
-        newProfileIframe.style.opacity = '0';
-        newProfileIframe.style.width = '100%';
-        newProfileIframe.style.height = '100%';
-        newProfileIframe.style.border = 'none';
-        parentContainer.appendChild(newProfileIframe);
-        
-        // Set the correct path to the profile.html file
-        newProfileIframe.src = 'nav/profile.html';
-        
-        // Debug
-        console.log('Loading profile iframe with src:', newProfileIframe.src);
+        profileIframe.src = 'nav/profile.html';
         
         // Handle iframe load completion
-        newProfileIframe.onload = function() {
-            console.log('Profile iframe loaded successfully');
+        profileIframe.onload = function() {
             hideIframeLoader(profileContent);
-            newProfileIframe.style.opacity = '1'; // Show iframe with fade effect
-
+            profileIframe.style.opacity = '1'; // Show iframe with fade effect
+            
             // Apply slide-in animation
-            newProfileIframe.style.transform = 'translateX(-100%)';
+            profileIframe.style.transform = 'translateX(-100%)';
             setTimeout(() => {
-                newProfileIframe.style.transition = 'transform 0.5s ease-out';
-                newProfileIframe.style.transform = 'translateX(0)';
+                profileIframe.style.transition = 'transform 0.5s ease-out';
+                profileIframe.style.transform = 'translateX(0)';
             }, 50);
         };
         
-        // Add error handling
-        newProfileIframe.onerror = function() {
-            console.error('Failed to load profile iframe');
-            hideIframeLoader(profileContent);
-        };
-
         // Keep navigation bar visible
         document.querySelector('.bottom-nav').style.display = 'flex';
         updateActiveNav('profile-nav');
     });
-
+    
     document.getElementById('profile-back').addEventListener('click', function() {
         const iframe = document.getElementById('profile-iframe');
-        if (iframe) {
-            // Slide out animation
-            iframe.style.transition = 'transform 0.5s ease-in';
-            iframe.style.transform = 'translateX(100%)';
-        }
-
+        // Slide out animation
+        iframe.style.transition = 'transform 0.5s ease-in';
+        iframe.style.transform = 'translateX(100%)';
+        
         setTimeout(() => {
             document.getElementById('profile-content').style.display = 'none';
             showMainContent(); // Reset to main content when back button is pressed
@@ -738,17 +871,17 @@ function initDarkMode() {
     // Create dark mode toggle button
     const darkModeToggle = document.createElement('div');
     darkModeToggle.className = 'dark-mode-toggle';
-
+ 
     document.body.appendChild(darkModeToggle);
-
+    
     // Check for saved theme preference
     const isDarkMode = localStorage.getItem('darkMode') === 'true';
-
+    
     // Apply saved preference
     if (isDarkMode) {
         document.body.classList.add('dark-mode');
     }
-
+    
     // Toggle dark mode on click
     darkModeToggle.addEventListener('click', function() {
         document.body.classList.toggle('dark-mode');
@@ -768,16 +901,16 @@ function detectAdBlockReal() {
     testAd.style.left = '-999px';
     testAd.style.height = '1px';
     testAd.style.width = '1px';
-
+    
     document.body.appendChild(testAd);
-
+    
     // Check if the ad element is hidden (ad blocker active)
     setTimeout(() => {
         // If the element's height is 0, ad blocker is active
         const isAdBlocked = testAd.offsetHeight === 0 || 
                            window.getComputedStyle(testAd).display === 'none' || 
                            !document.body.contains(testAd);
-
+        
         if (isAdBlocked) {
             // Show ad block message
             document.getElementById('adblockMessage').style.display = 'block';
@@ -785,13 +918,13 @@ function detectAdBlockReal() {
         } else {
             console.log('No ad blocker detected');
         }
-
+        
         // Remove the test element
         if (document.body.contains(testAd)) {
             document.body.removeChild(testAd);
         }
     }, 100);
-
+    
     // Alternative method using a fake ad request
     const testScript = document.createElement('script');
     testScript.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js';
@@ -811,7 +944,7 @@ function closeAdBlockMessage() {
 // Check for First Visit
 function checkForFirstVisit() {
     const isFirstVisit = localStorage.getItem('firstVisit') !== 'false';
-
+    
     if (isFirstVisit) {
         showWelcomePopup();
         localStorage.setItem('firstVisit', 'false');
@@ -821,7 +954,7 @@ function checkForFirstVisit() {
 // Show Welcome Popup
 function showWelcomePopup() {
     const popupContainer = document.getElementById('popupContainer');
-
+    
     const popup = document.createElement('div');
     popup.className = 'popup';
     popup.innerHTML = `
@@ -833,11 +966,11 @@ function showWelcomePopup() {
         </div>
         <button class="popup-button">Start Playing</button>
     `;
-
+    
     popupContainer.appendChild(popup);
     popupContainer.style.visibility = 'visible';
     popupContainer.style.opacity = '1';
-
+    
     // Close popup on close button click
     popup.querySelector('.popup-close').addEventListener('click', () => {
         popupContainer.style.opacity = '0';
@@ -846,7 +979,7 @@ function showWelcomePopup() {
             popupContainer.innerHTML = '';
         }, 300);
     });
-
+    
     // Close popup on button click
     popup.querySelector('.popup-button').addEventListener('click', () => {
         popupContainer.style.opacity = '0';
@@ -860,7 +993,7 @@ function showWelcomePopup() {
 // Lazy Load Images
 function lazyLoadImages() {
     const gameImages = document.querySelectorAll('.game-card img');
-
+    
     if ('IntersectionObserver' in window) {
         const imageObserver = new IntersectionObserver((entries, observer) => {
             entries.forEach(entry => {
@@ -871,38 +1004,11 @@ function lazyLoadImages() {
                 }
             });
         });
-
+        
         gameImages.forEach(img => {
             imageObserver.observe(img);
         });
     }
-}
-
-// Initialize Native Install Prompt functionality
-// This relies on Chrome's built-in installation prompt instead of a custom banner
-function initNativeInstallPrompt() {
-    // This empty function simply allows Chrome to handle its own install prompt
-    // No need to interfere with Chrome's native install banner
-    
-    // We'll just log when the app is installed
-    window.addEventListener('appinstalled', (evt) => {
-        // Log install to analytics
-        console.log('App was installed successfully');
-    });
-}
-
-// Service Worker Registration for PWA
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', function() {
-        // Register service worker with scope parameter to work on localhost
-        navigator.serviceWorker.register('./service-worker.js', { scope: './' })
-            .then(function(registration) {
-                console.log('ServiceWorker registration successful with scope: ', registration.scope);
-            })
-            .catch(function(err) {
-                console.log('ServiceWorker registration failed: ', err);
-            });
-    });
 }
 
 // Prevent default behavior for all game links to enable analytics tracking
@@ -911,10 +1017,10 @@ document.addEventListener('click', function(e) {
         const link = e.target.classList.contains('game-link') ? e.target : e.target.parentElement;
         const href = link.getAttribute('href');
         const gameName = link.closest('.game-card').querySelector('.game-info p').textContent;
-
+        
         // Track analytics (placeholder for actual analytics code)
         console.log(`Game clicked: ${gameName}`);
-
+        
         // Allow default behavior to continue
     }
 });
@@ -923,8 +1029,6 @@ document.addEventListener('click', function(e) {
 function handleCategoryClick(category) {
     // This would filter games by category
     console.log(`Category clicked: ${category}`);
-    // Trigger the categories navigation click event
-    document.getElementById('categories-nav').click();
 }
 
 // Add click listeners to categories
@@ -959,7 +1063,7 @@ function addIframeLoaderStyles() {
         .flashing-m {
             font-size: 4rem;
             font-weight: bold;
-            font-family: 'Arial', sans-serif;
+            font-family:  'Arial', sans-serif;
             animation: flashM 1.2s infinite;
             color: #006600; /* Dark green color */
         }
