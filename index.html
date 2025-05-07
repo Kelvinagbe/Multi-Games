@@ -389,6 +389,11 @@
 <!-- Game Modal -->
 <div id="gameModal" class="game-modal">
     <div class="game-fullpage">
+        <!-- Game Title Overlay -->
+        <div class="game-title-overlay">
+            <h2 id="modal-game-title">Game Title</h2>
+        </div>
+        
         <!-- Power button for exit -->
         <div class="power-button" id="modal-power-button" title="Exit Game">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.85;">
@@ -397,9 +402,12 @@
             </svg>
         </div>
 
-        <!-- Loading screen -->
+        <!-- Loading screen with game thumbnail as background -->
         <div class="loading-screen" id="modal-loading-screen">
-            <p>Loading game...</p>
+            <div class="loading-container">
+                <div class="loader"></div>
+                <p>Loading game...</p>
+            </div>
         </div>
         
         <!-- Game iframe container -->
