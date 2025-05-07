@@ -516,54 +516,6 @@
 
 
   <!-- JavaScript for Loader, Navigation, and Floating Search Bar Visibility -->
-<script>
-document.addEventListener("DOMContentLoaded", function() {
-    // PWA Installation
-    let deferredPrompt;
-    const installBanner = document.getElementById('installBanner');
-    const installButton = document.getElementById('installButton');
-    
-    if (installBanner && installButton) {
-        // Initially hide the banner
-        installBanner.style.display = 'none';
-        
-        // Check if already installed
-        if (window.matchMedia('(display-mode: standalone)').matches || 
-            window.navigator.standalone === true) {
-            installBanner.style.display = 'none';
-        }
-        
-        // Before install prompt event
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            
-            // Only show if not in standalone mode
-            if (!window.matchMedia('(display-mode: standalone)').matches) {
-                installBanner.style.display = 'flex';
-            }
-        });
-        
-        // Install button click
-        installButton.addEventListener('click', async () => {
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                const { outcome } = await deferredPrompt.userChoice;
-                
-                // Hide banner after user makes a choice
-                installBanner.style.display = 'none';
-                deferredPrompt = null;
-            }
-        });
-        
-        // App installed event
-        window.addEventListener('appinstalled', () => {
-            installBanner.style.display = 'none';
-            deferredPrompt = null;
-        });
-    }
-});
-</script>
 <!-- Add this script block wherever you want in your index.html (preferably before the closing </body> tag) -->
 
 <script>
@@ -685,7 +637,7 @@ messaging.onMessage((payload) => {
   const notificationTitle = payload.notification?.title || 'New Message';
   const notificationOptions = {
     body: payload.notification?.body || 'You have a new notification',
-    icon: '/logo.png'
+    icon: 'assets/icon-192.png'
   };
   
   new Notification(notificationTitle, notificationOptions);
