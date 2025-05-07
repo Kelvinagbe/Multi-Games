@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+I'm<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -511,7 +511,6 @@
 let gamesData = [];
 let searchTimeout;
 const loaderDelay = 1500; // Loader delay in ms
-let deferredPrompt;
 
 // Set "visited before" flag 
 localStorage.setItem("visitedBefore", "true");
@@ -529,9 +528,6 @@ document.addEventListener("DOMContentLoaded", function() {
     // Add CSS for iframe loaders
     addIframeLoaderStyles();
 
-    // Initialize search functionality
-    initSearch();
-
     // Initialize navigation
     initNavigation();
 
@@ -546,106 +542,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // Lazy load images
     lazyLoadImages();
-
-    // Initialize install button if it exists
-    initPWAInstall();
 });
-
-
-// Initialize Search Functionality
-function initSearch() {
-    const searchInput = document.getElementById('floating-search-input');
-    const suggestionsContainer = document.getElementById('floating-suggestions');
-
-    // Fetch games data (mocked here, should be replaced with actual data)
-    fetchGamesData();
-
-    searchInput.addEventListener('focus', function() {
-        document.getElementById('floating-search').style.width = '95%';
-    });
-
-    searchInput.addEventListener('input', function() {
-        clearTimeout(searchTimeout);
-        const query = this.value.trim();
-
-        if (query.length > 0) {
-            searchTimeout = setTimeout(() => {
-                searchGames(query);
-            }, 300);
-        } else {
-            suggestionsContainer.innerHTML = '';
-            suggestionsContainer.classList.remove('show');
-        }
-    });
-
-    // Close search when clicking outside
-    document.addEventListener('click', function(e) {
-        if (!e.target.closest('.floating-search')) {
-            suggestionsContainer.classList.remove('show');
-        }
-    });
-}
-
-// Fetch Games Data
-function fetchGamesData() {
-    // This would normally be an API call - for now we'll use data from the HTML
-    const gameCards = document.querySelectorAll('.game-card');
-    gameCards.forEach(card => {
-        const img = card.querySelector('img');
-        const title = card.querySelector('.game-info p').textContent;
-        const rating = card.querySelector('.game-meta i').nextSibling.textContent.trim();
-        const link = card.querySelector('.play-btn').getAttribute('href');
-
-        gamesData.push({
-            title: title,
-            image: img.src,
-            rating: rating,
-            link: link
-        });
-    });
-}
-
-// Search Games
-function searchGames(query) {
-    const suggestionsContainer = document.getElementById('floating-suggestions');
-    suggestionsContainer.innerHTML = '';
-
-    const filteredGames = gamesData.filter(game => 
-        game.title.toLowerCase().includes(query.toLowerCase())
-    );
-
-    if (filteredGames.length > 0) {
-        filteredGames.forEach(game => {
-            const suggestionItem = document.createElement('div');
-            suggestionItem.className = 'suggestion-item';
-            suggestionItem.innerHTML = `
-                <img src="${game.image}" alt="${game.title}">
-                <div class="suggestion-text">
-                    <div class="suggestion-title">${game.title}</div>
-                    <div class="suggestion-meta">Rating: ${game.rating}</div>
-                </div>
-            `;
-
-            suggestionItem.addEventListener('click', () => {
-                window.location.href = game.link;
-            });
-
-            suggestionsContainer.appendChild(suggestionItem);
-        });
-
-        suggestionsContainer.classList.add('show');
-    } else {
-        const noResults = document.createElement('div');
-        noResults.className = 'suggestion-item';
-        noResults.innerHTML = `
-            <div class="suggestion-text">
-                <div class="suggestion-title">No games found</div>
-            </div>
-        `;
-        suggestionsContainer.appendChild(noResults);
-        suggestionsContainer.classList.add('show');
-    }
-}
 
 // Initialize Navigation
 function initNavigation() {
@@ -701,76 +598,8 @@ function initNavigation() {
     // View All Categories
     document.getElementById('view-all-categories').addEventListener('click', function(e) {
         e.preventDefault();
-        const categoriesContent = document.getElementById('categories-content');
-        categoriesContent.style.display = 'flex';
-
-        // Show iframe loader
-        showIframeLoader(categoriesContent);
-
-        const categoriesIframe = document.getElementById('categories-iframe');
-        categoriesIframe.style.opacity = '0'; // Hide iframe initially
-        categoriesIframe.src = 'nav/categories/categories.html';
-
-        // Handle iframe load completion
-        categoriesIframe.onload = function() {
-            hideIframeLoader(categoriesContent);
-            categoriesIframe.style.opacity = '1'; // Show iframe with fade effect
-
-            // Apply slide-in animation
-            categoriesIframe.style.transform = 'translateX(-100%)';
-            setTimeout(() => {
-                categoriesIframe.style.transition = 'transform 0.5s ease-out';
-                categoriesIframe.style.transform = 'translateX(0)';
-            }, 50);
-        };
-
-        // Keep navigation bar visible
-        document.querySelector('.bottom-nav').style.display = 'flex';
-        updateActiveNav('categories-nav');
-    });
-
-    // Game Feed Navigation (formerly Trending)
-    document.getElementById('trending-nav').addEventListener('click', function(e) {
-        e.preventDefault();
-        const feedContent = document.getElementById('feed-content');
-        feedContent.style.display = 'flex';
-
-        // Show iframe loader
-        showIframeLoader(feedContent);
-
-        const feedIframe = document.getElementById('feed-iframe');
-        feedIframe.style.opacity = '0'; // Hide iframe initially
-        feedIframe.src = 'nav/feed.html'; // You'll need to create this HTML file
-
-        // Handle iframe load completion
-        feedIframe.onload = function() {
-            hideIframeLoader(feedContent);
-            feedIframe.style.opacity = '1'; // Show iframe with fade effect
-
-            // Apply slide-in animation
-            feedIframe.style.transform = 'translateX(-100%)';
-            setTimeout(() => {
-                feedIframe.style.transition = 'transform 0.5s ease-out';
-                feedIframe.style.transform = 'translateX(0)';
-            }, 50);
-        };
-
-        // Ensure navigation bar is visible
-        document.querySelector('.bottom-nav').style.display = 'flex';
-        updateActiveNav('trending-nav');
-    });
-
-    // Game Feed back button
-    document.getElementById('feed-back').addEventListener('click', function() {
-        const iframe = document.getElementById('feed-iframe');
-        // Slide out animation
-        iframe.style.transition = 'transform 0.5s ease-in';
-        iframe.style.transform = 'translateX(100%)';
-
-        setTimeout(() => {
-            document.getElementById('feed-content').style.display = 'none';
-            showMainContent(); // Reset to main content when back button is pressed
-        }, 500);
+        // Trigger the categories navigation click event
+        document.getElementById('categories-nav').click();
     });
 
     // Earn Navigation
@@ -805,17 +634,15 @@ function initNavigation() {
     });
 
     document.getElementById('earn-back').addEventListener('click', function() {
-        if (this.parentElement) {
-            const iframe = document.getElementById('earn-iframe');
-            // Slide out animation
-            iframe.style.transition = 'transform 0.5s ease-in';
-            iframe.style.transform = 'translateX(100%)';
+        const iframe = document.getElementById('earn-iframe');
+        // Slide out animation
+        iframe.style.transition = 'transform 0.5s ease-in';
+        iframe.style.transform = 'translateX(100%)';
 
-            setTimeout(() => {
-                document.getElementById('earn-content').style.display = 'none';
-                showMainContent(); // Reset to main content when back button is pressed
-            }, 500);
-        }
+        setTimeout(() => {
+            document.getElementById('earn-content').style.display = 'none';
+            showMainContent(); // Reset to main content when back button is pressed
+        }, 500);
     });
 
     // Profile Navigation
@@ -1010,7 +837,6 @@ function showWelcomePopup() {
     });
 }
 
-
 // Lazy Load Images
 function lazyLoadImages() {
     const gameImages = document.querySelectorAll('.game-card img');
@@ -1032,14 +858,14 @@ function lazyLoadImages() {
     }
 }
 
-// Service Worker Registration for PWA
+// Service Worker Registration for PWA - Uses Chrome's native install prompt
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', function() {
         // Register service worker with scope parameter to work on localhost
         navigator.serviceWorker.register('./service-worker.js', { scope: './' })
             .then(function(registration) {
-
                 console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                // Let Chrome handle the installation prompt natively
             })
             .catch(function(err) {
                 console.log('ServiceWorker registration failed: ', err);
@@ -1065,6 +891,8 @@ document.addEventListener('click', function(e) {
 function handleCategoryClick(category) {
     // This would filter games by category
     console.log(`Category clicked: ${category}`);
+    // Trigger the categories navigation click event
+    document.getElementById('categories-nav').click();
 }
 
 // Add click listeners to categories
@@ -1141,6 +969,12 @@ function hideIframeLoader(container) {
     }
 }
 
+// We're now using Chrome's native install prompt
+// No custom button or handler needed
+window.addEventListener('appinstalled', (evt) => {
+    // Log install to analytics
+    console.log('App was installed via Chrome\'s native install prompt');
+});
 </script>
 <script>
 // Firebase configuration
