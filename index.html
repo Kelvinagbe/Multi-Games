@@ -262,6 +262,121 @@
       }
     }
 
+/* Loading Placeholder Component CSS */
+.content-placeholder {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--background-color);
+    z-index: 10;
+    padding: 20px;
+    box-sizing: border-box;
+    overflow: hidden;
+    opacity: 1;
+    transition: opacity 0.3s ease;
+}
+
+.content-placeholder.fade-out {
+    opacity: 0;
+}
+
+.placeholder-item {
+    background: linear-gradient(90deg, 
+        var(--placeholder-start-color) 8%, 
+        var(--placeholder-middle-color) 18%, 
+        var(--placeholder-start-color) 33%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s linear infinite;
+    border-radius: 4px;
+    margin-bottom: 15px;
+}
+
+:root {
+    --placeholder-start-color: #f6f7f8;
+    --placeholder-middle-color: #edeef1;
+}
+
+body.dark-mode {
+    --placeholder-start-color: #2a2a2a;
+    --placeholder-middle-color: #3a3a3a;
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: -100% 0;
+    }
+    100% {
+        background-position: 100% 0;
+    }
+}
+
+.ph-header {
+    height: 60px;
+    margin-bottom: 30px;
+}
+
+.ph-circle {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    margin: 0 auto 20px auto;
+}
+
+.ph-line {
+    height: 20px;
+}
+
+.ph-line.short {
+    width: 60%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.ph-line.medium {
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.ph-card {
+    height: 180px;
+    margin-bottom: 20px;
+}
+
+.ph-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    margin-top: 25px;
+}
+
+.ph-grid-item {
+    height: 140px;
+}
+
+.ph-text-block {
+    margin-top: 30px;
+}
+
+.ph-text-line {
+    height: 15px;
+    margin-bottom: 10px;
+}
+
+.ph-text-line:nth-child(even) {
+    width: 92%;
+}
+
+.ph-text-line:nth-child(odd) {
+    width: 85%;
+}
+
+.ph-text-line:last-child {
+    width: 65%;
+}
+
    /* Simple footer styles */
         .footer {
         
@@ -737,607 +852,254 @@
   <!-- JavaScript for Loader, Navigation, and Floating Search Bar Visibility -->
 <!-- Add this script block wherever you want in your index.html (preferably before the closing </body> tag) -->
 <script>
-// Initialize Global Variables
-let gamesData = [];
-let searchTimeout;
-const loaderDelay = 1500; // Loader delay in ms
-
-// DOM Content Loaded Event
-document.addEventListener("DOMContentLoaded", function() {
+// Main Navigation System
+document.addEventListener('DOMContentLoaded', function() {
+    // Loader functionality
+    const loaderDelay = 1500; // Loader delay in ms
+    const loader = document.getElementById('loader');
+    
     // Hide loader after delay
     setTimeout(() => {
-        document.getElementById('loader').style.opacity = '0';
-        setTimeout(() => {
-            document.getElementById('loader').style.display = 'none';
-        }, 500);
+        if (loader) {
+            loader.style.opacity = '0';
+            setTimeout(() => {
+                loader.style.display = 'none';
+            }, 500);
+        }
     }, loaderDelay);
+    
+    // Import placeholder script
+    const placeholderScript = document.createElement('script');
+    placeholderScript.src = 'js/placeholder-system.js';
+    document.head.appendChild(placeholderScript);
+    
+    // Cache DOM elements
+    const homeNav = document.getElementById('home-nav');
+    const categoriesNav = document.getElementById('categories-nav');
+    const earnNav = document.getElementById('earn-nav');
+    const profileNav = document.getElementById('profile-nav');
+    
+    const homeContent = document.getElementById('home-content');
+    const categoriesContent = document.getElementById('categories-content');
+    const earnContent = document.getElementById('earn-content');
+    const profileContent = document.getElementById('profile-content');
+    const notificationContent = document.getElementById('notification-content');
+    
+    const blogBack = document.getElementById('blog-back');
+    const profileBack = document.getElementById('profile-back');
+    const categoriesBack = document.getElementById('categories-back');
+    
+    const categoriesIframe = document.getElementById('categories-iframe');
+    const blogIframe = document.getElementById('blog-iframe');
+    const profileIframe = document.getElementById('profile-iframe');
+    const notificationIframe = document.getElementById('notification-iframe');
+    
+    const header = document.querySelector('.header');
 
-    // Add CSS for content placeholders
-    addContentPlaceholderStyles();
-
-    // Initialize navigation
-    initNavigation();
-
-    // Initialize dark mode
+    // Initialize page state
+    let currentPage = 'home';
+    
+    // Initialize iframes with placeholder content while loading
+    function setIframePlaceholder(iframe, contentElement, type) {
+        if (iframe && contentElement) {
+            // Add placeholder while loading
+            return showIframePlaceholder(contentElement, iframe, type);
+        }
+    }
+    
+    // Navigation click handlers
+    earnNav.addEventListener('click', function(e) {
+        e.preventDefault();
+        showPage('earn');
+    });
+    
+    profileNav.addEventListener('click', function(e) {
+        e.preventDefault();
+        showPage('profile');
+    });
+    
+    homeNav.addEventListener('click', function(e) {
+        e.preventDefault();
+        showPage('home');
+    });
+    
+    categoriesNav.addEventListener('click', function(e) {
+        e.preventDefault();
+        showPage('categories');
+    });
+    
+    // Back button handlers
+    if (blogBack) {
+        blogBack.addEventListener('click', function() {
+            showPage('home');
+        });
+    }
+    
+    if (profileBack) {
+        profileBack.addEventListener('click', function() {
+            showPage('home');
+        });
+    }
+    
+    if (categoriesBack) {
+        categoriesBack.addEventListener('click', function() {
+            showPage('home');
+        });
+    }
+    
+    // Page navigation function
+    function showPage(page) {
+        // Hide all content pages
+        hideAllPages();
+        
+        // Update navigation active state
+        updateNavActiveState(page);
+        
+        // Show selected page with fade-in effect
+        switch(page) {
+            case 'home':
+                if (homeContent) {
+                    homeContent.style.display = 'block';
+                    setTimeout(() => {
+                        homeContent.classList.add('active');
+                    }, 10);
+                }
+                
+                // Show header on home page
+                if (header) header.style.display = 'block';
+                break;
+                
+            case 'categories':
+                if (categoriesContent) {
+                    setIframePlaceholder(categoriesIframe, categoriesContent, 'categories');
+                    categoriesContent.style.display = 'block';
+                    setTimeout(() => {
+                        categoriesContent.classList.add('active');
+                    }, 10);
+                }
+                
+                // Show header on categories page for search
+                if (header) header.style.display = 'block';
+                break;
+                
+            case 'earn':
+                if (earnContent) {
+                    setIframePlaceholder(blogIframe, earnContent, 'blog');
+                    earnContent.style.display = 'block';
+                    setTimeout(() => {
+                        earnContent.classList.add('active');
+                    }, 10);
+                }
+                
+                // Hide header on blog page
+                if (header) header.style.display = 'none';
+                break;
+                
+            case 'profile':
+                if (profileContent) {
+                    setIframePlaceholder(profileIframe, profileContent, 'profile');
+                    profileContent.style.display = 'block';
+                    setTimeout(() => {
+                        profileContent.classList.add('active');
+                    }, 10);
+                }
+                
+                // Hide header on profile page
+                if (header) header.style.display = 'none';
+                break;
+        }
+        
+        currentPage = page;
+    }
+    
+    // Hide all content pages
+    function hideAllPages() {
+        const pages = [homeContent, categoriesContent, earnContent, profileContent, notificationContent];
+        pages.forEach(page => {
+            if (page) {
+                page.classList.remove('active');
+                page.style.display = 'none';
+            }
+        });
+    }
+    
+    // Update navigation active state
+    function updateNavActiveState(activePage) {
+        const navItems = [homeNav, categoriesNav, earnNav, profileNav];
+        navItems.forEach(nav => {
+            if (nav) {
+                nav.classList.remove('active');
+            }
+        });
+        
+        switch(activePage) {
+            case 'home':
+                if (homeNav) homeNav.classList.add('active');
+                break;
+            case 'categories':
+                if (categoriesNav) categoriesNav.classList.add('active');
+                break;
+            case 'earn':
+                if (earnNav) earnNav.classList.add('active');
+                break;
+            case 'profile':
+                if (profileNav) profileNav.classList.add('active');
+                break;
+        }
+    }
+    
+    // Initialize Dark Mode
+    function initDarkMode() {
+        // Check for saved theme preference
+        const isDarkMode = localStorage.getItem('darkMode') === 'true';
+        
+        // Apply saved preference
+        if (isDarkMode) {
+            document.body.classList.add('dark-mode');
+        }
+    }
+    
+    // Lazy Load Images
+    function lazyLoadImages() {
+        const gameImages = document.querySelectorAll('.game-card img');
+        
+        if ('IntersectionObserver' in window) {
+            const imageObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+                        const dataSrc = img.getAttribute('data-src');
+                        if (dataSrc) {
+                            img.src = dataSrc;
+                            img.removeAttribute('data-src');
+                        }
+                        imageObserver.unobserve(img);
+                    }
+                });
+            });
+            
+            gameImages.forEach(img => {
+                imageObserver.observe(img);
+            });
+        } else {
+            // Fallback for browsers without IntersectionObserver support
+            gameImages.forEach(img => {
+                const dataSrc = img.getAttribute('data-src');
+                if (dataSrc) {
+                    img.src = dataSrc;
+                    img.removeAttribute('data-src');
+                }
+            });
+        }
+    }
+    
+    // Initialize functionality
     initDarkMode();
-
-    // Initialize real ad block detection
-    detectAdBlockReal();
-
-    // REMOVED: Show welcome popup for new users
-    // checkForFirstVisit(); -- Removed as requested
-
-    // Lazy load images
     lazyLoadImages();
     
-    // Ensure header is visible on initial load
-    document.querySelector('.header').style.display = 'block';
+    // Start with home page
+    showPage('home');
 });
-
-// Initialize Navigation
-function initNavigation() {
-    // Home Navigation
-    document.getElementById('home-nav').addEventListener('click', function(e) {
-        e.preventDefault();
-        showMainContent();
-    });
-
-    // Categories Navigation
-    document.getElementById('categories-nav').addEventListener('click', function(e) {
-        e.preventDefault();
-        const categoriesContent = document.getElementById('categories-content');
-        categoriesContent.style.display = 'flex';
-
-        // Show content placeholder without back and title shimmer
-        showContentPlaceholder(categoriesContent, 'categories');
-
-        const categoriesIframe = document.getElementById('categories-iframe');
-        categoriesIframe.style.opacity = '0'; // Hide iframe initially
-        categoriesIframe.src = 'nav/categories/categories.html';
-
-        // Handle iframe load completion
-        categoriesIframe.onload = function() {
-            hideContentPlaceholder(categoriesContent);
-            categoriesIframe.style.opacity = '1'; // Show iframe with fade effect
-        };
-
-        // Hide header when showing categories
-        document.querySelector('.header').style.display = 'none';
-        
-        // Keep navigation bar visible
-        document.querySelector('.bottom-nav').style.display = 'flex';
-        updateActiveNav('categories-nav');
-    });
-
-    document.getElementById('categories-back').addEventListener('click', function() {
-        const iframe = document.getElementById('categories-iframe');
-        document.getElementById('categories-content').style.display = 'none';
-        showMainContent(); // Reset to main content when back button is pressed
-    });
-
-    // View All Categories
-    document.getElementById('view-all-categories').addEventListener('click', function(e) {
-        e.preventDefault();
-        const categoriesContent = document.getElementById('categories-content');
-        categoriesContent.style.display = 'flex';
-
-        // Show content placeholder without back and title shimmer
-        showContentPlaceholder(categoriesContent, 'categories');
-
-        const categoriesIframe = document.getElementById('categories-iframe');
-        categoriesIframe.style.opacity = '0'; // Hide iframe initially
-        categoriesIframe.src = 'nav/categories/categories.html';
-
-        // Handle iframe load completion
-        categoriesIframe.onload = function() {
-            hideContentPlaceholder(categoriesContent);
-            categoriesIframe.style.opacity = '1'; // Show iframe with fade effect
-        };
-
-        // Hide header when showing categories
-        document.querySelector('.header').style.display = 'none';
-
-        // Keep navigation bar visible
-        document.querySelector('.bottom-nav').style.display = 'flex';
-        updateActiveNav('categories-nav');
-    });
-
-    // Earn Navigation
-    document.getElementById('earn-nav').addEventListener('click', function(e) {
-        e.preventDefault();
-        const earnContent = document.getElementById('earn-content');
-        earnContent.style.display = 'flex';
-
-        // Show content placeholder without back and title shimmer
-        showContentPlaceholder(earnContent, 'earn');
-
-        const earnIframe = document.getElementById('earn-iframe');
-        earnIframe.style.opacity = '0'; // Hide iframe initially
-        earnIframe.src = 'nav/earn.html';
-
-        // Handle iframe load completion
-        earnIframe.onload = function() {
-            hideContentPlaceholder(earnContent);
-            earnIframe.style.opacity = '1'; // Show iframe with fade effect
-        };
-
-        // Hide header when showing earn
-        document.querySelector('.header').style.display = 'none';
-
-        // Ensure navigation bar is visible
-        document.querySelector('.bottom-nav').style.display = 'flex';
-        updateActiveNav('earn-nav');
-    });
-
-    document.getElementById('earn-back').addEventListener('click', function() {
-        if (this.parentElement) {
-            const iframe = document.getElementById('earn-iframe');
-            document.getElementById('earn-content').style.display = 'none';
-            showMainContent(); // Reset to main content when back button is pressed
-        }
-    });
-
-    // Profile Navigation - Completely revised to use a direct iframe approach
-    const profileNavButton = document.getElementById('profile-nav');
-    if (profileNavButton) {
-        profileNavButton.addEventListener('click', function(e) {
-            e.preventDefault();
-            
-            // Hide all other containers
-            document.querySelectorAll('.container').forEach(container => {
-                container.style.display = 'none';
-            });
-            
-            // Hide header
-            document.querySelector('.header').style.display = 'none';
-            
-            // Show profile container
-            const profileContent = document.getElementById('profile-content');
-            profileContent.style.display = 'flex';
-            
-            // Create or use existing iframe
-            let profileIframe = document.getElementById('profile-iframe');
-            if (!profileIframe) {
-                profileIframe = document.createElement('iframe');
-                profileIframe.id = 'profile-iframe';
-                profileIframe.className = 'content-iframe';
-                profileIframe.style.width = '100%';
-                profileIframe.style.height = '100%';
-                profileIframe.style.border = 'none';
-                profileIframe.style.opacity = '0';
-                profileIframe.style.transition = 'opacity 0.3s ease';
-                
-                // First remove any existing iframe (just to be safe)
-                const oldIframe = profileContent.querySelector('iframe');
-                if (oldIframe) {
-                    profileContent.removeChild(oldIframe);
-                }
-                
-                // Append the new iframe
-                profileContent.appendChild(profileIframe);
-            }
-            
-            // Show placeholder while loading
-            showContentPlaceholder(profileContent, 'profile');
-            
-            // Set iframe source
-            profileIframe.src = 'nav/profile.html';
-            
-            // Handle iframe load
-            profileIframe.onload = function() {
-                hideContentPlaceholder(profileContent);
-                profileIframe.style.opacity = '1';
-                console.log('Profile iframe loaded successfully');
-            };
-            
-            // Handle iframe errors
-            profileIframe.onerror = function(error) {
-                console.error('Error loading profile iframe:', error);
-                hideContentPlaceholder(profileContent);
-                profileContent.innerHTML = '<div class="error-message">Could not load profile. Please try again.</div>';
-            };
-            
-            // Update navigation
-            updateActiveNav('profile-nav');
-        });
-    }
-
-    // Add back button for profile if it doesn't exist
-    let profileBackButton = document.getElementById('profile-back');
-    if (!profileBackButton) {
-        profileBackButton = document.createElement('button');
-        profileBackButton.id = 'profile-back';
-        profileBackButton.className = 'back-button';
-        profileBackButton.innerHTML = '← Back';
-        
-        const profileContent = document.getElementById('profile-content');
-        if (profileContent) {
-            // Add the back button to the beginning of the content
-            profileContent.insertBefore(profileBackButton, profileContent.firstChild);
-        }
-    }
-    
-    // Add event listener for profile back button
-    document.getElementById('profile-back').addEventListener('click', function() {
-        document.getElementById('profile-content').style.display = 'none';
-        showMainContent(); // Reset to main content when back button is pressed
-    });
-}
-
-// Show Main Content - Fixed to ensure header visibility
-function showMainContent() {
-    // Hide all containers first
-    document.querySelectorAll('.container').forEach(container => {
-        container.style.display = 'none';
-    });
-    
-    // Show main content
-    document.getElementById('main-content').style.display = 'block';
-    
-    // Make sure header is visible when returning to main content
-    document.querySelector('.header').style.display = 'block';
-    
-    // Ensure navigation bar is visible
-    document.querySelector('.bottom-nav').style.display = 'flex';
-    
-    // Update active navigation
-    updateActiveNav('home-nav');
-}
-
-// Update Active Navigation
-function updateActiveNav(activeId) {
-    document.querySelectorAll('.bottom-nav a').forEach(item => {
-        item.classList.remove('active');
-    });
-    document.getElementById(activeId).classList.add('active');
-}
-
-// Initialize Dark Mode
-function initDarkMode() {
-    // Create dark mode toggle button
-    const darkModeToggle = document.createElement('div');
-    darkModeToggle.className = 'dark-mode-toggle';
-
-    document.body.appendChild(darkModeToggle);
-
-    // Check for saved theme preference
-    const isDarkMode = localStorage.getItem('darkMode') === 'true';
-
-    // Apply saved preference
-    if (isDarkMode) {
-        document.body.classList.add('dark-mode');
-    }
-
-    // Toggle dark mode on click
-    darkModeToggle.addEventListener('click', function() {
-        document.body.classList.toggle('dark-mode');
-        const isDark = document.body.classList.contains('dark-mode');
-        localStorage.setItem('darkMode', isDark);
-    });
-}
-
-// Real Ad Blocker Detection
-function detectAdBlockReal() {
-    // Create a test ad element
-    const testAd = document.createElement('div');
-    testAd.className = 'ads ad adsbox doubleclick ad-placement carbon-ads';
-    testAd.innerHTML = '&nbsp;';
-    testAd.style.position = 'absolute';
-    testAd.style.top = '-999px';
-    testAd.style.left = '-999px';
-    testAd.style.height = '1px';
-    testAd.style.width = '1px';
-
-    document.body.appendChild(testAd);
-
-    // Check if the ad element is hidden (ad blocker active)
-    setTimeout(() => {
-        // If the element's height is 0, ad blocker is active
-        const isAdBlocked = testAd.offsetHeight === 0 || 
-                           window.getComputedStyle(testAd).display === 'none' || 
-                           !document.body.contains(testAd);
-
-        if (isAdBlocked) {
-            // Show ad block message
-            document.getElementById('adblockMessage').style.display = 'block';
-            console.log('Ad blocker detected');
-        } else {
-            console.log('No ad blocker detected');
-        }
-
-        // Remove the test element
-        if (document.body.contains(testAd)) {
-            document.body.removeChild(testAd);
-        }
-    }, 100);
-
-    // Alternative method using a fake ad request
-    const testScript = document.createElement('script');
-    testScript.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js';
-    testScript.onerror = function() {
-        // Show ad block message if script failed to load
-        document.getElementById('adblockMessage').style.display = 'block';
-        console.log('Ad blocker detected (script method)');
-    };
-    document.body.appendChild(testScript);
-}
-
-// Close Ad Block Message
-function closeAdBlockMessage() {
-    document.getElementById('adblockMessage').style.display = 'none';
-}
-
-// REMOVED: Welcome popup functions have been removed as requested
-// checkForFirstVisit() 
-// showWelcomePopup()
-
-// Lazy Load Images
-function lazyLoadImages() {
-    const gameImages = document.querySelectorAll('.game-card img');
-
-    if ('IntersectionObserver' in window) {
-        const imageObserver = new IntersectionObserver((entries, observer) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    const img = entry.target;
-                    img.src = img.src; // Keep the original src
-                    imageObserver.unobserve(img);
-                }
-            });
-        });
-
-        gameImages.forEach(img => {
-            imageObserver.observe(img);
-        });
-    }
-}
-
-// Prevent default behavior for all game links to enable analytics tracking
-document.addEventListener('click', function(e) {
-    if (e.target.classList.contains('game-link') || e.target.parentElement.classList.contains('game-link')) {
-        const link = e.target.classList.contains('game-link') ? e.target : e.target.parentElement;
-        const href = link.getAttribute('href');
-        const gameName = link.closest('.game-card').querySelector('.game-info p').textContent;
-
-        // Track analytics (placeholder for actual analytics code)
-        console.log(`Game clicked: ${gameName}`);
-
-        // Allow default behavior to continue
-    }
-});
-
-// Function to handle category clicks
-function handleCategoryClick(category) {
-    // This would filter games by category
-    console.log(`Category clicked: ${category}`);
-}
-
-// Add click listeners to categories
-document.querySelectorAll('.category').forEach(categoryElement => {
-    categoryElement.addEventListener('click', function() {
-        const categoryName = this.querySelector('p').textContent;
-        handleCategoryClick(categoryName);
-    });
-});
-
-// Create and add content placeholder styles - Modified to fix the issue with main header
-function addContentPlaceholderStyles() {
-    const styleEl = document.createElement('style');
-    styleEl.innerHTML = `
-        .content-placeholder {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: #f6f7f8;
-            overflow: hidden;
-            z-index: 10;
-        }
-        
-        .dark-mode .content-placeholder {
-            background-color: #282828;
-        }
-        
-        /* Base shimmer style for all placeholders */
-        .shimmer {
-            position: relative;
-            overflow: hidden;
-            background: #e0e0e0;
-            border-radius: 4px;
-        }
-        
-        .dark-mode .shimmer {
-            background: #3a3a3a;
-        }
-        
-        .shimmer::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, 
-                rgba(255,255,255,0) 0%, 
-                rgba(255,255,255,0.2) 50%, 
-                rgba(255,255,255,0) 100%);
-            animation: shimmer 1.5s infinite;
-        }
-        
-        .dark-mode .shimmer::after {
-            background: linear-gradient(90deg, 
-                rgba(0,0,0,0) 0%, 
-                rgba(80,80,80,0.2) 50%, 
-                rgba(0,0,0,0) 100%);
-        }
-        
-        @keyframes shimmer {
-            0% { transform: translateX(-100%); }
-            100% { transform: translateX(100%); }
-        }
-        
-        /* Categories placeholder */
-        .categories-placeholder .placeholder-header {
-            height: 50px;
-            margin-bottom: 20px;
-            padding: 0 15px;
-            display: flex;
-            align-items: center;
-        }
-        
-        .categories-placeholder .category-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            padding: 15px;
-        }
-        
-        .categories-placeholder .category-item {
-            height: 100px;
-            border-radius: 8px;
-        }
-        
-        /* Earn placeholder */
-        .earn-placeholder .placeholder-header {
-            height: 50px;
-            margin-bottom: 20px;
-            padding: 0 15px;
-            display: flex;
-            align-items: center;
-        }
-        
-        .earn-placeholder .offer-list {
-            padding: 15px;
-        }
-        
-        .earn-placeholder .offer-item {
-            height: 80px;
-            margin-bottom: 15px;
-            border-radius: 8px;
-        }
-        
-        /* Profile placeholder */
-        .profile-placeholder .placeholder-header {
-            height: 50px;
-            margin-bottom: 20px;
-            padding: 0 15px;
-            display: flex;
-            align-items: center;
-        }
-        
-        .profile-placeholder .user-info {
-            padding: 20px;
-            margin-bottom: 30px;
-            display: flex;
-            align-items: center;
-        }
-        
-        .profile-placeholder .avatar {
-            width: 70px;
-            height: 70px;
-            border-radius: 50%;
-        }
-        
-        .profile-placeholder .user-details {
-            margin-left: 20px;
-        }
-        
-        .profile-placeholder .username {
-            height: 24px;
-            width: 150px;
-            margin-bottom: 8px;
-        }
-        
-        .profile-placeholder .stats {
-            height: 16px;
-            width: 100px;
-        }
-        
-        .profile-placeholder .menu-list {
-            padding: 0 15px;
-        }
-        
-        .profile-placeholder .menu-item {
-            height: 50px;
-            margin-bottom: 15px;
-            border-radius: 8px;
-        }
-    `;
-    document.head.appendChild(styleEl);
-}
-
-// Show content placeholder based on section type - Modified to fix header conflict
-function showContentPlaceholder(container, type) {
-    // Create placeholder if it doesn't exist
-    let placeholder = container.querySelector('.content-placeholder');
-    if (placeholder) {
-        placeholder.remove(); // Remove existing placeholder to avoid duplication
-    }
-    
-    placeholder = document.createElement('div');
-    placeholder.className = `content-placeholder ${type}-placeholder`;
-    
-    // Create different placeholder templates based on content type
-    // Using placeholder-header instead of header to avoid conflict with main page header
-    switch(type) {
-        case 'categories':
-            placeholder.innerHTML = `
-                <div class="placeholder-header">
-                    <!-- No shimmer elements here -->
-                </div>
-                <div class="category-grid">
-                    ${Array(9).fill('<div class="category-item shimmer"></div>').join('')}
-                </div>
-            `;
-            break;
-        case 'earn':
-            placeholder.innerHTML = `
-                <div class="placeholder-header">
-                    <!-- No shimmer elements here -->
-                </div>
-                <div class="offer-list">
-                    ${Array(5).fill('<div class="offer-item shimmer"></div>').join('')}
-                </div>
-            `;
-            break;
-        case 'profile':
-            placeholder.innerHTML = `
-                <div class="placeholder-header">
-                    <!-- No shimmer elements here -->
-                </div>
-                <div class="user-info">
-                    <div class="avatar shimmer"></div>
-                    <div class="user-details">
-                        <div class="username shimmer"></div>
-                 <div class="stats shimmer"></div>
-                    </div>
-                </div>
-                <div class="menu-list">
-                    ${Array(4).fill('<div class="menu-item shimmer"></div>').join('')}
-                </div>
-            `;
-            break;
-        default:
-            // Generic placeholder with shimmer effect
-            placeholder.innerHTML = `<div class="shimmer" style="width: 100%; height: 100%;"></div>`;
-    }
-    
-    container.appendChild(placeholder);
-}
-
-// Hide content placeholder
-function hideContentPlaceholder(container) {
-    const placeholder = container.querySelector('.content-placeholder');
-    if (placeholder) {
-        placeholder.style.opacity = '0';
-        setTimeout(() => {
-            if (placeholder && placeholder.parentNode) {
-                placeholder.parentNode.removeChild(placeholder);
-            }
-        }, 300); // Fade out effect before removing
-    }
-}
 </script>
 <script>
 // Firebase configuration
