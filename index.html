@@ -774,6 +774,9 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // Lazy load images
     lazyLoadImages();
+    
+    // Ensure header is visible on initial load
+    document.querySelector('.header').style.display = 'block';
 });
 
 // Initialize Navigation
@@ -801,9 +804,11 @@ function initNavigation() {
         categoriesIframe.onload = function() {
             hideContentPlaceholder(categoriesContent);
             categoriesIframe.style.opacity = '1'; // Show iframe with fade effect
-            // Removed slide-in animation
         };
 
+        // Hide header when showing categories
+        document.querySelector('.header').style.display = 'none';
+        
         // Keep navigation bar visible
         document.querySelector('.bottom-nav').style.display = 'flex';
         updateActiveNav('categories-nav');
@@ -811,7 +816,6 @@ function initNavigation() {
 
     document.getElementById('categories-back').addEventListener('click', function() {
         const iframe = document.getElementById('categories-iframe');
-        // Removed slide out animation
         document.getElementById('categories-content').style.display = 'none';
         showMainContent(); // Reset to main content when back button is pressed
     });
@@ -833,8 +837,10 @@ function initNavigation() {
         categoriesIframe.onload = function() {
             hideContentPlaceholder(categoriesContent);
             categoriesIframe.style.opacity = '1'; // Show iframe with fade effect
-            // Removed slide-in animation
         };
+
+        // Hide header when showing categories
+        document.querySelector('.header').style.display = 'none';
 
         // Keep navigation bar visible
         document.querySelector('.bottom-nav').style.display = 'flex';
@@ -858,8 +864,10 @@ function initNavigation() {
         earnIframe.onload = function() {
             hideContentPlaceholder(earnContent);
             earnIframe.style.opacity = '1'; // Show iframe with fade effect
-            // Removed slide-in animation
         };
+
+        // Hide header when showing earn
+        document.querySelector('.header').style.display = 'none';
 
         // Ensure navigation bar is visible
         document.querySelector('.bottom-nav').style.display = 'flex';
@@ -869,35 +877,47 @@ function initNavigation() {
     document.getElementById('earn-back').addEventListener('click', function() {
         if (this.parentElement) {
             const iframe = document.getElementById('earn-iframe');
-            // Removed slide out animation
             document.getElementById('earn-content').style.display = 'none';
             showMainContent(); // Reset to main content when back button is pressed
         }
     });
 
-    // Profile Navigation
+    // Profile Navigation - Fixed to properly initialize the profile page
     document.getElementById('profile-nav').addEventListener('click', function(e) {
         e.preventDefault();
+        
         // Hide all containers first
         document.querySelectorAll('.container').forEach(container => {
             container.style.display = 'none';
         });
+        
+        // Hide header when showing profile
+        document.querySelector('.header').style.display = 'none';
 
         const profileContent = document.getElementById('profile-content');
         profileContent.style.display = 'flex';
 
-        // Show content placeholder without back and title shimmer
+        // Show content placeholder for profile
         showContentPlaceholder(profileContent, 'profile');
 
         const profileIframe = document.getElementById('profile-iframe');
         profileIframe.style.opacity = '0'; // Hide iframe initially
+        
+        // Make sure the source is set correctly
         profileIframe.src = 'nav/profile.html';
 
         // Handle iframe load completion
         profileIframe.onload = function() {
             hideContentPlaceholder(profileContent);
             profileIframe.style.opacity = '1'; // Show iframe with fade effect
-            // Removed slide-in animation
+            console.log('Profile iframe loaded successfully');
+        };
+
+        // Log any errors loading the iframe
+        profileIframe.onerror = function(error) {
+            console.error('Error loading profile iframe:', error);
+            // Show a fallback message inside the content
+            profileContent.innerHTML = '<div class="error-message">Could not load profile. Please try again.</div>';
         };
 
         // Keep navigation bar visible
@@ -910,28 +930,31 @@ function initNavigation() {
     if (profileBackButton) {
         profileBackButton.addEventListener('click', function() {
             const iframe = document.getElementById('profile-iframe');
-            // Removed slide out animation
             document.getElementById('profile-content').style.display = 'none';
             showMainContent(); // Reset to main content when back button is pressed
         });
+    } else {
+        console.warn('Profile back button not found in the DOM');
     }
-
-    document.getElementById('profile-back').addEventListener('click', function() {
-        const iframe = document.getElementById('profile-iframe');
-        // Removed slide out animation
-        document.getElementById('profile-content').style.display = 'none';
-        showMainContent(); // Reset to main content when back button is pressed
-    });
 }
 
-// Show Main Content
+// Show Main Content - Fixed to ensure header visibility
 function showMainContent() {
+    // Hide all containers first
     document.querySelectorAll('.container').forEach(container => {
         container.style.display = 'none';
     });
+    
+    // Show main content
     document.getElementById('main-content').style.display = 'block';
+    
+    // Make sure header is visible when returning to main content
+    document.querySelector('.header').style.display = 'block';
+    
     // Ensure navigation bar is visible
     document.querySelector('.bottom-nav').style.display = 'flex';
+    
+    // Update active navigation
     updateActiveNav('home-nav');
 }
 
@@ -1284,6 +1307,9 @@ function showContentPlaceholder(container, type) {
     switch(type) {
         case 'categories':
             placeholder.innerHTML = `
+                <div class="header">
+                    <!-- Removed back and title shimmer elements -->
+                </div>
                 <div class="category-grid">
                     ${Array(9).fill('<div class="category-item shimmer"></div>').join('')}
                 </div>
@@ -1291,6 +1317,9 @@ function showContentPlaceholder(container, type) {
             break;
         case 'earn':
             placeholder.innerHTML = `
+                <div class="header">
+                    <!-- Removed back and title shimmer elements -->
+                </div>
                 <div class="offer-list">
                     ${Array(5).fill('<div class="offer-item shimmer"></div>').join('')}
                 </div>
@@ -1298,6 +1327,9 @@ function showContentPlaceholder(container, type) {
             break;
         case 'profile':
             placeholder.innerHTML = `
+                <div class="header">
+                    <!-- Removed back and title shimmer elements -->
+                </div>
                 <div class="user-info">
                     <div class="avatar shimmer"></div>
                     <div class="user-details">
@@ -1322,7 +1354,12 @@ function showContentPlaceholder(container, type) {
 function hideContentPlaceholder(container) {
     const placeholder = container.querySelector('.content-placeholder');
     if (placeholder) {
-        placeholder.remove();
+        placeholder.style.opacity = '0';
+        setTimeout(() => {
+            if (placeholder && placeholder.parentNode) {
+                placeholder.parentNode.removeChild(placeholder);
+            }
+        }, 300); // Fade out effect before removing
     }
 }
 </script>
