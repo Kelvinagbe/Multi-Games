@@ -1284,9 +1284,6 @@ function showContentPlaceholder(container, type) {
     switch(type) {
         case 'categories':
             placeholder.innerHTML = `
-                <div class="header">
-                    <!-- Removed back and title shimmer elements -->
-                </div>
                 <div class="category-grid">
                     ${Array(9).fill('<div class="category-item shimmer"></div>').join('')}
                 </div>
@@ -1294,9 +1291,6 @@ function showContentPlaceholder(container, type) {
             break;
         case 'earn':
             placeholder.innerHTML = `
-                <div class="header">
-                    <!-- Removed back and title shimmer elements -->
-                </div>
                 <div class="offer-list">
                     ${Array(5).fill('<div class="offer-item shimmer"></div>').join('')}
                 </div>
@@ -1304,9 +1298,6 @@ function showContentPlaceholder(container, type) {
             break;
         case 'profile':
             placeholder.innerHTML = `
-                <div class="header">
-                    <!-- Removed back and title shimmer elements -->
-                </div>
                 <div class="user-info">
                     <div class="avatar shimmer"></div>
                     <div class="user-details">
