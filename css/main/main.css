@@ -109,6 +109,7 @@ body {
   position: relative;
   border-radius: var(--border-radius-lg);
   overflow: hidden;
+  margin-top: 35px;
   margin-bottom: 25px;
   box-shadow: 0 8px 20px var(--shadow-color);
 }
