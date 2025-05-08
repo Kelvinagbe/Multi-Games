@@ -81,7 +81,7 @@ header {
 
         .logo {
             margin-bottom: 8px; /* Space between logo and search bar */
-            margin-top: 10px; /* Top space for the logo */
+            margin-top: 20px; /* Top space for the logo */
         }
 
         .logo h1 {
