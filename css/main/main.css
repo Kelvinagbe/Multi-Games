@@ -125,7 +125,7 @@ header {
             transform: translateY(-50%);
             color: var(--primary-color);
             cursor: pointer;
-            size: 1.6rem;
+            border: 3px solid
         }
 
 
