@@ -651,7 +651,7 @@ document.addEventListener("DOMContentLoaded", function() {
     addIframeLoaderStyles();
 
     // Initialize search functionality
-    initSearch();
+    
     
     // Initialize navigation
     initNavigation();
@@ -670,21 +670,7 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 
-// Initialize Search Functionality
-function initSearch() {
-    const searchInput = document.getElementById('floating-search-input');
-    const suggestionsContainer = document.getElementById('floating-suggestions');
-    
-    // Fetch games data (mocked here, should be replaced with actual data)
-    fetchGamesData();
-    
-    searchInput.addEventListener('focus', function() {
-        document.getElementById('floating-search').style.width = '95%';
-        
-        // Open Categories nav when search is tapped
-        const categoriesContent = document.getElementById('categories-content');
-        categoriesContent.style.display = 'flex';
-        
+
         // Show iframe loader
         showIframeLoader(categoriesContent);
         
@@ -710,88 +696,10 @@ function initSearch() {
         updateActiveNav('categories-nav');
     });
     
-    searchInput.addEventListener('input', function() {
-        clearTimeout(searchTimeout);
-        const query = this.value.trim();
-        
-        if (query.length > 0) {
-            searchTimeout = setTimeout(() => {
-                searchGames(query);
-            }, 300);
-        } else {
-            suggestionsContainer.innerHTML = '';
-            suggestionsContainer.classList.remove('show');
-        }
-    });
     
-    // Close search when clicking outside
-    document.addEventListener('click', function(e) {
-        if (!e.target.closest('.floating-search')) {
-            suggestionsContainer.classList.remove('show');
-        }
-    });
-}
+    
 
-// Fetch Games Data
-function fetchGamesData() {
-    // This would normally be an API call - for now we'll use data from the HTML
-    const gameCards = document.querySelectorAll('.game-card');
-    gameCards.forEach(card => {
-        const img = card.querySelector('img');
-        const title = card.querySelector('.game-info p').textContent;
-        const rating = card.querySelector('.game-meta i').nextSibling.textContent.trim();
-        const link = card.querySelector('.play-btn').getAttribute('href');
-        
-        gamesData.push({
-            title: title,
-            image: img.src,
-            rating: rating,
-            link: link
-        });
-    });
-}
 
-// Search Games
-function searchGames(query) {
-    const suggestionsContainer = document.getElementById('floating-suggestions');
-    suggestionsContainer.innerHTML = '';
-    
-    const filteredGames = gamesData.filter(game => 
-        game.title.toLowerCase().includes(query.toLowerCase())
-    );
-    
-    if (filteredGames.length > 0) {
-        filteredGames.forEach(game => {
-            const suggestionItem = document.createElement('div');
-            suggestionItem.className = 'suggestion-item';
-            suggestionItem.innerHTML = `
-                <img src="${game.image}" alt="${game.title}">
-                <div class="suggestion-text">
-                    <div class="suggestion-title">${game.title}</div>
-                    <div class="suggestion-meta">Rating: ${game.rating}</div>
-                </div>
-            `;
-            
-            suggestionItem.addEventListener('click', () => {
-                window.location.href = game.link;
-            });
-            
-            suggestionsContainer.appendChild(suggestionItem);
-        });
-        
-        suggestionsContainer.classList.add('show');
-    } else {
-        const noResults = document.createElement('div');
-        noResults.className = 'suggestion-item';
-        noResults.innerHTML = `
-            <div class="suggestion-text">
-                <div class="suggestion-title">No games found</div>
-            </div>
-        `;
-        suggestionsContainer.appendChild(noResults);
-        suggestionsContainer.classList.add('show');
-    }
-}
 
 // Initialize Navigation
 function initNavigation() {
