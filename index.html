@@ -668,37 +668,7 @@ document.addEventListener("DOMContentLoaded", function() {
     // Lazy load images
     lazyLoadImages();
 });
-
-
-
-        // Show iframe loader
-        showIframeLoader(categoriesContent);
-        
-        const categoriesIframe = document.getElementById('categories-iframe');
-        categoriesIframe.style.opacity = '0'; // Hide iframe initially
-        categoriesIframe.src = 'nav/categories/categories.html';
-        
-        // Handle iframe load completion
-        categoriesIframe.onload = function() {
-            hideIframeLoader(categoriesContent);
-            categoriesIframe.style.opacity = '1'; // Show iframe with fade effect
-            
-            // Apply slide-in animation
-            categoriesIframe.style.transform = 'translateX(-100%)';
-            setTimeout(() => {
-                categoriesIframe.style.transition = 'transform 0.5s ease-out';
-                categoriesIframe.style.transform = 'translateX(0)';
-            }, 50);
-        };
-        
-        // Keep navigation bar visible
-        document.querySelector('.bottom-nav').style.display = 'flex';
-        updateActiveNav('categories-nav');
-    });
     
-    
-    
-
 
 
 // Initialize Navigation
