@@ -64,7 +64,7 @@ header {
             box-shadow: 0 2px 10px var(--shadow-color);
             z-index: 90;
             padding: 10px 0;
-            height: 85px;
+            height: 89px;
             transition: var(--transition);
         }
 
@@ -80,8 +80,8 @@ header {
         }
 
         .logo {
-            margin-bottom: 5px; /* Space between logo and search bar */
-            margin-top: 20px; /* Top space for the logo */
+            margin-bottom: 3px; /* Space between logo and search bar */
+            margin-top: 14px; /* Top space for the logo */
         }
 
         .logo h1 {
