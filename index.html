@@ -790,7 +790,7 @@ function initNavigation() {
         const categoriesContent = document.getElementById('categories-content');
         categoriesContent.style.display = 'flex';
 
-        // Show content placeholder
+        // Show content placeholder without back and title shimmer
         showContentPlaceholder(categoriesContent, 'categories');
 
         const categoriesIframe = document.getElementById('categories-iframe');
@@ -801,13 +801,7 @@ function initNavigation() {
         categoriesIframe.onload = function() {
             hideContentPlaceholder(categoriesContent);
             categoriesIframe.style.opacity = '1'; // Show iframe with fade effect
-
-            // Apply slide-in animation
-            categoriesIframe.style.transform = 'translateX(-100%)';
-            setTimeout(() => {
-                categoriesIframe.style.transition = 'transform 0.5s ease-out';
-                categoriesIframe.style.transform = 'translateX(0)';
-            }, 50);
+            // Removed slide-in animation
         };
 
         // Keep navigation bar visible
@@ -817,14 +811,9 @@ function initNavigation() {
 
     document.getElementById('categories-back').addEventListener('click', function() {
         const iframe = document.getElementById('categories-iframe');
-        // Slide out animation
-        iframe.style.transition = 'transform 0.5s ease-in';
-        iframe.style.transform = 'translateX(100%)';
-
-        setTimeout(() => {
-            document.getElementById('categories-content').style.display = 'none';
-            showMainContent(); // Reset to main content when back button is pressed
-        }, 500);
+        // Removed slide out animation
+        document.getElementById('categories-content').style.display = 'none';
+        showMainContent(); // Reset to main content when back button is pressed
     });
 
     // View All Categories
@@ -833,7 +822,7 @@ function initNavigation() {
         const categoriesContent = document.getElementById('categories-content');
         categoriesContent.style.display = 'flex';
 
-        // Show content placeholder
+        // Show content placeholder without back and title shimmer
         showContentPlaceholder(categoriesContent, 'categories');
 
         const categoriesIframe = document.getElementById('categories-iframe');
@@ -844,13 +833,7 @@ function initNavigation() {
         categoriesIframe.onload = function() {
             hideContentPlaceholder(categoriesContent);
             categoriesIframe.style.opacity = '1'; // Show iframe with fade effect
-
-            // Apply slide-in animation
-            categoriesIframe.style.transform = 'translateX(-100%)';
-            setTimeout(() => {
-                categoriesIframe.style.transition = 'transform 0.5s ease-out';
-                categoriesIframe.style.transform = 'translateX(0)';
-            }, 50);
+            // Removed slide-in animation
         };
 
         // Keep navigation bar visible
@@ -864,7 +847,7 @@ function initNavigation() {
         const earnContent = document.getElementById('earn-content');
         earnContent.style.display = 'flex';
 
-        // Show content placeholder
+        // Show content placeholder without back and title shimmer
         showContentPlaceholder(earnContent, 'earn');
 
         const earnIframe = document.getElementById('earn-iframe');
@@ -875,13 +858,7 @@ function initNavigation() {
         earnIframe.onload = function() {
             hideContentPlaceholder(earnContent);
             earnIframe.style.opacity = '1'; // Show iframe with fade effect
-
-            // Apply slide-in animation
-            earnIframe.style.transform = 'translateX(-100%)';
-            setTimeout(() => {
-                earnIframe.style.transition = 'transform 0.5s ease-out';
-                earnIframe.style.transform = 'translateX(0)';
-            }, 50);
+            // Removed slide-in animation
         };
 
         // Ensure navigation bar is visible
@@ -892,14 +869,9 @@ function initNavigation() {
     document.getElementById('earn-back').addEventListener('click', function() {
         if (this.parentElement) {
             const iframe = document.getElementById('earn-iframe');
-            // Slide out animation
-            iframe.style.transition = 'transform 0.5s ease-in';
-            iframe.style.transform = 'translateX(100%)';
-
-            setTimeout(() => {
-                document.getElementById('earn-content').style.display = 'none';
-                showMainContent(); // Reset to main content when back button is pressed
-            }, 500);
+            // Removed slide out animation
+            document.getElementById('earn-content').style.display = 'none';
+            showMainContent(); // Reset to main content when back button is pressed
         }
     });
 
@@ -914,7 +886,7 @@ function initNavigation() {
         const profileContent = document.getElementById('profile-content');
         profileContent.style.display = 'flex';
 
-        // Show content placeholder
+        // Show content placeholder without back and title shimmer
         showContentPlaceholder(profileContent, 'profile');
 
         const profileIframe = document.getElementById('profile-iframe');
@@ -925,13 +897,7 @@ function initNavigation() {
         profileIframe.onload = function() {
             hideContentPlaceholder(profileContent);
             profileIframe.style.opacity = '1'; // Show iframe with fade effect
-
-            // Apply slide-in animation
-            profileIframe.style.transform = 'translateX(-100%)';
-            setTimeout(() => {
-                profileIframe.style.transition = 'transform 0.5s ease-out';
-                profileIframe.style.transform = 'translateX(0)';
-            }, 50);
+            // Removed slide-in animation
         };
 
         // Keep navigation bar visible
@@ -944,27 +910,17 @@ function initNavigation() {
     if (profileBackButton) {
         profileBackButton.addEventListener('click', function() {
             const iframe = document.getElementById('profile-iframe');
-            // Slide out animation
-            iframe.style.transition = 'transform 0.5s ease-in';
-            iframe.style.transform = 'translateX(100%)';
-
-            setTimeout(() => {
-                document.getElementById('profile-content').style.display = 'none';
-                showMainContent(); // Reset to main content when back button is pressed
-            }, 500);
+            // Removed slide out animation
+            document.getElementById('profile-content').style.display = 'none';
+            showMainContent(); // Reset to main content when back button is pressed
         });
     }
 
     document.getElementById('profile-back').addEventListener('click', function() {
         const iframe = document.getElementById('profile-iframe');
-        // Slide out animation
-        iframe.style.transition = 'transform 0.5s ease-in';
-        iframe.style.transform = 'translateX(100%)';
-
-        setTimeout(() => {
-            document.getElementById('profile-content').style.display = 'none';
-            showMainContent(); // Reset to main content when back button is pressed
-        }, 500);
+        // Removed slide out animation
+        document.getElementById('profile-content').style.display = 'none';
+        showMainContent(); // Reset to main content when back button is pressed
     });
 }
 
@@ -1226,17 +1182,7 @@ function addContentPlaceholderStyles() {
             align-items: center;
         }
         
-        .categories-placeholder .header .back {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-        }
-        
-        .categories-placeholder .header .title {
-            height: 24px;
-            width: 150px;
-            margin-left: 20px;
-        }
+        /* Removed back and title shimmer animations */
         
         .categories-placeholder .category-grid {
             display: grid;
@@ -1259,17 +1205,7 @@ function addContentPlaceholderStyles() {
             align-items: center;
         }
         
-        .earn-placeholder .header .back {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-        }
-        
-        .earn-placeholder .header .title {
-            height: 24px;
-            width: 100px;
-            margin-left: 20px;
-        }
+        /* Removed back and title shimmer animations */
         
         .earn-placeholder .offer-list {
             padding: 15px;
@@ -1290,17 +1226,7 @@ function addContentPlaceholderStyles() {
             align-items: center;
         }
         
-        .profile-placeholder .header .back {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-        }
-        
-        .profile-placeholder .header .title {
-            height: 24px;
-            width: 100px;
-            margin-left: 20px;
-        }
+        /* Removed back and title shimmer animations */
         
         .profile-placeholder .user-info {
             padding: 20px;
@@ -1359,8 +1285,7 @@ function showContentPlaceholder(container, type) {
         case 'categories':
             placeholder.innerHTML = `
                 <div class="header">
-                    <div class="back shimmer"></div>
-                    <div class="title shimmer"></div>
+                    <!-- Removed back and title shimmer elements -->
                 </div>
                 <div class="category-grid">
                     ${Array(9).fill('<div class="category-item shimmer"></div>').join('')}
@@ -1370,8 +1295,7 @@ function showContentPlaceholder(container, type) {
         case 'earn':
             placeholder.innerHTML = `
                 <div class="header">
-                    <div class="back shimmer"></div>
-                    <div class="title shimmer"></div>
+                    <!-- Removed back and title shimmer elements -->
                 </div>
                 <div class="offer-list">
                     ${Array(5).fill('<div class="offer-item shimmer"></div>').join('')}
@@ -1381,8 +1305,7 @@ function showContentPlaceholder(container, type) {
         case 'profile':
             placeholder.innerHTML = `
                 <div class="header">
-                    <div class="back shimmer"></div>
-                    <div class="title shimmer"></div>
+                    <!-- Removed back and title shimmer elements -->
                 </div>
                 <div class="user-info">
                     <div class="avatar shimmer"></div>
