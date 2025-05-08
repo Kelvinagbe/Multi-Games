@@ -105,7 +105,7 @@ header {
         .search-input {
             width: 100%;
             padding: 8px 15px;
-            border: 1px solid var(--border-color);
+            border: 3px solid var(--border-color);
             border-radius: 20px;
             font-size: 14px;
             outline: none;
