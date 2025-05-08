@@ -160,7 +160,71 @@
   defer
 ></script>
 <link rel="stylesheet" href="css/ads/ads.css">
+<style>
+/* Modern Gaming Footer Styles - Compatible with pipe separators */
+footer {
+    background: linear-gradient(135deg, #1a2a6c, #2a3e7a);
+    color: white;
+    padding: 20px 0;
+    text-align: center;
+    position: relative;
+    box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.1);
+    margin-top: auto;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
 
+/* Glowing top border effect */
+footer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #4776E6, #8E54E9, #4776E6);
+    background-size: 200% 200%;
+    animation: gradientBorder 3s ease infinite;
+}
+
+@keyframes gradientBorder {
+    0% {background-position: 0% 50%}
+    50% {background-position: 100% 50%}
+    100% {background-position: 0% 50%}
+}
+
+/* Footer links styling */
+footer a {
+    color: #8fbbff;
+    text-decoration: none;
+    margin: 0 10px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    display: inline-block;
+}
+
+footer a:hover {
+    color: #ffffff;
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+    transform: translateY(-2px);
+}
+
+/* Pipe separator styling */
+footer {
+    color: rgba(255, 255, 255, 0.4); /* This makes the pipe character subtle */
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+    footer {
+        padding: 15px 10px;
+    }
+    
+    footer a {
+        margin: 0 5px;
+        font-size: 0.9em;
+    }
+}
+</style>
 </head>
 <body>
 <div id="notification-container"></div>
