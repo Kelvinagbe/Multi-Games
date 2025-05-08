@@ -742,9 +742,6 @@ let gamesData = [];
 let searchTimeout;
 const loaderDelay = 1500; // Loader delay in ms
 
-// Set "visited before" flag 
-localStorage.setItem("visitedBefore", "true");
-
 // DOM Content Loaded Event
 document.addEventListener("DOMContentLoaded", function() {
     // Hide loader after delay
@@ -758,8 +755,6 @@ document.addEventListener("DOMContentLoaded", function() {
     // Add CSS for content placeholders
     addContentPlaceholderStyles();
 
-    // Initialize search functionality
-
     // Initialize navigation
     initNavigation();
 
@@ -769,8 +764,8 @@ document.addEventListener("DOMContentLoaded", function() {
     // Initialize real ad block detection
     detectAdBlockReal();
 
-    // Show welcome popup for new users
-    checkForFirstVisit();
+    // REMOVED: Show welcome popup for new users
+    // checkForFirstVisit(); -- Removed as requested
 
     // Lazy load images
     lazyLoadImages();
@@ -882,60 +877,91 @@ function initNavigation() {
         }
     });
 
-    // Profile Navigation - Fixed to properly initialize the profile page
-    document.getElementById('profile-nav').addEventListener('click', function(e) {
-        e.preventDefault();
-        
-        // Hide all containers first
-        document.querySelectorAll('.container').forEach(container => {
-            container.style.display = 'none';
+    // Profile Navigation - Completely revised to use a direct iframe approach
+    const profileNavButton = document.getElementById('profile-nav');
+    if (profileNavButton) {
+        profileNavButton.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Hide all other containers
+            document.querySelectorAll('.container').forEach(container => {
+                container.style.display = 'none';
+            });
+            
+            // Hide header
+            document.querySelector('.header').style.display = 'none';
+            
+            // Show profile container
+            const profileContent = document.getElementById('profile-content');
+            profileContent.style.display = 'flex';
+            
+            // Create or use existing iframe
+            let profileIframe = document.getElementById('profile-iframe');
+            if (!profileIframe) {
+                profileIframe = document.createElement('iframe');
+                profileIframe.id = 'profile-iframe';
+                profileIframe.className = 'content-iframe';
+                profileIframe.style.width = '100%';
+                profileIframe.style.height = '100%';
+                profileIframe.style.border = 'none';
+                profileIframe.style.opacity = '0';
+                profileIframe.style.transition = 'opacity 0.3s ease';
+                
+                // First remove any existing iframe (just to be safe)
+                const oldIframe = profileContent.querySelector('iframe');
+                if (oldIframe) {
+                    profileContent.removeChild(oldIframe);
+                }
+                
+                // Append the new iframe
+                profileContent.appendChild(profileIframe);
+            }
+            
+            // Show placeholder while loading
+            showContentPlaceholder(profileContent, 'profile');
+            
+            // Set iframe source
+            profileIframe.src = 'nav/profile.html';
+            
+            // Handle iframe load
+            profileIframe.onload = function() {
+                hideContentPlaceholder(profileContent);
+                profileIframe.style.opacity = '1';
+                console.log('Profile iframe loaded successfully');
+            };
+            
+            // Handle iframe errors
+            profileIframe.onerror = function(error) {
+                console.error('Error loading profile iframe:', error);
+                hideContentPlaceholder(profileContent);
+                profileContent.innerHTML = '<div class="error-message">Could not load profile. Please try again.</div>';
+            };
+            
+            // Update navigation
+            updateActiveNav('profile-nav');
         });
-        
-        // Hide header when showing profile
-        document.querySelector('.header').style.display = 'none';
-
-        const profileContent = document.getElementById('profile-content');
-        profileContent.style.display = 'flex';
-
-        // Show content placeholder for profile
-        showContentPlaceholder(profileContent, 'profile');
-
-        const profileIframe = document.getElementById('profile-iframe');
-        profileIframe.style.opacity = '0'; // Hide iframe initially
-        
-        // Make sure the source is set correctly
-        profileIframe.src = 'nav/profile.html';
-
-        // Handle iframe load completion
-        profileIframe.onload = function() {
-            hideContentPlaceholder(profileContent);
-            profileIframe.style.opacity = '1'; // Show iframe with fade effect
-            console.log('Profile iframe loaded successfully');
-        };
-
-        // Log any errors loading the iframe
-        profileIframe.onerror = function(error) {
-            console.error('Error loading profile iframe:', error);
-            // Show a fallback message inside the content
-            profileContent.innerHTML = '<div class="error-message">Could not load profile. Please try again.</div>';
-        };
-
-        // Keep navigation bar visible
-        document.querySelector('.bottom-nav').style.display = 'flex';
-        updateActiveNav('profile-nav');
-    });
-
-    // Add event listener for profile-back if it exists
-    const profileBackButton = document.getElementById('profile-back');
-    if (profileBackButton) {
-        profileBackButton.addEventListener('click', function() {
-            const iframe = document.getElementById('profile-iframe');
-            document.getElementById('profile-content').style.display = 'none';
-            showMainContent(); // Reset to main content when back button is pressed
-        });
-    } else {
-        console.warn('Profile back button not found in the DOM');
     }
+
+    // Add back button for profile if it doesn't exist
+    let profileBackButton = document.getElementById('profile-back');
+    if (!profileBackButton) {
+        profileBackButton = document.createElement('button');
+        profileBackButton.id = 'profile-back';
+        profileBackButton.className = 'back-button';
+        profileBackButton.innerHTML = '← Back';
+        
+        const profileContent = document.getElementById('profile-content');
+        if (profileContent) {
+            // Add the back button to the beginning of the content
+            profileContent.insertBefore(profileBackButton, profileContent.firstChild);
+        }
+    }
+    
+    // Add event listener for profile back button
+    document.getElementById('profile-back').addEventListener('click', function() {
+        document.getElementById('profile-content').style.display = 'none';
+        showMainContent(); // Reset to main content when back button is pressed
+    });
 }
 
 // Show Main Content - Fixed to ensure header visibility
@@ -1041,54 +1067,9 @@ function closeAdBlockMessage() {
     document.getElementById('adblockMessage').style.display = 'none';
 }
 
-// Check for First Visit
-function checkForFirstVisit() {
-    const isFirstVisit = localStorage.getItem('firstVisit') !== 'false';
-
-    if (isFirstVisit) {
-        showWelcomePopup();
-        localStorage.setItem('firstVisit', 'false');
-    }
-}
-
-// Show Welcome Popup
-function showWelcomePopup() {
-    const popupContainer = document.getElementById('popupContainer');
-
-    const popup = document.createElement('div');
-    popup.className = 'popup';
-    popup.innerHTML = `
-        <div class="popup-close">&times;</div>
-        <h3 class="popup-title">Welcome to Multi Games!</h3>
-        <div class="popup-content">
-            <p>Thanks for downloading our app! Get ready to play the best mobile games for free.</p>
-            <p>Explore our categories, play trending games, and have fun!</p>
-        </div>
-        <button class="popup-button">Start Playing</button>
-    `;
-
-    popupContainer.appendChild(popup);
-    popupContainer.style.visibility = 'visible';
-    popupContainer.style.opacity = '1';
-
-    // Close popup on close button click
-    popup.querySelector('.popup-close').addEventListener('click', () => {
-        popupContainer.style.opacity = '0';
-        setTimeout(() => {
-            popupContainer.style.visibility = 'hidden';
-            popupContainer.innerHTML = '';
-        }, 300);
-    });
-
-    // Close popup on button click
-    popup.querySelector('.popup-button').addEventListener('click', () => {
-        popupContainer.style.opacity = '0';
-        setTimeout(() => {
-            popupContainer.style.visibility = 'hidden';
-            popupContainer.innerHTML = '';
-        }, 300);
-    });
-}
+// REMOVED: Welcome popup functions have been removed as requested
+// checkForFirstVisit() 
+// showWelcomePopup()
 
 // Lazy Load Images
 function lazyLoadImages() {
@@ -1139,7 +1120,7 @@ document.querySelectorAll('.category').forEach(categoryElement => {
     });
 });
 
-// Create and add content placeholder styles
+// Create and add content placeholder styles - Modified to fix the issue with main header
 function addContentPlaceholderStyles() {
     const styleEl = document.createElement('style');
     styleEl.innerHTML = `
@@ -1197,15 +1178,13 @@ function addContentPlaceholderStyles() {
         }
         
         /* Categories placeholder */
-        .categories-placeholder .header {
+        .categories-placeholder .placeholder-header {
             height: 50px;
             margin-bottom: 20px;
             padding: 0 15px;
             display: flex;
             align-items: center;
         }
-        
-        /* Removed back and title shimmer animations */
         
         .categories-placeholder .category-grid {
             display: grid;
@@ -1220,15 +1199,13 @@ function addContentPlaceholderStyles() {
         }
         
         /* Earn placeholder */
-        .earn-placeholder .header {
+        .earn-placeholder .placeholder-header {
             height: 50px;
             margin-bottom: 20px;
             padding: 0 15px;
             display: flex;
             align-items: center;
         }
-        
-        /* Removed back and title shimmer animations */
         
         .earn-placeholder .offer-list {
             padding: 15px;
@@ -1241,15 +1218,13 @@ function addContentPlaceholderStyles() {
         }
         
         /* Profile placeholder */
-        .profile-placeholder .header {
+        .profile-placeholder .placeholder-header {
             height: 50px;
             margin-bottom: 20px;
             padding: 0 15px;
             display: flex;
             align-items: center;
         }
-        
-        /* Removed back and title shimmer animations */
         
         .profile-placeholder .user-info {
             padding: 20px;
@@ -1292,7 +1267,7 @@ function addContentPlaceholderStyles() {
     document.head.appendChild(styleEl);
 }
 
-// Show content placeholder based on section type
+// Show content placeholder based on section type - Modified to fix header conflict
 function showContentPlaceholder(container, type) {
     // Create placeholder if it doesn't exist
     let placeholder = container.querySelector('.content-placeholder');
@@ -1304,33 +1279,13 @@ function showContentPlaceholder(container, type) {
     placeholder.className = `content-placeholder ${type}-placeholder`;
     
     // Create different placeholder templates based on content type
+    // Using placeholder-header instead of header to avoid conflict with main page header
     switch(type) {
         case 'categories':
             placeholder.innerHTML = `
-                 <header class="header">
-    <div class="container">
-      <div class="header-content">
-        <div class="logo">
-          <svg width="28" height="28" fill="currentColor" viewBox="0 0 16 16">
-            <path d="M11.5 6.027a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0zm-1.5 1.5a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1zm2.5-.5a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0zm-1.5 1.5a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1zm-6.5-3h1v1h1v1h-1v1h-1v-1h-1v-1h1v-1z"/>
-            <path d="M3.051 3.26a.5.5 0 0 1 .354-.613l1.932-.518a.5.5 0 0 1 .62.39c.655-.079 1.35-.117 2.043-.117.72 0 1.443.041 2.12.126a.5.5 0 0 1 .622-.399l1.932.518a.5.5 0 0 1 .306.729c.14.09.266.19.373.297.408.408.78 1.05 1.095 1.772.32.733.599 1.591.805 2.466.206.875.34 1.78.364 2.606.024.816-.059 1.602-.328 2.21a1.42 1.42 0 0 1-1.445.83c-.636-.067-1.115-.394-1.513-.773-.245-.232-.496-.526-.739-.808-.126-.148-.25-.292-.368-.423-.728-.804-1.597-1.527-3.224-1.527-1.627 0-2.496.723-3.224 1.527-.119.131-.242.275-.368.423-.243.282-.494.575-.739.808-.398.38-.877.706-1.513.773a1.42 1.42 0 0 1-1.445-.83c-.27-.608-.352-1.395-.329-2.21.024-.826.16-1.73.365-2.606.206-.875.486-1.733.805-2.466.315-.722.687-1.364 1.094-1.772a2.34 2.34 0 0 1 .433-.335.504.504 0 0 1-.028-.079zm2.036.412c-.877.185-1.469.443-1.733.708-.276.276-.587.783-.885 1.465a13.748 13.748 0 0 0-.748 2.295 12.351 12.351 0 0 0-.339 2.406c-.022.755.062 1.368.243 1.776a.42.42 0 0 0 .426.24c.327-.034.61-.199.929-.502.212-.202.4-.423.615-.674.133-.156.276-.323.44-.504C4.861 9.969 5.978 9.027 8 9.027s3.139.942 3.965 1.855c.164.181.307.348.44.504.214.251.403.472.615.674.318.303.601.468.929.503a.42.42 0 0 0 .426-.241c.18-.408.265-1.02.243-1.776a12.354 12.354 0 0 0-.339-2.406 13.753 13.753 0 0 0-.748-2.295c-.298-.682-.61-1.19-.885-1.465-.264-.265-.856-.523-1.733-.708-.85-.179-1.877-.27-2.913-.27-1.036 0-2.063.091-2.913.27z"/>
-          </svg>
-          Multi Games
-        </div>
-
-        <div class="search-container">
-          <div class="search-box">
-            <input type="text" placeholder="Search games..." class="search-input">
-            <button class="search-button">
-              <svg width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
-                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
-              </svg>
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </header>
+                <div class="placeholder-header">
+                    <!-- No shimmer elements here -->
+                </div>
                 <div class="category-grid">
                     ${Array(9).fill('<div class="category-item shimmer"></div>').join('')}
                 </div>
@@ -1338,7 +1293,9 @@ function showContentPlaceholder(container, type) {
             break;
         case 'earn':
             placeholder.innerHTML = `
-            
+                <div class="placeholder-header">
+                    <!-- No shimmer elements here -->
+                </div>
                 <div class="offer-list">
                     ${Array(5).fill('<div class="offer-item shimmer"></div>').join('')}
                 </div>
@@ -1346,35 +1303,14 @@ function showContentPlaceholder(container, type) {
             break;
         case 'profile':
             placeholder.innerHTML = `
-                 <header class="header">
-    <div class="container">
-      <div class="header-content">
-        <div class="logo">
-          <svg width="28" height="28" fill="currentColor" viewBox="0 0 16 16">
-            <path d="M11.5 6.027a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0zm-1.5 1.5a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1zm2.5-.5a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0zm-1.5 1.5a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1zm-6.5-3h1v1h1v1h-1v1h-1v-1h-1v-1h1v-1z"/>
-            <path d="M3.051 3.26a.5.5 0 0 1 .354-.613l1.932-.518a.5.5 0 0 1 .62.39c.655-.079 1.35-.117 2.043-.117.72 0 1.443.041 2.12.126a.5.5 0 0 1 .622-.399l1.932.518a.5.5 0 0 1 .306.729c.14.09.266.19.373.297.408.408.78 1.05 1.095 1.772.32.733.599 1.591.805 2.466.206.875.34 1.78.364 2.606.024.816-.059 1.602-.328 2.21a1.42 1.42 0 0 1-1.445.83c-.636-.067-1.115-.394-1.513-.773-.245-.232-.496-.526-.739-.808-.126-.148-.25-.292-.368-.423-.728-.804-1.597-1.527-3.224-1.527-1.627 0-2.496.723-3.224 1.527-.119.131-.242.275-.368.423-.243.282-.494.575-.739.808-.398.38-.877.706-1.513.773a1.42 1.42 0 0 1-1.445-.83c-.27-.608-.352-1.395-.329-2.21.024-.826.16-1.73.365-2.606.206-.875.486-1.733.805-2.466.315-.722.687-1.364 1.094-1.772a2.34 2.34 0 0 1 .433-.335.504.504 0 0 1-.028-.079zm2.036.412c-.877.185-1.469.443-1.733.708-.276.276-.587.783-.885 1.465a13.748 13.748 0 0 0-.748 2.295 12.351 12.351 0 0 0-.339 2.406c-.022.755.062 1.368.243 1.776a.42.42 0 0 0 .426.24c.327-.034.61-.199.929-.502.212-.202.4-.423.615-.674.133-.156.276-.323.44-.504C4.861 9.969 5.978 9.027 8 9.027s3.139.942 3.965 1.855c.164.181.307.348.44.504.214.251.403.472.615.674.318.303.601.468.929.503a.42.42 0 0 0 .426-.241c.18-.408.265-1.02.243-1.776a12.354 12.354 0 0 0-.339-2.406 13.753 13.753 0 0 0-.748-2.295c-.298-.682-.61-1.19-.885-1.465-.264-.265-.856-.523-1.733-.708-.85-.179-1.877-.27-2.913-.27-1.036 0-2.063.091-2.913.27z"/>
-          </svg>
-          Multi Games
-        </div>
-
-        <div class="search-container">
-          <div class="search-box">
-            <input type="text" placeholder="Search games..." class="search-input">
-            <button class="search-button">
-              <svg width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
-                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
-              </svg>
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </header>
+                <div class="placeholder-header">
+                    <!-- No shimmer elements here -->
+                </div>
                 <div class="user-info">
                     <div class="avatar shimmer"></div>
                     <div class="user-details">
                         <div class="username shimmer"></div>
-                        <div class="stats shimmer"></div>
+                 <div class="stats shimmer"></div>
                     </div>
                 </div>
                 <div class="menu-list">
