@@ -161,68 +161,89 @@
 ></script>
 <link rel="stylesheet" href="css/ads/ads.css">
 <style>
-/* Modern Gaming Footer Styles - Compatible with pipe separators */
+/* Footer styles that match the site's green theme with explicit dark mode support */
 footer {
-    background: linear-gradient(135deg, #1a2a6c, #2a3e7a);
-    color: white;
-    padding: 20px 0;
-    text-align: center;
-    position: relative;
-    box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.1);
-    margin-top: auto;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: var(--card-color);
+  padding: 16px 0;
+  text-align: center;
+  box-shadow: 0 -2px 10px var(--shadow-color);
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 99;
+  border-top: 1px solid var(--border-color);
+  font-size: 14px;
+  transition: var(--transition);
 }
 
-/* Glowing top border effect */
-footer::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background: linear-gradient(90deg, #4776E6, #8E54E9, #4776E6);
-    background-size: 200% 200%;
-    animation: gradientBorder 3s ease infinite;
-}
-
-@keyframes gradientBorder {
-    0% {background-position: 0% 50%}
-    50% {background-position: 100% 50%}
-    100% {background-position: 0% 50%}
-}
-
-/* Footer links styling */
 footer a {
-    color: #8fbbff;
-    text-decoration: none;
-    margin: 0 10px;
-    font-weight: 500;
-    transition: all 0.3s ease;
-    display: inline-block;
+  color: var(--primary-color);
+  text-decoration: none;
+  margin: 0 10px;
+  font-weight: 600;
+  position: relative;
+  transition: var(--transition);
 }
 
 footer a:hover {
-    color: #ffffff;
-    text-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
-    transform: translateY(-2px);
+  color: var(--primary-light);
+  transform: translateY(-2px);
 }
 
 /* Pipe separator styling */
 footer {
-    color: rgba(255, 255, 255, 0.4); /* This makes the pipe character subtle */
+  color: var(--text-light);
 }
 
-/* Responsive adjustments */
-@media (max-width: 600px) {
-    footer {
-        padding: 15px 10px;
-    }
-    
-    footer a {
-        margin: 0 5px;
-        font-size: 0.9em;
-    }
+/* Explicit Dark Mode Styles */
+.dark-mode footer {
+  background-color: #25272e; /* Using your dark mode card color */
+  border-top-color: #2c2c2c; /* Using your dark mode border color */
+}
+
+.dark-mode footer a {
+  color: #157347; /* Using your primary-light for better visibility in dark mode */
+}
+
+.dark-mode footer a:hover {
+  color: #20803c; /* A brighter green for hover in dark mode */
+  text-shadow: 0 0 5px rgba(32, 128, 60, 0.3); /* Subtle glow effect */
+}
+
+/* Add subtle animation on page load */
+footer {
+  animation: slideUpFooter 0.6s ease-out;
+}
+
+@keyframes slideUpFooter {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Responsive adjustments for small screens */
+@media (max-width: 480px) {
+  footer {
+    padding: 12px 0;
+  }
+  
+  footer a {
+    margin: 0 6px;
+    font-size: 13px;
+  }
+}
+
+/* PWA support - ensures footer respects safe areas on mobile */
+@media (display-mode: standalone) {
+  footer {
+    padding-bottom: calc(16px + env(safe-area-inset-bottom));
+  }
 }
 </style>
 </head>
