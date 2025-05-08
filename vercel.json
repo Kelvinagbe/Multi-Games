@@ -50,7 +50,7 @@
       "statusCode": 404
     },
     {
-      "source": "/nav/earn",
+      "source": "",
       "has": [
         {
           "type": "header",
@@ -62,7 +62,7 @@
       "permanent": false
     },
     {
-      "source": "/nav/earn.html",
+      "source": "",
       "has": [
         {
           "type": "header",
