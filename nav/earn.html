@@ -3,1745 +3,243 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Airtime Earner</title>
-     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5345992350931230"
-     crossorigin="anonymous"></script>
-
-<!-- Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-PB8Y87E6XV"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-PB8Y87E6XV');
-</script>
+    <title>Multi Games - Blog</title>
     <style>
-    /* GLOBAL VARIABLES - LIGHT MODE */
-:root {
-    /* Primary Color Scheme */
-    --primary-color: #0f5132;       /* Dark green primary */
-    --primary-light: #147544;        /* Lighter green for hover states */
-    --primary-dark: #0a3923;         /* Darker green for active states */
-    
-    /* Secondary Colors */
-    --secondary-color: #FFC107;      /* Gold accent */
-    --danger-color: #f44336;         /* Red for errors/danger */
-    --warning-color: #ff9800;        /* Orange for warnings */
-    --success-color: #4CAF50;        /* Green for success */
-    --info-color: #2196F3;           /* Blue for info */
-    
-    /* Neutral Colors */
-    --dark-color: #333;              /* Dark grey for text */
-    --medium-color: #666;            /* Medium grey for secondary text */
-    --light-color: #f4f4f4;          /* Light grey for backgrounds */
-    
-    /* Backgrounds */
-    --bg-main: #f5f5f5;              /* Main background */
-    --bg-card: #ffffff;              /* Card background */
-    
-    /* Borders & Shadows */
-    --border-color: rgba(76, 175, 80, 0.2);  /* Border with transparency */
-    --shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.08);
-    --shadow-md: 0 5px 15px rgba(0, 0, 0, 0.12);
-    --shadow-lg: 0 8px 20px rgba(0, 0, 0, 0.15);
-    
-    /* Text */
-    --text-primary: #333;            /* Primary text color */
-    --text-secondary: #666;          /* Secondary text color */
-    --text-light: #888;              /* Light text color */
-    
-    /* Animation Timing */
-    --transition-fast: 0.2s ease;
-    --transition-normal: 0.3s ease;
-    --transition-slow: 0.5s ease;
-}
-
-/* DARK MODE VARIABLES */
-body.dark-mode {
-    /* Primary Color Scheme - Enhanced Green Theme */
-    --primary-color: #10a37f;       /* Brighter green primary for dark mode */
-    --primary-light: #13c095;       /* Lighter accent green */
-    --primary-dark: #0c7d62;        /* Darker green for active states */
-    
-    /* Secondary Colors - Keep consistent */
-    --secondary-color: #FFD54F;     /* Slightly brighter gold for dark mode */
-    
-    /* Neutral Colors - Dark Theme */
-    --dark-color: #e6e8ef;          /* Light color for dark mode text */
-    --medium-color: #abb0bf;        /* Medium grey for secondary text */
-    --light-color: #2a2a2a;         /* Darker light color for dark mode */
-    
-    /* Backgrounds - Dark Theme */
-    --bg-main: #121212;             /* Dark background */
-    --bg-card: #1e1e1e;             /* Card background */
-    
-    /* Borders & Shadows - Dark Theme */
-    --border-color: rgba(16, 163, 127, 0.2);  /* Green-tinted border */
-    --shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.3);
-    --shadow-md: 0 5px 15px rgba(0, 0, 0, 0.4);
-    --shadow-lg: 0 8px 20px rgba(0, 0, 0, 0.5);
-    
-    /* Text - Dark Theme */
-    --text-primary: #e6e8ef;        /* Primary text color */
-    --text-secondary: #abb0bf;      /* Secondary text color */
-    --text-light: #8b90a0;          /* Light text color */
-}
-
-/* BASE STYLES */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-
-body {
-    background-color: var(--bg-main);
-    color: var(--text-primary);
-    line-height: 1.6;
-    transition: background-color 0.3s ease, color 0.3s ease;
-}
-
-/* LAYOUT COMPONENTS */
-.container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 15px;
-    background-color: var(--bg-card);
-    box-shadow: var(--shadow-sm);
-    min-height: 100vh;
-    position: relative;
-    border-left: 2px solid var(--border-color);
-    border-right: 2px solid var(--border-color);
-    transition: background-color 0.3s ease, box-shadow 0.3s ease;
-}
-
-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px 0;
-    margin-bottom: 25px;
-    border-bottom: 3px solid var(--border-color);
-    transition: border-color 0.3s ease;
-}
-
-.logo {
-    font-size: 26px;
-    font-weight: bold;
-    color: var(--primary-color);
-    text-shadow: 0 0 10px rgba(76, 175, 80, 0.2);
-    letter-spacing: 1.2px;
-    transition: color 0.3s ease, text-shadow 0.3s ease;
-}
-
-/* CARDS */
-.card {
-    background-color: var(--bg-card);
-    border-radius: 24px;
-    padding: 22px;
-    margin-bottom: 24px;
-    box-shadow: var(--shadow-sm);
-    border: 2px solid var(--border-color);
-    transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
-}
-
-.card:hover {
-    transform: translateY(-4px);
-    box-shadow: var(--shadow-md);
-}
-
-.card-title {
-    font-size: 18px;
-    font-weight: 700;
-    margin-bottom: 18px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    color: var(--primary-color);
-    transition: color 0.3s ease;
-}
-
-/* REWARD CARD */
-.daily-reward-card {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: linear-gradient(145deg, var(--bg-card), rgba(248, 248, 248, 0.5));
-    transition: background 0.3s ease;
-}
-
-.reward-info {
-    flex: 1;
-}
-
-.reward-amount {
-    font-size: 30px;
-    font-weight: bold;
-    margin-bottom: 8px;
-    color: var(--primary-color);
-    text-shadow: 0 0 8px rgba(76, 175, 80, 0.2);
-    transition: color 0.3s ease, text-shadow 0.3s ease;
-}
-
-.reward-status {
-    font-size: 14px;
-    color: var(--text-secondary);
-    transition: color 0.3s ease;
-}
-
-/* BUTTONS */
-.btn {
-    padding: 12px 24px;
-    border: none;
-    border-radius: 50px;
-    cursor: pointer;
-    font-weight: 600;
-    font-size: 15px;
-    transition: all 0.3s;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    position: relative;
-    overflow: hidden;
-}
-
-.btn::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(rgba(255, 255, 255, 0.2), transparent);
-    pointer-events: none;
-}
-
-.btn-primary {
-    background: linear-gradient(145deg, var(--primary-color), var(--primary-dark));
-    color: white;
-    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
-}
-
-.btn-primary:hover {
-    background: linear-gradient(145deg, var(--primary-light), var(--primary-color));
-    box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
-    transform: translateY(-2px);
-}
-
-.btn-primary:active {
-    transform: translateY(1px);
-    box-shadow: 0 2px 10px rgba(76, 175, 80, 0.2);
-}
-
-/* COUNTDOWN */
-.countdown-display {
-    margin-top: 12px;
-    font-size: 14px;
-    color: var(--text-secondary);
-    display: none;
-    transition: color 0.3s ease;
-}
-
-.countdown-timer {
-    font-weight: 700;
-    color: var(--primary-color);
-    transition: color 0.3s ease;
-}
-
-.countdown-container {
-    text-align: center;
-    margin-top: 12px;
-    padding: 10px;
-    background-color: rgba(76, 175, 80, 0.05);
-    border-radius: 12px;
-    transition: background-color 0.3s ease;
-}
-
-body.dark-mode .countdown-container {
-    background-color: rgba(16, 163, 127, 0.1);
-}
-
-/* NETWORK SELECTION */
-.network-selection {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 18px;
-    gap: 12px;
-}
-
-.network-icon {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 16px 12px;
-    border-radius: 18px;
-    cursor: pointer;
-    transition: all 0.3s;
-    width: 23%;
-    background-color: rgba(248, 248, 248, 0.7);
-    border: 2px solid var(--border-color);
-}
-
-.network-icon:hover {
-    transform: translateY(-4px);
-    box-shadow: var(--shadow-sm);
-    border-color: rgba(76, 175, 80, 0.4);
-}
-
-.network-icon img {
-    width: 42px;
-    height: 42px;
-    margin-bottom: 8px;
-    filter: drop-shadow(0 0 3px rgba(76, 175, 80, 0.2));
-    transition: filter 0.3s ease;
-}
-
-.network-name {
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--text-secondary);
-    transition: color 0.3s ease;
-}
-
-.network-icon.active {
-    background-color: rgba(76, 175, 80, 0.08);
-    border-color: var(--primary-color);
-    box-shadow: 0 0 15px rgba(76, 175, 80, 0.15);
-}
-
-body.dark-mode .network-icon {
-    background-color: rgba(30, 30, 30, 0.7);
-}
-
-body.dark-mode .network-icon.active {
-    background-color: rgba(16, 163, 127, 0.15);
-}
-
-/* AMOUNT SELECTION */
-.amount-selection {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
-    margin-bottom: 18px;
-}
-
-.amount-option {
-    background-color: rgba(248, 248, 248, 0.7);
-    padding: 14px;
-    border-radius: 16px;
-    cursor: pointer;
-    transition: all 0.3s;
-    flex: 1;
-    min-width: 70px;
-    text-align: center;
-    font-weight: 600;
-    border: 1px solid var(--border-color);
-}
-
-.amount-option:hover {
-    transform: scale(1.05);
-    box-shadow: var(--shadow-sm);
-    border-color: rgba(76, 175, 80, 0.4);
-}
-
-.amount-option.active {
-    background: linear-gradient(145deg, var(--primary-color), var(--primary-dark));
-    color: white;
-    box-shadow: 0 0 15px rgba(76, 175, 80, 0.2);
-    border-color: var(--primary-color);
-}
-
-body.dark-mode .amount-option {
-    background-color: rgba(30, 30, 30, 0.7);
-}
-
-/* FORM ELEMENTS */
-.form-group {
-    margin-bottom: 22px;
-}
-
-.form-group label {
-    display: block;
-    margin-bottom: 10px;
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--text-secondary);
-    text-transform: uppercase;
-    letter-spacing: 1.2px;
-    transition: color 0.3s ease;
-}
-
-.form-group input {
-    width: 100%;
-    padding: 14px 16px;
-    background-color: rgba(248, 248, 248, 0.7);
-    border: 2px solid var(--border-color);
-    border-radius: 16px;
-    font-size: 16px;
-    color: var(--text-primary);
-    transition: all 0.3s;
-}
-
-.form-group input:focus {
-    outline: none;
-    border-color: var(--primary-color);
-    box-shadow: 0 0 10px rgba(76, 175, 80, 0.15);
-    background-color: var(--bg-card);
-}
-
-body.dark-mode .form-group input {
-    background-color: rgba(42, 42, 42, 0.7);
-}
-
-body.dark-mode .form-group input:focus {
-    background-color: rgba(50, 50, 50, 0.7);
-}
-
-/* LOADING STATES */
-.purchase-btn-container {
-    display: flex;
-    align-items: center;
-}
-
-.purchase-loader {
-    width: 22px;
-    height: 22px;
-    border: 2px solid rgba(76, 175, 80, 0.1);
-    border-top: 3px solid var(--primary-color);
-    border-radius: 50%;
-    margin-right: 12px;
-    animation: spin 1s linear infinite;
-    box-shadow: 0 0 10px rgba(76, 175, 80, 0.1);
-}
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
-.hidden {
-    display: none;
-}
-
-/* TRANSACTIONS */
-.transactions-header {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 15px;
-}
-
-.see-all {
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--primary-color);
-    text-decoration: none;
-    position: relative;
-    transition: all 0.3s;
-}
-
-.see-all:hover {
-    text-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
-}
-
-.see-all::after {
-    content: '';
-    position: absolute;
-    width: 0;
-    height: 2px;
-    bottom: -3px;
-    left: 0;
-    background-color: var(--primary-color);
-    transition: width 0.3s;
-}
-
-.see-all:hover::after {
-    width: 100%;
-}
-
-.transaction-item {
-    display: flex;
-    justify-content: space-between;
-    padding: 14px 0;
-    border-bottom: 1px solid rgba(238, 238, 238, 0.5);
-    transition: background-color 0.3s;
-}
-
-.transaction-item:hover {
-    background-color: rgba(76, 175, 80, 0.03);
-}
-
-body.dark-mode .transaction-item {
-    border-bottom: 1px solid rgba(42, 42, 42, 0.8);
-}
-
-body.dark-mode .transaction-item:hover {
-    background-color: rgba(16, 163, 127, 0.05);
-}
-
-.transaction-date {
-    font-size: 12px;
-    color: var(--text-light);
-    transition: color 0.3s ease;
-}
-
-.transaction-amount {
-    font-weight: 700;
-    color: var(--text-primary);
-    transition: color 0.3s ease;
-}
-
-.transaction-status {
-    font-size: 12px;
-    text-align: right;
-}
-
-.status-success {
-    color: var(--success-color);
-}
-
-.status-pending {
-    color: var(--warning-color);
-}
-
-.status-failed {
-    color: var(--danger-color);
-}
-
-/* ALERTS */
-.alert {
-    padding: 16px;
-    border-radius: 16px;
-    margin-bottom: 22px;
-    position: relative;
-    border-left: 4px solid transparent;
-}
-
-.alert-success {
-    background-color: rgba(76, 175, 80, 0.1);
-    color: #3c763d;
-    border-left-color: var(--success-color);
-}
-
-.alert-danger {
-    background-color: rgba(244, 67, 54, 0.1);
-    color: #a94442;
-    border-left-color: var(--danger-color);
-}
-
-.alert-warning {
-    background-color: rgba(255, 152, 0, 0.1);
-    color: #8a6d3b;
-    border-left-color: var(--warning-color);
-}
-
-.alert-info {
-    background-color: rgba(33, 150, 243, 0.1);
-    color: #31708f;
-    border-left-color: var(--info-color);
-}
-
-body.dark-mode .alert-success {
-    background-color: rgba(76, 175, 80, 0.15);
-    color: #a5d6a7;
-}
-
-body.dark-mode .alert-danger {
-    background-color: rgba(244, 67, 54, 0.15);
-    color: #ef9a9a;
-}
-
-body.dark-mode .alert-warning {
-    background-color: rgba(255, 152, 0, 0.15);
-    color: #ffcc80;
-}
-
-body.dark-mode .alert-info {
-    background-color: rgba(33, 150, 243, 0.15);
-    color: #90caf9;
-}
-
-/* TOAST NOTIFICATIONS */
-.toast {
-    position: fixed;
-    bottom: 24px;
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: rgba(255, 255, 255, 0.95);
-    color: var(--text-primary);
-    padding: 14px 28px;
-    border-radius: 50px;
-    z-index: 1000;
-    opacity: 0;
-    visibility: hidden;
-    transition: all 0.3s;
-    border: 1px solid var(--border-color);
-    box-shadow: var(--shadow-md);
-}
-
-.toast.show {
-    opacity: 1;
-    visibility: visible;
-}
-
-body.dark-mode .toast {
-    background-color: rgba(30, 30, 30, 0.95);
-    border-color: rgba(16, 163, 127, 0.2);
-}
-
-/* NAVIGATION */
-.navigation {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background-color: rgba(255, 255, 255, 0.95);
-    display: flex;
-    justify-content: space-around;
-    padding: 14px 0;
-    box-shadow: 0 -2px 15px rgba(0, 0, 0, 0.08);
-    z-index: 100;
-    backdrop-filter: blur(10px);
-    border-top: 1px solid var(--border-color);
-    transition: background-color 0.3s ease, box-shadow 0.3s ease;
-}
-
-body.dark-mode .navigation {
-    background-color: rgba(18, 18, 18, 0.95);
-    box-shadow: 0 -2px 15px rgba(0, 0, 0, 0.2);
-}
-
-.nav-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-decoration: none;
-    color: var(--text-light);
-    font-size: 12px;
-    transition: all 0.3s;
-    position: relative;
-}
-
-.nav-item::after {
-    content: '';
-    position: absolute;
-    width: 0;
-    height: 3px;
-    bottom: -14px;
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: var(--primary-color);
-    transition: width 0.3s;
-    border-radius: 3px;
-}
-
-.nav-item:hover {
-    color: var(--text-secondary);
-}
-
-.nav-icon {
-    font-size: 24px;
-    margin-bottom: 6px;
-    transition: transform 0.3s;
-}
-
-.nav-item:hover .nav-icon {
-    transform: translateY(-4px);
-}
-
-.nav-item.active {
-    color: var(--primary-color);
-}
-
-.nav-item.active::after {
-    width: 30px;
-}
-
-.footer-space {
-    height: 90px;
-}
-
-/* ANIMATIONS */
-@keyframes pulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.05); }
-    100% { transform: scale(1); }
-}
-
-.reward-amount {
-    animation: pulse 2.5s infinite;
-}
-
-/* SPIN BOX STYLES */
-.spin-box-card {
-    background-color: var(--bg-card);
-    border-radius: 24px;
-    padding: 30px 26px;
-    margin: 35px auto;
-    max-width: 420px;
-    box-shadow: var(--shadow-md);
-    border: 2px solid var(--border-color);
-    transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
-    text-align: center;
-    letter-spacing: 0.3px;
-}
-
-.spin-box-card:hover {
-    transform: translateY(-5px);
-    box-shadow: var(--shadow-lg);
-}
-
-.spin-box-header {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 18px;
-}
-
-.spin-icon {
-    font-size: 26px;
-    margin-right: 12px;
-    color: var(--primary-color);
-    transition: color 0.3s ease;
-}
-
-.spin-title {
-    font-size: 22px;
-    font-weight: 700;
-    color: var(--primary-color);
-    letter-spacing: 0.5px;
-    transition: color 0.3s ease;
-}
-
-.spin-box-content {
-    padding: 12px 0;
-}
-
-.reward-banner {
-    background-color: rgba(76, 175, 80, 0.1);
-    border-radius: 16px;
-    padding: 14px 20px;
-    margin-bottom: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background-color 0.3s ease;
-}
-
-body.dark-mode .reward-banner {
-    background-color: rgba(16, 163, 127, 0.15);
-}
-
-.reward-banner span {
-    color: var(--primary-color);
-    font-weight: 600;
-    letter-spacing: 0.4px;
-    font-size: 16px;
-    transition: color 0.3s ease;
-}
-
-.reward-text {
-    font-size: 16px;
-    line-height: 1.7;
-    margin-bottom: 26px;
-    color: var(--text-secondary);
-    padding: 0 15px;
-    transition: color 0.3s ease;
-}
-
-.sparkle {
-    display: inline-block;
-    animation: sparkle 1.5s infinite alternate;
-    color: var(--secondary-color);
-    margin: 0 5px;
-    transition: color 0.3s ease;
-}
-
-@keyframes sparkle {
-    0% { opacity: 0.6; transform: scale(0.8); }
-    100% { opacity: 1; transform: scale(1.1); }
-}
-
-.spin-button {
-    background: linear-gradient(to right, var(--primary-color), var(--primary-dark));
-    border: none;
-    color: white;
-    padding: 16px 32px;
-    font-size: 18px;
-    font-weight: 600;
-    border-radius: 50px;
-    cursor: pointer;
-    box-shadow: 0 6px 15px rgba(76, 175, 80, 0.25);
-    transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-.spin-button:hover {
-    transform: translateY(-3px) scale(1.02);
-    box-shadow: 0 8px 20px rgba(76, 175, 80, 0.35);
-}
-
-.spin-button:active {
-    transform: translateY(1px);
-    box-shadow: 0 4px 10px rgba(76, 175, 80, 0.2);
-}
-
-.spin-button::after {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(to right, transparent, rgba(255,255,255,0.3), transparent);
-    animation: shine 2.5s infinite;
-}
-
-@keyframes shine {
-    0% { left: -100%; }
-    50%, 100% { left: 100%; }
-}
-
-body.dark-mode .spin-button {
-    background: linear-gradient(to right, var(--primary-color), var(--primary-dark));
-    box-shadow: 0 6px 15px rgba(16, 163, 127, 0.3);
-}
-
-body.dark-mode .spin-button:hover {
-    box-shadow: 0 8px 20px rgba(16, 163, 127, 0.4);
-}
-
-.bonus-icon {
-    margin-right: 10px;
-    font-size: 20px;
-}
-
-/* MODAL STYLES */
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 1000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.7);
-    animation: fadeIn 0.3s ease-in-out;
-    backdrop-filter: blur(4px);
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-
-.modal-content {
-    position: relative;
-    background-color: var(--bg-card);
-    margin: 2% auto;
-    top: 60px;
-    padding: 0;
-    width: 70%;
-    max-width: 900px;
-    border-radius: 20px;
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
-    overflow: hidden;
-    animation: slideIn 0.4s ease-in-out;
-    transition: background-color 0.3s ease;
-}
-
-@media (max-width: 768px) {
-    .modal-content {
-        width: 95%;
-        max-width: 100%;
-    }
-}
-
-@keyframes slideIn {
-    from { transform: translateY(-60px); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
-}
-
-.modal-header {
-    position: relative;
-    padding: 15px 20px;
-    background-color: var(--primary-color);
-    color: white;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    transition: background-color 0.3s ease;
-}
-
-.modal-title {
-    font-size: 20px;
-    font-weight: bold;
-    letter-spacing: 0.5px;
-}
-
-.close-btn {
-    color: white;
-    font-size: 28px;
-    font-weight: bold;
-    cursor: pointer;
-    background: none;
-    border: none;
-    padding: 0 5px;
-    line-height: 1;
-    transition: transform 0.3s ease;
-}
-
-.close-btn:hover {
-    transform: scale(1.1) rotate(90deg);
-}
-
-.modal-body {
-    width: 100%;
-    height: 80vh;
-    max-height: 500px;
-    max-width: 700px;
-}
-
-.modal-body iframe {
-    width: 100%;
-    height: 100%;
-    border: none;
-}
-
-/* GAME INSTRUCTIONS */
-.game-instructions {
-    margin-top: 12px;
-    padding: 16px;
-    background-color: rgba(248, 249, 250, 0.7);
-    border-left: 4px solid var(--primary-color);
-    border-radius: 10px;
-    font-size: 14px;
-    color: var(--text-secondary);
-    transition: background-color 0.3s ease, color 0.3s ease;
-}
-
-.game-instructions ul {
-    margin: 8px 0 0;
-    padding-left: 20px;
-}
-
-.game-instructions li {
-    list-style-type: disc;
-    margin-bottom: 4px;
-}
-
-body.dark-mode .game-instructions {
-    background-color: rgba(30, 30, 30, 0.7);
-    border-left-color: var(--primary-color);
-}
-
-/* DARK MODE SPECIFIC ENHANCEMENTS */
-body.dark-mode .btn-primary:hover {
-    box-shadow: 0 6px 20px rgba(16, 163, 127, 0.5);
-}
-
-body.dark-mode .btn:active {
-    box-shadow: 0 2px 10px rgba(16, 163, 127, 0.2);
-}
-
-body.dark-mode .network-icon img {
-</style>
-<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+        /* Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #1a1a2e;
+            color: #f1f1f1;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Blog Styles */
+        .blog-container {
+            padding: 40px 0;
+        }
+        
+        .blog-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .blog-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #6a11cb, #2575fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .blog-header p {
+            font-size: 1.2rem;
+            color: #aaa;
+        }
+        
+        .blog-post {
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 40px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .blog-post h2 {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            color: #fff;
+        }
+        
+        .blog-meta {
+            display: flex;
+            flex-wrap: wrap;
+            font-size: 0.9rem;
+            color: #aaa;
+            margin-bottom: 20px;
+        }
+        
+        .blog-image {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .blog-content {
+            margin-bottom: 20px;
+        }
+        
+        .blog-content p {
+            margin-bottom: 15px;
+        }
+        
+        .blog-content h3 {
+            font-size: 1.4rem;
+            margin: 25px 0 15px;
+            color: #2575fc;
+        }
+        
+        .blog-content ul, .blog-content ol {
+            margin: 15px 0 15px 20px;
+        }
+        
+        .blog-content li {
+            margin-bottom: 8px;
+        }
+        
+        .blog-content strong {
+            color: #ff6b6b;
+        }
+        
+        .read-more {
+            display: inline-block;
+            background: linear-gradient(135deg, #6a11cb, #2575fc);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: transform 0.3s;
+        }
+        
+        .read-more:hover {
+            transform: translateY(-3px);
+        }
+        
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .blog-header h1 {
+                font-size: 2rem;
+            }
+            
+            .blog-post h2 {
+                font-size: 1.5rem;
+            }
+            
+            .blog-post {
+                padding: 20px;
+            }
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <div class="logo">Daily Earn</div>
-            <div>
-            </div>
+    <div class="container blog-container">
+        <header class="blog-header">
+            <h1>Multi Games Blog</h1>
+            <p>Latest news, reviews, and guides for all your favorite games</p>
         </header>
         
-        <div id="alert-container" class="hidden"></div>
-        
-        <div class="card" style="margin-bottom: 30px;">
-            <div class="daily-reward-card">
-                <div class="reward-info">
-                    <div class="reward-amount">₦1</div>
-                    <b>Complete reCAPTCHA to claim</b>
-                    <div class="reward-status">Daily Reward: <span id="daily-reward-status">Loading...</span></div>
-                    <div id="countdown-display" class="countdown-display">
-                        Next reward in: <span id="countdown-timer">24:00:00</span>
-                    </div>
+        <main>
+            <!-- Blog Post 1 -->
+            <article class="blog-post">
+                <h2>The Evolution of Battle Royale Games</h2>
+                <div class="blog-meta">
+                    <span>May 8, 2025</span> | 
+                    <span>Categories: Battle Royale, Gaming Trends</span>
                 </div>
-               
-                <button id="claim-btn" class="btn btn-primary hidden" disabled>Claim</button>
-            </div>
-        </div>
-
-        <!-- reCAPTCHA positioned between sections -->
-        <div id="recaptcha-container" style="display: flex; justify-content: center; margin-bottom: 20px;">
-            <div class="g-recaptcha" data-sitekey="6LfANf0qAAAAALmlg5u3HnW00PtLEEkKMV-ulglv" data-callback="enableClaimButton"></div>
-        </div>
-
-  <!-- Modal -->
-
-
-  
-        <!-- NEW SECTION: Game Quest Card -->
-        <div class="card" style="margin-bottom: 30px;">
-            <div class="daily-reward-card">
-                <div class="reward-info">
-                    <div class="reward-amount">₦3</div>
-                    <b>Play 3 Games Quest</b>
-                    <div class="reward-status">Quest Status: <span id="quest-status">Incomplete</span></div>
+                <img src="/api/placeholder/800/450" alt="Battle Royale Games Evolution" class="blog-image">
+                <div class="blog-content">
+                    <p>The battle royale genre has undergone a remarkable evolution since its inception, transforming from a niche mod into a dominant force in the gaming industry. What started with mods like PlayerUnknown's Battle Royale for ARMA 2 and H1Z1 has evolved into a massive ecosystem of games that continue to shape how we play and compete online.</p>
                     
-                    <!-- Progress bar for games played -->
-                    <div class="progress-container" style="width: 100%; background-color: #e0e0e0; border-radius: 5px; margin: 10px 0;">
-                        <div id="quest-progress-bar" class="progress-bar" style="height: 20px; width: 0%; background-color: var(--primary-color); border-radius: 5px; transition: width 0.3s ease;"></div>
-                    </div>
-                    <div id="games-progress">Games Played: <span id="games-played-count">0</span>/3</div>
-
-<div id="quest-countdown-display" class="countdown-container hidden">
-    <p>Next quest reward available in:</p>
-    <span id="quest-countdown-timer" class="countdown-timer">24:00:00</span>
-</div>
+                    <p>The explosion of popularity began with PlayerUnknown's Battlegrounds (PUBG) in 2017, which set the standard for the genre with its realistic approach to survival combat. Shortly after, Fortnite Battle Royale entered the scene, introducing building mechanics and a more accessible, cartoon-like aesthetic that appealed to a broader audience.</p>
                     
-            
-<!-- HTML for game instructions -->
-<div class="game-instructions">
-    <b>Games to play to get reward:</b>
-    <ul>
-        <li>Whack Mole</li>
-        <li>Subway Surfers Halloween</li>
-        <li>Relic Runner Away</li>
-    </ul>
-</div>
-                    <div id="game-timer-display" class="countdown-display hidden">
-                        Next game in: <span id="game-countdown-timer">03:00</span>
-                    </div>
+                    <h3>The Rise of Cross-Platform Play</h3>
+                    <p>One of the most significant developments in the battle royale genre has been the push toward cross-platform gameplay. Titles like Fortnite, Call of Duty: Warzone, and Apex Legends have broken down the barriers between console, PC, and mobile players, creating unified communities regardless of platform preference.</p>
+                    
+                    <h3>Evolution of Game Mechanics</h3>
+                    <p>Battle royale games have continuously evolved their mechanics to keep players engaged:</p>
+                    <ul>
+                        <li><strong>Dynamic Maps:</strong> From Fortnite's seasonal map changes to Warzone's integration with story elements</li>
+                        <li><strong>Character Abilities:</strong> Apex Legends pioneered the inclusion of hero-based abilities in the battle royale format</li>
+                        <li><strong>Respawn Systems:</strong> The addition of respawn mechanics has reduced the frustration of early eliminations</li>
+                        <li><strong>AI Integration:</strong> Some titles now include AI opponents to fill lobbies and provide varied challenges</li>
+                    </ul>
+                    
+                    <p>As we look to the future, the battle royale genre continues to adapt and integrate elements from other game types, ensuring its longevity in the competitive gaming landscape.</p>
                 </div>
-
-               
-                <button id="claim-quest-btn" class="btn btn-primary hidden">Claim Quest Reward</button>
-            </div>
-        </div>
-
-        <div class="card">
-            <div class="transactions-header">
-                <div class="card-title">Recent Transactions</div>
-                <a href="#" class="see-all">See All</a>
-            </div>
-            <div id="transaction-history">
-                <div class="transaction-item" style="text-align: center; color: #888;">
-                    No transactions yet
+                <a href="#" class="read-more">Read More</a>
+            </article>
+    
+            <!-- Blog Post 2 -->
+            <article class="blog-post">
+                <h2>10 Must-Play Indie Games in 2025</h2>
+                <div class="blog-meta">
+                    <span>May 5, 2025</span> | 
+                    <span>Categories: Indie Games, Reviews</span>
                 </div>
-            </div>
-        </div>
-        
-        <div class="footer-space"></div>
-        
-        <div id="toast" class="toast">Transaction completed!</div>
-
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
-    <script>
-  // ----- Firebase Initialization -----
-const firebaseConfig = {
-    apiKey: "AIzaSyBw1uA-kNKOZEufWKZ9AMBxvRGHNGF1lkA",
-    authDomain: "multi-games-a2561.firebaseapp.com",
-    databaseURL: "https://multi-games-a2561-default-rtdb.firebaseio.com",
-    projectId: "multi-games-a2561",
-    storageBucket: "multi-games-a2561.appspot.com",
-    messagingSenderId: "150551898066",
-    appId: "1:150551898066:web:4e8fb185f2321ba4140a0b",
-    measurementId: "G-PB8Y87E6XV"
-};
-firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-const database = firebase.database();
-
-// ----- Global Constants and Variables -----
-const API_KEY = '2K6DSZdbL57EWYJNI4f31cX0O9PHQ8MFGaVCAUBReT7345D80Jea5bbEGkLfBFvAj9C';
-const DAILY_REWARD = 1;
-const QUEST_REWARD = 3;
-const MIN_PLAY_TIME = 3 * 60 * 1000;  // 3 minutes required per valid game session
-const QUEST_COOLDOWN = 24 * 60 * 60 * 1000; // 24 hours cooldown for quest reward
-
-let userData = {
-    userId: null,
-    airtimeBalance: 0,
-    lastClaim: 0,
-    transactions: [],
-    lastQuestClaim: 0,
-    gamesPlayedToday: 0,
-    isProcessingClaim: false,  // Lock to prevent double claims
-    isProcessingQuestClaim: false  // Lock for quest claims
-};
-
-let userLoggedIn = false;
-let captchaValidated = false;
-
-// ----- DOM Elements -----
-const elements = {
-    claimBtn: document.getElementById('claim-btn'),
-    countdownDisplay: document.getElementById('countdown-display'),
-    countdownTimer: document.getElementById('countdown-timer'),
-    dailyRewardStatus: document.getElementById('daily-reward-status'),
-    alertContainer: document.getElementById('alert-container'),
-    transactionHistory: document.getElementById('transaction-history'),
-    recaptchaContainer: document.getElementById('recaptcha-container'),
-    questStatus: document.getElementById('quest-status'),
-    gamesPlayedCount: document.getElementById('games-played-count'),
-    questProgressBar: document.getElementById('quest-progress-bar'),
-    claimQuestBtn: document.getElementById('claim-quest-btn'),
-    questCountdownDisplay: document.getElementById('quest-countdown-display'),
-    questCountdownTimer: document.getElementById('quest-countdown-timer'),
-    signOutBtn: document.getElementById('sign-out-btn')
-};
-
-// ----- Firebase Data Functions -----
-function initUserData(uid) {
-    const userRef = database.ref(`users/${uid}`);
-    return userRef.get().then((snapshot) => {
-        if (!snapshot.exists()) {
-            return userRef.set({
-                airtimeBalance: 0,
-                lastClaim: 0,
-                transactions: [],
-                lastQuestClaim: 0,
-                playedGames: [],
-                playedGamesLastReset: new Date().toISOString()
-            });
-        }
-    });
-}
-
-function syncFromFirebase(uid) {
-    const userRef = database.ref(`users/${uid}`);
-    userRef.on('value', (snapshot) => {
-        const data = snapshot.val() || {};
-        
-        // Update user data with server values
-        userData.airtimeBalance = data.airtimeBalance || 0;
-        userData.lastClaim = data.lastClaim || 0;
-        userData.transactions = data.transactions || [];
-        userData.lastQuestClaim = data.lastQuestClaim || 0;
-        
-        // Sync played games from Firebase with server timestamp validation
-        if (data.playedGames) {
-            localStorage.setItem('playedGames', JSON.stringify(data.playedGames));
-        }
-        if (data.playedGamesLastReset) {
-            localStorage.setItem('playedGamesLastReset', data.playedGamesLastReset);
-        }
-        
-        // Release claim locks in case they were stuck
-        userData.isProcessingClaim = false;
-        userData.isProcessingQuestClaim = false;
-        
-        // Update UI based on synced data
-        updateTransactionHistory();
-        checkDailyReward();
-        checkForPlayedGames();
-        checkQuestCooldown();
-    });
-}
-
-function syncToFirebase(uid, updateData = {}) {
-    if (!uid) return Promise.reject('No user ID');
-    
-    const userRef = database.ref(`users/${uid}`);
-    
-    // Get current played games data from localStorage to sync back
-    const playedGames = JSON.parse(localStorage.getItem('playedGames')) || [];
-    const playedGamesLastReset = localStorage.getItem('playedGamesLastReset') || new Date().toISOString();
-    
-    // Merge with any data updates passed in
-    const dataToSync = {
-        airtimeBalance: userData.airtimeBalance,
-        lastClaim: userData.lastClaim,
-        transactions: userData.transactions,
-        lastQuestClaim: userData.lastQuestClaim,
-        playedGames: playedGames,
-        playedGamesLastReset: playedGamesLastReset,
-        ...updateData
-    };
-    
-    // Use server timestamp for enhanced security
-    return userRef.update({
-        ...dataToSync,
-        lastUpdated: firebase.database.ServerValue.TIMESTAMP
-    });
-}
-
-function addTransaction(transaction) {
-    userData.transactions.unshift(transaction);
-    if (userData.userId) {
-        syncToFirebase(userData.userId);
-    }
-    updateTransactionHistory();
-}
-
-function updateTransactionHistory() {
-    if (!elements.transactionHistory) return;
-    
-    if (userData.transactions.length === 0) {
-        elements.transactionHistory.innerHTML = `<div class="transaction-item" style="text-align: center; color: #888;">No transactions yet</div>`;
-        return;
-    }
-    
-    elements.transactionHistory.innerHTML = '';
-    userData.transactions.slice(0, 3).forEach(transaction => {
-        const date = new Date(transaction.date);
-        const formattedDate = `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
-        const statusClass = transaction.status === 'success' ? 'success' :
-                           transaction.status === 'pending' ? 'pending' :
-                           transaction.status === 'reversed' ? 'reversed' : 'failed';
-        
-        elements.transactionHistory.innerHTML += `
-            <div class="transaction-item">
-                <div class="transaction-info">
-                    <div class="transaction-title">${transaction.type}</div>
-                    <div class="transaction-date">${formattedDate}</div>
-                    ${transaction.phone ? `<div class="transaction-phone">${transaction.phone}</div>` : ''}
-                    ${transaction.reference ? `<div class="transaction-reference">Ref: ${transaction.reference}</div>` : ''}
+                <img src="/api/placeholder/800/450" alt="Indie Games 2025" class="blog-image">
+                <div class="blog-content">
+                    <p>Independent game development continues to be a hotbed of innovation, with small teams creating experiences that often rival or surpass those from major studios. The indie scene in 2025 is thriving with creativity, unique gameplay mechanics, and stories that push the boundaries of what games can accomplish as an art form.</p>
+                    
+                    <p>Here are our top picks for indie games you absolutely must play this year:</p>
+                    
+                    <h3>1. Ethereal Echoes</h3>
+                    <p>This atmospheric puzzle-platformer combines stunning hand-drawn visuals with a hauntingly beautiful soundtrack. Players control a spirit navigating between the worlds of the living and dead, with mechanics that change based on which realm you're in.</p>
+                    
+                    <h3>2. Quantum Drift</h3>
+                    <p>A racing game with a twist – players can manipulate time and physics to navigate impossible tracks. The minimalist art style belies the complex gameplay systems at work.</p>
+                    
+                    <h3>3. Wilderness Protocol</h3>
+                    <p>This survival roguelike takes place in a procedurally generated forest where the laws of nature are constantly shifting. Each run offers a unique ecosystem to explore and adapt to.</p>
+                    
+                    <h3>4. Neon Sanctuary</h3>
+                    <p>A cyberpunk RPG with a focus on narrative choices and consequence. The pixel art aesthetic is enhanced with modern lighting techniques, creating a distinct visual identity.</p>
+                    
+                    <h3>5. Orbital Decay</h3>
+                    <p>Set aboard an abandoned space station, this immersive sim combines survival horror elements with zero-gravity exploration and resource management.</p>
+                    
+                    <p>The remaining games on our list include groundbreaking titles across various genres, from tactical strategy to narrative adventures, showcasing the incredible diversity of the indie development scene.</p>
                 </div>
-                <div class="transaction-amount ${transaction.amount > 0 ? 'credit' : 'debit'}">
-                    ${transaction.amount > 0 ? '+' : ''}₦${Math.abs(transaction.amount)}
+                <a href="#" class="read-more">Read More</a>
+            </article>
+    
+            <!-- Blog Post 3 -->
+            <article class="blog-post">
+                <h2>How Cloud Gaming is Changing the Industry</h2>
+                <div class="blog-meta">
+                    <span>April 28, 2025</span> | 
+                    <span>Categories: Technology, Industry Trends</span>
                 </div>
-                <div class="transaction-status ${statusClass}">${transaction.status}</div>
-            </div>
-        `;
-    });
-}
-
-function showAlert(message, type) {
-    if (!elements.alertContainer) return;
-    elements.alertContainer.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
-    elements.alertContainer.classList.remove('hidden');
-    setTimeout(() => { elements.alertContainer.classList.add('hidden'); }, 3000);
-}
-
-// ----- DAILY REWARD LOGIC -----
-function checkDailyReward() {
-    if (!elements.dailyRewardStatus || !elements.claimBtn || !elements.countdownDisplay) return;
-    
-    const now = new Date().getTime();
-    const twentyFourHours = 24 * 60 * 60 * 1000;
-    
-    if (now - userData.lastClaim >= twentyFourHours) {
-        elements.dailyRewardStatus.textContent = 'Available';
-        elements.countdownDisplay.style.display = 'none';
-        elements.recaptchaContainer.style.display = 'flex';
-    } else {
-        elements.dailyRewardStatus.textContent = 'Claimed for today';
-        elements.claimBtn.classList.add('hidden');
-        elements.countdownDisplay.style.display = 'block';
-        elements.recaptchaContainer.style.display = 'none';
-        startMainRewardCountdown(userData.lastClaim);
-    }
-}
-
-function startMainRewardCountdown(lastClaimTime) {
-    if (!elements.countdownTimer) return;
-    
-    const targetTime = lastClaimTime + (24 * 60 * 60 * 1000);
-    
-    const updateCountdown = () => {
-        const now = new Date().getTime();
-        const timeRemaining = targetTime - now;
-        
-        if (timeRemaining <= 0) {
-            elements.countdownTimer.textContent = "00:00:00";
-            checkDailyReward();
-            clearInterval(countdownInterval);
-            return;
-        }
-        
-        const hours = Math.floor(timeRemaining / (1000 * 60 * 60));
-        const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
-        elements.countdownTimer.textContent = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-    };
-    
-    updateCountdown();
-    const countdownInterval = setInterval(updateCountdown, 1000);
-    window.addEventListener('beforeunload', () => clearInterval(countdownInterval));
-}
-
-async function claimDailyReward() {
-    // Check prerequisites
-    if (!userLoggedIn || !userData.userId) {
-        showAlert('Please login to claim your daily reward', 'warning');
-        return;
-    }
-    
-    if (!captchaValidated) {
-        showAlert('Please complete the reCAPTCHA first', 'warning');
-        return;
-    }
-    
-    // Prevent double claims
-    if (userData.isProcessingClaim) {
-        showAlert('Processing previous claim, please wait...', 'warning');
-        return;
-    }
-    
-    userData.isProcessingClaim = true;
-    
-    try {
-        // Double-check with server that reward is available
-        const userRef = database.ref(`users/${userData.userId}`);
-        const snapshot = await userRef.once('value');
-        const serverData = snapshot.val() || {};
-        const now = new Date().getTime();
-        
-        if (now - (serverData.lastClaim || 0) < 24 * 60 * 60 * 1000) {
-            showAlert('Daily reward already claimed', 'warning');
-            userData.isProcessingClaim = false;
-            return;
-        }
-        
-        // Update balance and claim time atomically on server
-        await syncToFirebase(userData.userId, {
-            airtimeBalance: (serverData.airtimeBalance || 0) + DAILY_REWARD,
-            lastClaim: now,
-            transactions: [
-                {
-                    type: 'Daily Reward Claimed',
-                    amount: DAILY_REWARD,
-                    date: now,
-                    status: 'success'
-                },
-                ...(serverData.transactions || [])
-            ]
-        });
-        
-        // Update local data
-        userData.airtimeBalance += DAILY_REWARD;
-        userData.lastClaim = now;
-        
-        showAlert(`Daily reward of ₦${DAILY_REWARD} claimed successfully!`, 'success');
-        
-        // Update UI
-        elements.claimBtn.classList.add('hidden');
-        elements.recaptchaContainer.style.display = 'none';
-        captchaValidated = false;
-        checkDailyReward();
-        
-    } catch (error) {
-        console.error("Error claiming daily reward:", error);
-        showAlert('Error claiming reward. Please try again.', 'danger');
-    } finally {
-        userData.isProcessingClaim = false;
-    }
-}
-
-function enableClaimButton() {
-    captchaValidated = true;
-    elements.claimBtn.disabled = false;
-    elements.claimBtn.classList.remove('hidden');
-}
-
-// ----- GAME QUEST LOGIC -----
-function getTodaySixAM() {
-    const now = new Date();
-    return new Date(now.getFullYear(), now.getMonth(), now.getDate(), 6, 0, 0, 0);
-}
-
-function getYesterdaySixAM() {
-    return new Date(getTodaySixAM().getTime() - 24 * 60 * 60 * 1000);
-}
-
-// Reset game tracking if needed, respecting quest cooldown
-function resetPlayedGamesIfNeeded() {
-    const now = new Date().getTime();
-    
-    // Don't reset if quest is on cooldown
-    if (now - userData.lastQuestClaim < QUEST_COOLDOWN) {
-        return;
-    }
-    
-    const todaySixAM = getTodaySixAM();
-    let lastReset = localStorage.getItem('playedGamesLastReset');
-    
-    if (!lastReset) {
-        const initialReset = now < todaySixAM.getTime() ? getYesterdaySixAM() : todaySixAM;
-        localStorage.setItem('playedGamesLastReset', initialReset.toISOString());
-        localStorage.setItem('playedGames', JSON.stringify([]));
-        
-        if (userData.userId) {
-            syncToFirebase(userData.userId);
-        }
-        return;
-    }
-    
-    const lastResetTime = new Date(lastReset);
-    if (now >= todaySixAM.getTime() && lastResetTime < todaySixAM) {
-        localStorage.setItem('playedGames', JSON.stringify([]));
-        localStorage.setItem('playedGamesLastReset', todaySixAM.toISOString());
-        if (userData.userId) {
-            syncToFirebase(userData.userId);
-        }
-    } else if (now < todaySixAM.getTime() && lastResetTime < getYesterdaySixAM()) {
-        localStorage.setItem('playedGames', JSON.stringify([]));
-        localStorage.setItem('playedGamesLastReset', getYesterdaySixAM().toISOString());
-        if (userData.userId) {
-            syncToFirebase(userData.userId);
-        }
-    }
-}
-
-function checkForPlayedGames() {
-    resetPlayedGamesIfNeeded();
-    
-    const playedGames = JSON.parse(localStorage.getItem("playedGames")) || [];
-    const validGames = playedGames.filter(game => game.duration >= MIN_PLAY_TIME);
-    
-    userData.gamesPlayedToday = validGames.length;
-    
-    if (elements.gamesPlayedCount) {
-        elements.gamesPlayedCount.textContent = userData.gamesPlayedToday;
-    }
-    
-    updateQuestProgressBar();
-    checkQuestStatus();
-}
-
-function checkQuestCooldown() {
-    if (!elements.questStatus || !elements.claimQuestBtn || !elements.questCountdownDisplay) return;
-    
-    const now = new Date().getTime();
-    const cooldownRemaining = QUEST_COOLDOWN - (now - userData.lastQuestClaim);
-    
-    if (cooldownRemaining > 0 && userData.lastQuestClaim > 0) {
-        // Quest is on cooldown
-        elements.questStatus.textContent = 'On Cooldown';
-        elements.questStatus.style.color = '#888';
-        elements.claimQuestBtn.classList.add('hidden');
-        elements.questCountdownDisplay.classList.remove('hidden');
-        startQuestCountdown(userData.lastQuestClaim);
-    } else {
-        // No quest cooldown
-        elements.questCountdownDisplay.classList.add('hidden');
-        checkQuestStatus();
-    }
-}
-
-function startQuestCountdown(lastQuestClaimTime) {
-    if (!elements.questCountdownTimer) return;
-    
-    const targetTime = lastQuestClaimTime + QUEST_COOLDOWN;
-    
-    const updateQuestCountdown = () => {
-        const now = new Date().getTime();
-        const timeRemaining = targetTime - now;
-        
-        if (timeRemaining <= 0) {
-            elements.questCountdownTimer.textContent = "00:00:00";
-            checkQuestCooldown();
-            clearInterval(questCountdownInterval);
-            return;
-        }
-        
-        const hours = Math.floor(timeRemaining / (1000 * 60 * 60));
-        const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
-        elements.questCountdownTimer.textContent = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-    };
-    
-    updateQuestCountdown();
-    const questCountdownInterval = setInterval(updateQuestCountdown, 1000);
-    window.addEventListener('beforeunload', () => clearInterval(questCountdownInterval));
-}
-
-function checkQuestStatus() {
-    if (!elements.questStatus || !elements.claimQuestBtn) return;
-    
-    // First check if quest is on cooldown
-    const now = new Date().getTime();
-    if (now - userData.lastQuestClaim < QUEST_COOLDOWN) {
-        return; // Let the cooldown function handle this state
-    }
-    
-    // Quest is not on cooldown, check completion status
-    if (userData.gamesPlayedToday >= 3) {
-        elements.questStatus.textContent = userLoggedIn ? 'Complete! Claim Your Reward' : 'Complete! Login to claim reward';
-        elements.questStatus.style.color = '#4CAF50';
-        elements.claimQuestBtn.classList.toggle('hidden', !userLoggedIn);
-    } else {
-        elements.questStatus.textContent = 'In Progress';
-        elements.questStatus.style.color = '#FFC107';
-        elements.claimQuestBtn.classList.add('hidden');
-    }
-}
-
-function updateQuestProgressBar() {
-    if (!elements.questProgressBar) return;
-    const progressPercentage = Math.min(100, (userData.gamesPlayedToday / 3) * 100);
-    elements.questProgressBar.style.width = `${progressPercentage}%`;
-}
-
-// Record a valid game session
-function recordGameSession(gameName, duration) {
-    let playedGames = JSON.parse(localStorage.getItem("playedGames")) || [];
-    
-    playedGames.push({
-        gameName: gameName,
-        duration: duration,
-        timestamp: new Date().toISOString()
-    });
-    
-    localStorage.setItem("playedGames", JSON.stringify(playedGames));
-    
-    // Sync to Firebase
-    if (userData.userId) {
-        syncToFirebase(userData.userId);
-    }
-    
-    checkForPlayedGames();
-}
-
-// Claim quest reward with server verification
-async function claimQuestReward() {
-    // Check prerequisites
-    if (!userLoggedIn || !userData.userId) {
-        showAlert('Please login to claim your quest reward', 'warning');
-        return;
-    }
-    
-    if (userData.gamesPlayedToday < 3) {
-        showAlert('You need to play 3 games to claim this reward', 'warning');
-        return;
-    }
-    
-    // Prevent double claims
-    if (userData.isProcessingQuestClaim) {
-        showAlert('Processing your claim, please wait...', 'warning');
-        return;
-    }
-    
-    userData.isProcessingQuestClaim = true;
-    
-    try {
-        // Verify with server that reward is available
-        const userRef = database.ref(`users/${userData.userId}`);
-        const snapshot = await userRef.once('value');
-        const serverData = snapshot.val() || {};
-        const now = new Date().getTime();
-        
-        // Check cooldown from server data
-        if (now - (serverData.lastQuestClaim || 0) < QUEST_COOLDOWN) {
-            showAlert('Quest reward is on cooldown', 'warning');
-            userData.isProcessingQuestClaim = false;
-            return;
-        }
-        
-        // Verify games played count from server
-        const serverGames = serverData.playedGames || [];
-        const validServerGames = serverGames.filter(game => game.duration >= MIN_PLAY_TIME);
-        
-        if (validServerGames.length < 3) {
-            showAlert('Server verification failed: Not enough valid games played', 'warning');
-            userData.isProcessingQuestClaim = false;
-            checkForPlayedGames(); // Sync with server's game count
-            return;
-        }
-        
-        // Process reward atomically on server
-        await syncToFirebase(userData.userId, {
-            airtimeBalance: (serverData.airtimeBalance || 0) + QUEST_REWARD,
-            lastQuestClaim: now,
-            // Don't reset games - they'll remain until cooldown is over
-            transactions: [
-                {
-                    type: 'Game Quest Reward',
-                    amount: QUEST_REWARD,
-                    date: now,
-                    status: 'success'
-                },
-                ...(serverData.transactions || [])
-            ]
-        });
-        
-        // Update local data
-        userData.airtimeBalance += QUEST_REWARD;
-        userData.lastQuestClaim = now;
-        
-        showAlert(`Quest reward of ₦${QUEST_REWARD} claimed successfully!`, 'success');
-        
-        // Update UI to show cooldown
-        checkQuestCooldown();
-        
-    } catch (error) {
-        console.error("Error claiming quest reward:", error);
-        showAlert('Error claiming quest reward. Please try again.', 'danger');
-    } finally {
-        userData.isProcessingQuestClaim = false;
-    }
-}
-
-// ----- Event Listeners -----
-// Set up event listeners once DOM is loaded
-function setupEventListeners() {
-    // Claim button for daily reward
-    if (elements.claimBtn) {
-        elements.claimBtn.addEventListener('click', (event) => {
-            event.preventDefault();
-            claimDailyReward();
-        });
-    }
-    
-    // Quest claim button
-    if (elements.claimQuestBtn) {
-        elements.claimQuestBtn.addEventListener('click', (event) => {
-            event.preventDefault();
-            claimQuestReward();
-        });
-    }
-    
-    // Sign out button
-    if (elements.signOutBtn) {
-        elements.signOutBtn.addEventListener('click', () => {
-            auth.signOut().then(() => {
-                showAlert('Signed out successfully', 'success');
-            }).catch((error) => {
-                console.error('Error signing out:', error);
-                showAlert('Error signing out', 'danger');
-            });
-        });
-    }
-    
-    // Network selection
-    document.querySelectorAll('.network-icon').forEach(icon => {
-        icon.addEventListener('click', function() {
-            document.querySelectorAll('.network-icon').forEach(n => n.classList.remove('active'));
-            this.classList.add('active');
-            window.selectedNetwork = this.getAttribute('data-network');
-            window.selectedPlanId = this.getAttribute('data-plan');
-        });
-    });
-    
-    // Amount selection
-    document.querySelectorAll('.amount-option').forEach(option => {
-        option.addEventListener('click', function() {
-            document.querySelectorAll('.amount-option').forEach(o => o.classList.remove('active'));
-            this.classList.add('active');
-            window.selectedAmount = parseInt(this.getAttribute('data-amount'));
-        });
-    });
-}
-
-// ----- Authentication State Handler -----
-auth.onAuthStateChanged((user) => {
-    if (user) {
-        userData.userId = user.uid;
-        userLoggedIn = true;
-        
-        // Initialize and sync data
-        initUserData(userData.userId).then(() => {
-            syncFromFirebase(userData.userId);
-        });
-        
-        if (elements.signOutBtn) {
-            elements.signOutBtn.classList.remove('hidden');
-        }
-    } else {
-        userData.userId = null;
-        userLoggedIn = false;
-        userData.airtimeBalance = 0;
-        userData.lastClaim = 0;
-        userData.transactions = [];
-        userData.lastQuestClaim = 0;
-        
-        if (elements.signOutBtn) {
-            elements.signOutBtn.classList.add('hidden');
-        }
-        
-        if (elements.claimQuestBtn) {
-            elements.claimQuestBtn.classList.add('hidden');
-        }
-        
-        // Still check played games for UI updates
-        checkForPlayedGames();
-        checkQuestStatus();
-    }
-});
-
-// ----- Initialization -----
-window.addEventListener('DOMContentLoaded', () => {
-    setupEventListeners();
-    
-    // Check for played games and quest status
-    checkForPlayedGames();
-    checkQuestCooldown();
-    
-    // Set up timers for periodic checks (with reduced frequency)
-    setInterval(checkForPlayedGames, 10000);  // 10 seconds instead of 5
-    setInterval(checkQuestCooldown, 10000);
-    
-    // Initialize with current user if available
-    if (auth.currentUser) {
-        userData.userId = auth.currentUser.uid;
-        userLoggedIn = true;
-        initUserData(userData.userId).then(() => {
-            syncFromFirebase(userData.userId);
-        });
-    }
-});
-</script>
-<script>
-    // Get modal elements
-    const modal = document.getElementById('spinModal');
-    const closeBtn = document.getElementById('closeModal');
-    const spinBtn = document.getElementById('spinBoxBtn');
-    const spinFrame = document.getElementById('spinFrame');
-
-    // Open modal when spin button is clicked
-    spinBtn.addEventListener('click', function() {
-      // Add animation for button
-      this.innerHTML = '<span class="bonus-icon">🎉</span>Spinning...';
-      
-      // Show modal with slight delay for button animation
-      setTimeout(() => {
-        modal.style.display = 'block';
-        // Reset button text after modal appears
-        this.innerHTML = '<span class="bonus-icon">🎯</span>Spin Box';
-      }, 500);
-    });
-
-    // Close modal when X button is clicked
-    closeBtn.addEventListener('click', function() {
-      modal.style.display = 'none';
-    });
-
-    // Close modal when clicking outside of it
-    window.addEventListener('click', function(event) {
-      if (event.target === modal) {
-        modal.style.display = 'none';
-      }
-    });
-
-    // Handle escape key press to close modal
-    window.addEventListener('keydown', function(event) {
-      if (event.key === 'Escape' && modal.style.display === 'block') {
-        modal.style.display = 'none';
-      }
-    });
-  </script>
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-    // Function to apply dark mode based on localStorage
-    function applyDarkModeSetting() {
-        const isDarkMode = localStorage.getItem('darkMode') === 'enabled';
-        document.body.classList.toggle('dark-mode', isDarkMode);
-    }
-
-    // Apply dark mode on page load
-    applyDarkModeSetting();
-
-    // Optional: re-check every 3 seconds in case another tab changes it
-    setInterval(applyDarkModeSetting, 300);
-});
-</script>
+                <img src="/api/placeholder/800/450" alt="Cloud Gaming Technology" class="blog-image">
+                <div class="blog-content">
+                    <p>Cloud gaming technology has matured significantly in recent years, transforming from a promising concept plagued with technical limitations to a viable platform that's reshaping how we access and play games. As internet infrastructure continues to improve globally, the barriers to cloud gaming adoption are steadily falling.</p>
+                    
+                    <h3>Advantages of Cloud Gaming</h3>
+                    <p>The shift to cloud-based gaming offers several significant benefits:</p>
+                    <ul>
+                        <li><strong>Hardware Independence:</strong> Players can access high-end games without investing in expensive gaming hardware</li>
+                        <li><strong>Instant Access:</strong> No downloads or installations required, allowing immediate play</li>
+                        <li><strong>Cross-Device Compatibility:</strong> Play the same games across multiple devices with consistent performance</li>
+                        <li><strong>Automatic Updates:</strong> Games are always current without manual patching</li>
+                    </ul>
+                    
+                    <h3>Major Platforms and Competition</h3>
+                    <p>The cloud gaming space has become increasingly competitive, with major tech companies and traditional gaming giants all vying for market share. Each platform offers unique advantages:</p>
+                    <ul>
+                        <li><strong>Xbox Cloud Gaming:</strong> Integration with Game Pass provides access to hundreds of titles</li>
+                        <li><strong>NVIDIA GeForce Now:</strong> Allows players to access games they already own on other platforms</li>
+                        <li><strong>PlayStation Cloud:</strong> Focuses on PlayStation exclusives and backward compatibility</li>
+                        <li><strong>Amazon Luna:</strong> Channel-based subscription model with partner integrations</li>
+                    </ul>
+                    
+                    <p>As bandwidth limitations continue to decrease and latency solutions improve, cloud gaming is positioned to become a mainstream option for many gamers, potentially changing how games are designed and distributed in the future.</p>
+                </div>
+                <a href="#" class="read-more">Read More</a>
+            </article>
+        </main>
+    </div>
 </body>
 </html>
