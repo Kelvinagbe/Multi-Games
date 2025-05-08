@@ -160,92 +160,6 @@
   defer
 ></script>
 <link rel="stylesheet" href="css/ads/ads.css">
-<style>
-/* Footer styles that match the site's green theme with explicit dark mode support */
-footer {
-  background-color: var(--card-color);
-  padding: 16px 0;
-  text-align: center;
-  box-shadow: 0 -2px 10px var(--shadow-color);
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  z-index: 99;
-  border-top: 1px solid var(--border-color);
-  font-size: 14px;
-  transition: var(--transition);
-}
-
-footer a {
-  color: var(--primary-color);
-  text-decoration: none;
-  margin: 0 10px;
-  font-weight: 600;
-  position: relative;
-  transition: var(--transition);
-}
-
-footer a:hover {
-  color: var(--primary-light);
-  transform: translateY(-2px);
-}
-
-/* Pipe separator styling */
-footer {
-  color: var(--text-light);
-}
-
-/* Explicit Dark Mode Styles */
-.dark-mode footer {
-  background-color: #25272e; /* Using your dark mode card color */
-  border-top-color: #2c2c2c; /* Using your dark mode border color */
-}
-
-.dark-mode footer a {
-  color: #157347; /* Using your primary-light for better visibility in dark mode */
-}
-
-.dark-mode footer a:hover {
-  color: #20803c; /* A brighter green for hover in dark mode */
-  text-shadow: 0 0 5px rgba(32, 128, 60, 0.3); /* Subtle glow effect */
-}
-
-/* Add subtle animation on page load */
-footer {
-  animation: slideUpFooter 0.6s ease-out;
-}
-
-@keyframes slideUpFooter {
-  from {
-    transform: translateY(20px);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
-}
-
-/* Responsive adjustments for small screens */
-@media (max-width: 480px) {
-  footer {
-    padding: 12px 0;
-  }
-  
-  footer a {
-    margin: 0 6px;
-    font-size: 13px;
-  }
-}
-
-/* PWA support - ensures footer respects safe areas on mobile */
-@media (display-mode: standalone) {
-  footer {
-    padding-bottom: calc(16px + env(safe-area-inset-bottom));
-  }
-}
-</style>
 </head>
 <body>
 <div id="notification-container"></div>
@@ -456,12 +370,11 @@ footer {
 
 
     
-<footer>
+<footer style="text-align:center; padding: 20px; background-color: #f2f2f2; margin-top: 40px;">
   <a href="/about.html">About Us</a> |
   <a href="/privacy.html">Privacy Policy</a> |
   <a href="/contact.html">Contact</a>
 </footer>
-
         
     
 
