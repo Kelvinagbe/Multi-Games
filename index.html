@@ -754,30 +754,27 @@ document.addEventListener("DOMContentLoaded", function() {
             document.getElementById('loader').style.display = 'none';
         }, 500);
     }, loaderDelay);
-    
-    // Add CSS for iframe loaders
-    addIframeLoaderStyles();
+
+    // Add CSS for content placeholders
+    addContentPlaceholderStyles();
 
     // Initialize search functionality
-    
-    
+
     // Initialize navigation
     initNavigation();
-    
+
     // Initialize dark mode
     initDarkMode();
-    
+
     // Initialize real ad block detection
     detectAdBlockReal();
-    
+
     // Show welcome popup for new users
     checkForFirstVisit();
-    
+
     // Lazy load images
     lazyLoadImages();
 });
-    
-
 
 // Initialize Navigation
 function initNavigation() {
@@ -786,25 +783,25 @@ function initNavigation() {
         e.preventDefault();
         showMainContent();
     });
-    
+
     // Categories Navigation
     document.getElementById('categories-nav').addEventListener('click', function(e) {
         e.preventDefault();
         const categoriesContent = document.getElementById('categories-content');
         categoriesContent.style.display = 'flex';
-        
-        // Show iframe loader
-        showIframeLoader(categoriesContent);
-        
+
+        // Show content placeholder
+        showContentPlaceholder(categoriesContent, 'categories');
+
         const categoriesIframe = document.getElementById('categories-iframe');
         categoriesIframe.style.opacity = '0'; // Hide iframe initially
         categoriesIframe.src = 'nav/categories/categories.html';
-        
+
         // Handle iframe load completion
         categoriesIframe.onload = function() {
-            hideIframeLoader(categoriesContent);
+            hideContentPlaceholder(categoriesContent);
             categoriesIframe.style.opacity = '1'; // Show iframe with fade effect
-            
+
             // Apply slide-in animation
             categoriesIframe.style.transform = 'translateX(-100%)';
             setTimeout(() => {
@@ -812,42 +809,42 @@ function initNavigation() {
                 categoriesIframe.style.transform = 'translateX(0)';
             }, 50);
         };
-        
+
         // Keep navigation bar visible
         document.querySelector('.bottom-nav').style.display = 'flex';
         updateActiveNav('categories-nav');
     });
-    
+
     document.getElementById('categories-back').addEventListener('click', function() {
         const iframe = document.getElementById('categories-iframe');
         // Slide out animation
         iframe.style.transition = 'transform 0.5s ease-in';
         iframe.style.transform = 'translateX(100%)';
-        
+
         setTimeout(() => {
             document.getElementById('categories-content').style.display = 'none';
             showMainContent(); // Reset to main content when back button is pressed
         }, 500);
     });
-    
+
     // View All Categories
     document.getElementById('view-all-categories').addEventListener('click', function(e) {
         e.preventDefault();
         const categoriesContent = document.getElementById('categories-content');
         categoriesContent.style.display = 'flex';
-        
-        // Show iframe loader
-        showIframeLoader(categoriesContent);
-        
+
+        // Show content placeholder
+        showContentPlaceholder(categoriesContent, 'categories');
+
         const categoriesIframe = document.getElementById('categories-iframe');
         categoriesIframe.style.opacity = '0'; // Hide iframe initially
         categoriesIframe.src = 'nav/categories/categories.html';
-        
+
         // Handle iframe load completion
         categoriesIframe.onload = function() {
-            hideIframeLoader(categoriesContent);
+            hideContentPlaceholder(categoriesContent);
             categoriesIframe.style.opacity = '1'; // Show iframe with fade effect
-            
+
             // Apply slide-in animation
             categoriesIframe.style.transform = 'translateX(-100%)';
             setTimeout(() => {
@@ -855,30 +852,30 @@ function initNavigation() {
                 categoriesIframe.style.transform = 'translateX(0)';
             }, 50);
         };
-        
+
         // Keep navigation bar visible
         document.querySelector('.bottom-nav').style.display = 'flex';
         updateActiveNav('categories-nav');
     });
-    
+
     // Earn Navigation
     document.getElementById('earn-nav').addEventListener('click', function(e) {
         e.preventDefault();
         const earnContent = document.getElementById('earn-content');
         earnContent.style.display = 'flex';
-        
-        // Show iframe loader
-        showIframeLoader(earnContent);
-        
+
+        // Show content placeholder
+        showContentPlaceholder(earnContent, 'earn');
+
         const earnIframe = document.getElementById('earn-iframe');
         earnIframe.style.opacity = '0'; // Hide iframe initially
         earnIframe.src = 'nav/earn.html';
-        
+
         // Handle iframe load completion
         earnIframe.onload = function() {
-            hideIframeLoader(earnContent);
+            hideContentPlaceholder(earnContent);
             earnIframe.style.opacity = '1'; // Show iframe with fade effect
-            
+
             // Apply slide-in animation
             earnIframe.style.transform = 'translateX(-100%)';
             setTimeout(() => {
@@ -886,50 +883,49 @@ function initNavigation() {
                 earnIframe.style.transform = 'translateX(0)';
             }, 50);
         };
-        
+
         // Ensure navigation bar is visible
         document.querySelector('.bottom-nav').style.display = 'flex';
         updateActiveNav('earn-nav');
     });
-    
+
     document.getElementById('earn-back').addEventListener('click', function() {
         if (this.parentElement) {
             const iframe = document.getElementById('earn-iframe');
             // Slide out animation
             iframe.style.transition = 'transform 0.5s ease-in';
             iframe.style.transform = 'translateX(100%)';
-            
+
             setTimeout(() => {
                 document.getElementById('earn-content').style.display = 'none';
                 showMainContent(); // Reset to main content when back button is pressed
             }, 500);
         }
     });
-    
- 
-       // Profile Navigation
+
+    // Profile Navigation
     document.getElementById('profile-nav').addEventListener('click', function(e) {
         e.preventDefault();
         // Hide all containers first
         document.querySelectorAll('.container').forEach(container => {
             container.style.display = 'none';
         });
-        
+
         const profileContent = document.getElementById('profile-content');
         profileContent.style.display = 'flex';
-        
-        // Show iframe loader
-        showIframeLoader(profileContent);
-        
+
+        // Show content placeholder
+        showContentPlaceholder(profileContent, 'profile');
+
         const profileIframe = document.getElementById('profile-iframe');
         profileIframe.style.opacity = '0'; // Hide iframe initially
         profileIframe.src = 'nav/profile.html';
-        
+
         // Handle iframe load completion
         profileIframe.onload = function() {
-            hideIframeLoader(profileContent);
+            hideContentPlaceholder(profileContent);
             profileIframe.style.opacity = '1'; // Show iframe with fade effect
-            
+
             // Apply slide-in animation
             profileIframe.style.transform = 'translateX(-100%)';
             setTimeout(() => {
@@ -937,12 +933,12 @@ function initNavigation() {
                 profileIframe.style.transform = 'translateX(0)';
             }, 50);
         };
-        
+
         // Keep navigation bar visible
         document.querySelector('.bottom-nav').style.display = 'flex';
         updateActiveNav('profile-nav');
     });
-    
+
     // Add event listener for profile-back if it exists
     const profileBackButton = document.getElementById('profile-back');
     if (profileBackButton) {
@@ -951,20 +947,20 @@ function initNavigation() {
             // Slide out animation
             iframe.style.transition = 'transform 0.5s ease-in';
             iframe.style.transform = 'translateX(100%)';
-            
+
             setTimeout(() => {
                 document.getElementById('profile-content').style.display = 'none';
                 showMainContent(); // Reset to main content when back button is pressed
             }, 500);
         });
     }
-    
+
     document.getElementById('profile-back').addEventListener('click', function() {
         const iframe = document.getElementById('profile-iframe');
         // Slide out animation
         iframe.style.transition = 'transform 0.5s ease-in';
         iframe.style.transform = 'translateX(100%)';
-        
+
         setTimeout(() => {
             document.getElementById('profile-content').style.display = 'none';
             showMainContent(); // Reset to main content when back button is pressed
@@ -996,17 +992,17 @@ function initDarkMode() {
     // Create dark mode toggle button
     const darkModeToggle = document.createElement('div');
     darkModeToggle.className = 'dark-mode-toggle';
- 
+
     document.body.appendChild(darkModeToggle);
-    
+
     // Check for saved theme preference
     const isDarkMode = localStorage.getItem('darkMode') === 'true';
-    
+
     // Apply saved preference
     if (isDarkMode) {
         document.body.classList.add('dark-mode');
     }
-    
+
     // Toggle dark mode on click
     darkModeToggle.addEventListener('click', function() {
         document.body.classList.toggle('dark-mode');
@@ -1026,16 +1022,16 @@ function detectAdBlockReal() {
     testAd.style.left = '-999px';
     testAd.style.height = '1px';
     testAd.style.width = '1px';
-    
+
     document.body.appendChild(testAd);
-    
+
     // Check if the ad element is hidden (ad blocker active)
     setTimeout(() => {
         // If the element's height is 0, ad blocker is active
         const isAdBlocked = testAd.offsetHeight === 0 || 
                            window.getComputedStyle(testAd).display === 'none' || 
                            !document.body.contains(testAd);
-        
+
         if (isAdBlocked) {
             // Show ad block message
             document.getElementById('adblockMessage').style.display = 'block';
@@ -1043,13 +1039,13 @@ function detectAdBlockReal() {
         } else {
             console.log('No ad blocker detected');
         }
-        
+
         // Remove the test element
         if (document.body.contains(testAd)) {
             document.body.removeChild(testAd);
         }
     }, 100);
-    
+
     // Alternative method using a fake ad request
     const testScript = document.createElement('script');
     testScript.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js';
@@ -1069,7 +1065,7 @@ function closeAdBlockMessage() {
 // Check for First Visit
 function checkForFirstVisit() {
     const isFirstVisit = localStorage.getItem('firstVisit') !== 'false';
-    
+
     if (isFirstVisit) {
         showWelcomePopup();
         localStorage.setItem('firstVisit', 'false');
@@ -1079,7 +1075,7 @@ function checkForFirstVisit() {
 // Show Welcome Popup
 function showWelcomePopup() {
     const popupContainer = document.getElementById('popupContainer');
-    
+
     const popup = document.createElement('div');
     popup.className = 'popup';
     popup.innerHTML = `
@@ -1091,11 +1087,11 @@ function showWelcomePopup() {
         </div>
         <button class="popup-button">Start Playing</button>
     `;
-    
+
     popupContainer.appendChild(popup);
     popupContainer.style.visibility = 'visible';
     popupContainer.style.opacity = '1';
-    
+
     // Close popup on close button click
     popup.querySelector('.popup-close').addEventListener('click', () => {
         popupContainer.style.opacity = '0';
@@ -1104,7 +1100,7 @@ function showWelcomePopup() {
             popupContainer.innerHTML = '';
         }, 300);
     });
-    
+
     // Close popup on button click
     popup.querySelector('.popup-button').addEventListener('click', () => {
         popupContainer.style.opacity = '0';
@@ -1118,7 +1114,7 @@ function showWelcomePopup() {
 // Lazy Load Images
 function lazyLoadImages() {
     const gameImages = document.querySelectorAll('.game-card img');
-    
+
     if ('IntersectionObserver' in window) {
         const imageObserver = new IntersectionObserver((entries, observer) => {
             entries.forEach(entry => {
@@ -1129,7 +1125,7 @@ function lazyLoadImages() {
                 }
             });
         });
-        
+
         gameImages.forEach(img => {
             imageObserver.observe(img);
         });
@@ -1142,10 +1138,10 @@ document.addEventListener('click', function(e) {
         const link = e.target.classList.contains('game-link') ? e.target : e.target.parentElement;
         const href = link.getAttribute('href');
         const gameName = link.closest('.game-card').querySelector('.game-info p').textContent;
-        
+
         // Track analytics (placeholder for actual analytics code)
         console.log(`Game clicked: ${gameName}`);
-        
+
         // Allow default behavior to continue
     }
 });
@@ -1164,69 +1160,255 @@ document.querySelectorAll('.category').forEach(categoryElement => {
     });
 });
 
-// Create and add iframe loader styles
-function addIframeLoaderStyles() {
+// Create and add content placeholder styles
+function addContentPlaceholderStyles() {
     const styleEl = document.createElement('style');
     styleEl.innerHTML = `
-        .iframe-loader-container {
+        .content-placeholder {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background-color: rgba(255, 255, 255, 0.8);
+            background-color: #f6f7f8;
+            overflow: hidden;
             z-index: 10;
         }
         
-        .dark-mode .iframe-loader-container {
-            background-color: rgba(30, 30, 30, 0.8);
+        .dark-mode .content-placeholder {
+            background-color: #282828;
         }
         
-        .flashing-m {
-            font-size: 4rem;
-            font-weight: bold;
-            font-family:  'Arial', sans-serif;
-            animation: flashM 1.2s infinite;
-            color: #006600; /* Dark green color */
+        /* Base shimmer style for all placeholders */
+        .shimmer {
+            position: relative;
+            overflow: hidden;
+            background: #e0e0e0;
+            border-radius: 4px;
         }
         
-        @keyframes flashM {
-            0%, 100% { opacity: 0.2; }
-            50% { opacity: 1; }
+        .dark-mode .shimmer {
+            background: #3a3a3a;
         }
         
-        .iframe-container iframe {
-            transition: opacity 0.3s ease, transform 0.5s ease-out;
+        .shimmer::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, 
+                rgba(255,255,255,0) 0%, 
+                rgba(255,255,255,0.2) 50%, 
+                rgba(255,255,255,0) 100%);
+            animation: shimmer 1.5s infinite;
+        }
+        
+        .dark-mode .shimmer::after {
+            background: linear-gradient(90deg, 
+                rgba(0,0,0,0) 0%, 
+                rgba(80,80,80,0.2) 50%, 
+                rgba(0,0,0,0) 100%);
+        }
+        
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        /* Categories placeholder */
+        .categories-placeholder .header {
+            height: 50px;
+            margin-bottom: 20px;
+            padding: 0 15px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .categories-placeholder .header .back {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+        }
+        
+        .categories-placeholder .header .title {
+            height: 24px;
+            width: 150px;
+            margin-left: 20px;
+        }
+        
+        .categories-placeholder .category-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            padding: 15px;
+        }
+        
+        .categories-placeholder .category-item {
+            height: 100px;
+            border-radius: 8px;
+        }
+        
+        /* Earn placeholder */
+        .earn-placeholder .header {
+            height: 50px;
+            margin-bottom: 20px;
+            padding: 0 15px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .earn-placeholder .header .back {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+        }
+        
+        .earn-placeholder .header .title {
+            height: 24px;
+            width: 100px;
+            margin-left: 20px;
+        }
+        
+        .earn-placeholder .offer-list {
+            padding: 15px;
+        }
+        
+        .earn-placeholder .offer-item {
+            height: 80px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+        }
+        
+        /* Profile placeholder */
+        .profile-placeholder .header {
+            height: 50px;
+            margin-bottom: 20px;
+            padding: 0 15px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .profile-placeholder .header .back {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+        }
+        
+        .profile-placeholder .header .title {
+            height: 24px;
+            width: 100px;
+            margin-left: 20px;
+        }
+        
+        .profile-placeholder .user-info {
+            padding: 20px;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .profile-placeholder .avatar {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+        }
+        
+        .profile-placeholder .user-details {
+            margin-left: 20px;
+        }
+        
+        .profile-placeholder .username {
+            height: 24px;
+            width: 150px;
+            margin-bottom: 8px;
+        }
+        
+        .profile-placeholder .stats {
+            height: 16px;
+            width: 100px;
+        }
+        
+        .profile-placeholder .menu-list {
+            padding: 0 15px;
+        }
+        
+        .profile-placeholder .menu-item {
+            height: 50px;
+            margin-bottom: 15px;
+            border-radius: 8px;
         }
     `;
     document.head.appendChild(styleEl);
 }
 
-// Show iframe loader
-function showIframeLoader(container) {
-    // Create loader if it doesn't exist
-    let loader = container.querySelector('.iframe-loader-container');
-    if (!loader) {
-        loader = document.createElement('div');
-        loader.className = 'iframe-loader-container';
-        loader.innerHTML = '<div class="flashing-m">M</div>';
-        container.appendChild(loader);
-    } else {
-        loader.style.display = 'flex';
+// Show content placeholder based on section type
+function showContentPlaceholder(container, type) {
+    // Create placeholder if it doesn't exist
+    let placeholder = container.querySelector('.content-placeholder');
+    if (placeholder) {
+        placeholder.remove(); // Remove existing placeholder to avoid duplication
     }
+    
+    placeholder = document.createElement('div');
+    placeholder.className = `content-placeholder ${type}-placeholder`;
+    
+    // Create different placeholder templates based on content type
+    switch(type) {
+        case 'categories':
+            placeholder.innerHTML = `
+                <div class="header">
+                    <div class="back shimmer"></div>
+                    <div class="title shimmer"></div>
+                </div>
+                <div class="category-grid">
+                    ${Array(9).fill('<div class="category-item shimmer"></div>').join('')}
+                </div>
+            `;
+            break;
+        case 'earn':
+            placeholder.innerHTML = `
+                <div class="header">
+                    <div class="back shimmer"></div>
+                    <div class="title shimmer"></div>
+                </div>
+                <div class="offer-list">
+                    ${Array(5).fill('<div class="offer-item shimmer"></div>').join('')}
+                </div>
+            `;
+            break;
+        case 'profile':
+            placeholder.innerHTML = `
+                <div class="header">
+                    <div class="back shimmer"></div>
+                    <div class="title shimmer"></div>
+                </div>
+                <div class="user-info">
+                    <div class="avatar shimmer"></div>
+                    <div class="user-details">
+                        <div class="username shimmer"></div>
+                        <div class="stats shimmer"></div>
+                    </div>
+                </div>
+                <div class="menu-list">
+                    ${Array(4).fill('<div class="menu-item shimmer"></div>').join('')}
+                </div>
+            `;
+            break;
+        default:
+            // Generic placeholder with shimmer effect
+            placeholder.innerHTML = `<div class="shimmer" style="width: 100%; height: 100%;"></div>`;
+    }
+    
+    container.appendChild(placeholder);
 }
 
-// Hide iframe loader
-function hideIframeLoader(container) {
-    const loader = container.querySelector('.iframe-loader-container');
-    if (loader) {
-        loader.style.opacity = '0';
-        setTimeout(() => {
-            loader.style.display = 'none';
-        }, 300);
+// Hide content placeholder
+function hideContentPlaceholder(container) {
+    const placeholder = container.querySelector('.content-placeholder');
+    if (placeholder) {
+        placeholder.remove();
     }
 }
 </script>
