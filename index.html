@@ -246,6 +246,25 @@
     }
 
 
+    @media (max-width: 768px) {
+      .header-content {
+        align-items: flex-start; /* Keep items left-aligned even on mobile */
+      }
+
+      .logo {
+        font-size: 1.5rem; /* Slightly smaller on mobile */
+        margin-bottom: 10px;
+      }
+      
+      .search-container {
+        max-width: 100%; /* Full width on mobile */
+      }
+      
+      .header::after {
+        border-radius: 0 0 15px 15px; /* Slightly smaller radius on mobile */
+      }
+    }
+
    /* Simple footer styles */
         .footer {
         
