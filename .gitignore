@@ -1,0 +1,13 @@
+# Ignore dependencies and build output
+node_modules/
+dist/
+
+# Ignore environment/config files
+.env
+
+# System files
+.DS_Store
+
+# Editor folders
+.vscode/
+.idea/
