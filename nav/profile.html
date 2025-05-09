@@ -616,7 +616,7 @@ header {
                     <div id="username">UserName</div>
                     <div id="user-email">user@example.com</div>
                     <div class="profile-actions">
-                        <button class="btn login-btn" id="login-btn" data-modal-title="Login to Your Account" data-modal-type="page" data-modal-page="../auth/login.html">
+                        <button class="btn login-btn" id="login-btn" data-modal-title="Login to Your Account" data-modal-type="page" data-modal-page="../auth/login/login.html">
                             <i class="fas fa-user"></i> Login
                         </button>
                         <button class="settings-btn" id="settings-btn">
@@ -697,7 +697,7 @@ header {
                 </a>
             </li>
             <li>
-                <a class="nav-link" data-modal-title="Login" data-modal-type="page" data-modal-page="../auth/login.html">
+                <a class="nav-link" data-modal-title="Login" data-modal-type="page" data-modal-page="../auth/login/login.html">
                     <i class="fas fa-sign-in-alt"></i>
                     <span>Login</span>
                 </a>
@@ -794,7 +794,7 @@ function updateUIForLoggedOutUser() {
     
     loginBtn.innerHTML = '<i class="fas fa-user"></i> Login';
     loginBtn.setAttribute('data-modal-title', 'Login to Your Account');
-    loginBtn.setAttribute('data-modal-page', '../auth/login.html');
+    loginBtn.setAttribute('data-modal-page', '../auth/login/login.html');
 }
 
 // Update UI with user data
