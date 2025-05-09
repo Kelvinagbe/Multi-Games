@@ -616,7 +616,7 @@ header {
                     <div id="username">UserName</div>
                     <div id="user-email">user@example.com</div>
                     <div class="profile-actions">
-                        <button class="btn login-btn" id="login-btn" data-modal-title="Login to Your Account" data-modal-type="page" data-modal-page="../auth/login/login.html">
+                        <button class="btn login-btn" id="login-btn" data-modal-title="Login to Your Account" data-modal-type="page" data-modal-page="../auth/login.html">
                             <i class="fas fa-user"></i> Login
                         </button>
                         <button class="settings-btn" id="settings-btn">
@@ -697,7 +697,7 @@ header {
                 </a>
             </li>
             <li>
-                <a class="nav-link" data-modal-title="Login" data-modal-type="page" data-modal-page="../auth/login/login.html">
+                <a class="nav-link" data-modal-title="Login" data-modal-type="page" data-modal-page="../auth/login.html">
                     <i class="fas fa-sign-in-alt"></i>
                     <span>Login</span>
                 </a>
@@ -794,7 +794,7 @@ function updateUIForLoggedOutUser() {
     
     loginBtn.innerHTML = '<i class="fas fa-user"></i> Login';
     loginBtn.setAttribute('data-modal-title', 'Login to Your Account');
-    loginBtn.setAttribute('data-modal-page', '../auth/login/login.html');
+    loginBtn.setAttribute('data-modal-page', '../auth/login.html');
 }
 
 // Update UI with user data
@@ -874,40 +874,32 @@ function showNotification(message, type = 'info') {
 async function openModal(title, type, page = null) {
     // Set modal title
     modalTitle.textContent = title;
-    
-    // Clear previous content
-    modalContent.innerHTML = '';
-    
-    // Generate content based on type
-    iif (type === 'page') {
-    const iframeContainer = document.createElement('div');
-    iframeContainer.className = 'modal-iframe-container';
+    modalContent.innerHTML = ''; // Clear old content
 
-    const iframe = document.createElement('iframe');
-    iframe.className = 'modal-iframe';
-    iframe.src = page; // load page directly
-    iframe.allow = "fullscreen"; // optional
+    if (type === 'page') {
+        try {
+            const iframeContainer = document.createElement('div');
+            iframeContainer.className = 'modal-iframe-container';
 
-    // OPTIONAL: use sandbox only if needed
-    // iframe.sandbox = 'allow-same-origin allow-scripts allow-forms';
+            const iframe = document.createElement('iframe');
+            iframe.className = 'modal-iframe';
+            iframe.src = page;
+            iframe.allow = "fullscreen"; // optional
 
-    iframeContainer.appendChild(iframe);
-    modalContent.appendChild(iframeContainer);
-}
-    } else if (type === 'iframe') {
-        // Create iframe for external page content
-        const iframeContainer = document.createElement('div');
-        iframeContainer.className = 'modal-iframe-container';
-        
-        const iframe = document.createElement('iframe');
-        iframe.className = 'modal-iframe';
-        iframe.src = page;
-        iframe.sandbox = 'allow-same-origin allow-scripts allow-forms';
-        
-        iframeContainer.appendChild(iframe);
-        modalContent.appendChild(iframeContainer);
+            // Remove sandbox for testing — it can block scripts/styles
+            // iframe.sandbox = 'allow-same-origin allow-scripts allow-forms';
+
+            iframeContainer.appendChild(iframe);
+            modalContent.appendChild(iframeContainer);
+
+            // If your iframe sends messages back to parent
+            window.addEventListener('message', handleIframeMessage);
+        } catch (err) {
+            console.error("Error loading modal page:", err);
+            modalContent.innerHTML = `<div style="padding: 20px;">Failed to load page.</div>`;
+        }
     }
-    
+
     // Show modal
     universalModal.classList.add('active');
     darkOverlay.classList.add('active');
