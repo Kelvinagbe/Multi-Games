@@ -3,502 +3,1216 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gaming Profile</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.min.css" rel="stylesheet">
-      <link rel="stylesheet" href="styles.css">
-<link rel="stylesheet" href="notification.css">
+    <title>Gaming Wallet</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+  :root {
+    /* Primary Colors */
+    --primary: #0D6E37;         /* Emerald Green */
+    --primary-light: #50E980;   /* Mint Green */
+    --primary-dark: #0A3622;    /* Deep Forest Green */
+    --accent: #27AE60;          /* Vibrant Green */
+    
+    /* Secondary & UI Colors */
+    --secondary: #34A853;       /* Fresh Green */
+    --tertiary: #7CBB9B;        /* Sage Light */
+    
+    /* Text Colors */
+    --text-primary: #1E2B26;    /* Deep Forest (dark text) */
+    --text-secondary: #4D5B56;  /* Muted Dark */
+    --text-light: #FFFFFF;      /* White (for dark backgrounds) */
+    
+    /* Background Colors */
+    --bg-lightest: #FFFFFF;     /* Pure White */
+    --bg-light: #F8F9FA;        /* Off White */
+    --bg-medium: #EAEDF0;       /* Light Gray */
+    --bg-dark: #D8DDE2;         /* Medium Gray */
+    --bg-darkest: #BDC3C7;      /* Darker Gray */
+    
+    /* Status Colors */
+    --success: #27AE60;         /* Success Green */
+    --warning: #F39C12;         /* Warning Orange */
+    --error: #E74C3C;           /* Error Red */
+    --info: #3498DB;            /* Info Blue */
+    
+    /* Shadows */
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.08);
+    --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
 
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+}
 
-<!-- Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-PB8Y87E6XV"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-PB8Y87E6XV');
-</script>
+body {
+    background-color: var(--bg-light);
+    color: var(--text-primary);
+    min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
+    line-height: 1.5;
+    font-size: 16px;
+}
+
+.container {
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 20px;
+    transition: transform 0.3s ease-in-out, filter 0.3s ease;
+}
+
+.container.blurred {
+    filter: blur(5px);
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    padding: 12px 0;
+}
+
+.logo {
+    font-weight: 700;
+    font-size: 24px;
+    color: var(--primary);
+}
+
+.profile-card {
+    background-color: var(--bg-lightest);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 24px;
+    box-shadow: var(--shadow-md);
+    position: relative;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.profile-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.avatar-container {
+    position: relative;
+    margin-right: 16px;
+}
+
+#user-avatar {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--primary);
+    background-color: var(--bg-medium);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: var(--shadow-sm);
+}
+
+#user-avatar i {
+    font-size: 28px;
+    color: var(--primary);
+}
+
+.avatar-upload-icon {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    background-color: var(--primary);
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--text-light);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+.user-info {
+    flex: 1;
+}
+
+#username {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 4px;
+    color: var(--text-primary);
+}
+
+#user-email {
+    color: var(--text-secondary);
+    font-size: 14px;
+}
+
+.profile-actions {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    margin-top: 16px;
+}
+
+.btn {
+    background-color: var(--primary);
+    color: var(--text-light);
+    border: none;
+    padding: 10px 20px;
+    border-radius: 24px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    box-shadow: var(--shadow-sm);
+    letter-spacing: 0.3px;
+    font-size: 14px;
+}
+
+.btn:hover {
+    background-color: var(--primary-dark);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-1px);
+}
+
+.btn:active {
+    transform: translateY(1px);
+    box-shadow: var(--shadow-sm);
+}
+
+.login-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.settings-btn {
+    background: var(--bg-medium);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    color: var(--text-secondary);
+    font-size: 18px;
+    cursor: pointer;
+    transition: all 0.3s;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+}
+
+.settings-btn:hover {
+    transform: rotate(30deg);
+    color: var(--primary);
+    background: var(--bg-dark);
+}
+
+/* Side Navigation */
+.side-nav {
+    position: fixed;
+    top: 0;
+    right: -300px;
+    width: 300px;
+    height: 100vh;
+    background-color: var(--bg-lightest);
+    transition: right 0.3s ease-in-out;
+    z-index: 1001;
+    box-shadow: -2px 0 20px rgba(0, 0, 0, 0.1);
+    overflow-y: auto;
+    border-left: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.side-nav.open {
+    right: 0;
+}
+
+.nav-header {
+    background-color: var(--primary);
+    background-image: linear-gradient(45deg, var(--primary), var(--primary-light));
+    padding: 24px;
+    text-align: center;
+    color: var(--text-light);
+    position: relative;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.nav-header h3 {
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+.close-nav {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: var(--text-light);
+    font-size: 18px;
+    cursor: pointer;
+    height: 32px;
+    width: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    transition: all 0.2s;
+}
+
+.close-nav:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.nav-list {
+    list-style: none;
+    padding: 12px 0;
+}
+
+.nav-list li {
+    padding: 12px 24px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    transition: all 0.3s;
+}
+
+.nav-list li:hover {
+    background-color: var(--bg-medium);
+}
+
+.nav-list a {
+    color: var(--text-primary);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    font-size: 15px;
+}
+
+.nav-list i {
+    width: 20px;
+    text-align: center;
+    color: var(--primary);
+    font-size: 18px;
+}
+
+.wallet-section {
+    background-image: linear-gradient(45deg, var(--primary), var(--primary-light));
+    border-radius: 12px;
+    padding: 20px;
+    margin: 20px;
+    box-shadow: var(--shadow-md);
+    color: var(--text-light);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.wallet-label {
+    font-size: 14px;
+    opacity: 0.9;
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+#wallet-balance {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    letter-spacing: 0.5px;
+}
+
+.wallet-actions {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 16px;
+}
+
+.action-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: var(--text-light);
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    padding: 8px;
+    border-radius: 12px;
+}
+
+.action-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.action-btn i {
+    font-size: 24px;
+    margin-bottom: 8px;
+}
+
+.action-btn span {
+    font-size: 13px;
+    font-weight: 500;
+}
+
+/* File Input (hidden) */
+#avatar-upload {
+    display: none;
+}
+
+/* Content iFrame */
+.content-frame {
+    width: 100%;
+    height: 450px;
+    border: none;
+    border-radius: 12px;
+    box-shadow: var(--shadow-md);
+    background-color: var(--bg-lightest);
+    overflow: hidden;
+}
+
+/* Universal Modal */
+.universal-modal {
+    position: fixed;
+    bottom: -100%;
+    left: 0;
+    width: 100%;
+    background-color: var(--bg-lightest);
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    transition: bottom 0.3s ease-in-out;
+    padding: 24px;
+    height: 80vh;
+    max-height: 600px;
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.universal-modal.active {
+    bottom: 0;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.modal-header h3 {
+    color: var(--primary);
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.close-modal {
+    background: var(--bg-medium);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    color: var(--text-secondary);
+    font-size: 18px;
+    cursor: pointer;
+    height: 36px;
+    width: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    transition: all 0.2s;
+}
+
+.close-modal:hover {
+    background: var(--bg-dark);
+    color: var(--text-primary);
+}
+
+.modal-content {
+    height: calc(100% - 60px);
+    overflow-y: auto;
+    padding-right: 4px;
+}
+
+.modal-content::-webkit-scrollbar {
+    width: 6px;
+}
+
+.modal-content::-webkit-scrollbar-track {
+    background: var(--bg-medium);
+    border-radius: 3px;
+}
+
+.modal-content::-webkit-scrollbar-thumb {
+    background: var(--bg-dark);
+    border-radius: 3px;
+}
+
+.modal-content::-webkit-scrollbar-thumb:hover {
+    background: var(--bg-darkest);
+}
+
+/* Dark overlay */
+.dark-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(2px);
+    z-index: 999;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s;
+}
+
+.dark-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Modal iframe container */
+.modal-iframe-container {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    border-radius: 12px;
+    background-color: var(--bg-light);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.modal-iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+/* Form elements */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    font-size: 14px;
+}
+
+.form-input {
+    width: 100%;
+    padding: 12px 16px;
+    background-color: var(--bg-light);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    font-size: 16px;
+    color: var(--text-primary);
+    transition: all 0.2s;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(13, 110, 55, 0.1);
+}
+
+.form-input::placeholder {
+    color: rgba(0, 0, 0, 0.3);
+}
+
+/* Cards and Lists */
+.card {
+    background-color: var(--bg-lightest);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.card-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    color: var(--text-primary);
+}
+
+.list-item {
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.list-item:last-child {
+    border-bottom: none;
+}
+
+/* Badges */
+.badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 16px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.badge-success {
+    background-color: var(--success);
+    color: var(--text-light);
+}
+
+.badge-warning {
+    background-color: var(--warning);
+    color: var(--text-primary);
+}
+
+.badge-error {
+    background-color: var(--error);
+    color: var(--text-light);
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+    .container {
+        padding: 16px;
+    }
+    
+    .profile-card {
+        padding: 20px;
+    }
+    
+    #user-avatar {
+        width: 60px;
+        height: 60px;
+    }
+}
+    </style>
 </head>
 <body>
-    <div class="container">
-<header>
-<button id="auth-action-btn" class="btn">Login</button>
- <button id="update-app" class="btn"><i class="ri-download-2-line"></i> Update App</button>
-        </header>
-
-
-<!-- Loading Overlay with Spinner -->
-<div id="loading-overlay" style="display: none;">
-    <div class="spinner-container">
-        <div class="spinner"></div>
-        <div class="loading-text">Loading...</div>
-    </div>
-</div>
-
-  <!-- In-app notification container -->
-  <div id="in-app-notification-container" class="in-app-notification-container"></div>
-  
+    <!-- Main Container -->
+    <div class="container" id="main-container">
+        <!-- Profile Card with Login/Settings -->
         <div class="profile-card">
             <div class="profile-header">
                 <div class="avatar-container">
-                    <img id="user-avatar" src="https://i.postimg.cc/gJZr2MPG/images-20.jpg" alt="User Avatar">
-                    <div class="avatar-upload-icon">
-                        <i class="ri-camera-line"></i>
+                    <div id="user-avatar">
+                        <i class="fas fa-user"></i>
                     </div>
+                    <div class="avatar-upload-icon">
+                        <i class="fas fa-camera"></i>
+                    </div>
+                    <input type="file" id="avatar-upload" accept="image/*">
                 </div>
                 <div class="user-info">
-                    <div id="username">Guest Player</div>
-                    <div id="user-email">Sign in to continue</div>
+                    <div id="username">UserName</div>
+                    <div id="user-email">user@example.com</div>
+                    <div class="profile-actions">
+                        <button class="btn login-btn" id="login-btn" data-modal-title="Login to Your Account" data-modal-type="page" data-modal-page="../auth/login.html">
+                            <i class="fas fa-user"></i> Login
+                        </button>
+                        <button class="settings-btn" id="settings-btn">
+                            <i class="fas fa-cog"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
-        
+
+        <!-- Wallet Section -->
         <div class="wallet-section">
-            <div id="wallet-balance">Wallet: ₦0</div>
+            <div class="wallet-label">Available Balance</div>
+            <div id="wallet-balance">$1000.00</div>
             <div class="wallet-actions">
-                <div class="action-btn" id="withdraw-btn">
-                    <i class="ri-wallet-3-line"></i>
+                <div class="action-btn" id="withdraw-btn" data-modal-title="Withdraw Funds" data-modal-type="page" data-modal-page="withdraw.html">
+                    <i class="fas fa-arrow-circle-down"></i>
                     <span>Withdraw</span>
                 </div>
-                      <div class="action-btn" id="play-games-btn">
-                    <i class="ri-gamepad-line"></i>
-                    <span>Play Games</span>
-                </div>
-                <div class="action-btn" id="leaderboard-btn">
-                    <i class="ri-bar-chart-line"></i>
-                    <span>Rankings</span>
-                </div>
-            </div>
-        </div>
-        
-<div class="quick-actions">
-            <div class="quick-action" id="achievements-btn">
-                <i class="ri-mail-add-line"></i>
-                 <div></div>
-                <span> Email Us</span>
-            </div>
-            <div class="quick-action" id="referral-btn">
-                <i class="ri-user-add-line"></i>
-                <span>Invite Friends</span>
-            </div>
-            <div class="quick-action" id="settings-btn">
-                <i class="ri-settings-3-line"></i>
-                <span>Settings</span>
-            </div>
-        </div>
-        
-        <div class="referral-section">
-            <div class="referral-header">
-                <h3>Referrals</h3>
-                <span id="referral-count">0</span>
-            </div>
-            <div class="referral-info">
-                <div>
-                    <strong>Your Code</strong>
-                    <div id="referral-code">Sign in to get code</div>
-                </div>
-                <div>
-                    <strong>Earnings</strong>
-                    <div>₦0</div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="transaction-history">
-            <h3>Recent Activity</h3>
-            <div class="wallet-history">
-                <div class="no-transactions">No transactions yet</div>
             </div>
         </div>
     </div>
-    
-    <!-- Modal Containers -->
-    <div id="login-modal" class="modal-container">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>Login</h2>
-                <button class="back-btn"><i class="ri-arrow-right-s-line"></i></button>
-            </div>
-            <iframe id="login-iframe" frameborder="0" width="100%" height="405px" style="display: none;"></iframe>
-        </div>
-    </div>
-    
-    <div id="register-modal" class="modal-container">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>Create Account</h2>
-                <button class="back-btn"><i class="ri-arrow-right-s-line"></i></button>
-            </div>
-            <iframe id="register-iframe" frameborder="0" width="100%" height="400px" style="display: none;"></iframe>
-        </div>
-    </div>
-    
-    <div id="withdraw-modal" class="modal-container">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>Withdraw Funds</h2>
-                <button class="back-btn"><i class="ri-arrow-right-s-line"></i></button>
-            </div>
-            <iframe id="withdraw-iframe" frameborder="0" width="100%" height="350px" style="display: none;"></iframe>
-        </div>
-    </div>
-    
-    <!-- Updated Settings Modal -->
-<div id="settings-modal" class="modal-container">
-    <div class="modal-content">
+
+    <!-- Universal Modal -->
+    <div class="universal-modal" id="universal-modal">
         <div class="modal-header">
-            <h2>Settings</h2>
-            <button class="back-btn"><i class="ri-arrow-right-s-line"></i></button>
+            <h3 id="modal-title">Modal Title</h3>
+            <button class="close-modal" id="close-universal-modal">
+                <i class="fas fa-times"></i>
+            </button>
         </div>
-        <div class="settings-content">
-            <div class="form-group">
-                <label for="change-fullname">Change Full Name</label>
-                <input type="text" id="change-fullname" placeholder="Enter your full name">
-                <button id="save-fullname" class="btn">Save Name</button>
-            </div>
+        <div class="modal-content" id="modal-content">
+            <!-- Content will be loaded here dynamically -->
+        </div>
+    </div>
+
+    <!-- Dark overlay -->
+    <div class="dark-overlay" id="dark-overlay"></div>
+    
+    <!-- Side Navigation -->
+    <nav class="side-nav" id="side-nav">
+        <div class="nav-header">
+            <h3>Settings</h3>
+            <p>Customize your experience</p>
+            <button class="close-nav" id="close-nav">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <ul class="nav-list">
+            <li>
+                <a class="nav-link" data-modal-title="Profile" data-modal-type="page" data-modal-page="profile.html">
+                    <i class="fas fa-user"></i>
+                    <span>Profile</span>
+                </a>
+            </li>
+            <li>
+                <a class="nav-link" data-modal-title="Account Settings" data-modal-type="page" data-modal-page="account.html">
+                    <i class="fas fa-cog"></i>
+                    <span>Account Settings</span>
+                </a>
+            </li>
+            <li>
+                <a class="nav-link" data-modal-title="Wallet" data-modal-type="page" data-modal-page="wallet.html">
+                    <i class="fas fa-wallet"></i>
+                    <span>Wallet</span>
+                </a>
+            </li>
+            <li>
+                <a class="nav-link" data-modal-title="Security" data-modal-type="page" data-modal-page="security.html">
+                    <i class="fas fa-lock"></i>
+                    <span>Security</span>
+                </a>
+            </li>
+            <li>
+                <a class="nav-link" data-modal-title="Help & Support" data-modal-type="page" data-modal-page="help.html">
+                    <i class="fas fa-question-circle"></i>
+                    <span>Help & Support</span>
+                </a>
+            </li>
+            <li>
+                <a class="nav-link" data-modal-title="Login" data-modal-type="page" data-modal-page="../auth/login.html">
+                    <i class="fas fa-sign-in-alt"></i>
+                    <span>Login</span>
+                </a>
+            </li>
+            <li>
+                <a href="#logout" class="logout-link">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
       
-  <div class="form-group">
-    <label for="dark-mode-toggle">Dark Mode</label>
-    <label class="toggle-switch">
-        <input type="checkbox" id="dark-mode-toggle">
-        <span class="slider"></span>
-    </label>
-</div>
-   
-  <button id="enable-notifications" class="notification-btn inactive">Activate Notifications</button>
-  
-  <div id="status">Status: Ready to enable notifications</div>
-  
-            </div>
-            </div>
-        </div>
-    </div>
-</div>
-       
-    
-    <div id="referral-modal" class="modal-container">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>Invite Friends</h2>
-                <button class="back-btn"><i class="ri-arrow-right-s-line"></i></button>
-            </div>
-            <div class="referral-content">
-                <p>Share your referral code with friends. You'll earn ₦2 for each friend who signs up!</p>
-                <div class="form-group">
-                    <label>Your Referral Code</label>
-                    <input type="text" id="share-referral-code" readonly>
-                </div>
-                <div class="referral-input-section" style="display: none;">
-                    <p>Have a referral code? Enter it below:</p>
-                    <div class="form-group">
-                        <input type="text" id="input-referral-code" placeholder="Enter referral code">
-                    </div>
-                    <button class="btn" id="submit-referral">Submit</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-      <!-- Played Games Modal -->
-<div id="played-games-modal" class="modal-container">
-  <div class="modal-content">
-    <div class="modal-header">
-      <h2>Recently Played Games</h2>
-      <button class="back-btn"><i class="ri-arrow-right-s-line"></i></button>
-    </div>
-    <div class="modal-body">
-      <div id="played-games-list" class="games-list"></div>
-    </div>
-  </div>
-</div>
+    <!-- Include Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
-    <!-- Loading Overlay -->
-    <div id="loading-overlay" class="loading-overlay">
-        <div class="spinner"></div>
-    </div>
-    
-    <!-- Notification -->
-    <div id="notification" class="notification">
-        <div id="notification-title" class="notification-title"></div>
-        <div id="notification-message"></div>
-    </div>
-    
-    <!-- Hidden Input for Avatar Upload -->
-    <input type="file" id="avatar-file-input" accept="image/*">
+    <script>
+    // Elements
+const mainContainer = document.getElementById('main-container');
+const settingsBtn = document.getElementById('settings-btn');
+const sideNav = document.getElementById('side-nav');
+const closeNav = document.getElementById('close-nav');
+const loginBtn = document.getElementById('login-btn');
+const withdrawBtn = document.getElementById('withdraw-btn');
+const universalModal = document.getElementById('universal-modal');
+const closeUniversalModal = document.getElementById('close-universal-modal');
+const modalTitle = document.getElementById('modal-title');
+const modalContent = document.getElementById('modal-content');
+const darkOverlay = document.getElementById('dark-overlay');
+const userNameElement = document.getElementById('username');
+const userEmailElement = document.getElementById('user-email');
+const userAvatar = document.getElementById('user-avatar');
+const walletBalanceElement = document.getElementById('wallet-balance');
 
-  <!-- Firebase App SDK -->
-  <script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-app-compat.js"></script>
-  <!-- Firebase Messaging SDK -->
-  <script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-messaging-compat.js"></script>
-  <!-- Firebase Realtime Database SDK -->
-  <script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-database-compat.js"></script>
- 
+// Firebase configuration
+const firebaseConfig = {
+    apiKey: "AIzaSyBw1uA-kNKOZEufWKZ9AMBxvRGHNGF1lkA",
+    authDomain: "multi-games-a2561.firebaseapp.com",
+    projectId: "multi-games-a2561",
+    databaseURL: "https://multi-games-a2561-default-rtdb.firebaseio.com"
+};
 
+// Initialize Firebase using the loaded SDK
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const database = firebase.database();
 
+// User state management
+let currentUser = null;
+let userData = null;
 
+// Listen for authentication state changes
+auth.onAuthStateChanged((user) => {
+    if (user) {
+        // User is signed in
+        currentUser = user;
+        fetchUserData(user.uid);
+        updateUIForLoggedInUser();
+    } else {
+        // User is signed out
+        currentUser = null;
+        userData = null;
+        updateUIForLoggedOutUser();
+    }
+});
 
-    <script type="module" src="script.js"></script>
-<script>
-// Your Firebase Config
-    const firebaseConfig = {
-      apiKey: "AIzaSyBw1uA-kNKOZEufWKZ9AMBxvRGHNGF1lkA",
-      authDomain: "multi-games-a2561.firebaseapp.com",
-      databaseURL: "https://multi-games-a2561-default-rtdb.firebaseio.com",
-      projectId: "multi-games-a2561",
-      storageBucket: "multi-games-a2561.firebasestorage.app",
-      messagingSenderId: "150551898066",
-      appId: "1:150551898066:web:c852245737bde813140a0b",
-      measurementId: "G-DLQ4G0TTPL"
-    };
+// Fetch user data from Firebase
+function fetchUserData(userId) {
+    const userRef = database.ref(`users/${userId}`);
+    userRef.on('value', (snapshot) => {
+        userData = snapshot.val();
+        if (userData) {
+            updateUIWithUserData();
+        }
+    });
+}
 
-    const statusElement = document.getElementById('status');
-    const enableButton = document.getElementById('enable-notifications');
-    const notificationContainer = document.getElementById('in-app-notification-container');
-    const testInAppButton = document.getElementById('test-in-app');
+// Update UI for logged-in user
+function updateUIForLoggedInUser() {
+    loginBtn.innerHTML = '<i class="fas fa-user-check"></i> Profile';
+    loginBtn.setAttribute('data-modal-title', 'Your Profile');
+    loginBtn.setAttribute('data-modal-page', 'profile.html');
+}
+
+// Update UI for logged-out user
+function updateUIForLoggedOutUser() {
+    userNameElement.textContent = 'Guest User';
+    userEmailElement.textContent = 'Login to access your account';
+    walletBalanceElement.textContent = '$0.00';
+    userAvatar.innerHTML = '<i class="fas fa-user"></i>';
     
-    let messaging;
-    let database;
+    loginBtn.innerHTML = '<i class="fas fa-user"></i> Login';
+    loginBtn.setAttribute('data-modal-title', 'Login to Your Account');
+    loginBtn.setAttribute('data-modal-page', '../auth/login.html');
+}
+
+// Update UI with user data
+function updateUIWithUserData() {
+    if (!userData) return;
     
-    // Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
+    userNameElement.textContent = userData.fullName || userData.username || 'User';
+    userEmailElement.textContent = userData.email || '';
+    walletBalanceElement.textContent = `$${userData.airtimeBalance?.toFixed(2) || '0.00'}`;
     
-    // Initialize Firebase Realtime Database
-    database = firebase.database();
-    
-    // Function to update status with appropriate styling
-    function updateStatus(message, isError = false) {
-      statusElement.textContent = message;
-      statusElement.className = isError ? 'error' : '';
-      if (!isError && message.includes('Success')) {
-        statusElement.className = 'success';
-      }
+    // Update avatar if user has a photoURL
+    if (userData.photoURL) {
+        userAvatar.innerHTML = '';
+        const img = document.createElement('img');
+        img.src = userData.photoURL;
+        img.alt = 'User Avatar';
+        img.style.width = '100%';
+        img.style.height = '100%';
+        img.style.objectFit = 'cover';
+        img.style.borderRadius = '50%';
+        userAvatar.appendChild(img);
+    }
+}
+
+// Update user profile data directly in Firebase
+async function updateUserProfile(updatedData) {
+    if (!currentUser) {
+        showNotification('Please login first', 'error');
+        return;
     }
     
-    // Function to create and display in-app notification
-    function showInAppNotification(title, message, duration = 5000) {
-      // Create notification element
-      const notification = document.createElement('div');
-      notification.className = 'in-app-notification';
-      
-      // Create content
-      notification.innerHTML = `
-        <button class="notification-close">&times;</button>
-        <h4>${title}</h4>
-        <p>${message}</p>
-      `;
-      
-      // Add to container
-      notificationContainer.appendChild(notification);
-      
-      // Add event listener to close button
-      notification.querySelector('.notification-close').addEventListener('click', () => {
-        notification.style.transform = 'translateX(120%)';
-        setTimeout(() => notification.remove(), 300);
-      });
-      
-      // Auto remove after duration
-      if (duration) {
+    try {
+        // Get the user reference
+        const userRef = database.ref(`users/${currentUser.uid}`);
+        
+        // Update only the fields that are provided
+        await userRef.update(updatedData);
+        
+        showNotification('Profile updated successfully', 'success');
+        
+        // Update local userData object
+        userData = { ...userData, ...updatedData };
+        
+        // Update UI
+        updateUIWithUserData();
+    } catch (error) {
+        showNotification('Error updating profile', 'error');
+        console.error('Update profile error:', error);
+    }
+}
+
+// Show notification
+function showNotification(message, type = 'info') {
+    // Create notification element
+    const notification = document.createElement('div');
+    notification.className = `notification notification-${type}`;
+    notification.textContent = message;
+    
+    // Add to DOM
+    document.body.appendChild(notification);
+    
+    // Show animation
+    setTimeout(() => {
+        notification.classList.add('show');
+    }, 10);
+    
+    // Auto hide after 3 seconds
+    setTimeout(() => {
+        notification.classList.remove('show');
         setTimeout(() => {
-          if (notification.parentNode) {
-            notification.style.transform = 'translateX(120%)';
-            setTimeout(() => notification.remove(), 300);
-          }
-        }, duration);
-      }
-      
-      return notification;
-    }
+            notification.remove();
+        }, 300);
+    }, 3000);
+}
+
+// Universal Modal Functions
+async function openModal(title, type, page = null) {
+    // Set modal title
+    modalTitle.textContent = title;
     
-    // Function to update button state
-    function updateButtonState(isActive) {
-      if (isActive) {
-        enableButton.classList.remove('inactive');
-        enableButton.classList.add('active');
-        enableButton.textContent = 'Notifications Active';
-      } else {
-        enableButton.classList.remove('active');
-        enableButton.classList.add('inactive');
-        enableButton.textContent = 'Activate Notifications';
-      }
-    }
+    // Clear previous content
+    modalContent.innerHTML = '';
     
-    // Check if browser supports notifications
-    if (!('Notification' in window)) {
-      updateStatus('This browser does not support notifications', true);
-      enableButton.disabled = true;
-    } else if ('serviceWorker' in navigator) {
-      // Register service worker when page loads
-      navigator.serviceWorker.register('/firebase-messaging-sw.js')
-        .then(registration => {
-          // Initialize Firebase Cloud Messaging
-          messaging = firebase.messaging();
-          
-          // Set up notification handler for foreground messages
-          messaging.onMessage((payload) => {
-            console.log('Message received:', payload);
+    // Generate content based on type
+    if (type === 'page') {
+        try {
+            // Create an iframe container to isolate the content
+            const iframeContainer = document.createElement('div');
+            iframeContainer.className = 'modal-iframe-container';
             
-            // Display notification using the service worker
-            registration.showNotification(
-              payload.notification?.title || 'New Notification', 
-              {
-                body: payload.notification?.body || 'You have a new notification',
-                icon: payload.notification?.icon || '/logo.png',
-                data: payload.data
-              }
-            );
-          });
-          
-          // Check if notifications are already enabled
-          if (Notification.permission === 'granted') {
-            getToken(registration);
-            updateStatus('Notifications are already enabled');
-            updateButtonState(true);
-          }
+            // Create the iframe
+            const iframe = document.createElement('iframe');
+            iframe.className = 'modal-iframe';
+            iframe.sandbox = 'allow-same-origin allow-scripts allow-forms';
+            
+            // Add the iframe to the container
+            iframeContainer.appendChild(iframe);
+            modalContent.appendChild(iframeContainer);
+            
+            // Fetch the page content
+            const response = await fetch(page);
+            if (response.ok) {
+                const html = await response.text();
+                
+                // Set the iframe content
+                const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+                iframeDoc.open();
+                iframeDoc.write(html);
+                iframeDoc.close();
+                
+                // Add communication between parent and iframe
+                window.addEventListener('message', handleIframeMessage);
+            } else {
+                modalContent.innerHTML = `<div style="padding: 20px; text-align: center;">Error loading content. Please try again later.</div>`;
+            }
+        } catch (error) {
+            modalContent.innerHTML = `<div style="padding: 20px; text-align: center;">Error loading content. Please try again later.</div>`;
+        }
+    } else if (type === 'iframe') {
+        // Create iframe for external page content
+        const iframeContainer = document.createElement('div');
+        iframeContainer.className = 'modal-iframe-container';
+        
+        const iframe = document.createElement('iframe');
+        iframe.className = 'modal-iframe';
+        iframe.src = page;
+        iframe.sandbox = 'allow-same-origin allow-scripts allow-forms';
+        
+        iframeContainer.appendChild(iframe);
+        modalContent.appendChild(iframeContainer);
+    }
+    
+    // Show modal
+    universalModal.classList.add('active');
+    darkOverlay.classList.add('active');
+    mainContainer.classList.add('blurred');
+}
+
+// Handle messages from iframe
+function handleIframeMessage(event) {
+    // Security check to make sure message is from our domain
+    if (event.origin !== window.location.origin) return;
+    
+    const { action, data } = event.data;
+    
+    switch (action) {
+        case 'updateProfile':
+            updateUserProfile(data);
+            break;
+        case 'closeModal':
+            closeModal();
+            break;
+        case 'userRegistered':
+            // When a user registers, create the full user data structure
+            if (data && data.user) {
+                createUserData(data.user, data.fullName, data.username, data.photoURL, data.referredBy);
+            }
+            break;
+        default:
+            break;
+    }
+}
+
+// Create full user data structure in Firebase
+function createUserData(user, fullName, username, photoURL, referredBy) {
+    if (!user || !user.uid) return;
+    
+    // Generate a random referral code
+    const referralCode = generateReferralCode(8);
+    
+    // Full user data structure
+    const userData = {
+        email: user.email,
+        fullName: fullName,
+        username: username,
+        photoURL: photoURL,
+        walletBalance: 0,
+        createdAt: new Date().toISOString(),
+        dateJoined: new Date().toISOString().split('T')[0],
+        lastLogin: new Date().toISOString(),
+        referralCode: referralCode,
+        referredBy: referredBy,
+        referrals: 0,
+        airtimeBalance: 0,
+        airtimeScore: 0
+    };
+    
+    // Save to Firebase
+    const userRef = database.ref(`users/${user.uid}`);
+    userRef.set(userData)
+        .then(() => {
+            console.log('User data created successfully');
+            fetchUserData(user.uid);
         })
         .catch(error => {
-          console.error('Service Worker registration failed:', error);
-          updateStatus('Failed to set up notifications: ' + error.message, true);
+            console.error('Error creating user data:', error);
         });
+    
+    // If there's a referrer, increment their referral count
+    if (referredBy) {
+        incrementReferralCount(referredBy);
+    }
+}
+
+// Generate random referral code
+function generateReferralCode(length) {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let result = '';
+    for (let i = 0; i < length; i++) {
+        result += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return result;
+}
+
+// Increment referral count for a referrer
+function incrementReferralCount(referralCode) {
+    // First find the user with this referral code
+    const usersRef = database.ref('users');
+    usersRef.once('value', (snapshot) => {
+        const users = snapshot.val();
+        if (!users) return;
+        
+        // Find the user with matching referral code
+        let referrerId = null;
+        Object.keys(users).forEach(userId => {
+            if (users[userId].referralCode === referralCode) {
+                referrerId = userId;
+            }
+        });
+        
+        // If found, increment their referral count
+        if (referrerId) {
+            const referrerRef = database.ref(`users/${referrerId}`);
+            referrerRef.update({
+                referrals: (users[referrerId].referrals || 0) + 1
+            });
+        }
+    });
+}
+
+function closeModal() {
+    universalModal.classList.remove('active');
+    darkOverlay.classList.remove('active');
+    mainContainer.classList.remove('blurred');
+    window.removeEventListener('message', handleIframeMessage);
+}
+
+// Event Listeners
+settingsBtn.addEventListener('click', () => {
+    sideNav.classList.add('open');
+    darkOverlay.classList.add('active');
+    mainContainer.classList.add('blurred');
+});
+
+closeNav.addEventListener('click', () => {
+    sideNav.classList.remove('open');
+    darkOverlay.classList.remove('active');
+    mainContainer.classList.remove('blurred');
+});
+
+// Login button
+loginBtn.addEventListener('click', () => {
+    const title = loginBtn.getAttribute('data-modal-title');
+    const type = loginBtn.getAttribute('data-modal-type');
+    const page = loginBtn.getAttribute('data-modal-page');
+    openModal(title, type, page);
+});
+
+// Withdraw button
+withdrawBtn.addEventListener('click', () => {
+    const title = withdrawBtn.getAttribute('data-modal-title');
+    const type = withdrawBtn.getAttribute('data-modal-type');
+    const page = withdrawBtn.getAttribute('data-modal-page');
+    openModal(title, type, page);
+});
+
+// Close universal modal
+closeUniversalModal.addEventListener('click', closeModal);
+
+// Close when clicking on overlay
+darkOverlay.addEventListener('click', () => {
+    if (sideNav.classList.contains('open')) {
+        sideNav.classList.remove('open');
     } else {
-      updateStatus('Service Workers are not supported in this browser', true);
-      enableButton.disabled = true;
+        closeModal();
     }
-    
-    // Function to get FCM token
-    function getToken(registration) {
-      messaging.getToken({ 
-        vapidKey: "BMcnZnq4TDu23XvkA8icF4zxDeX_ctw-x42B73ulQb72rDTj-LOgK-rHAeKtoFozQXa7j5XMF82Ay8PE5G9ACUw",
-        serviceWorkerRegistration: registration
-      }).then(token => {
-        if (token) {
-          console.log('FCM Token:', token);
-          updateStatus('Success! Notifications enabled.');
-          updateButtonState(true);
-          
-          // Save token to Firebase Realtime Database
-          const userId = 'user_' + Math.random().toString(36).substr(2, 9); // Generate a random user ID for demo
-          saveTokenToDatabase(userId, token);
-          
-          // Set up Firebase database listener for in-app notifications
-          setupInAppNotificationListener(userId);
-          
-          // Show success notification
-          showInAppNotification('Notifications Enabled', 'You will now receive both push and in-app notifications.');
-        } else {
-          updateStatus('Failed to get notification token', true);
-          updateButtonState(false);
-        }
-      }).catch(error => {
-        console.error('Error getting token:', error);
-        updateStatus('Error enabling notifications: ' + error.message, true);
-        updateButtonState(false);
-      });
-    }
-    
-    // Save the token to Firebase Database
-    function saveTokenToDatabase(userId, token) {
-      const tokenRef = database.ref('users/' + userId);
-      tokenRef.set({
-        token: token,
-        lastActive: new Date().toISOString(),
+    darkOverlay.classList.remove('active');
+    mainContainer.classList.remove('blurred');
+});
+
+// Navigation links
+const navLinks = document.querySelectorAll('.nav-link');
+navLinks.forEach(link => {
+    link.addEventListener('click', () => {
+        const title = link.getAttribute('data-modal-title');
+        const type = link.getAttribute('data-modal-type');
+        const page = link.getAttribute('data-modal-page');
         
-      });
-      
-      // Store user ID in local storage for persistent identification
-      localStorage.setItem('notificationUserId', userId);
-      
-      console.log('Token saved to database for user:', userId);
-    }
-    
-    // Set up a listener for in-app notifications from Firebase
-    function setupInAppNotificationListener(userId) {
-      // Listen for notifications addressed to this user
-      const notificationsRef = database.ref('notifications/' + userId);
-      notificationsRef.on('child_added', (snapshot) => {
-        const notification = snapshot.val();
-        console.log('Received in-app notification:', notification);
-        
-        // Display the in-app notification
-        showInAppNotification(
-          notification.title || 'New Notification', 
-          notification.message || 'You have a new notification'
-        );
-        
-        // Mark as read (optional)
-        snapshot.ref.update({ read: true });
-      });
-      
-      // Also listen for broadcast notifications
-      const broadcastRef = database.ref('notifications/broadcast');
-      broadcastRef.on('child_added', (snapshot) => {
-        const notification = snapshot.val();
-        
-        // Only show if within the last minute (to avoid showing old broadcasts)
-        const timestamp = notification.timestamp || 0;
-        const currentTime = new Date().getTime();
-        if (currentTime - timestamp < 60000) {
-          showInAppNotification(
-            notification.title || 'Broadcast', 
-            notification.message || 'Broadcast notification'
-          );
-        }
-      });
-    }
-    
-    // Set up enable button click handler
-    enableButton.addEventListener('click', () => {
-      // If permission already granted, get token directly
-      if (Notification.permission === 'granted') {
-        navigator.serviceWorker.ready.then(registration => {
-          getToken(registration);
-        });
+        openModal(title, type, page);
+        sideNav.classList.remove('open');
+    });
+});
+
+// Avatar upload
+const avatarUploadIcon = document.querySelector('.avatar-upload-icon');
+const avatarUpload = document.getElementById('avatar-upload');
+
+avatarUploadIcon.addEventListener('click', () => {
+    if (!currentUser) {
+        showNotification('Please login to upload avatar', 'warning');
         return;
-      }
-      
-      // Otherwise request permission
-      updateStatus('Requesting notification permission...');
-      Notification.requestPermission().then(permission => {
-        if (permission === 'granted') {
-          navigator.serviceWorker.ready.then(registration => {
-            updateStatus('Permission granted! Setting up notifications...');
-            getToken(registration);
-          });
-        } else {
-          console.warn('Notification permission denied');
-          updateStatus('Notification permission denied. Please enable notifications in your browser settings.', true);
-          updateButtonState(false);
-        }
-      });
-    });
-    
-    // Set up test button for in-app notifications
-    testInAppButton.addEventListener('click', () => {
-      const userId = localStorage.getItem('notificationUserId');
-      
-      if (userId) {
-        // Create a test notification in the database
-        const notificationRef = database.ref('notifications/' + userId).push();
-        notificationRef.set({
-          title: 'Test Notification',
-          message: 'This is a test in-app notification',
-          timestamp: firebase.database.ServerValue.TIMESTAMP,
-          read: false
-        });
-      } else {
-        // If no user ID, show a local notification
-        showInAppNotification(
-          'Test Notification', 
-          'This is a local test notification. Enable notifications to receive real-time updates.'
-        );
-      }
-    });
-    
-    // Check for existing user ID in localStorage
-    const savedUserId = localStorage.getItem('notificationUserId');
-    if (savedUserId) {
-      console.log('Found saved user ID:', savedUserId);
-      // Set up notification listener for returning users
-      setupInAppNotificationListener(savedUserId);
     }
-</script>
+    avatarUpload.click();
+});
+
+avatarUpload.addEventListener('change', async function() {
+    if (this.files && this.files[0]) {
+        const file = this.files[0];
+        
+        // Show loading indicator
+        userAvatar.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+        
+        try {
+            // Read the file
+            const reader = new FileReader();
+            
+            reader.onload = async function(e) {
+                const photoURL = e.target.result;
+                
+                // Update the user's photoURL in Firebase
+                const userRef = database.ref(`users/${currentUser.uid}`);
+                await userRef.update({ photoURL });
+                
+                // Update avatar immediately
+                userAvatar.innerHTML = '';
+                const img = document.createElement('img');
+                img.src = photoURL;
+                img.alt = 'User Avatar';
+                img.style.width = '100%';
+                img.style.height = '100%';
+                img.style.objectFit = 'cover';
+                img.style.borderRadius = '50%';
+                userAvatar.appendChild(img);
+                
+                // Update user data
+                if (userData) {
+                    userData.photoURL = photoURL;
+                }
+                
+                showNotification('Avatar updated successfully', 'success');
+            };
+            
+            reader.readAsDataURL(file);
+        } catch (error) {
+            console.error('Avatar upload error:', error);
+            showNotification('Error uploading avatar', 'error');
+            userAvatar.innerHTML = '<i class="fas fa-user"></i>';
+        }
+    }
+});
+
+// Add CSS for notifications
+const notificationStyles = document.createElement('style');
+notificationStyles.innerHTML = `
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 12px 20px;
+    border-radius: 8px;
+    color: white;
+    font-weight: 500;
+    opacity: 0;
+    transform: translateY(-20px);
+    transition: all 0.3s ease;
+    z-index: 2000;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    max-width: 90%;
+}
+
+.notification.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.notification-success {
+    background-color: var(--success);
+}
+
+.notification-error {
+    background-color: var(--error);
+}
+
+.notification-warning {
+    background-color: var(--warning);
+    color: var(--text-primary);
+}
+
+.notification-info {
+    background-color: var(--info);
+}
+`;
+document.head.appendChild(notificationStyles);
+
+// Initialize the app
+function initApp() {
+    // Check if user is already logged in (from session)
+    const currentUser = auth.currentUser;
+    if (currentUser) {
+        fetchUserData(currentUser.uid);
+        updateUIForLoggedInUser();
+    } else {
+        updateUIForLoggedOutUser();
+    }
+}
+
+// Run initialization
+initApp();
+    </script>
 </body>
 </html>
