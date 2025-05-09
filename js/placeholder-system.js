@@ -629,4 +629,168 @@ function addPlaceholderStyles() {
             margin-bottom: 8px;
         }
         
-        .placeholder-i
+        .placeholder-item-subtitle {
+            height: 16px;
+            width: 90%;
+            margin-bottom: 8px;
+        }
+        
+        .placeholder-item-meta {
+            height: 14px;
+            width: 40%;
+        }
+        
+        /* Ad placeholder specific */
+        .placeholder-ad {
+            padding: 16px;
+            border-radius: 8px;
+            background-color: var(--placeholder-bg, #f8f9fa);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            position: relative;
+        }
+        
+        .placeholder-ad-label {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            height: 18px;
+            width: 50px;
+            border-radius: 4px;
+        }
+        
+        .placeholder-ad-content {
+            display: flex;
+            align-items: center;
+        }
+        
+        .placeholder-ad-image {
+            width: 120px;
+            height: 120px;
+            border-radius: 8px;
+            margin-right: 16px;
+            flex-shrink: 0;
+        }
+        
+        .placeholder-ad-text {
+            flex: 1;
+        }
+        
+        .placeholder-ad-title {
+            height: 24px;
+            width: 80%;
+            margin-bottom: 12px;
+        }
+        
+        .placeholder-ad-description {
+            height: 16px;
+            width: 100%;
+            margin-bottom: 8px;
+        }
+        
+        .placeholder-ad-description:last-of-type {
+            width: 90%;
+            margin-bottom: 16px;
+        }
+        
+        .placeholder-ad-cta {
+            height: 36px;
+            width: 120px;
+            border-radius: 18px;
+        }
+        
+        /* Default placeholder */
+        .default-placeholder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+        }
+        
+        .placeholder-spinner {
+            width: 50px;
+            height: 50px;
+            margin-bottom: 16px;
+        }
+        
+        .spinner-svg {
+            animation: spinner-rotate 2s linear infinite;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .spinner-path {
+            stroke: var(--placeholder-text, #666);
+            stroke-linecap: round;
+            animation: spinner-dash 1.5s ease-in-out infinite;
+        }
+        
+        @keyframes spinner-rotate {
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+        
+        @keyframes spinner-dash {
+            0% {
+                stroke-dasharray: 1, 150;
+                stroke-dashoffset: 0;
+            }
+            50% {
+                stroke-dasharray: 90, 150;
+                stroke-dashoffset: -35;
+            }
+            100% {
+                stroke-dasharray: 90, 150;
+                stroke-dashoffset: -124;
+            }
+        }
+        
+        .placeholder-loading-text {
+            height: 20px;
+            width: 150px;
+            text-align: center;
+            color: var(--placeholder-text, #666);
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .placeholder-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+            
+            .placeholder-stats {
+                grid-template-columns: 1fr;
+            }
+            
+            .placeholder-avatar {
+                width: 80px;
+                height: 80px;
+            }
+            
+            .placeholder-ad-content {
+                flex-direction: column;
+            }
+            
+            .placeholder-ad-image {
+                width: 100%;
+                height: 160px;
+                margin-right: 0;
+                margin-bottom: 16px;
+            }
+        }
+    `;
+    
+    document.head.appendChild(styleEl);
+}
+
+// Initialize placeholder system when the document is ready
+document.addEventListener('DOMContentLoaded', function() {
+    addPlaceholderStyles();
+});
+
+// Export functions for use in other modules
+export {
+    showIframePlaceholder,
+    addPlaceholderStyles
+};
