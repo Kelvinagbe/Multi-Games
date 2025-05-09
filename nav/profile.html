@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gaming Wallet</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-    
     <style>
   :root {
     /* Primary Colors */
@@ -880,40 +879,21 @@ async function openModal(title, type, page = null) {
     modalContent.innerHTML = '';
     
     // Generate content based on type
-    if (type === 'page') {
-        try {
-            // Create an iframe container to isolate the content
-            const iframeContainer = document.createElement('div');
-            iframeContainer.className = 'modal-iframe-container';
-            
-            // Create the iframe
-            const iframe = document.createElement('iframe');
-            iframe.className = 'modal-iframe';
-            iframe.sandbox = 'allow-same-origin allow-scripts allow-forms';
-            
-            // Add the iframe to the container
-            iframeContainer.appendChild(iframe);
-            modalContent.appendChild(iframeContainer);
-            
-            // Fetch the page content
-            const response = await fetch(page);
-            if (response.ok) {
-                const html = await response.text();
-                
-                // Set the iframe content
-                const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-                iframeDoc.open();
-                iframeDoc.write(html);
-                iframeDoc.close();
-                
-                // Add communication between parent and iframe
-                window.addEventListener('message', handleIframeMessage);
-            } else {
-                modalContent.innerHTML = `<div style="padding: 20px; text-align: center;">Error loading content. Please try again later.</div>`;
-            }
-        } catch (error) {
-            modalContent.innerHTML = `<div style="padding: 20px; text-align: center;">Error loading content. Please try again later.</div>`;
-        }
+    iif (type === 'page') {
+    const iframeContainer = document.createElement('div');
+    iframeContainer.className = 'modal-iframe-container';
+
+    const iframe = document.createElement('iframe');
+    iframe.className = 'modal-iframe';
+    iframe.src = page; // load page directly
+    iframe.allow = "fullscreen"; // optional
+
+    // OPTIONAL: use sandbox only if needed
+    // iframe.sandbox = 'allow-same-origin allow-scripts allow-forms';
+
+    iframeContainer.appendChild(iframe);
+    modalContent.appendChild(iframeContainer);
+}
     } else if (type === 'iframe') {
         // Create iframe for external page content
         const iframeContainer = document.createElement('div');
