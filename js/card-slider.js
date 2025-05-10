@@ -1,5 +1,5 @@
-// Flicker-Free Card Slider Script
-// This script creates a smooth horizontal card slider
+// Infinite Looping Card Slider Script
+// This script creates a smooth, infinitely looping horizontal card slider
 
 // Array of card data
 const cardData = [
@@ -38,6 +38,11 @@ sliderCSS.textContent = `
     display: flex;
     transition: transform 0.6s ease-in-out;
     width: 100%;
+  }
+  
+  /* No transition during reset */
+  .card-slider-track.no-transition {
+    transition: none;
   }
 
   /* Style for individual card items */
@@ -118,26 +123,41 @@ sliderContainer.className = 'card-slider-container';
 const sliderTrack = document.createElement('div');
 sliderTrack.className = 'card-slider-track';
 
-// Clone the original card for each item in cardData
-cardData.forEach((card, index) => {
-  // Create a new card item
-  const cardItem = originalFeatured.cloneNode(true);
-  cardItem.className = 'card-slider-item ' + originalFeatured.className;
+// For infinite loop effect, we'll clone cards to create a circular effect
+// We'll create this structure: [last card clone, all original cards, first card clone]
 
+// Function to create a card item from data
+function createCardItem(cardData, className = '') {
+  const cardItem = originalFeatured.cloneNode(true);
+  cardItem.className = 'card-slider-item ' + originalFeatured.className + ' ' + className;
+  
   // Update card content
   const img = cardItem.querySelector('img');
   const title = cardItem.querySelector('h3');
   const desc = cardItem.querySelector('p');
   const link = cardItem.querySelector('a.featured-btn');
 
-  if (img) img.src = card.image;
-  if (title) title.textContent = card.title;
-  if (desc) desc.textContent = card.description;
-  if (link) link.href = card.link;
+  if (img) img.src = cardData.image;
+  if (title) title.textContent = cardData.title;
+  if (desc) desc.textContent = cardData.description;
+  if (link) link.href = cardData.link;
+  
+  return cardItem;
+}
 
-  // Add card to track
+// Add clone of last card at the beginning (for smooth looping backward)
+const lastCardClone = createCardItem(cardData[cardData.length - 1], 'clone');
+sliderTrack.appendChild(lastCardClone);
+
+// Add all original cards
+cardData.forEach((card) => {
+  const cardItem = createCardItem(card);
   sliderTrack.appendChild(cardItem);
 });
+
+// Add clone of first card at the end (for smooth looping forward)
+const firstCardClone = createCardItem(cardData[0], 'clone');
+sliderTrack.appendChild(firstCardClone);
 
 // Add track to container
 sliderContainer.appendChild(sliderTrack);
@@ -149,9 +169,9 @@ const createArrow = (direction) => {
   arrow.innerHTML = direction === 'prev' ? '&#10094;' : '&#10095;';
   arrow.addEventListener('click', () => {
     if (direction === 'prev') {
-      goToSlide(currentSlide > 0 ? currentSlide - 1 : cardData.length - 1);
+      prevSlide();
     } else {
-      goToSlide(currentSlide < cardData.length - 1 ? currentSlide + 1 : 0);
+      nextSlide();
     }
   });
   sliderContainer.appendChild(arrow);
@@ -172,31 +192,79 @@ sliderContainer.parentNode.insertBefore(dotsContainer, sliderContainer.nextSibli
 cardData.forEach((_, index) => {
   const dot = document.createElement('span');
   dot.className = index === 0 ? 'dot active' : 'dot';
-  dot.addEventListener('click', () => goToSlide(index));
+  dot.addEventListener('click', () => goToSlide(index + 1)); // +1 because of the first clone
   dotsContainer.appendChild(dot);
 });
 
-// Current slide index
-let currentSlide = 0;
+// Current slide index (start at 1, which is the first real slide after the clone)
+let currentSlide = 1;
+let isSliding = false;
 
 // Function to update slide position
 function goToSlide(index) {
+  if (isSliding) return;
+  isSliding = true;
+  
   currentSlide = index;
   
   // Move track to show the current slide
   sliderTrack.style.transform = `translateX(-${currentSlide * 100}%)`;
   
-  // Update active dot
+  // Update active dot (adjust for clones)
+  const realIndex = currentSlide - 1;
   document.querySelectorAll('.dot').forEach((dot, i) => {
-    dot.className = i === currentSlide ? 'dot active' : 'dot';
+    dot.className = i === realIndex ? 'dot active' : 'dot';
   });
+  
+  // Check if we're at a clone and need to reset
+  sliderTrack.addEventListener('transitionend', handleTransitionEnd, { once: true });
+  
+  // Reset sliding flag after animation completes
+  setTimeout(() => {
+    isSliding = false;
+  }, 600);
+}
+
+// Handle the end of a transition
+function handleTransitionEnd() {
+  // If we're at the last clone, reset to the first real slide
+  if (currentSlide === 0) {
+    resetToRealSlide(cardData.length); // Go to last real slide
+  } 
+  // If we're at the first clone, reset to the last real slide
+  else if (currentSlide === cardData.length + 1) {
+    resetToRealSlide(1); // Go to first real slide
+  }
+}
+
+// Reset to a real slide without animation
+function resetToRealSlide(index) {
+  // Remove transition temporarily
+  sliderTrack.classList.add('no-transition');
+  currentSlide = index;
+  sliderTrack.style.transform = `translateX(-${currentSlide * 100}%)`;
+  
+  // Force reflow
+  sliderTrack.offsetHeight;
+  
+  // Re-enable transitions
+  sliderTrack.classList.remove('no-transition');
+}
+
+// Next slide function
+function nextSlide() {
+  goToSlide(currentSlide + 1);
+}
+
+// Previous slide function
+function prevSlide() {
+  goToSlide(currentSlide - 1);
 }
 
 // Auto-rotate slides every 4 seconds
 const autoRotate = setInterval(() => {
-  currentSlide = (currentSlide < cardData.length - 1) ? currentSlide + 1 : 0;
-  goToSlide(currentSlide);
+  nextSlide();
 }, 4000);
 
 // Initialize the first slide
-goToSlide(0);
+goToSlide(1); // Start at the first real slide (after clone)
