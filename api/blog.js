@@ -18,7 +18,7 @@ const blogPosts = [
     title: "Top 10 Indie Games of 2025",
     category: "Indie Games",
     excerpt: "Discover the most innovative indie games that are making waves in the gaming community this year.",
-    image: "https://source.unsplash.com/random/600x400/?gaming,indie",
+    image: "..assets/image/13.png",
     date: "April 28, 2025",
     likes: 98,
     shares: 35
