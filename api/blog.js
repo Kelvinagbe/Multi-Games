@@ -28,7 +28,7 @@ const blogPosts = [
     title: "Beginner's Guide to Competitive Gaming",
     category: "Esports",
     excerpt: "Everything you need to know to start your journey in competitive gaming and esports tournaments.",
-    image: "https://source.unsplash.com/random/600x400/?gaming,esports",
+    image: "https://multi-games-fawn.vercel.app/assets/image/13.png,esports",
     date: "April 23, 2025",
     likes: 156,
     shares: 62
