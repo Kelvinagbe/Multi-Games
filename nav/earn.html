@@ -5,29 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Multi Games - Blog</title>
     <style>
-        /* Base Styles */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        :root {
+            --theme-color: #2ecc71;
+            --text-color: #333;
+            --background-color: #f9f9f9;
+            --card-bg: #ffffff;
+            --border-color: #e0e0e0;
         }
         
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #1a1a2e;
-            color: #f1f1f1;
-            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: var(--background-color);
+            color: var(--text-color);
         }
         
-        .container {
+        .blog-container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 0 20px;
-        }
-        
-        /* Blog Styles */
-        .blog-container {
-            padding: 40px 0;
+            padding: 20px;
         }
         
         .blog-header {
@@ -37,209 +34,600 @@
         
         .blog-header h1 {
             font-size: 2.5rem;
+            color: var(--theme-color);
             margin-bottom: 10px;
-            background: linear-gradient(135deg, #6a11cb, #2575fc);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
         }
         
         .blog-header p {
-            font-size: 1.2rem;
-            color: #aaa;
+            font-size: 1.1rem;
+            color: #666;
         }
         
-        .blog-post {
-            background-color: rgba(255, 255, 255, 0.05);
-            border-radius: 10px;
-            padding: 25px;
-            margin-bottom: 40px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        .blog-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
         }
         
-        .blog-post h2 {
-            font-size: 1.8rem;
+        .blog-card {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        .blog-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .blog-image {
+            height: 200px;
+            overflow: hidden;
+        }
+        
+        .blog-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .blog-card:hover .blog-image img {
+            transform: scale(1.05);
+        }
+        
+        .blog-content {
+            padding: 20px;
+        }
+        
+        .blog-category {
+            display: inline-block;
+            background-color: var(--theme-color);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin-bottom: 10px;
+        }
+        
+        .blog-title {
+            font-size: 1.4rem;
+            margin: 10px 0;
+            line-height: 1.3;
+        }
+        
+        .blog-excerpt {
+            color: #666;
+            font-size: 0.95rem;
+            line-height: 1.5;
             margin-bottom: 15px;
-            color: #fff;
         }
         
         .blog-meta {
             display: flex;
-            flex-wrap: wrap;
-            font-size: 0.9rem;
-            color: #aaa;
-            margin-bottom: 20px;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+            color: #777;
+            border-top: 1px solid var(--border-color);
+            padding-top: 15px;
+            margin-top: 15px;
         }
         
-        .blog-image {
-            width: 100%;
-            height: auto;
-            border-radius: 8px;
-            margin-bottom: 20px;
+        .blog-date {
+            display: flex;
+            align-items: center;
         }
         
-        .blog-content {
-            margin-bottom: 20px;
+        .blog-date svg {
+            margin-right: 5px;
         }
         
-        .blog-content p {
-            margin-bottom: 15px;
+        .blog-actions {
+            display: flex;
+            gap: 15px;
         }
         
-        .blog-content h3 {
-            font-size: 1.4rem;
-            margin: 25px 0 15px;
-            color: #2575fc;
+        .blog-actions button {
+            background: none;
+            border: none;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+            color: #777;
+            transition: color 0.3s ease;
         }
         
-        .blog-content ul, .blog-content ol {
-            margin: 15px 0 15px 20px;
+        .blog-actions button:hover {
+            color: var(--theme-color);
         }
         
-        .blog-content li {
-            margin-bottom: 8px;
+        .blog-actions button svg {
+            transition: transform 0.3s ease;
         }
         
-        .blog-content strong {
-            color: #ff6b6b;
+        .blog-actions button:hover svg {
+            transform: scale(1.2);
         }
         
-        .read-more {
-            display: inline-block;
-            background: linear-gradient(135deg, #6a11cb, #2575fc);
+        .blog-actions .like-count, .blog-actions .share-count {
+            font-size: 0.85rem;
+        }
+        
+        .blog-pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 50px;
+            gap: 10px;
+        }
+        
+        .blog-pagination button {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            padding: 8px 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .blog-pagination button.active {
+            background-color: var(--theme-color);
             color: white;
-            padding: 10px 20px;
-            border-radius: 5px;
-            text-decoration: none;
-            font-weight: 500;
-            transition: transform 0.3s;
+            border-color: var(--theme-color);
         }
         
-        .read-more:hover {
-            transform: translateY(-3px);
+        .blog-pagination button:hover:not(.active) {
+            border-color: var(--theme-color);
+            color: var(--theme-color);
         }
         
-        /* Responsive Styles */
         @media (max-width: 768px) {
+            .blog-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+                gap: 20px;
+            }
+            
             .blog-header h1 {
                 font-size: 2rem;
             }
-            
-            .blog-post h2 {
-                font-size: 1.5rem;
+        }
+        
+        @media (max-width: 480px) {
+            .blog-grid {
+                grid-template-columns: 1fr;
             }
             
-            .blog-post {
-                padding: 20px;
+            .blog-header h1 {
+                font-size: 1.8rem;
             }
+        }
+        
+        .liked {
+            color: var(--theme-color) !important;
+            font-weight: bold;
+        }
+        
+        .share-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            display: none;
+        }
+        
+        .share-popup.active {
+            display: block;
+        }
+        
+        .share-popup h3 {
+            margin-top: 0;
+            color: var(--theme-color);
+        }
+        
+        .share-options {
+            display: flex;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .share-option {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        
+        .share-option:hover {
+            transform: scale(1.1);
+        }
+        
+        .share-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            margin-bottom: 5px;
+        }
+        
+        .twitter {
+            background-color: #1da1f2;
+        }
+        
+        .facebook {
+            background-color: #3b5998;
+        }
+        
+        .whatsapp {
+            background-color: #25d366;
+        }
+        
+        .copy {
+            background-color: #333;
+        }
+        
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            color: #777;
+        }
+        
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            display: none;
+        }
+        
+        .overlay.active {
+            display: block;
         }
     </style>
 </head>
 <body>
-    <div class="container blog-container">
-        <header class="blog-header">
+    <div class="blog-container">
+        <div class="blog-header">
             <h1>Multi Games Blog</h1>
-            <p>Latest news, reviews, and guides for all your favorite games</p>
-        </header>
+            <p>Latest news, tips, and updates from the gaming world</p>
+        </div>
         
-        <main>
-            <!-- Blog Post 1 -->
-            <article class="blog-post">
-                <h2>The Evolution of Battle Royale Games</h2>
-                <div class="blog-meta">
-                    <span>May 8, 2025</span> | 
-                    <span>Categories: Battle Royale, Gaming Trends</span>
-                </div>
-                <img src="/api/placeholder/800/450" alt="Battle Royale Games Evolution" class="blog-image">
-                <div class="blog-content">
-                    <p>The battle royale genre has undergone a remarkable evolution since its inception, transforming from a niche mod into a dominant force in the gaming industry. What started with mods like PlayerUnknown's Battle Royale for ARMA 2 and H1Z1 has evolved into a massive ecosystem of games that continue to shape how we play and compete online.</p>
-                    
-                    <p>The explosion of popularity began with PlayerUnknown's Battlegrounds (PUBG) in 2017, which set the standard for the genre with its realistic approach to survival combat. Shortly after, Fortnite Battle Royale entered the scene, introducing building mechanics and a more accessible, cartoon-like aesthetic that appealed to a broader audience.</p>
-                    
-                    <h3>The Rise of Cross-Platform Play</h3>
-                    <p>One of the most significant developments in the battle royale genre has been the push toward cross-platform gameplay. Titles like Fortnite, Call of Duty: Warzone, and Apex Legends have broken down the barriers between console, PC, and mobile players, creating unified communities regardless of platform preference.</p>
-                    
-                    <h3>Evolution of Game Mechanics</h3>
-                    <p>Battle royale games have continuously evolved their mechanics to keep players engaged:</p>
-                    <ul>
-                        <li><strong>Dynamic Maps:</strong> From Fortnite's seasonal map changes to Warzone's integration with story elements</li>
-                        <li><strong>Character Abilities:</strong> Apex Legends pioneered the inclusion of hero-based abilities in the battle royale format</li>
-                        <li><strong>Respawn Systems:</strong> The addition of respawn mechanics has reduced the frustration of early eliminations</li>
-                        <li><strong>AI Integration:</strong> Some titles now include AI opponents to fill lobbies and provide varied challenges</li>
-                    </ul>
-                    
-                    <p>As we look to the future, the battle royale genre continues to adapt and integrate elements from other game types, ensuring its longevity in the competitive gaming landscape.</p>
-                </div>
-                <a href="#" class="read-more">Read More</a>
-            </article>
-    
-            <!-- Blog Post 2 -->
-            <article class="blog-post">
-                <h2>10 Must-Play Indie Games in 2025</h2>
-                <div class="blog-meta">
-                    <span>May 5, 2025</span> | 
-                    <span>Categories: Indie Games, Reviews</span>
-                </div>
-                <img src="/api/placeholder/800/450" alt="Indie Games 2025" class="blog-image">
-                <div class="blog-content">
-                    <p>Independent game development continues to be a hotbed of innovation, with small teams creating experiences that often rival or surpass those from major studios. The indie scene in 2025 is thriving with creativity, unique gameplay mechanics, and stories that push the boundaries of what games can accomplish as an art form.</p>
-                    
-                    <p>Here are our top picks for indie games you absolutely must play this year:</p>
-                    
-                    <h3>1. Ethereal Echoes</h3>
-                    <p>This atmospheric puzzle-platformer combines stunning hand-drawn visuals with a hauntingly beautiful soundtrack. Players control a spirit navigating between the worlds of the living and dead, with mechanics that change based on which realm you're in.</p>
-                    
-                    <h3>2. Quantum Drift</h3>
-                    <p>A racing game with a twist – players can manipulate time and physics to navigate impossible tracks. The minimalist art style belies the complex gameplay systems at work.</p>
-                    
-                    <h3>3. Wilderness Protocol</h3>
-                    <p>This survival roguelike takes place in a procedurally generated forest where the laws of nature are constantly shifting. Each run offers a unique ecosystem to explore and adapt to.</p>
-                    
-                    <h3>4. Neon Sanctuary</h3>
-                    <p>A cyberpunk RPG with a focus on narrative choices and consequence. The pixel art aesthetic is enhanced with modern lighting techniques, creating a distinct visual identity.</p>
-                    
-                    <h3>5. Orbital Decay</h3>
-                    <p>Set aboard an abandoned space station, this immersive sim combines survival horror elements with zero-gravity exploration and resource management.</p>
-                    
-                    <p>The remaining games on our list include groundbreaking titles across various genres, from tactical strategy to narrative adventures, showcasing the incredible diversity of the indie development scene.</p>
-                </div>
-                <a href="#" class="read-more">Read More</a>
-            </article>
-    
-            <!-- Blog Post 3 -->
-            <article class="blog-post">
-                <h2>How Cloud Gaming is Changing the Industry</h2>
-                <div class="blog-meta">
-                    <span>April 28, 2025</span> | 
-                    <span>Categories: Technology, Industry Trends</span>
-                </div>
-                <img src="/api/placeholder/800/450" alt="Cloud Gaming Technology" class="blog-image">
-                <div class="blog-content">
-                    <p>Cloud gaming technology has matured significantly in recent years, transforming from a promising concept plagued with technical limitations to a viable platform that's reshaping how we access and play games. As internet infrastructure continues to improve globally, the barriers to cloud gaming adoption are steadily falling.</p>
-                    
-                    <h3>Advantages of Cloud Gaming</h3>
-                    <p>The shift to cloud-based gaming offers several significant benefits:</p>
-                    <ul>
-                        <li><strong>Hardware Independence:</strong> Players can access high-end games without investing in expensive gaming hardware</li>
-                        <li><strong>Instant Access:</strong> No downloads or installations required, allowing immediate play</li>
-                        <li><strong>Cross-Device Compatibility:</strong> Play the same games across multiple devices with consistent performance</li>
-                        <li><strong>Automatic Updates:</strong> Games are always current without manual patching</li>
-                    </ul>
-                    
-                    <h3>Major Platforms and Competition</h3>
-                    <p>The cloud gaming space has become increasingly competitive, with major tech companies and traditional gaming giants all vying for market share. Each platform offers unique advantages:</p>
-                    <ul>
-                        <li><strong>Xbox Cloud Gaming:</strong> Integration with Game Pass provides access to hundreds of titles</li>
-                        <li><strong>NVIDIA GeForce Now:</strong> Allows players to access games they already own on other platforms</li>
-                        <li><strong>PlayStation Cloud:</strong> Focuses on PlayStation exclusives and backward compatibility</li>
-                        <li><strong>Amazon Luna:</strong> Channel-based subscription model with partner integrations</li>
-                    </ul>
-                    
-                    <p>As bandwidth limitations continue to decrease and latency solutions improve, cloud gaming is positioned to become a mainstream option for many gamers, potentially changing how games are designed and distributed in the future.</p>
-                </div>
-                <a href="#" class="read-more">Read More</a>
-            </article>
-        </main>
+        <div class="blog-grid" id="blogGrid">
+            <!-- Blog posts will be loaded here via JavaScript -->
+            <div class="loading" id="loading">Loading blog posts...</div>
+        </div>
+        
+        <div class="blog-pagination" id="blogPagination">
+            <!-- Pagination buttons will be loaded here via JavaScript -->
+        </div>
     </div>
+    
+    <div class="overlay" id="overlay"></div>
+    
+    <div class="share-popup" id="sharePopup">
+        <button class="close-btn" id="closeSharePopup">×</button>
+        <h3>Share this post</h3>
+        <div class="share-options">
+            <div class="share-option" id="twitterShare">
+                <div class="share-icon twitter">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M22 4.01c-1 .49-1.98.689-3 .99-1.121-1.265-2.783-1.335-4.38-.737S11.977 6.323 12 8v1c-3.245.083-6.135-1.395-8-4 0 0-4.182 7.433 4 11-1.872 1.247-3.739 2.088-6 2 3.308 1.803 6.913 2.423 10.034 1.517 3.58-1.04 6.522-3.723 7.651-7.742a13.84 13.84 0 0 0 .497-3.753C20.18 7.773 21.692 5.25 22 4.01z" fill="currentColor"></path>
+                    </svg>
+                </div>
+                <span>Twitter</span>
+            </div>
+            <div class="share-option" id="facebookShare">
+                <div class="share-icon facebook">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3V2z" fill="currentColor"></path>
+                    </svg>
+                </div>
+                <span>Facebook</span>
+            </div>
+            <div class="share-option" id="whatsappShare">
+                <div class="share-icon whatsapp">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M20.52 3.449C18.24 1.245 15.24 0.05 12.045 0.05C5.463 0.05 0.103 5.394 0.101 12.05C0.101 14.175 0.722 16.239 1.897 18.044L0 24.05L6.242 22.191C7.961 23.243 9.962 23.801 12.042 23.801H12.046C18.623 23.801 23.984 18.461 23.987 11.801C23.987 8.526 22.809 5.589 20.52 3.449ZM12.046 21.801C10.235 21.801 8.462 21.264 6.931 20.278L6.585 20.084L2.855 21.181L3.986 17.513L3.766 17.143C2.669 15.513 2.102 13.635 2.102 11.7C2.103 6.5 6.538 2.05 12.049 2.05C14.711 2.05 17.228 3.05 19.134 4.886C21.04 6.722 22.086 9.183 22.084 11.842C22.083 17.132 17.648 21.801 12.046 21.801ZM17.377 14.539C17.092 14.399 15.67 13.687 15.408 13.597C15.146 13.507 14.953 13.462 14.762 13.746C14.571 14.03 14.015 14.687 13.843 14.88C13.672 15.073 13.501 15.095 13.216 14.955C12.931 14.815 11.955 14.507 10.805 13.493C9.908 12.706 9.298 11.739 9.126 11.454C8.955 11.17 9.107 11.008 9.254 10.858C9.386 10.722 9.549 10.502 9.698 10.331C9.847 10.16 9.894 10.041 9.985 9.847C10.076 9.654 10.029 9.483 9.962 9.343C9.894 9.203 9.289 7.797 9.05 7.227C8.817 6.671 8.578 6.744 8.397 6.735C8.224 6.727 8.031 6.725 7.838 6.725C7.645 6.725 7.336 6.792 7.073 7.076C6.811 7.36 6.051 8.07 6.051 9.476C6.051 10.882 7.099 12.241 7.248 12.434C7.397 12.627 9.29 15.525 12.145 16.759C12.855 17.065 13.404 17.248 13.835 17.382C14.539 17.602 15.184 17.574 15.696 17.504C16.266 17.426 17.419 16.802 17.659 16.139C17.899 15.476 17.899 14.904 17.831 14.805C17.764 14.706 17.571 14.644 17.286 14.539H17.377Z" fill="currentColor"/>
+                    </svg>
+                </div>
+                <span>WhatsApp</span>
+            </div>
+            <div class="share-option" id="copyLink">
+                <div class="share-icon copy">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
+                        <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
+                    </svg>
+                </div>
+                <span>Copy Link</span>
+            </div>
+        </div>
+        <div id="copyMessage" style="text-align: center; display: none; color: var(--theme-color);">Link copied to clipboard!</div>
+    </div>
+
+    <script>
+        // Global variables
+        let currentPage = 1;
+        const postsPerPage = 3; // Display 3 posts per page as requested
+        let allBlogPosts = [];
+        let currentPostId = null;
+
+        // Function to fetch blog posts from API
+        async function fetchBlogPosts() {
+            try {
+                const response = await fetch('/api/blog');
+                if (!response.ok) {
+                    throw new Error('Failed to fetch blog posts');
+                }
+                const data = await response.json();
+                return data;
+            } catch (error) {
+                console.error('Error fetching blog posts:', error);
+                return [];
+            }
+        }
+
+        // Function to render blog posts
+        function renderBlogPosts(posts) {
+            const blogGrid = document.getElementById('blogGrid');
+            blogGrid.innerHTML = '';
+            
+            if (posts.length === 0) {
+                blogGrid.innerHTML = '<div class="no-posts">No blog posts found</div>';
+                return;
+            }
+            
+            posts.forEach(post => {
+                const postElement = document.createElement('div');
+                postElement.className = 'blog-card';
+                postElement.innerHTML = `
+                    <div class="blog-image">
+                        <img src="${post.image}" alt="${post.title}">
+                    </div>
+                    <div class="blog-content">
+                        <span class="blog-category">${post.category}</span>
+                        <h2 class="blog-title">${post.title}</h2>
+                        <p class="blog-excerpt">${post.excerpt}</p>
+                        <div class="blog-meta">
+                            <div class="blog-date">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                                </svg>
+                                ${post.date}
+                            </div>
+                            <div class="blog-actions">
+                                <button class="like-button" data-post-id="${post.id}">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                                    </svg>
+                                    <span class="like-count">${post.likes}</span>
+                                </button>
+                                <button class="share-button" data-post-id="${post.id}" data-post-title="${post.title}">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <circle cx="18" cy="5" r="3"></circle>
+                                        <circle cx="6" cy="12" r="3"></circle>
+                                        <circle cx="18" cy="19" r="3"></circle>
+                                        <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                                        <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+                                    </svg>
+                                    <span class="share-count">${post.shares}</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                blogGrid.appendChild(postElement);
+            });
+            
+            // Add event listeners to like and share buttons
+            addLikeButtonListeners();
+            addShareButtonListeners();
+        }
+
+        // Function to render pagination
+        function renderPagination(totalPages, currentPage) {
+            const paginationElement = document.getElementById('blogPagination');
+            paginationElement.innerHTML = '';
+            
+            for (let i = 1; i <= totalPages; i++) {
+                const button = document.createElement('button');
+                button.textContent = i;
+                if (i === currentPage) {
+                    button.classList.add('active');
+                }
+                button.addEventListener('click', () => {
+                    currentPage = i;
+                    const start = (i - 1) * postsPerPage;
+                    const end = start + postsPerPage;
+                    const pageItems = allBlogPosts.slice(start, end);
+                    renderBlogPosts(pageItems);
+                    
+                    // Update active button
+                    const buttons = paginationElement.querySelectorAll('button');
+                    buttons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                });
+                paginationElement.appendChild(button);
+            }
+        }
+
+        // Function to add event listeners to like buttons
+        function addLikeButtonListeners() {
+            const likeButtons = document.querySelectorAll('.like-button');
+            likeButtons.forEach(button => {
+                button.addEventListener('click', async function() {
+                    const postId = this.getAttribute('data-post-id');
+                    const likeCount = this.querySelector('.like-count');
+                    
+                    // Check if the button is already liked
+                    if (this.classList.contains('liked')) {
+                        // Unlike
+                        this.classList.remove('liked');
+                        likeCount.textContent = parseInt(likeCount.textContent) - 1;
+                        
+                        // Update like count in API (in a real implementation)
+                        try {
+                            await fetch(`/api/blog/like`, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({ 
+                                    postId: parseInt(postId),
+                                    action: 'unlike'
+                                })
+                            });
+                        } catch (error) {
+                            console.error('Error unliking post:', error);
+                        }
+                    } else {
+                        // Like
+                        this.classList.add('liked');
+                        likeCount.textContent = parseInt(likeCount.textContent) + 1;
+                        
+                        // Update like count in API (in a real implementation)
+                        try {
+                            await fetch(`/api/blog/like`, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({ 
+                                  postId: parseInt(postId),
+                                    action: 'like'
+                                })
+                            });
+                        } catch (error) {
+                            console.error('Error liking post:', error);
+                        }
+                    }
+                });
+            });
+        }
+
+        // Function to add event listeners to share buttons
+        function addShareButtonListeners() {
+            const shareButtons = document.querySelectorAll('.share-button');
+            const sharePopup = document.getElementById('sharePopup');
+            const overlay = document.getElementById('overlay');
+            const closeSharePopup = document.getElementById('closeSharePopup');
+            
+            shareButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const postId = this.getAttribute('data-post-id');
+                    const postTitle = this.getAttribute('data-post-title');
+                    currentPostId = postId;
+                    
+                    // Show share popup
+                    sharePopup.classList.add('active');
+                    overlay.classList.add('active');
+                    
+                    // Update share count in DOM
+                    const shareCount = this.querySelector('.share-count');
+                    shareCount.textContent = parseInt(shareCount.textContent) + 1;
+                    
+                    // Update share count in API (in a real implementation)
+                    try {
+                        fetch(`/api/blog/share`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ postId: parseInt(postId) })
+                        });
+                    } catch (error) {
+                        console.error('Error updating share count:', error);
+                    }
+                });
+            });
+            
+            // Close share popup
+            closeSharePopup.addEventListener('click', function() {
+                sharePopup.classList.remove('active');
+                overlay.classList.remove('active');
+            });
+            
+            overlay.addEventListener('click', function() {
+                sharePopup.classList.remove('active');
+                overlay.classList.remove('active');
+            });
+            
+            // Share options
+            const twitterShare = document.getElementById('twitterShare');
+            const facebookShare = document.getElementById('facebookShare');
+            const whatsappShare = document.getElementById('whatsappShare');
+            const copyLink = document.getElementById('copyLink');
+            const copyMessage = document.getElementById('copyMessage');
+            
+            twitterShare.addEventListener('click', function() {
+                const url = `https://twitter.com/intent/tweet?text=Check out this blog post&url=${window.location.href}?post=${currentPostId}`;
+                window.open(url, '_blank');
+            });
+            
+            facebookShare.addEventListener('click', function() {
+                const url = `https://www.facebook.com/sharer/sharer.php?u=${window.location.href}?post=${currentPostId}`;
+                window.open(url, '_blank');
+            });
+            
+            whatsappShare.addEventListener('click', function() {
+                const url = `https://wa.me/?text=Check out this blog post: ${window.location.href}?post=${currentPostId}`;
+                window.open(url, '_blank');
+            });
+            
+            copyLink.addEventListener('click', function() {
+                const tempInput = document.createElement('input');
+                tempInput.value = `${window.location.href}?post=${currentPostId}`;
+                document.body.appendChild(tempInput);
+                tempInput.select();
+                document.execCommand('copy');
+                document.body.removeChild(tempInput);
+                
+                copyMessage.style.display = 'block';
+                setTimeout(() => {
+                    copyMessage.style.display = 'none';
+                }, 2000);
+            });
+        }
+
+        // Initialize the blog
+        async function initBlog() {
+            // Fetch blog posts
+            allBlogPosts = await fetchBlogPosts();
+            
+            // Calculate total pages
+            const totalPages = Math.ceil(allBlogPosts.length / postsPerPage);
+            
+            // Render first page
+            const firstPageItems = allBlogPosts.slice(0, postsPerPage);
+            renderBlogPosts(firstPageItems);
+            
+            // Render pagination
+            renderPagination(totalPages, currentPage);
+        }
+
+        // Initialize when DOM is loaded
+        document.addEventListener('DOMContentLoaded', initBlog);
+    </script>
 </body>
 </html>
