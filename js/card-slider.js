@@ -1,5 +1,5 @@
-// Simple Card Slider Script
-// This script converts your existing featured card into a slider
+// Vertical Card Slider Script
+// This script converts your existing featured card into a vertical slider
 // Just add this script to your page and it will handle everything
 
 // Array of card data
@@ -69,10 +69,10 @@ const createArrow = (direction) => {
 createArrow('prev');
 createArrow('next');
 
-// Function to update card content with smooth sliding transition
+// Function to update card content with smooth vertical sliding transition
 function updateCard() {
   // Start slide transition
-  featuredCard.classList.add('sliding');
+  featuredCard.classList.add('sliding-out');
   
   setTimeout(() => {
     // Update content
@@ -86,9 +86,16 @@ function updateCard() {
       dot.className = index === currentCard ? 'dot active' : 'dot';
     });
     
-    // Complete slide transition
-    featuredCard.classList.remove('sliding');
-  }, 300);
+    // Change to sliding in
+    featuredCard.classList.remove('sliding-out');
+    featuredCard.classList.add('sliding-in');
+    
+    // Remove sliding-in class after animation completes
+    setTimeout(() => {
+      featuredCard.classList.remove('sliding-in');
+    }, 500);
+    
+  }, 500); // Wait for slide-out animation to finish
 }
 
 // Auto-rotate cards every 4 seconds
@@ -97,17 +104,35 @@ setInterval(() => {
   updateCard();
 }, 4000);
 
-// Add CSS for navigation elements and slide animation
+// Add CSS for navigation elements and vertical slide animation
 const style = document.createElement('style');
 style.textContent = `
   .featured {
     transition: all 0.5s ease;
     position: relative;
+    overflow: hidden;
   }
   
-  .featured.sliding {
-    transform: translateX(10px);
+  .featured.sliding-out {
+    transform: translateY(30px);
     opacity: 0;
+  }
+  
+  .featured.sliding-in {
+    transform: translateY(0);
+    opacity: 1;
+    animation: slideInFromTop 0.5s ease forwards;
+  }
+  
+  @keyframes slideInFromTop {
+    0% {
+      transform: translateY(-30px);
+      opacity: 0;
+    }
+    100% {
+      transform: translateY(0);
+      opacity: 1;
+    }
   }
   
   .slider-arrow {
