@@ -1,4 +1,5 @@
 {
+  "version": 2,
   "headers": [
     {
       "source": "/(.*)",
@@ -72,6 +73,24 @@
       ],
       "destination": "/blocked.html",
       "permanent": false
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/blog",
+      "dest": "/api/blog.js"
+    },
+    {
+      "src": "/api/blog/like",
+      "dest": "/api/blog/like.js"
+    },
+    {
+      "src": "/api/blog/share",
+      "dest": "/api/blog/share.js"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/$1"
     }
   ],
   "regions": ["dub1"]
