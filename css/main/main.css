@@ -350,7 +350,7 @@ padding: 10px;
 
 /* Bottom Navigation */
 .bottom-nav {
-  position: fixed;
+  position: absolute;
   bottom: 0;
   left: 0;
   right: 0;
