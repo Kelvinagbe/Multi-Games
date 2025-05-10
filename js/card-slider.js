@@ -1,6 +1,5 @@
-// Smooth Horizontal Card Slider Script
-// This script converts your existing featured card into a horizontal slider
-// Just add this script to your page and it will handle everything
+// Flicker-Free Card Slider Script
+// This script creates a smooth horizontal card slider
 
 // Array of card data
 const cardData = [
@@ -24,144 +23,51 @@ const cardData = [
   }
 ];
 
-// Current card index
-let currentCard = 0;
-
-// Get reference to the featured card
-const featuredCard = document.querySelector('.featured');
-const featuredImg = featuredCard.querySelector('img');
-const featuredTitle = featuredCard.querySelector('h3');
-const featuredDesc = featuredCard.querySelector('p');
-const featuredLink = featuredCard.querySelector('a.featured-btn');
-
-// Add navigation dots
-const dotsContainer = document.createElement('div');
-dotsContainer.className = 'slider-dots';
-featuredCard.parentNode.insertBefore(dotsContainer, featuredCard.nextSibling);
-
-// Create dots
-cardData.forEach((_, index) => {
-  const dot = document.createElement('span');
-  dot.className = index === 0 ? 'dot active' : 'dot';
-  dot.addEventListener('click', () => {
-    currentCard = index;
-    updateCard();
-  });
-  dotsContainer.appendChild(dot);
-});
-
-// Add navigation arrows
-const createArrow = (direction) => {
-  const arrow = document.createElement('div');
-  arrow.className = `slider-arrow slider-arrow-${direction}`;
-  arrow.innerHTML = direction === 'prev' ? '&#10094;' : '&#10095;';
-  arrow.addEventListener('click', () => {
-    if (direction === 'prev') {
-      currentCard = (currentCard > 0) ? currentCard - 1 : cardData.length - 1;
-    } else {
-      currentCard = (currentCard < cardData.length - 1) ? currentCard + 1 : 0;
-    }
-    updateCard();
-  });
-  featuredCard.appendChild(arrow);
-};
-
-createArrow('prev');
-createArrow('next');
-
-// Function to update card content with smooth horizontal sliding transition
-function updateCard() {
-  // Create container for current and next card
-  const cardContainer = document.createElement('div');
-  cardContainer.className = 'card-container';
-  
-  // Clone the current card
-  const oldCard = featuredCard.cloneNode(true);
-  oldCard.classList.add('old-card');
-  
-  // Create new card with updated content
-  const newCard = featuredCard.cloneNode(true);
-  newCard.classList.add('new-card');
-  
-  // Update content of new card
-  newCard.querySelector('img').src = cardData[currentCard].image;
-  newCard.querySelector('h3').textContent = cardData[currentCard].title;
-  newCard.querySelector('p').textContent = cardData[currentCard].description;
-  newCard.querySelector('a.featured-btn').href = cardData[currentCard].link;
-  
-  // Update dots
-  document.querySelectorAll('.dot').forEach((dot, index) => {
-    dot.className = index === currentCard ? 'dot active' : 'dot';
-  });
-  
-  // Replace featured card with container containing both cards
-  const parent = featuredCard.parentNode;
-  parent.replaceChild(cardContainer, featuredCard);
-  
-  // Add both cards to container
-  cardContainer.appendChild(oldCard);
-  cardContainer.appendChild(newCard);
-  
-  // Trigger animation
-  requestAnimationFrame(() => {
-    cardContainer.classList.add('sliding');
-  });
-  
-  // After animation completes, restore the original featured card with new content
-  setTimeout(() => {
-    // Update original featured card content
-    featuredImg.src = cardData[currentCard].image;
-    featuredTitle.textContent = cardData[currentCard].title;
-    featuredDesc.textContent = cardData[currentCard].description;
-    featuredLink.href = cardData[currentCard].link;
-    
-    // Replace container with updated original card
-    parent.replaceChild(featuredCard, cardContainer);
-  }, 600); // Wait for slide animation to finish
-}
-
-// Auto-rotate cards every 4 seconds
-setInterval(() => {
-  currentCard = (currentCard < cardData.length - 1) ? currentCard + 1 : 0;
-  updateCard();
-}, 4000);
-
-// Add CSS for navigation elements and smooth horizontal slide animation
-const style = document.createElement('style');
-style.textContent = `
-  .featured {
+// First, add necessary CSS to the document head
+const sliderCSS = document.createElement('style');
+sliderCSS.textContent = `
+  /* Create a container for the slider */
+  .card-slider-container {
     position: relative;
-    overflow: hidden;
+    width: 100%;
+    overflow: hidden; /* Critical for hiding sliding content */
+  }
+
+  /* Style for the card track */
+  .card-slider-track {
+    display: flex;
+    transition: transform 0.6s ease-in-out;
     width: 100%;
   }
-  
-  .card-container {
-    position: relative;
-    width: 200%;
+
+  /* Style for individual card items */
+  .card-slider-item {
+    flex: 0 0 100%;
+    width: 100%;
+  }
+
+  /* Navigation dots */
+  .slider-dots {
     display: flex;
-    overflow: hidden;
-    height: 100%;
+    justify-content: center;
+    margin-top: 10px;
   }
   
-  .old-card, .new-card {
-    width: 50%;
-    flex-shrink: 0;
-    position: relative;
-    transition: transform 0.6s ease;
+  .dot {
+    width: 10px;
+    height: 10px;
+    background-color: #ccc;
+    border-radius: 50%;
+    margin: 0 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
   }
   
-  .card-container.sliding .old-card {
-    transform: translateX(-100%);
+  .dot.active {
+    background-color: var(--primary-color, #ff5722);
   }
-  
-  .card-container.sliding .new-card {
-    transform: translateX(0);
-  }
-  
-  .new-card {
-    transform: translateX(100%);
-  }
-  
+
+  /* Navigation arrows */
   .slider-arrow {
     position: absolute;
     top: 50%;
@@ -192,25 +98,105 @@ style.textContent = `
   .slider-arrow-next {
     right: 10px;
   }
-  
-  .slider-dots {
-    display: flex;
-    justify-content: center;
-    margin-top: 10px;
-  }
-  
-  .dot {
-    width: 10px;
-    height: 10px;
-    background-color: #ccc;
-    border-radius: 50%;
-    margin: 0 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-  .dot.active {
-    background-color: var(--primary-color, #ff5722);
-  }
 `;
-document.head.appendChild(style);
+document.head.appendChild(sliderCSS);
+
+// Get the original featured card
+const originalFeatured = document.querySelector('.featured');
+if (!originalFeatured) {
+  console.error('Could not find featured card element');
+  throw new Error('Featured card element not found');
+}
+
+// Get parent of the featured card
+const parentElement = originalFeatured.parentElement;
+
+// Create the new slider structure
+const sliderContainer = document.createElement('div');
+sliderContainer.className = 'card-slider-container';
+
+const sliderTrack = document.createElement('div');
+sliderTrack.className = 'card-slider-track';
+
+// Clone the original card for each item in cardData
+cardData.forEach((card, index) => {
+  // Create a new card item
+  const cardItem = originalFeatured.cloneNode(true);
+  cardItem.className = 'card-slider-item ' + originalFeatured.className;
+
+  // Update card content
+  const img = cardItem.querySelector('img');
+  const title = cardItem.querySelector('h3');
+  const desc = cardItem.querySelector('p');
+  const link = cardItem.querySelector('a.featured-btn');
+
+  if (img) img.src = card.image;
+  if (title) title.textContent = card.title;
+  if (desc) desc.textContent = card.description;
+  if (link) link.href = card.link;
+
+  // Add card to track
+  sliderTrack.appendChild(cardItem);
+});
+
+// Add track to container
+sliderContainer.appendChild(sliderTrack);
+
+// Add navigation arrows
+const createArrow = (direction) => {
+  const arrow = document.createElement('div');
+  arrow.className = `slider-arrow slider-arrow-${direction}`;
+  arrow.innerHTML = direction === 'prev' ? '&#10094;' : '&#10095;';
+  arrow.addEventListener('click', () => {
+    if (direction === 'prev') {
+      goToSlide(currentSlide > 0 ? currentSlide - 1 : cardData.length - 1);
+    } else {
+      goToSlide(currentSlide < cardData.length - 1 ? currentSlide + 1 : 0);
+    }
+  });
+  sliderContainer.appendChild(arrow);
+};
+
+createArrow('prev');
+createArrow('next');
+
+// Replace original featured card with new slider
+parentElement.replaceChild(sliderContainer, originalFeatured);
+
+// Add navigation dots beneath the slider
+const dotsContainer = document.createElement('div');
+dotsContainer.className = 'slider-dots';
+sliderContainer.parentNode.insertBefore(dotsContainer, sliderContainer.nextSibling);
+
+// Create navigation dots
+cardData.forEach((_, index) => {
+  const dot = document.createElement('span');
+  dot.className = index === 0 ? 'dot active' : 'dot';
+  dot.addEventListener('click', () => goToSlide(index));
+  dotsContainer.appendChild(dot);
+});
+
+// Current slide index
+let currentSlide = 0;
+
+// Function to update slide position
+function goToSlide(index) {
+  currentSlide = index;
+  
+  // Move track to show the current slide
+  sliderTrack.style.transform = `translateX(-${currentSlide * 100}%)`;
+  
+  // Update active dot
+  document.querySelectorAll('.dot').forEach((dot, i) => {
+    dot.className = i === currentSlide ? 'dot active' : 'dot';
+  });
+}
+
+// Auto-rotate slides every 4 seconds
+const autoRotate = setInterval(() => {
+  currentSlide = (currentSlide < cardData.length - 1) ? currentSlide + 1 : 0;
+  goToSlide(currentSlide);
+}, 4000);
+
+// Initialize the first slide
+goToSlide(0);
