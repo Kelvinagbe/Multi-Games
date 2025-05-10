@@ -5,7 +5,7 @@
 const blogPosts = [
   {
     id: 1,
-    title: "The Evolution of Open-World Gaming",
+    title: "Evolution of Open-World Gaming",
     category: "Gaming Trends",
     excerpt: "How open-world games have transformed the gaming landscape over the past decade and what to expect in the future.",
     image: "https://multi-games-fawn.vercel.app/assets/image/13.png",
