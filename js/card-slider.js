@@ -1,5 +1,5 @@
-// Vertical Card Slider Script
-// This script converts your existing featured card into a vertical slider
+// Smooth Horizontal Card Slider Script
+// This script converts your existing featured card into a horizontal slider
 // Just add this script to your page and it will handle everything
 
 // Array of card data
@@ -69,33 +69,55 @@ const createArrow = (direction) => {
 createArrow('prev');
 createArrow('next');
 
-// Function to update card content with smooth vertical sliding transition
+// Function to update card content with smooth horizontal sliding transition
 function updateCard() {
-  // Start slide transition
-  featuredCard.classList.add('sliding-out');
+  // Create container for current and next card
+  const cardContainer = document.createElement('div');
+  cardContainer.className = 'card-container';
   
+  // Clone the current card
+  const oldCard = featuredCard.cloneNode(true);
+  oldCard.classList.add('old-card');
+  
+  // Create new card with updated content
+  const newCard = featuredCard.cloneNode(true);
+  newCard.classList.add('new-card');
+  
+  // Update content of new card
+  newCard.querySelector('img').src = cardData[currentCard].image;
+  newCard.querySelector('h3').textContent = cardData[currentCard].title;
+  newCard.querySelector('p').textContent = cardData[currentCard].description;
+  newCard.querySelector('a.featured-btn').href = cardData[currentCard].link;
+  
+  // Update dots
+  document.querySelectorAll('.dot').forEach((dot, index) => {
+    dot.className = index === currentCard ? 'dot active' : 'dot';
+  });
+  
+  // Replace featured card with container containing both cards
+  const parent = featuredCard.parentNode;
+  parent.replaceChild(cardContainer, featuredCard);
+  
+  // Add both cards to container
+  cardContainer.appendChild(oldCard);
+  cardContainer.appendChild(newCard);
+  
+  // Trigger animation
+  requestAnimationFrame(() => {
+    cardContainer.classList.add('sliding');
+  });
+  
+  // After animation completes, restore the original featured card with new content
   setTimeout(() => {
-    // Update content
+    // Update original featured card content
     featuredImg.src = cardData[currentCard].image;
     featuredTitle.textContent = cardData[currentCard].title;
     featuredDesc.textContent = cardData[currentCard].description;
     featuredLink.href = cardData[currentCard].link;
     
-    // Update dots
-    document.querySelectorAll('.dot').forEach((dot, index) => {
-      dot.className = index === currentCard ? 'dot active' : 'dot';
-    });
-    
-    // Change to sliding in
-    featuredCard.classList.remove('sliding-out');
-    featuredCard.classList.add('sliding-in');
-    
-    // Remove sliding-in class after animation completes
-    setTimeout(() => {
-      featuredCard.classList.remove('sliding-in');
-    }, 500);
-    
-  }, 500); // Wait for slide-out animation to finish
+    // Replace container with updated original card
+    parent.replaceChild(featuredCard, cardContainer);
+  }, 600); // Wait for slide animation to finish
 }
 
 // Auto-rotate cards every 4 seconds
@@ -104,35 +126,40 @@ setInterval(() => {
   updateCard();
 }, 4000);
 
-// Add CSS for navigation elements and vertical slide animation
+// Add CSS for navigation elements and smooth horizontal slide animation
 const style = document.createElement('style');
 style.textContent = `
   .featured {
-    transition: all 0.5s ease;
     position: relative;
     overflow: hidden;
+    width: 100%;
   }
   
-  .featured.sliding-out {
-    transform: translateY(30px);
-    opacity: 0;
+  .card-container {
+    position: relative;
+    width: 200%;
+    display: flex;
+    overflow: hidden;
+    height: 100%;
   }
   
-  .featured.sliding-in {
-    transform: translateY(0);
-    opacity: 1;
-    animation: slideInFromTop 0.5s ease forwards;
+  .old-card, .new-card {
+    width: 50%;
+    flex-shrink: 0;
+    position: relative;
+    transition: transform 0.6s ease;
   }
   
-  @keyframes slideInFromTop {
-    0% {
-      transform: translateY(-30px);
-      opacity: 0;
-    }
-    100% {
-      transform: translateY(0);
-      opacity: 1;
-    }
+  .card-container.sliding .old-card {
+    transform: translateX(-100%);
+  }
+  
+  .card-container.sliding .new-card {
+    transform: translateX(0);
+  }
+  
+  .new-card {
+    transform: translateX(100%);
   }
   
   .slider-arrow {
