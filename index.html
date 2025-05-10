@@ -427,7 +427,8 @@
         }
 /* Page Content Styles */
 .page-content {
-    position: fixed;
+  position: relative;  /* Ensures proper positioning of absolute elements */
+  padding-bottom: 60px; /* Give space for the nav */
     top: 0;
     left: 0;
     width: 100%;
