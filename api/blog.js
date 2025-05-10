@@ -8,7 +8,7 @@ const blogPosts = [
     title: "The Evolution of Open-World Gaming",
     category: "Gaming Trends",
     excerpt: "How open-world games have transformed the gaming landscape over the past decade and what to expect in the future.",
-    image: "https://source.unsplash.com/random/600x400/?gaming,openworld",
+    image: "https://multi-games-fawn.vercel.app/assets/image/13.png,openworld",
     date: "May 5, 2025",
     likes: 124,
     shares: 47
