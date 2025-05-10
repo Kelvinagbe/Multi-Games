@@ -427,8 +427,7 @@
         }
 /* Page Content Styles */
 .page-content {
-  position: fixed;  /* Ensures proper positioning of absolute elements */
-  padding-bottom: 59px; /* Give space for the nav */
+  position: fixed;  
     top: 0;
     left: 0;
     width: 100%;
@@ -473,6 +472,19 @@
 .back-button i {
     color: #333;
     font-size: 18px;
+}
+
+#profile-content {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;          /* Full screen */
+  z-index: 101;          /* Must be higher than nav (which is 100) */
+  background-color: #f8f9fa;
+  display: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
 /* Dark mode styles */
