@@ -34,22 +34,10 @@ const featuredTitle = featuredCard.querySelector('h3');
 const featuredDesc = featuredCard.querySelector('p');
 const featuredLink = featuredCard.querySelector('a.featured-btn');
 
-// Add a container around the featured card for slide animation
-const sliderContainer = document.createElement('div');
-sliderContainer.className = 'slider-container';
-featuredCard.parentNode.insertBefore(sliderContainer, featuredCard);
-sliderContainer.appendChild(featuredCard);
-
-// Create a clone for the next card that will slide in
-const nextCardClone = featuredCard.cloneNode(true);
-nextCardClone.className = 'featured next-card';
-sliderContainer.appendChild(nextCardClone);
-
-// Update references for the next card
-const nextCardImg = nextCardClone.querySelector('img');
-const nextCardTitle = nextCardClone.querySelector('h3');
-const nextCardDesc = nextCardClone.querySelector('p');
-const nextCardLink = nextCardClone.querySelector('a.featured-btn');
+// Add navigation dots
+const dotsContainer = document.createElement('div');
+dotsContainer.className = 'slider-dots';
+featuredCard.parentNode.insertBefore(dotsContainer, featuredCard.nextSibling);
 
 // Create dots
 cardData.forEach((_, index) => {
@@ -61,11 +49,6 @@ cardData.forEach((_, index) => {
   });
   dotsContainer.appendChild(dot);
 });
-
-// Add navigation dots
-const dotsContainer = document.createElement('div');
-dotsContainer.className = 'slider-dots';
-sliderContainer.parentNode.insertBefore(dotsContainer, sliderContainer.nextSibling);
 
 // Add navigation arrows
 const createArrow = (direction) => {
@@ -80,8 +63,11 @@ const createArrow = (direction) => {
     }
     updateCard();
   });
-  sliderContainer.appendChild(arrow);
+  featuredCard.appendChild(arrow);
 };
+
+createArrow('prev');
+createArrow('next');
 
 // Function to update card content with smooth sliding transition
 function updateCard() {
@@ -114,44 +100,21 @@ setInterval(() => {
 // Add CSS for navigation elements and slide animation
 const style = document.createElement('style');
 style.textContent = `
-  .slider-container {
-    position: relative;
-    overflow: hidden;
-    width: 100%;
-    border-radius: var(--border-radius-lg, 10px);
-  }
-  
-  .slider-container.sliding {
-    pointer-events: none;
-  }
-  
   .featured {
-    transition: transform 0.6s ease;
-    margin: 0; /* Reset margin */
+    transition: all 0.5s ease;
+    position: relative;
   }
   
-  .next-card {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    transform: translateX(100%);
-    z-index: 1;
-  }
-  
-  .slider-container.slide-active .featured {
-    transform: translateX(-100%);
-  }
-  
-  .slider-container.slide-active .next-card {
-    transform: translateX(0);
+  .featured.sliding {
+    transform: translateX(10px);
+    opacity: 0;
   }
   
   .slider-arrow {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    background: rgba(0, 0, 0, 0.6);
+    background: rgba(0, 0, 0, 0.5);
     color: white;
     width: 40px;
     height: 40px;
@@ -163,26 +126,25 @@ style.textContent = `
     z-index: 10;
     font-size: 20px;
     opacity: 0.7;
-    transition: opacity 0.3s ease, background 0.3s ease;
+    transition: opacity 0.3s ease;
   }
   
   .slider-arrow:hover {
     opacity: 1;
-    background: rgba(0, 0, 0, 0.8);
   }
   
   .slider-arrow-prev {
-    left: 15px;
+    left: 10px;
   }
   
   .slider-arrow-next {
-    right: 15px;
+    right: 10px;
   }
   
   .slider-dots {
     display: flex;
     justify-content: center;
-    margin-top: 15px;
+    margin-top: 10px;
   }
   
   .dot {
@@ -192,16 +154,11 @@ style.textContent = `
     border-radius: 50%;
     margin: 0 5px;
     cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.3s ease;
-  }
-  
-  .dot:hover {
-    transform: scale(1.2);
+    transition: background-color 0.3s ease;
   }
   
   .dot.active {
     background-color: var(--primary-color, #ff5722);
-    transform: scale(1.2);
   }
 `;
 document.head.appendChild(style);
