@@ -4,20 +4,20 @@
 // Array of card data
 const cardData = [
   {
-    image: "https://i.postimg.cc/zfv3jnNr/truth.jpg",
+    image: "../assets/image/01.png",
     title: "Truth or Dare",
     description: "Challenge your friends with the ultimate party game!",
-    link: "truth.html"
+    link: "games.html?=01"
   },
   {
-    image: "https://i.postimg.cc/PfQVzVnH/quiz.jpg",
-    title: "Quiz Master",
+    image: "../assets/image/14.png",
+    title: "Relic Runaway",
     description: "Test your knowledge across various categories!",
     link: "quiz.html"
   },
   {
-    image: "https://i.postimg.cc/L6wFhG4k/word.jpg",
-    title: "Word Challenge",
+    image: "23.png",
+    title: "Pixel Shooter",
     description: "Expand your vocabulary with our word puzzles!",
     link: "word.html"
   }
