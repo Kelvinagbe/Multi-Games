@@ -472,6 +472,31 @@
     font-size: 18px;
 }
 
+/* Header and title styling */
+.page-header {
+  position: relative;
+  background-color: #f8f9fa;
+  padding: 15px 60px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  z-index: 100;
+}
+
+.page-title {
+  margin: 0;
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #333;
+}
+
+/* Improved back button styling */
+.back-button {
+  position: absolute;
+  top: 50%;
+  left: 15px;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 40px;
 
 /* Dark mode styles */
 .dark-mode .page-content {
@@ -926,12 +951,16 @@
   <!-- earn Page Content (Full Screen) -->
   <div class="page-content" id="earn-content">
     <div class="back-button" id="earn-back"><i class="fas fa-chevron-left"></i></div>
+ <h1 class="page-title">Blog</h1>
+  </div>
     <iframe src="/nav/earn" id="earn-iframe" class="page-iframe"></iframe>
   </div>
 
   <!-- Profile Page Content (Full Screen) -->
   <div class="page-content" id="profile-content">
     <div class="back-button" id="profile-back"><i class="fas fa-chevron-left"></i></div>
+ <h1 class="page-title">My Profile</h1>
+  </div>
     <iframe src="nav/profile" id="profile-iframe" class="page-iframe"></iframe>
   </div>
 
