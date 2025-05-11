@@ -27,10 +27,7 @@ const blogPosts = [
     id: 3,
     title: "Celebrate the Season with Subway Surfers Holiday: A Festive Adventure Awaits!",
     category: "Seasonal Gaming Events",
-    excerpt: "This holiday season, Subway Surfers is back with a festive twist! Race through snowy streets, explore wintery environments, and unlock limited-time holiday skins and characters. With exclusive seasonal rewards and exciting challenges, it’s the perfect time to join Jake, Tricky, and Fresh for a high-speed holiday adventure.
-
-Don’t miss out—dive into Subway Surfers Holiday today and experience the most festive run of the year!
-",
+    excerpt: "This holiday season, Subway Surfers is back with a festive twist! Race through snowy streets, explore wintery environments, and unlock limited-time holiday skins and characters. With exclusive seasonal rewards and exciting challenges, it’s the perfect time to join Jake, Tricky, and Fresh for a high-speed holiday adventure.",
     image: "https://multi-games-fawn.vercel.app/assets/image/23.png",
     date: "April 23, 2025",
     likes: 156,
