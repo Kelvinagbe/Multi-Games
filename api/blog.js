@@ -5,7 +5,7 @@
 const blogPosts = [
   {
     id: 1,
-    title: "Evolution of Open-World Gaming",
+    title: " ",
     category: "Gaming Trends",
     excerpt: "How open-world games have transformed the gaming landscape over the past decade and what to expect in the future.",
     image: "https://multi-games-fawn.vercel.app/assets/image/13.png",
@@ -15,9 +15,9 @@ const blogPosts = [
   },
   {
     id: 2,
-    title: "Top 10 Indie Games of 2025",
-    category: "Indie Games",
-    excerpt: "Discover the most innovative indie games that are making waves in the gaming community this year.",
+    title: "Most played Games ",
+    category: "Games trends",
+    excerpt: "Pixel Shooter has taken the arcade world by storm — with thousands of daily plays, fast-paced action, and vibrant retro visuals, it's become one of the most addictive and talked-about games on the platform.",
     image: "https://multi-games-fawn.vercel.app/assets/image/13.png",
     date: "April 28, 2025",
     likes: 98,
