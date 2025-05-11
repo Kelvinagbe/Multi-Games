@@ -8,7 +8,7 @@ const blogPosts = [
     title: " ",
     category: "Gaming Trends",
     excerpt: "How open-world games have transformed the gaming landscape over the past decade and what to expect in the future.",
-    image: "https://multi-games-fawn.vercel.app/assets/image/13.png",
+    image: "https://multi-games-fawn.vercel.app/assets/image/.png",
     date: "May 5, 2025",
     likes: 124,
     shares: 47
@@ -25,10 +25,13 @@ const blogPosts = [
   },
   {
     id: 3,
-    title: "Beginner's Guide to Competitive Gaming",
-    category: "Esports",
-    excerpt: "Everything you need to know to start your journey in competitive gaming and esports tournaments.",
-    image: "https://multi-games-fawn.vercel.app/assets/image/13.png",
+    title: "Celebrate the Season with Subway Surfers Holiday: A Festive Adventure Awaits!",
+    category: "Seasonal Gaming Events",
+    excerpt: "This holiday season, Subway Surfers is back with a festive twist! Race through snowy streets, explore wintery environments, and unlock limited-time holiday skins and characters. With exclusive seasonal rewards and exciting challenges, it’s the perfect time to join Jake, Tricky, and Fresh for a high-speed holiday adventure.
+
+Don’t miss out—dive into Subway Surfers Holiday today and experience the most festive run of the year!
+",
+    image: "https://multi-games-fawn.vercel.app/assets/image/23.png",
     date: "April 23, 2025",
     likes: 156,
     shares: 62
