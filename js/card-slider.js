@@ -16,7 +16,7 @@ const cardData = [
     link: "quiz.html"
   },
   {
-    image: "23.png",
+    image: "13.png",
     title: "Pixel Shooter",
     description: "Expand your vocabulary with our word puzzles!",
     link: "word.html"
