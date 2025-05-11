@@ -10,8 +10,8 @@ const cardData = [
     link: "games.html?=01"
   },
   {
-    image: "../assets/image/14.png",
-    title: "Relic Runaway",
+    image: "../assets/image/18.png",
+    title: "Sniper Simulator",
     description: "Test your knowledge across various categories!",
     link: "quiz.html"
   },
