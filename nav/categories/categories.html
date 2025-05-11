@@ -1,239 +1,364 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Game Categories</title>
-
-<!-- Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-PB8Y87E6XV"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-PB8Y87E6XV');
-</script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <style>
-    body {
-      font-family: 'Poppins', sans-serif;
-      background-color: #f8f9fa;
-      margin: 0;
-      padding: 0 10px 70px;
-      color: #333;
-    }
-    h1 {
-      text-align: center;
-      margin: 20px 0;
-      color: #006400;
-    }
-    .category-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-      gap: 16px;
-    }
-    .category-card {
-      background: #fff;
-      border-radius: 15px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-      padding: 20px 10px;
-      text-align: center;
-      transition: transform 0.3s;
-      text-decoration: none;
-      color: #333;
-    }
-    .category-card:hover {
-      transform: translateY(-5px);
-    }
-    .category-card i {
-      font-size: 32px;
-      color: #006400;
-      margin-bottom: 10px;
-    }
-    .category-card p {
-      font-size: 16px;
-      font-weight: 500;
-    }
-    .back-btn {
-      display: block;
-      text-align: center;
-      margin: 20px auto;
-      color: #006400;
-      text-decoration: none;
-      font-weight: bold;
-    }
-
-/* Dark Mode Variables - Inspired by Claude.ai and ChatGPT */
-body.dark-mode {
-    --bg:  #0f172a;             /* Slightly lighter background */
-    --text: #e6e8ef;           /* Off-white text for better readability */
-    --card-bg: #0f172a;        /* Less harsh card background */
-    --text-secondary: #abb0bf; /* Secondary text */
-    --text-muted: #8b90a0;     /* Muted text color */
-    --primary: #0f5132;        /* Vibrant primary blue */
-    --accent: #10a37f;         /* ChatGPT-like green */
-    --primary-dark: #2d3748;   /* Less harsh primary dark */
-    --border: #393b44;         /* Subtle border color */
-    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.1);
-    --shadow-md: 0 3px 6px rgba(0, 0, 0, 0.15);
-}
-
-/* Apply dark variables */
-body.dark-mode {
-    background-color: var(--bg);
-    color: var(--text);
-    transition: background-color 0.2s ease, color 0.2s ease;
-}
-
-body.dark-mode       .category-grid {
-    background-color: var(--bg);
-    color: var(--text);
-    transition: background-color 0.2s ease, color 0.2s ease;
-}
-body.dark-mode input,
-body.dark-mode .modal-content,
-body.dark-mode .category-grid,
-body.dark-mode .transaction-history,
-body.dark-mode .referral-section,
-body.dark-mode .quick-action {
-    background-color: var(--card-bg);
-    color: var(--text);
-    border-color: var(--border);
-    box-shadow: var(--shadow-sm);
-}
-
-body.dark-mode input {
-    border: 1px solid var(--border);
-}
-
-body.dark-mode input::placeholder {
-    color: var(--text-muted);
-}
-
-body.dark-mode  .category-card {
-    background-color: var(--primary-dark);
-    color: white;
-    box-shadow: var(--shadow-md);
-}
-
-body.dark-mode h1 {
-color: white;
-}
-
-
-body.dark-mode    .category-card i {
-color: white;
-
-body.dark-mode  .back-btn {
-color: white;
-}
-
-body.dark-mode .quick-action i {
-    color: var(--accent);
-}
-
-body.dark-mode .action-btn:hover i,
-body.dark-mode .quick-action:hover i {
-    color: #0d8a6a; /* Slightly darker accent on hover */
-}
-
-body.dark-mode .notification {
-    background-color: #333;
-    color: var(--accent);
-    border-left: 3px solid var(--accent);
-}
-
-body.dark-mode .spinner {
-    border-top-color: var(--accent);
-}
-
-/* Additional dark mode enhancements */
-body.dark-mode .section-title {
-    color: var(--text);
-}
-
-body.dark-mode .section-subtitle {
-    color: var(--text-muted);
-}
-
-body.dark-mode .transaction-item {
-    border-bottom: 1px solid var(--border);
-}
-
-body.dark-mode .transaction-item:last-child {
-    border-bottom: none;
-}
-
-body.dark-mode .transaction-amount.positive {
-    color: #10a37f;
-}
-
-body.dark-mode .transaction-amount.negative {
-    color: #e5484d;
-}
-
-body.dark-mode .button {
-    background-color: var(--accent);
-    color: white;
-}
-
-body.dark-mode .button:hover {
-    background-color: #0d8a6a;
-}
-
-body.dark-mode .button.secondary {
-    background-color: transparent;
-    border: 1px solid var(--border);
-    color: var(--text);
-}
-
-body.dark-mode .button.secondary:hover {
-    background-color: rgba(255, 255, 255, 0.05);
-}
-
-/* Fix for any inline styling */
-body.dark-mode [style*="background-color: white"],
-body.dark-mode [style*="background-color:#fff"],
-body.dark-mode [style*="background-color: #fff"],
-body.dark-mode [style*="background-color:#ffffff"],
-body.dark-mode [style*="background-color: #ffffff"],
-body.dark-mode [style*="background: white"],
-body.dark-mode [style*="background:#fff"],
-body.dark-mode [style*="background: #fff"],
-body.dark-mode [style*="background:#ffffff"],
-body.dark-mode [style*="background: #ffffff"] {
-    background-color: var(--card-bg) !important;
-    background: var(--card-bg) !important;
-}
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Categories - PlayHub</title>
+    <meta name="theme-color" content="#28a745">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #28a745;
+            --secondary-color: #20c997;
+            --dark-color: #1e2b22;
+            --light-color: #f8f9fa;
+            --gray-color: #6c757d;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        body {
+            background-color: #f4f7fa;
+            color: #333;
+        }
+        
+        header {
+            background-color: var(--dark-color);
+            color: white;
+            padding: 15px 0;
+            text-align: center;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        
+        .page-title {
+            padding: 20px 0;
+            text-align: center;
+        }
+        
+        .page-title h1 {
+            font-size: 2rem;
+            color: var(--dark-color);
+        }
+        
+        .trending-section {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 20px 0;
+            margin-bottom: 30px;
+        }
+        
+        .trending-title {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .trending-container {
+            display: flex;
+            overflow-x: auto;
+            gap: 15px;
+            padding: 10px 0;
+            scrollbar-width: thin;
+        }
+        
+        .trending-container::-webkit-scrollbar {
+            height: 5px;
+        }
+        
+        .trending-container::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.2);
+        }
+        
+        .trending-container::-webkit-scrollbar-thumb {
+            background-color: var(--dark-color);
+            border-radius: 5px;
+        }
+        
+        .category-section {
+            margin-bottom: 30px;
+        }
+        
+        .category-title {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: var(--dark-color);
+            padding-bottom: 5px;
+            border-bottom: 2px solid var(--primary-color);
+        }
+        
+        #categoryFilters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+            justify-content: center;
+        }
+        
+        .filter-btn {
+            background-color: white;
+            border: 1px solid #ddd;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .filter-btn:hover, .filter-btn.active {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+        
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        
+        /* Game card styles will be handled by your existing CSS */
+        
+        @media (max-width: 768px) {
+            .games-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+                gap: 15px;
+            }
+            
+            .filter-btn {
+                padding: 6px 12px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
 </head>
 <body>
-  <h1>Game Categories</h1>
-  <div class="category-grid">
-    <a href="arcade.html" class="category-card"><i class="fas fa-gamepad"></i><p>Arcade</p></a>
-    <a href="puzzle.html" class="category-card"><i class="fas fa-brain"></i><p>Puzzle</p></a>
-    <a href="action.html" class="category-card"><i class="fas fa-running"></i><p>Action</p></a>
-    <a href="multiplayer.html" class="category-card"><i class="fas fa-users"></i><p>Multiplayer</p></a>
-    <a href="card.html" class="category-card"><i class="fas fa-dice"></i><p>Card Games</p></a>
-    <a href="sports.html" class="category-card"><i class="fas fa-trophy"></i><p>Sports</p></a>
-    <a href="racing.html" class="category-card"><i class="fas fa-motorcycle"></i><p>Racing</p></a>
-    <a href="music.html" class="category-card"><i class="fas fa-music"></i><p>Music</p></a>
-    <a href="adventure.html" class="category-card"><i class="fas fa-dragon"></i><p>Adventure</p></a>
-    <a href="shooter.html" class="category-card"><i class="fas fa-bullseye"></i><p>Shooter</p></a>
-  </div>
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-    // Function to apply dark mode based on localStorage
-    function applyDarkModeSetting() {
-        const isDarkMode = localStorage.getItem('darkMode') === 'enabled';
-        document.body.classList.toggle('dark-mode', isDarkMode);
-    }
-
-    // Apply dark mode on page load
-    applyDarkModeSetting();
-
-    // Optional: re-check every 3 seconds in case another tab changes it
-    setInterval(applyDarkModeSetting, 300);
-});
-</script>
+    <header>
+        <div class="container">
+            <h1>PlayHub Games</h1>
+        </div>
+    </header>
+    
+    <main>
+        <div class="page-title">
+            <div class="container">
+                <h1>Game Categories</h1>
+            </div>
+        </div>
+        
+        <section class="trending-section">
+            <div class="container">
+                <h2 class="trending-title">Top Trending Games</h2>
+                <div id="trendingGames" class="trending-container">
+                    <!-- Trending games will be loaded by JavaScript -->
+                </div>
+            </div>
+        </section>
+        
+        <section class="container">
+            <div id="categoryFilters">
+                <!-- Category filters will be loaded by JavaScript -->
+            </div>
+            
+            <div class="category-section">
+                <h2 class="category-title">All Games</h2>
+                <div id="gamesContainer" class="games-grid">
+                    <!-- Games will be loaded by JavaScript -->
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <!-- Game modal HTML structure -->
+    <div id="gameModal" class="game-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modal-game-title"></h2>
+                <div class="modal-controls">
+                    <button id="modal-info-button" class="modal-btn info-btn">
+                        <i class="fas fa-info-circle"></i>
+                    </button>
+                    <div id="modal-power-button" class="modal-btn power-btn">
+                        <i class="fas fa-power-off"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div id="modal-game-content">
+                    <!-- Game iframe will be loaded here -->
+                </div>
+                <div id="modal-loading-screen" class="loading-screen">
+                    <div class="loader"></div>
+                    <p>Loading game...</p>
+                </div>
+            </div>
+            <div id="modal-info-panel" class="info-panel">
+                <div class="info-content">
+                    <h3>Game Info</h3>
+                    <p id="modal-game-description"></p>
+                    <h3>How to Play</h3>
+                    <p id="modal-game-instructions"></p>
+                </div>
+            </div>
+            <div id="modal-blur-overlay" class="blur-overlay"></div>
+            <div id="modal-exit-dialog" class="exit-dialog">
+                <h3>Exit Game?</h3>
+                <p>Are you sure you want to quit this game?</p>
+                <div class="exit-buttons">
+                    <button id="modal-stay-button" class="dialog-btn stay-btn">Continue Playing</button>
+                    <button id="modal-exit-button" class="dialog-btn exit-btn">Exit Game</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Load your existing game library first -->
+    <script src="games.js"></script>
+    
+    <!-- Categories page script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Define top trending games (IDs from your game library)
+            const trendingGameIds = ['11', '12', '05', '23', '15'];
+            
+            // Get all unique categories from the game library
+            const categories = ['all'];
+            Object.values(gameLibrary).forEach(game => {
+                if (game.category && !categories.includes(game.category)) {
+                    categories.push(game.category);
+                }
+            });
+            
+            // Generate category filters
+            const categoryFiltersContainer = document.getElementById('categoryFilters');
+            categories.forEach(category => {
+                const button = document.createElement('button');
+                button.className = 'filter-btn';
+                button.setAttribute('data-category', category.toLowerCase());
+                button.textContent = category.charAt(0).toUpperCase() + category.slice(1);
+                
+                // Set 'all' as active by default
+                if (category === 'all') {
+                    button.classList.add('active');
+                }
+                
+                button.addEventListener('click', function() {
+                    // Update active button
+                    document.querySelectorAll('.filter-btn').forEach(btn => {
+                        btn.classList.remove('active');
+                    });
+                    this.classList.add('active');
+                    
+                    // Filter games
+                    filterGamesByCategory(category);
+                });
+                
+                categoryFiltersContainer.appendChild(button);
+            });
+            
+            // Render trending games
+            const trendingContainer = document.getElementById('trendingGames');
+            trendingGameIds.forEach(gameId => {
+                if (gameLibrary[gameId]) {
+                    const game = gameLibrary[gameId];
+                    
+                    const trendingGame = document.createElement('div');
+                    trendingGame.className = 'game-card trending-game';
+                    trendingGame.setAttribute('data-game-id', gameId);
+                    
+                    trendingGame.innerHTML = `
+                        <div style="position: relative;">
+                            <img src="${game.thumbnail}" alt="${game.title}">
+                        </div>
+                        <div class="game-info">
+                            <p>${game.title}</p>
+                            <div class="game-meta">
+                                <i class="fas fa-star"></i> 4.${Math.floor(Math.random() * 3) + 7}
+                                <span style="margin-left: 10px;"><i class="fas fa-gamepad"></i> ${game.category}</span>
+                            </div>
+                            <button class="play-btn" data-game-id="${gameId}">Play Now</button>
+                        </div>
+                    `;
+                    
+                    trendingContainer.appendChild(trendingGame);
+                }
+            });
+            
+            // Render all games
+            renderAllGames();
+            
+            // Add event listeners to all play buttons
+            document.addEventListener('click', function(e) {
+                if (e.target.classList.contains('play-btn')) {
+                    const gameId = e.target.getAttribute('data-game-id');
+                    openGameModal(gameId);
+                }
+                
+                // Also handle clicks on the game card itself
+                if (e.target.closest('.game-card')) {
+                    const gameCard = e.target.closest('.game-card');
+                    const gameId = gameCard.getAttribute('data-game-id');
+                    if (gameId && !e.target.classList.contains('play-btn')) {
+                        openGameModal(gameId);
+                    }
+                }
+            });
+            
+            // Function to render all games
+            function renderAllGames() {
+                const gamesContainer = document.getElementById('gamesContainer');
+                gamesContainer.innerHTML = '';
+                
+                Object.entries(gameLibrary).forEach(([gameId, game]) => {
+                    const gameCard = document.createElement('div');
+                    gameCard.className = 'game-card';
+                    gameCard.setAttribute('data-game-id', gameId);
+                    gameCard.setAttribute('data-category', game.category.toLowerCase());
+                    
+                    gameCard.innerHTML = `
+                        <div style="position: relative;">
+                            <img src="${game.thumbnail}" alt="${game.title}">
+                        </div>
+                        <div class="game-info">
+                            <p>${game.title}</p>
+                            <div class="game-meta">
+                                <i class="fas fa-star"></i> 4.${Math.floor(Math.random() * 3) + 5}
+                                <span style="margin-left: 10px;"><i class="fas fa-user"></i> ${Math.floor(Math.random() * 900) + 100}</span>
+                            </div>
+                            <button class="play-btn" data-game-id="${gameId}">Play Now</button>
+                        </div>
+                    `;
+                    
+                    gamesContainer.appendChild(gameCard);
+                });
+            }
+            
+            // Function to filter games by category
+            function filterGamesByCategory(category) {
+                const games = document.querySelectorAll('.game-card');
+                
+                games.forEach(game => {
+                    if (category.toLowerCase() === 'all') {
+                        game.style.display = 'block';
+                    } else {
+                        const gameCategory = game.getAttribute('data-category');
+                        if (gameCategory === category.toLowerCase()) {
+                            game.style.display = 'block';
+                        } else {
+                            game.style.display = 'none';
+                        }
+                    }
+                });
+            }
+        });
+    </script>
 </body>
-  </html>
+</html>
