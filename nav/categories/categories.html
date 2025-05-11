@@ -3,363 +3,653 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Game Categories - PlayHub</title>
-    <meta name="theme-color" content="#28a745">
+    <title>Game Categories</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<link rel="stylesheet" href="../css/model/model.css">
     <style>
         :root {
-            --primary-color: #28a745;
-            --secondary-color: #20c997;
-            --dark-color: #1e2b22;
-            --light-color: #f8f9fa;
-            --gray-color: #6c757d;
+            --primary-color: #4CAF50;
+            --primary-dark: #3e8e41;
+            --accent-color: #2e7d32;
+            --text-light: #ffffff;
+            --text-dark: #212121;
+            --background: #f9f9f9;
+            --card-bg: #ffffff;
+            --shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
         
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         
         body {
-            background-color: #f4f7fa;
-            color: #333;
+            background-color: var(--background);
+            color: var(--text-dark);
         }
         
-        header {
-            background-color: var(--dark-color);
-            color: white;
-            padding: 15px 0;
+        .header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+            color: var(--text-light);
+            padding: 20px 0;
             text-align: center;
+            box-shadow: var(--shadow);
+            position: relative;
+            z-index: 10;
+        }
+        
+        .header h1 {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 5px;
         }
         
         .container {
-            width: 100%;
             max-width: 1200px;
             margin: 0 auto;
-            padding: 0 15px;
+            padding: 20px;
         }
         
-        .page-title {
-            padding: 20px 0;
-            text-align: center;
+        .section-title {
+            font-size: 22px;
+            font-weight: 600;
+            color: var(--primary-dark);
+            margin: 30px 0 15px;
+            position: relative;
+            padding-left: 15px;
         }
         
-        .page-title h1 {
-            font-size: 2rem;
-            color: var(--dark-color);
-        }
-        
-        .trending-section {
+        .section-title::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 5px;
             background-color: var(--primary-color);
-            color: white;
-            padding: 20px 0;
-            margin-bottom: 30px;
+            border-radius: 3px;
         }
         
-        .trending-title {
-            text-align: center;
-            margin-bottom: 20px;
+        #trending-container {
+            margin-bottom: 40px;
         }
         
-        .trending-container {
-            display: flex;
-            overflow-x: auto;
-            gap: 15px;
-            padding: 10px 0;
-            scrollbar-width: thin;
+        #categories-container {
+            margin-bottom: 40px;
         }
         
-        .trending-container::-webkit-scrollbar {
-            height: 5px;
+        #category-games-container {
+            display: none;
         }
         
-        .trending-container::-webkit-scrollbar-track {
-            background: rgba(255,255,255,0.2);
-        }
-        
-        .trending-container::-webkit-scrollbar-thumb {
-            background-color: var(--dark-color);
-            border-radius: 5px;
-        }
-        
-        .category-section {
-            margin-bottom: 30px;
-        }
-        
-        .category-title {
-            font-size: 1.5rem;
-            margin-bottom: 15px;
-            color: var(--dark-color);
-            padding-bottom: 5px;
-            border-bottom: 2px solid var(--primary-color);
-        }
-        
-        #categoryFilters {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-bottom: 20px;
-            justify-content: center;
-        }
-        
-        .filter-btn {
-            background-color: white;
-            border: 1px solid #ddd;
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            background-color: var(--primary-color);
+            color: var(--text-light);
+            border: none;
             padding: 8px 16px;
-            border-radius: 20px;
+            border-radius: 4px;
+            font-weight: 500;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.2s ease;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
         
-        .filter-btn:hover, .filter-btn.active {
+        .back-btn:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+        
+        .back-btn i {
+            margin-right: 8px;
+        }
+        
+        #back-to-top {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
             background-color: var(--primary-color);
-            color: white;
-            border-color: var(--primary-color);
+            color: var(--text-light);
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow);
+            z-index: 100;
         }
         
-        .games-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 20px;
+        #back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
         }
         
-        /* Game card styles will be handled by your existing CSS */
-        
-        @media (max-width: 768px) {
-            .games-grid {
-                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-                gap: 15px;
-            }
-            
-            .filter-btn {
-                padding: 6px 12px;
-                font-size: 0.9rem;
-            }
+        #back-to-top:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-3px);
         }
     </style>
 </head>
 <body>
-    <header>
-        <div class="container">
-            <h1>PlayHub Games</h1>
-        </div>
-    </header>
+    <div class="header">
+        <h1>Game Categories</h1>
+    </div>
     
-    <main>
-        <div class="page-title">
-            <div class="container">
-                <h1>Game Categories</h1>
-            </div>
+    <div class="container">
+        <div id="trending-container">
+            <h2 class="section-title">Top 5 Trending Games</h2>
+            <div id="trending-games"></div>
         </div>
         
-        <section class="trending-section">
-            <div class="container">
-                <h2 class="trending-title">Top Trending Games</h2>
-                <div id="trendingGames" class="trending-container">
-                    <!-- Trending games will be loaded by JavaScript -->
-                </div>
-            </div>
-        </section>
+        <div id="categories-container">
+            <h2 class="section-title">All Categories</h2>
+            <div id="categories-list"></div>
+        </div>
         
-        <section class="container">
-            <div id="categoryFilters">
-                <!-- Category filters will be loaded by JavaScript -->
-            </div>
-            
-            <div class="category-section">
-                <h2 class="category-title">All Games</h2>
-                <div id="gamesContainer" class="games-grid">
-                    <!-- Games will be loaded by JavaScript -->
-                </div>
-            </div>
-        </section>
-    </main>
-    
-    <!-- Game modal HTML structure -->
-    <div id="gameModal" class="game-modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 id="modal-game-title"></h2>
-                <div class="modal-controls">
-                    <button id="modal-info-button" class="modal-btn info-btn">
-                        <i class="fas fa-info-circle"></i>
-                    </button>
-                    <div id="modal-power-button" class="modal-btn power-btn">
-                        <i class="fas fa-power-off"></i>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-body">
-                <div id="modal-game-content">
-                    <!-- Game iframe will be loaded here -->
-                </div>
-                <div id="modal-loading-screen" class="loading-screen">
-                    <div class="loader"></div>
-                    <p>Loading game...</p>
-                </div>
-            </div>
-            <div id="modal-info-panel" class="info-panel">
-                <div class="info-content">
-                    <h3>Game Info</h3>
-                    <p id="modal-game-description"></p>
-                    <h3>How to Play</h3>
-                    <p id="modal-game-instructions"></p>
-                </div>
-            </div>
-            <div id="modal-blur-overlay" class="blur-overlay"></div>
-            <div id="modal-exit-dialog" class="exit-dialog">
-                <h3>Exit Game?</h3>
-                <p>Are you sure you want to quit this game?</p>
-                <div class="exit-buttons">
-                    <button id="modal-stay-button" class="dialog-btn stay-btn">Continue Playing</button>
-                    <button id="modal-exit-button" class="dialog-btn exit-btn">Exit Game</button>
-                </div>
-            </div>
+        <div id="category-games-container">
+            <button id="back-button" class="back-btn">
+                <i class="fas fa-arrow-left"></i> Back to Categories
+            </button>
+            <h2 id="category-title" class="section-title">Category Games</h2>
+            <div id="category-games"></div>
         </div>
     </div>
     
-    <!-- Load your existing game library first -->
-    <script src="../js/lib/games.js"></script>
+    <div id="back-to-top">
+        <i class="fas fa-chevron-up"></i>
+    </div>
     
-    <!-- Categories page script -->
+    <script src="../js/lib/games.js"></script>
     <script>
+        // ========== Initialize Page ========== //
         document.addEventListener('DOMContentLoaded', function() {
-            // Define top trending games (IDs from your game library)
-            const trendingGameIds = ['11', '12', '05', '23', '15'];
-            
-            // Get all unique categories from the game library
-            const categories = ['all'];
-            Object.values(gameLibrary).forEach(game => {
-                if (game.category && !categories.includes(game.category)) {
-                    categories.push(game.category);
-                }
-            });
-            
-            // Generate category filters
-            const categoryFiltersContainer = document.getElementById('categoryFilters');
-            categories.forEach(category => {
-                const button = document.createElement('button');
-                button.className = 'filter-btn';
-                button.setAttribute('data-category', category.toLowerCase());
-                button.textContent = category.charAt(0).toUpperCase() + category.slice(1);
-                
-                // Set 'all' as active by default
-                if (category === 'all') {
-                    button.classList.add('active');
-                }
-                
-                button.addEventListener('click', function() {
-                    // Update active button
-                    document.querySelectorAll('.filter-btn').forEach(btn => {
-                        btn.classList.remove('active');
-                    });
-                    this.classList.add('active');
-                    
-                    // Filter games
-                    filterGamesByCategory(category);
-                });
-                
-                categoryFiltersContainer.appendChild(button);
-            });
+            // Create and render categories based on game library
+            initCategories();
             
             // Render trending games
-            const trendingContainer = document.getElementById('trendingGames');
-            trendingGameIds.forEach(gameId => {
-                if (gameLibrary[gameId]) {
-                    const game = gameLibrary[gameId];
-                    
-                    const trendingGame = document.createElement('div');
-                    trendingGame.className = 'game-card trending-game';
-                    trendingGame.setAttribute('data-game-id', gameId);
-                    
-                    trendingGame.innerHTML = `
-                        <div style="position: relative;">
-                            <img src="${game.thumbnail}" alt="${game.title}">
-                        </div>
-                        <div class="game-info">
-                            <p>${game.title}</p>
-                            <div class="game-meta">
-                                <i class="fas fa-star"></i> 4.${Math.floor(Math.random() * 3) + 7}
-                                <span style="margin-left: 10px;"><i class="fas fa-gamepad"></i> ${game.category}</span>
-                            </div>
-                            <button class="play-btn" data-game-id="${gameId}">Play Now</button>
-                        </div>
-                    `;
-                    
-                    trendingContainer.appendChild(trendingGame);
-                }
-            });
+            renderTrendingGames();
             
-            // Render all games
-            renderAllGames();
-            
-            // Add event listeners to all play buttons
-            document.addEventListener('click', function(e) {
-                if (e.target.classList.contains('play-btn')) {
-                    const gameId = e.target.getAttribute('data-game-id');
-                    openGameModal(gameId);
-                }
-                
-                // Also handle clicks on the game card itself
-                if (e.target.closest('.game-card')) {
-                    const gameCard = e.target.closest('.game-card');
-                    const gameId = gameCard.getAttribute('data-game-id');
-                    if (gameId && !e.target.classList.contains('play-btn')) {
-                        openGameModal(gameId);
-                    }
-                }
-            });
-            
-            // Function to render all games
-            function renderAllGames() {
-                const gamesContainer = document.getElementById('gamesContainer');
-                gamesContainer.innerHTML = '';
-                
-                Object.entries(gameLibrary).forEach(([gameId, game]) => {
-                    const gameCard = document.createElement('div');
-                    gameCard.className = 'game-card';
-                    gameCard.setAttribute('data-game-id', gameId);
-                    gameCard.setAttribute('data-category', game.category.toLowerCase());
-                    
-                    gameCard.innerHTML = `
-                        <div style="position: relative;">
-                            <img src="${game.thumbnail}" alt="${game.title}">
-                        </div>
-                        <div class="game-info">
-                            <p>${game.title}</p>
-                            <div class="game-meta">
-                                <i class="fas fa-star"></i> 4.${Math.floor(Math.random() * 3) + 5}
-                                <span style="margin-left: 10px;"><i class="fas fa-user"></i> ${Math.floor(Math.random() * 900) + 100}</span>
-                            </div>
-                            <button class="play-btn" data-game-id="${gameId}">Play Now</button>
-                        </div>
-                    `;
-                    
-                    gamesContainer.appendChild(gameCard);
-                });
-            }
-            
-            // Function to filter games by category
-            function filterGamesByCategory(category) {
-                const games = document.querySelectorAll('.game-card');
-                
-                games.forEach(game => {
-                    if (category.toLowerCase() === 'all') {
-                        game.style.display = 'block';
-                    } else {
-                        const gameCategory = game.getAttribute('data-category');
-                        if (gameCategory === category.toLowerCase()) {
-                            game.style.display = 'block';
-                        } else {
-                            game.style.display = 'none';
-                        }
-                    }
-                });
-            }
+            // Setup event listeners
+            setupEventListeners();
         });
+        
+        // ========== Categories Logic ========== //
+        function initCategories() {
+            // Get all unique categories and count games in each
+            const categoriesMap = {};
+            
+            // Map category icons
+            const categoryIcons = {
+                'action': 'fa-gamepad',
+                'arcade': 'fa-joystick',
+                'puzzle': 'fa-puzzle-piece',
+                'sports': 'fa-futbol',
+                'card games': 'fa-diamonds',
+                'multiplayer': 'fa-users'
+                // Add more icons for other categories as needed
+            };
+            
+            // Count games in each category
+            Object.values(gameLibrary).forEach(game => {
+                const category = game.category.toLowerCase();
+                if (!categoriesMap[category]) {
+                    categoriesMap[category] = {
+                        name: game.category,
+                        count: 1,
+                        icon: categoryIcons[category] || 'fa-gamepad'
+                    };
+                } else {
+                    categoriesMap[category].count++;
+                }
+            });
+            
+            // Render categories to DOM
+            renderCategories(categoriesMap);
+        }
+        
+        function renderCategories(categoriesMap) {
+            const categoriesList = document.getElementById('categories-list');
+            categoriesList.innerHTML = '';
+            
+            // Create categories grid with JavaScript
+            const categoriesGrid = document.createElement('div');
+            categoriesGrid.style.cssText = `
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+                gap: 20px;
+            `;
+            
+            // Create category cards
+            Object.keys(categoriesMap).forEach(categoryId => {
+                const category = categoriesMap[categoryId];
+                
+                const categoryCard = document.createElement('div');
+                categoryCard.style.cssText = `
+                    background-color: var(--card-bg);
+                    border-radius: 8px;
+                    box-shadow: var(--shadow);
+                    padding: 20px;
+                    text-align: center;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                `;
+                categoryCard.setAttribute('data-category', categoryId);
+                
+                // Add hover effect
+                categoryCard.onmouseover = function() {
+                    this.style.transform = 'translateY(-5px)';
+                    this.style.boxShadow = '0 10px 20px rgba(0,0,0,0.15)';
+                };
+                
+                categoryCard.onmouseout = function() {
+                    this.style.transform = 'translateY(0)';
+                    this.style.boxShadow = 'var(--shadow)';
+                };
+                
+                // Set category card content
+                categoryCard.innerHTML = `
+                    <div style="font-size: 32px; color: var(--primary-color); margin-bottom: 15px;">
+                        <i class="fas ${category.icon}"></i>
+                    </div>
+                    <h3 style="font-size: 18px; margin-bottom: 10px;">${category.name}</h3>
+                    <p style="color: #666; font-size: 14px;">${category.count} Games</p>
+                `;
+                
+                // Add click event to show games from this category
+                categoryCard.addEventListener('click', function() {
+                    showCategoryGames(categoryId);
+                });
+                
+                categoriesGrid.appendChild(categoryCard);
+            });
+            
+            categoriesList.appendChild(categoriesGrid);
+        }
+        
+        function showCategoryGames(categoryId) {
+            // Find games in this category
+            const games = Object.entries(gameLibrary).filter(([id, game]) => 
+                game.category.toLowerCase() === categoryId
+            );
+            
+            // Update category title
+            const categoryTitle = document.getElementById('category-title');
+            categoryTitle.textContent = `${categoryId.charAt(0).toUpperCase() + categoryId.slice(1)} Games`;
+            
+            // Render games
+            renderCategoryGames(games);
+            
+            // Show category games container and hide categories container
+            document.getElementById('categories-container').style.display = 'none';
+            document.getElementById('trending-container').style.display = 'none';
+            document.getElementById('category-games-container').style.display = 'block';
+            
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        
+        function renderCategoryGames(games) {
+            const gamesContainer = document.getElementById('category-games');
+            gamesContainer.innerHTML = '';
+            
+            // Create games grid
+            const gamesGrid = document.createElement('div');
+            gamesGrid.style.cssText = `
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+                gap: 20px;
+            `;
+            
+            // No games found message
+            if (games.length === 0) {
+                const noGames = document.createElement('div');
+                noGames.style.cssText = `
+                    grid-column: 1 / -1;
+                    text-align: center;
+                    padding: 40px;
+                    background-color: var(--card-bg);
+                    border-radius: 8px;
+                    box-shadow: var(--shadow);
+                `;
+                noGames.innerHTML = `
+                    <div style="font-size: 40px; color: #ddd; margin-bottom: 15px;">
+                        <i class="fas fa-ghost"></i>
+                    </div>
+                    <h3 style="margin-bottom: 10px; color: #666;">No Games Found</h3>
+                    <p style="color: #999;">This category doesn't have any games yet.</p>
+                `;
+                gamesGrid.appendChild(noGames);
+            } else {
+                // Create game cards with JavaScript
+                games.forEach(([id, game]) => {
+                    const gameCard = createGameCard(id, game);
+                    gamesGrid.appendChild(gameCard);
+                });
+            }
+            
+            gamesContainer.appendChild(gamesGrid);
+        }
+        
+        function createGameCard(id, game) {
+            const gameCard = document.createElement('div');
+            gameCard.style.cssText = `
+                background-color: var(--card-bg);
+                border-radius: 8px;
+                overflow: hidden;
+                box-shadow: var(--shadow);
+                transition: all 0.3s ease;
+            `;
+            
+            // Add hover effect
+            gameCard.onmouseover = function() {
+                this.style.transform = 'translateY(-5px)';
+                this.style.boxShadow = '0 10px 20px rgba(0,0,0,0.15)';
+            };
+            
+            gameCard.onmouseout = function() {
+                this.style.transform = 'translateY(0)';
+                this.style.boxShadow = 'var(--shadow)';
+            };
+            
+            // Set game card HTML
+            const ratingStars = game.rating ? generateRatingStars(game.rating) : '';
+            
+            gameCard.innerHTML = `
+                <div style="position: relative;">
+                    <img src="${game.thumbnail}" alt="${game.title}" style="width: 100%; height: 140px; object-fit: cover;">
+                </div>
+                <div style="padding: 15px;">
+                    <h3 style="font-size: 16px; margin-bottom: 5px;">${game.title}</h3>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                        <div style="color: #f8b400; font-size: 14px;">${ratingStars}</div>
+                        <div style="color: #666; font-size: 12px;">
+                            <i class="fas fa-user"></i> ${game.players || '1k+'}
+                        </div>
+                    </div>
+                    <button class="play-button" data-game-id="${id}" style="
+                        width: 100%;
+                        background-color: var(--primary-color);
+                        color: white;
+                        border: none;
+                        padding: 8px 0;
+                        border-radius: 4px;
+                        font-weight: 600;
+                        cursor: pointer;
+                        transition: background-color 0.2s ease;
+                    ">Play Now</button>
+                </div>
+            `;
+            
+            // Add click event to play button
+            const playButton = gameCard.querySelector('.play-button');
+            playButton.addEventListener('click', function() {
+                const gameId = this.getAttribute('data-game-id');
+                openGameModal(gameId);
+            });
+            
+            // Add hover effect to play button
+            playButton.onmouseover = function() {
+                this.style.backgroundColor = 'var(--primary-dark)';
+            };
+            
+            playButton.onmouseout = function() {
+                this.style.backgroundColor = 'var(--primary-color)';
+            };
+            
+            return gameCard;
+        }
+        
+        // ========== Trending Games Logic ========== //
+        function renderTrendingGames() {
+            const trendingContainer = document.getElementById('trending-games');
+            
+            // Create trending games container
+            const trendingGamesContainer = document.createElement('div');
+            trendingGamesContainer.style.cssText = `
+                display: flex;
+                gap: 20px;
+                overflow-x: auto;
+                padding: 10px 0 20px;
+                scrollbar-width: thin;
+                scrollbar-color: var(--primary-color) #eee;
+            `;
+            
+            // Add custom scrollbar styles
+            trendingGamesContainer.innerHTML = `
+                <style>
+                    #trending-games > div::-webkit-scrollbar {
+                        height: 6px;
+                    }
+                    
+                    #trending-games > div::-webkit-scrollbar-thumb {
+                        background-color: var(--primary-color);
+                        border-radius: 6px;
+                    }
+                    
+                    #trending-games > div::-webkit-scrollbar-track {
+                        background-color: #eee;
+                        border-radius: 6px;
+                    }
+                </style>
+            `;
+            
+            // Get top 5 trending games (using some logic to determine trending)
+            // For now, just taking the first 5 games from gameLibrary that have highest players
+            const trendingGames = Object.entries(gameLibrary)
+                .filter(([_, game]) => game.players) // Games with player data
+                .sort((a, b) => {
+                    // Sort by player count (extract numbers from strings like "12.5k")
+                    const getPlayerCount = str => {
+                        const match = str.match(/(\d+(\.\d+)?)/);
+                        return match ? parseFloat(match[1]) : 0;
+                    };
+                    
+                    return getPlayerCount(b[1].players) - getPlayerCount(a[1].players);
+                })
+                .slice(0, 5); // Take top 5
+            
+            // Create trending game cards
+            trendingGames.forEach(([id, game], index) => {
+                const trendingCard = document.createElement('div');
+                trendingCard.style.cssText = `
+                    min-width: 280px;
+                    background-color: var(--card-bg);
+                    border-radius: 8px;
+                    overflow: hidden;
+                    box-shadow: var(--shadow);
+                    transition: all 0.3s ease;
+                    position: relative;
+                `;
+                
+                // Add hover effect
+                trendingCard.onmouseover = function() {
+                    this.style.transform = 'translateY(-5px)';
+                    this.style.boxShadow = '0 10px 20px rgba(0,0,0,0.15)';
+                };
+                
+                trendingCard.onmouseout = function() {
+                    this.style.transform = 'translateY(0)';
+                    this.style.boxShadow = 'var(--shadow)';
+                };
+                
+                // Generate rating stars
+                const ratingStars = game.rating ? generateRatingStars(game.rating) : '';
+                
+                // Set trending game card content
+                trendingCard.innerHTML = `
+                    <div style="position: relative;">
+                        <img src="${game.thumbnail}" alt="${game.title}" style="width: 100%; height: 160px; object-fit: cover;">
+                        <div style="
+                            position: absolute;
+                            top: 10px;
+                            left: 10px;
+                            background-color: var(--primary-color);
+                            color: white;
+                            width: 30px;
+                            height: 30px;
+                            border-radius: 50%;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            font-weight: bold;
+                            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+                        ">#${index + 1}</div>
+                        <div style="
+                            position: absolute;
+                            top: 10px;
+                            right: 10px;
+                            background-color: rgba(0,0,0,0.5);
+                            color: white;
+                            padding: 4px 8px;
+                            border-radius: 4px;
+                            font-size: 12px;
+                        ">
+                            <i class="fas fa-fire"></i> Trending
+                        </div>
+                    </div>
+                    <div style="padding: 15px;">
+                        <h3 style="font-size: 18px; margin-bottom: 5px;">${game.title}</h3>
+                        <div style="
+                            display: flex;
+                            justify-content: space-between;
+                            align-items: center;
+                            margin-bottom: 12px;
+                        ">
+                            <div style="color: #f8b400; font-size: 14px;">${ratingStars}</div>
+                            <div style="color: #666; font-size: 12px;">
+                                <i class="fas fa-user"></i> ${game.players || '1k+'}
+                            </div>
+                        </div>
+                        <div style="
+                            display: inline-block;
+                            background-color: #f0f0f0;
+                            padding: 4px 8px;
+                            border-radius: 4px;
+                            font-size: 12px;
+                            color: #666;
+                            margin-bottom: 12px;
+                        ">
+                            ${game.category}
+                        </div>
+                        <button class="play-button" data-game-id="${id}" style="
+                            width: 100%;
+                            background-color: var(--primary-color);
+                            color: white;
+                            border: none;
+                            padding: 10px 0;
+                            border-radius: 4px;
+                            font-weight: 600;
+                            cursor: pointer;
+                            transition: background-color 0.2s ease;
+                        ">Play Now</button>
+                    </div>
+                `;
+                
+                // Add click event to play button
+                const playButton = trendingCard.querySelector('.play-button');
+                playButton.addEventListener('click', function() {
+                    const gameId = this.getAttribute('data-game-id');
+                    openGameModal(gameId);
+                });
+                
+                // Add hover effect to play button
+                playButton.onmouseover = function() {
+                    this.style.backgroundColor = 'var(--primary-dark)';
+                };
+                
+                playButton.onmouseout = function() {
+                    this.style.backgroundColor = 'var(--primary-color)';
+                };
+                
+                trendingGamesContainer.appendChild(trendingCard);
+            });
+            
+            trendingContainer.appendChild(trendingGamesContainer);
+        }
+        
+        // ========== Helper Functions ========== //
+        function generateRatingStars(rating) {
+            const fullStars = Math.floor(rating);
+            const halfStar = rating % 1 >= 0.5;
+            const emptyStars = 5 - fullStars - (halfStar ? 1 : 0);
+            
+            let starsHTML = '';
+            
+            // Full stars
+            for (let i = 0; i < fullStars; i++) {
+                starsHTML += '<i class="fas fa-star"></i>';
+            }
+            
+            // Half star
+            if (halfStar) {
+                starsHTML += '<i class="fas fa-star-half-alt"></i>';
+            }
+            
+            // Empty stars
+            for (let i = 0; i < emptyStars; i++) {
+                starsHTML += '<i class="far fa-star"></i>';
+            }
+            
+            return starsHTML;
+        }
+        
+        // ========== Event Listeners ========== //
+        function setupEventListeners() {
+            // Back button event listener
+            const backButton = document.getElementById('back-button');
+            backButton.addEventListener('click', function() {
+                document.getElementById('category-games-container').style.display = 'none';
+                document.getElementById('categories-container').style.display = 'block';
+                document.getElementById('trending-container').style.display = 'block';
+            });
+            
+            // Back to top button
+            const backToTopButton = document.getElementById('back-to-top');
+            
+            window.addEventListener('scroll', function() {
+                if (window.pageYOffset > 300) {
+                    backToTopButton.classList.add('visible');
+                } else {
+                    backToTopButton.classList.remove('visible');
+                }
+            });
+            
+            backToTopButton.addEventListener('click', function() {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+            
+            // Handle responsive adjustments
+            window.addEventListener('resize', handleResponsiveChanges);
+            handleResponsiveChanges();
+        }
+        
+        function handleResponsiveChanges() {
+            // Adjust grid columns based on screen width
+            const width = window.innerWidth;
+            const gamesGrids = document.querySelectorAll('.games-grid');
+            
+            if (width < 576) {
+                // Mobile
+                gamesGrids.forEach(grid => {
+                    grid.style.gridTemplateColumns = 'repeat(1, 1fr)';
+                });
+            } else if (width < 992) {
+                // Tablet
+                gamesGrids.forEach(grid => {
+                    grid.style.gridTemplateColumns = 'repeat(2, 1fr)';
+                });
+            }
+        }
     </script>
 </body>
 </html>
