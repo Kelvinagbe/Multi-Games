@@ -116,7 +116,7 @@ body {
 
 .featured img {
   width: 100%;
-  height: 230px;
+  height: 210px;
   object-fit: cover;
   transition: transform 0.5s ease; /* Zoom effect on hover */
 }
