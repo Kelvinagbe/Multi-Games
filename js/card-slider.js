@@ -140,7 +140,12 @@ function createCardItem(cardData, className = '') {
   if (img) img.src = cardData.image;
   if (title) title.textContent = cardData.title;
   if (desc) desc.textContent = cardData.description;
-  if (link) link.href = cardData.link;
+  if (link) {
+  link.href = "javascript:void(0);";
+  link.addEventListener("click", () => {
+    openGameModal(cardData.id); // This triggers your modal system
+  });
+}
   
   return cardItem;
 }
