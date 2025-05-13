@@ -95,7 +95,7 @@ const gameLibrary = {
     },
     '04': {
         title: 'Tic Tac Toe',
-        url: '../games/tic-tac-toe.html',
+        url: '../games/ticgame.html',
         thumbnail: '../assets/image/04.png',
         category: 'puzzle'
     },
