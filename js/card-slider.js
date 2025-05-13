@@ -4,22 +4,22 @@
 // Array of card data
 const cardData = [
   {
+    id: "01",
     image: "../assets/image/01.png",
     title: "Truth or Dare",
-    description: "Challenge your friends with the ultimate party game!",
-    link: "games.html?=01"
+    description: "Challenge your friends with the ultimate party game!"
   },
   {
+    id: "18",
     image: "../assets/image/18.png",
     title: "Sniper Simulator",
-    description: "Test your knowledge across various categories!",
-    link: "quiz.html"
+    description: "Test your skills in precision shooting!"
   },
   {
-    image: "13.png",
+    id: "13",
+    image: "../assets/image/13.png",
     title: "Pixel Shooter",
-    description: "Expand your vocabulary with our word puzzles!",
-    link: "word.html"
+    description: "Shoot your way through pixelated enemies!"
   }
 ];
 
