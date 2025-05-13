@@ -1,32 +1,35 @@
-// Game Search Functionality
+// Game Search Functionality with Category Integration
 document.addEventListener('DOMContentLoaded', function() {
   // Get search elements
   const searchInput = document.querySelector('.search-input');
   const searchButton = document.querySelector('.search-button');
-  
+
   // Create search results container
   const searchResultsContainer = document.createElement('div');
   searchResultsContainer.className = 'search-results-container';
   searchResultsContainer.style.display = 'none';
   document.querySelector('.search-box').appendChild(searchResultsContainer);
-  
+
   // Create search overlay for full-screen results
   const searchOverlay = document.createElement('div');
   searchOverlay.className = 'search-overlay';
   searchOverlay.style.display = 'none';
   document.body.appendChild(searchOverlay);
-  
+
   // Add styles for search functionality
   addSearchStyles();
-  
+
   // Initialize search event listeners
   initSearch();
-  
+
+  // Add event listener for messages from category iframe
+  initCategoryIntegration();
+
   // Function to add search styles
   function addSearchStyles() {
     // Check if styles already exist
     if (document.getElementById('search-styles')) return;
-    
+
     // Create style element
     const style = document.createElement('style');
     style.id = 'search-styles';
@@ -218,25 +221,25 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 }
     `;
-    
+
     // Add style to document head
     document.head.appendChild(style);
   }
-  
+
   // Initialize search functionality
   function initSearch() {
     // Add event listeners
     searchInput.addEventListener('input', handleSearchInput);
     searchButton.addEventListener('click', openFullSearch);
     searchInput.addEventListener('focus', handleSearchFocus);
-    
+
     // Close search results when clicking outside
     document.addEventListener('click', function(e) {
       if (!searchInput.contains(e.target) && !searchResultsContainer.contains(e.target)) {
         searchResultsContainer.style.display = 'none';
       }
     });
-    
+
     // Handle Enter key in search input
     searchInput.addEventListener('keypress', function(e) {
       if (e.key === 'Enter') {
@@ -244,18 +247,58 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
   }
-  
+
+  // Initialize message handling for category iframe integration
+  function initCategoryIntegration() {
+    window.addEventListener('message', function(event) {
+      // Check if the message is coming with an action
+      if (event.data && event.data.action) {
+        
+        // Handle category search request
+        if (event.data.action === 'triggerCategorySearch') {
+          const category = event.data.category;
+          
+          // Clear search input
+          searchInput.value = '';
+          
+          // Open the full search overlay
+          openFullSearch();
+          
+          // After a small delay to ensure the overlay is open
+          setTimeout(() => {
+            // Find the category button in the search overlay and click it
+            const filterButtons = document.querySelectorAll('.search-filter-button');
+            filterButtons.forEach(button => {
+              if (button.dataset.category === category) {
+                button.click();
+              }
+            });
+          }, 200);
+        }
+        
+        // Handle full search request (view all games)
+        else if (event.data.action === 'triggerFullSearch') {
+          // Clear search input
+          searchInput.value = '';
+          
+          // Open the full search overlay
+          openFullSearch();
+        }
+      }
+    });
+  }
+
   // Handle search input changes
   function handleSearchInput() {
     const query = searchInput.value.trim().toLowerCase();
-    
+
     if (query.length < 2) {
       searchResultsContainer.style.display = 'none';
       return;
     }
-    
+
     const results = searchGames(query, 5); // Limit to 5 results for dropdown
-    
+
     if (results.length > 0) {
       renderSearchResults(results, searchResultsContainer);
       searchResultsContainer.style.display = 'block';
@@ -263,47 +306,47 @@ document.addEventListener('DOMContentLoaded', function() {
       searchResultsContainer.style.display = 'none';
     }
   }
-  
+
   // Handle input focus
   function handleSearchFocus() {
     const query = searchInput.value.trim().toLowerCase();
-    
+
     if (query.length >= 2) {
       const results = searchGames(query, 5);
-      
+
       if (results.length > 0) {
         renderSearchResults(results, searchResultsContainer);
         searchResultsContainer.style.display = 'block';
       }
     }
   }
-  
+
   // Search games function
   function searchGames(query, limit = Infinity) {
     const results = [];
-    
+
     // Search through gameLibrary
     for (const [id, game] of Object.entries(gameLibrary)) {
       const titleMatch = game.title.toLowerCase().includes(query);
       const categoryMatch = game.category.toLowerCase().includes(query);
-      
+
       if (titleMatch || categoryMatch) {
         results.push({
           id: id,
           ...game
         });
-        
+
         if (results.length >= limit) break;
       }
     }
-    
+
     return results;
   }
-  
+
   // Render search results in dropdown
   function renderSearchResults(results, container) {
     container.innerHTML = '';
-    
+
     results.forEach(game => {
       const resultItem = document.createElement('div');
       resultItem.className = 'search-result-item';
@@ -314,20 +357,20 @@ document.addEventListener('DOMContentLoaded', function() {
           <div class="search-result-category">${capitalizeFirstLetter(game.category)}</div>
         </div>
       `;
-      
+
       resultItem.addEventListener('click', function() {
         openGameModal(game.id);
         searchResultsContainer.style.display = 'none';
       });
-      
+
       container.appendChild(resultItem);
     });
   }
-  
+
   // Open full-screen search overlay
   function openFullSearch() {
     const query = searchInput.value.trim();
-    
+
     // Create the search overlay content
     searchOverlay.innerHTML = `
       <div class="search-overlay-header">
@@ -345,71 +388,71 @@ document.addEventListener('DOMContentLoaded', function() {
       </div>
       <div class="search-overlay-results"></div>
     `;
-    
+
     // Show the overlay
     searchOverlay.style.display = 'flex';
     document.body.style.overflow = 'hidden'; // Prevent scrolling behind overlay
-    
+
     // Get elements
     const overlayInput = searchOverlay.querySelector('.search-overlay-input');
     const overlayClose = searchOverlay.querySelector('.search-overlay-close');
     const overlayResults = searchOverlay.querySelector('.search-overlay-results');
     const filterButtons = searchOverlay.querySelectorAll('.search-filter-button');
-    
+
     // Focus on the input
     overlayInput.focus();
-    
+
     // Set up event listeners
     overlayClose.addEventListener('click', closeFullSearch);
-    
+
     overlayInput.addEventListener('input', function() {
       const activeFilter = searchOverlay.querySelector('.search-filter-button.active');
       const category = activeFilter ? activeFilter.dataset.category : 'all';
       performFullSearch(overlayInput.value, category);
     });
-    
+
     // Add filter button listeners
     filterButtons.forEach(button => {
       button.addEventListener('click', function() {
         // Remove active class from all buttons
         filterButtons.forEach(btn => btn.classList.remove('active'));
-        
+
         // Add active class to clicked button
         this.classList.add('active');
-        
+
         // Perform search with selected category
         performFullSearch(overlayInput.value, this.dataset.category);
       });
     });
-    
+
     // Perform initial search
     performFullSearch(query, 'all');
-    
+
     // Listen for Escape key
     document.addEventListener('keydown', handleEscapeKey);
   }
-  
+
   // Close full-screen search
   function closeFullSearch() {
     searchOverlay.style.display = 'none';
     document.body.style.overflow = ''; // Restore scrolling
     document.removeEventListener('keydown', handleEscapeKey);
   }
-  
+
   // Handle Escape key for search overlay
   function handleEscapeKey(e) {
     if (e.key === 'Escape') {
       closeFullSearch();
     }
   }
-  
+
   // Perform search for full-screen results
   function performFullSearch(query, category) {
     const overlayResults = searchOverlay.querySelector('.search-overlay-results');
     query = query.trim().toLowerCase();
-    
+
     let results = [];
-    
+
     // If query is empty but category is selected, show all games in that category
     if (query.length < 2 && category !== 'all') {
       results = Object.entries(gameLibrary)
@@ -421,7 +464,7 @@ document.addEventListener('DOMContentLoaded', function() {
       for (const [id, game] of Object.entries(gameLibrary)) {
         const titleMatch = game.title.toLowerCase().includes(query);
         const categoryMatch = game.category.toLowerCase().includes(query);
-        
+
         if ((titleMatch || categoryMatch) && 
             (category === 'all' || game.category === category)) {
           results.push({
@@ -436,14 +479,14 @@ document.addEventListener('DOMContentLoaded', function() {
       results = Object.entries(gameLibrary)
         .map(([id, game]) => ({ id, ...game }));
     }
-    
+
     // Sort results alphabetically
     results.sort((a, b) => a.title.localeCompare(b.title));
-    
+
     // Render the results
     renderFullSearchResults(results, overlayResults);
   }
-  
+
   // Render results in full-screen overlay
   function renderFullSearchResults(results, container) {
     if (results.length > 0) {
@@ -456,7 +499,7 @@ document.addEventListener('DOMContentLoaded', function() {
           </div>
         </div>
       `).join('');
-      
+
       // Add click event listeners to game items
       const gameItems = container.querySelectorAll('.search-overlay-item');
       gameItems.forEach(item => {
@@ -478,7 +521,7 @@ document.addEventListener('DOMContentLoaded', function() {
       `;
     }
   }
-  
+
   // Helper function to capitalize first letter
   function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
