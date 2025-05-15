@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+<channel>
+  <title>Multi Games</title>
+  <link>https://multi-games-fawn.vercel.app</link>
+  <description>The latest updates and new games from Multi Games</description>
+  <language>en-us</language>
+  <lastBuildDate>Thu, 15 May 2025 12:00:00 GMT</lastBuildDate>
+  <atom:link href="https://multi-games-fawn.vercel.app/feed.xml" rel="self" type="application/rss+xml" />
+  
+  <item>
+    <title>New Game Added: Arcade Classic</title>
+    <link>https://multi-games-fawn.vercel.app/games/arcade-classic</link>
+    <pubDate>Thu, 15 May 2025 10:00:00 GMT</pubDate>
+    <guid>https://multi-games-fawn.vercel.app/games/arcade-classic</guid>
+    <description>We've just added a new retro arcade game to our collection! Challenge your reflexes and compete for the high score.</description>
+  </item>
+  
+  <item>
+    <title>Site Update: New User Profiles</title>
+    <link>https://multi-games-fawn.vercel.app/updates/user-profiles</link>
+    <pubDate>Wed, 14 May 2025 14:30:00 GMT</pubDate>
+    <guid>https://multi-games-fawn.vercel.app/updates/user-profiles</guid>
+    <description>You can now create your own gaming profile to track your scores and achievements across all our games.</description>
+  </item>
+  
+  <item>
+    <title>Weekend Tournament: Puzzle Masters</title>
+    <link>https://multi-games-fawn.vercel.app/events/puzzle-tournament</link>
+    <pubDate>Mon, 12 May 2025 09:00:00 GMT</pubDate>
+    <guid>https://multi-games-fawn.vercel.app/events/puzzle-tournament</guid>
+    <description>Join our weekend puzzle tournament for a chance to win prizes and earn special badges for your profile.</description>
+  </item>
+</channel>
+</rss>
