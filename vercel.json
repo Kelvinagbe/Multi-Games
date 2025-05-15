@@ -63,19 +63,7 @@
       "statusCode": 404
     }
 
-    // Temporarily disabled geo-blocking for SEO:
-    // {
-    //   "source": "",
-    //   "has": [
-    //     {
-    //       "type": "header",
-    //       "key": "x-vercel-ip-country",
-    //       "value": "(?!NG).*"
-    //     }
-    //   ],
-    //   "destination": "/blocked.html",
-    //   "permanent": false
-    // }
+    
   ],
   "regions": ["dub1"]
 }
