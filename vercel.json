@@ -9,38 +9,29 @@
         { "key": "Access-Control-Allow-Methods", "value": "GET,OPTIONS,PATCH,POST,PUT" },
         { "key": "Access-Control-Allow-Headers", "value": "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version" },
         { "key": "X-Content-Type-Options", "value": "nosniff" },
-        { "key": "X-Frame-Options", "value": "ALLOWALL" },
+        { "key": "X-Frame-Options", "value": "DENY" },
         { "key": "X-XSS-Protection", "value": "1; mode=block" },
         { "key": "Strict-Transport-Security", "value": "max-age=63072000; includeSubDomains; preload" },
         { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
-        { "key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=()" },
-        { "key": "Content-Security-Policy", "value": "frame-ancestors * https://multi-games-fawn.vercel.app;" }
+        { "key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=()" }
       ]
     }
   ],
   "rewrites": [
     {
-      "source": "/js/:filename",
-      "destination": "/js/:filename.js"
+      "source": "/",
+      "destination": "/index.html"
     },
     {
-      "source": "/scripts/:filename",
-      "destination": "/scripts/:filename.js"
+      "source": "/js/:path*",
+      "destination": "/js/:path*.js"
     },
     {
-      "source": "/css/style",
-      "destination": "/css/style.css"
+      "source": "/css/:path*",
+      "destination": "/css/:path*.css"
     },
     {
-      "source": "/pages/:filename",
-      "destination": "/pages/:filename.html"
-    },
-    {
-      "source": "/nav/:filename",
-      "destination": "/nav/:filename.html"
-    },
-    {
-      "source": "/:filename",
+      "source": "/:path*",
       "has": [
         {
           "type": "header",
@@ -48,7 +39,7 @@
           "value": "text/html"
         }
       ],
-      "destination": "/:filename.html"
+      "destination": "/:path*.html"
     }
   ],
   "redirects": [
@@ -56,19 +47,7 @@
       "source": "/404",
       "destination": "/404.html",
       "statusCode": 404
-    },
-    {
-      "source": "",
-      "has": [
-        {
-          "type": "header",
-          "key": "x-vercel-ip-country",
-          "value": "(?!NG).*"
-        }
-      ],
-      "destination": "/blocked.html",
-      "permanent": false
     }
   ],
-  "regions": ["dub1"]
+  "cleanUrls": true
 }
