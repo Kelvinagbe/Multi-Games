@@ -496,7 +496,7 @@ function initCookieConsent() {
   // Open privacy settings
   cookieSettingsLink.addEventListener('click', function() {
     // Try to open your privacy policy page
-    window.open('https://multi-games-fawn.vercel.app/page/privacy&policy', '_blank');
+    window.open('https://multi-games-fawn.vercel.app/pages/privacy&policy', '_blank');
   });
   
   // Check consent status on page load
