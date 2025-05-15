@@ -2,5 +2,4 @@ User-agent: *
 Allow: /
 
 Sitemap: https://multi-games-fawn.vercel.app/sitemap.xml
-Sitemap: https://multi-games-fawn.vercel.app/image-sitemap.xml
-Sitemap: https://multi-games-fawn.vercel.app/rss.xml
+Sitemap: https://multi-games-fawn.vercel.app/feed.xml
