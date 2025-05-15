@@ -1,4 +1,5 @@
 {
+  "version": 2,
   "headers": [
     {
       "source": "/(.*)",
@@ -19,6 +20,10 @@
   ],
   "rewrites": [
     {
+      "source": "/",
+      "destination": "/index.html"
+    },
+    {
       "source": "/js/:filename",
       "destination": "/js/:filename.js"
     },
@@ -33,6 +38,14 @@
     {
       "source": "/:folder/:page",
       "destination": "/:folder/:page.html"
+    },
+    {
+      "source": "/:path*/:filename",
+      "destination": "/:path*/:filename.html"
+    },
+    {
+      "source": "/:filename",
+      "destination": "/:filename.html"
     }
   ],
   "redirects": [
@@ -41,5 +54,20 @@
       "destination": "/404.html",
       "statusCode": 404
     }
-  ]
+
+    // Temporarily disabled geo-blocking for SEO:
+    // {
+    //   "source": "",
+    //   "has": [
+    //     {
+    //       "type": "header",
+    //       "key": "x-vercel-ip-country",
+    //       "value": "(?!NG).*"
+    //     }
+    //   ],
+    //   "destination": "/blocked.html",
+    //   "permanent": false
+    // }
+  ],
+  "regions": ["dub1"]
 }
