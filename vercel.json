@@ -20,6 +20,10 @@
   ],
   "rewrites": [
     {
+      "source": "/:file.xml",
+      "destination": "/:file.xml"
+    },
+    {
       "source": "/js/:filename",
       "destination": "/js/:filename.js"
     },
