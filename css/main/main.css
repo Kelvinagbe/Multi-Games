@@ -70,7 +70,7 @@ body {
 }
 
   /* Isolated loader styles to prevent conflicts */
-        #multigames-loader {
+        #loader {
             font-family: 'Poppins', sans-serif;
             position: fixed;
             top: 0;
@@ -85,13 +85,13 @@ body {
             overflow: hidden;
         }
         
-        #multigames-loader * {
+        #loader * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
         }
         
-        #multigames-loader .loader-wrapper {
+        #loader .loader-wrapper {
             position: relative;
             width: 120px;
             height: 120px;
@@ -102,7 +102,7 @@ body {
         }
         
         /* Rotating cube */
-        #multigames-loader .cube {
+        #loader .cube {
             position: relative;
             width: 100%;
             height: 100%;
@@ -110,7 +110,7 @@ body {
             animation: loader-cube-spin 18s infinite linear;
         }
         
-        #multigames-loader .face {
+        #loader .face {
             position: absolute;
             width: 100%;
             height: 100%;
@@ -124,22 +124,22 @@ body {
         }
         
         /* Green faces */
-        #multigames-loader .face-front,
-        #multigames-loader .face-left,
-        #multigames-loader .face-top {
+        #loader .face-front,
+        #loader .face-left,
+        #loader .face-top {
             background-color: #008f45;
             border: 2px solid #4dbd7d;
         }
         
         /* White faces */
-        #multigames-loader .face-back,
-        #multigames-loader .face-right,
-        #multigames-loader .face-bottom {
+        #loader .face-back,
+        #loader .face-right,
+        #loader .face-bottom {
             background-color: #ffffff;
             border: 2px solid #4dbd7d;
         }
         
-        #multigames-loader .face:before {
+        #loader .face:before {
             content: "";
             position: absolute;
             width: 150%;
@@ -149,15 +149,15 @@ body {
             animation: loader-pulse 3s infinite;
         }
         
-        #multigames-loader .face-front { transform: translateZ(60px); }
-        #multigames-loader .face-back { transform: rotateY(180deg) translateZ(60px); }
-        #multigames-loader .face-right { transform: rotateY(90deg) translateZ(60px); }
-        #multigames-loader .face-left { transform: rotateY(-90deg) translateZ(60px); }
-        #multigames-loader .face-top { transform: rotateX(90deg) translateZ(60px); }
-        #multigames-loader .face-bottom { transform: rotateX(-90deg) translateZ(60px); }
+        #loader .face-front { transform: translateZ(60px); }
+        #loader .face-back { transform: rotateY(180deg) translateZ(60px); }
+        #loader .face-right { transform: rotateY(90deg) translateZ(60px); }
+        #loader .face-left { transform: rotateY(-90deg) translateZ(60px); }
+        #loader .face-top { transform: rotateX(90deg) translateZ(60px); }
+        #loader .face-bottom { transform: rotateX(-90deg) translateZ(60px); }
         
         /* Letter styling */
-        #multigames-loader .letter {
+        #loader .letter {
             font-size: 42px;
             font-weight: 700;
             position: relative;
@@ -166,22 +166,22 @@ body {
             letter-spacing: -2px;
         }
         
-        #multigames-loader .face-front .letter,
-        #multigames-loader .face-left .letter,
-        #multigames-loader .face-top .letter {
+        #loader .face-front .letter,
+        #loader .face-left .letter,
+        #loader .face-top .letter {
             color: #ffffff;
             text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         }
         
-        #multigames-loader .face-back .letter,
-        #multigames-loader .face-right .letter,
-        #multigames-loader .face-bottom .letter {
+        #loader .face-back .letter,
+        #loader .face-right .letter,
+        #loader .face-bottom .letter {
             color: #008f45;
             text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
         }
         
         /* Progress loader */
-        #multigames-loader .progress-container {
+        #loader .progress-container {
             position: absolute;
             bottom: -55px;
             width: 120px;
@@ -191,7 +191,7 @@ body {
             overflow: hidden;
         }
         
-        #multigames-loader .progress-bar {
+        #loader .progress-bar {
             position: absolute;
             top: 0;
             left: 0;
@@ -203,14 +203,14 @@ body {
         }
         
         /* Slogan */
-        #multigames-loader .slogan-container {
+        #loader .slogan-container {
             position: absolute;
             bottom: -90px;
             text-align: center;
             width: 100%;
         }
         
-        #multigames-loader .slogan {
+        #loader .slogan {
             font-size: 16px;
             color: #008f45;
             font-weight: 500;
@@ -219,7 +219,7 @@ body {
         }
         
         /* Background */
-        #multigames-loader .bg {
+        #loader .bg {
             position: absolute;
             top: 0;
             left: 0;
