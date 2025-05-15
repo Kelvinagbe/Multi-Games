@@ -65,18 +65,6 @@
       ],
       "destination": "/blocked.html",
       "permanent": false
-    },
-    {
-      "source": "",
-      "has": [
-        {
-          "type": "header",
-          "key": "x-vercel-ip-country",
-          "value": "(?!NG).*"
-        }
-      ],
-      "destination": "/blocked.html",
-      "permanent": false
     }
   ],
   "regions": ["dub1"]
