@@ -54,26 +54,44 @@ body {
   padding-bottom: 70px;
 }
 
+.loader-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--background-color);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  transition: var(--transition);
+  backdrop-filter: blur(5px); /* Modern blur effect */
+}
 
-
-       @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
-        
-        /* Loader Styles */
-        .loader-container {
+  /* Isolated loader styles to prevent conflicts */
+        #multigames-loader {
+            font-family: 'Poppins', sans-serif;
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: var(--background-color);
+            background-color: #f8f9fa;
             display: flex;
             justify-content: center;
             align-items: center;
-            z-index: 1000;
-            transition: all 0.5s ease;
+            z-index: 9999;
+            overflow: hidden;
         }
-
-        .m-loader {
+        
+        #multigames-loader * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        #multigames-loader .loader-wrapper {
             position: relative;
             width: 120px;
             height: 120px;
@@ -82,17 +100,17 @@ body {
             align-items: center;
             perspective: 1000px;
         }
-
-        /* 3D Rotating Cube */
-        .cube {
+        
+        /* Rotating cube */
+        #multigames-loader .cube {
             position: relative;
             width: 100%;
             height: 100%;
             transform-style: preserve-3d;
-            animation: cube-spin 18s infinite linear; /* Slower rotation */
+            animation: loader-cube-spin 18s infinite linear;
         }
-
-        .face {
+        
+        #multigames-loader .face {
             position: absolute;
             width: 100%;
             height: 100%;
@@ -102,151 +120,106 @@ body {
             backface-visibility: visible;
             overflow: hidden;
             border-radius: 10px;
-            box-shadow: 0 6px 20px var(--shadow-color);
+            box-shadow: 0 6px 20px rgba(0, 92, 45, 0.3);
         }
-
-        /* Alternate between green and white faces */
-        .face-front, .face-left, .face-top {
-            background-color: var(--primary-color);
-            border: 2px solid var(--primary-light);
+        
+        /* Green faces */
+        #multigames-loader .face-front,
+        #multigames-loader .face-left,
+        #multigames-loader .face-top {
+            background-color: #008f45;
+            border: 2px solid #4dbd7d;
         }
-
-        .face-back, .face-right, .face-bottom {
-            background-color: var(--white);
-            border: 2px solid var(--primary-light);
+        
+        /* White faces */
+        #multigames-loader .face-back,
+        #multigames-loader .face-right,
+        #multigames-loader .face-bottom {
+            background-color: #ffffff;
+            border: 2px solid #4dbd7d;
         }
-
-        .face:before {
+        
+        #multigames-loader .face:before {
             content: "";
             position: absolute;
             width: 150%;
             height: 150%;
             background: radial-gradient(circle, rgba(255, 255, 255, 0.2), transparent 70%);
             opacity: 0.3;
-            animation: pulse 3s infinite;
+            animation: loader-pulse 3s infinite;
         }
-
-        .face-front { transform: translateZ(60px); }
-        .face-back { transform: rotateY(180deg) translateZ(60px); }
-        .face-right { transform: rotateY(90deg) translateZ(60px); }
-        .face-left { transform: rotateY(-90deg) translateZ(60px); }
-        .face-top { transform: rotateX(90deg) translateZ(60px); }
-        .face-bottom { transform: rotateX(-90deg) translateZ(60px); }
-
-        /* The Letter Animation */
-        .letter {
+        
+        #multigames-loader .face-front { transform: translateZ(60px); }
+        #multigames-loader .face-back { transform: rotateY(180deg) translateZ(60px); }
+        #multigames-loader .face-right { transform: rotateY(90deg) translateZ(60px); }
+        #multigames-loader .face-left { transform: rotateY(-90deg) translateZ(60px); }
+        #multigames-loader .face-top { transform: rotateX(90deg) translateZ(60px); }
+        #multigames-loader .face-bottom { transform: rotateX(-90deg) translateZ(60px); }
+        
+        /* Letter styling */
+        #multigames-loader .letter {
             font-size: 42px;
             font-weight: 700;
             position: relative;
             z-index: 2;
-            transition: all 0.3s ease;
             text-transform: uppercase;
             letter-spacing: -2px;
         }
-
-        /* Text color based on face background */
-        .face-front .letter, .face-left .letter, .face-top .letter {
-            color: var(--white);
+        
+        #multigames-loader .face-front .letter,
+        #multigames-loader .face-left .letter,
+        #multigames-loader .face-top .letter {
+            color: #ffffff;
             text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         }
-
-        .face-back .letter, .face-right .letter, .face-bottom .letter {
-            color: var(--primary-color);
+        
+        #multigames-loader .face-back .letter,
+        #multigames-loader .face-right .letter,
+        #multigames-loader .face-bottom .letter {
+            color: #008f45;
             text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
         }
-
-        /* Brand Slogan Display */
-        .brand-container {
+        
+        /* Progress loader */
+        #multigames-loader .progress-container {
+            position: absolute;
+            bottom: -55px;
+            width: 120px;
+            height: 4px;
+            background-color: rgba(0, 142, 69, 0.1);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        
+        #multigames-loader .progress-bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 30%;
+            background: linear-gradient(90deg, #005c2d, #00ce5e);
+            border-radius: 2px;
+            animation: loader-progress 2s ease-in-out infinite;
+        }
+        
+        /* Slogan */
+        #multigames-loader .slogan-container {
             position: absolute;
             bottom: -90px;
             text-align: center;
             width: 100%;
         }
-
-        .brand-slogan {
+        
+        #multigames-loader .slogan {
             font-size: 16px;
-            color: var(--primary-color);
+            color: #008f45;
             font-weight: 500;
             letter-spacing: 1.5px;
             text-transform: uppercase;
         }
-
-        /* Animated Dot Loader */
-        .dot-loader {
-            position: absolute;
-            bottom: -70px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background-color: var(--primary-color);
-            animation: dot-pulse 1.4s ease-in-out infinite;
-        }
-
-        .dot:nth-child(1) {
-            animation-delay: 0s;
-        }
-
-        .dot:nth-child(2) {
-            animation-delay: 0.2s;
-        }
-
-        .dot:nth-child(3) {
-            animation-delay: 0.4s;
-        }
-
-        @keyframes dot-pulse {
-            0%, 100% {
-                opacity: 0.3;
-                transform: scale(0.8);
-            }
-            50% {
-                opacity: 1;
-                transform: scale(1.2);
-            }
-        };
-            border-top-color: var(--primary-color);
-            border-bottom-color: var(--primary-light);
-            animation: spinner 1.5s linear infinite;
-        }
-
-        .circle-loader:after {
-            content: '';
-            box-sizing: border-box;
-            position: absolute;
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            border: 3px solid transparent;
-            border-left-color: var(--primary-dark);
-            border-right-color: var(--accent-color);
-            animation: spinner 1s linear infinite reverse;
-        }
-
-        /* Particles */
-        .particles-container {
-            position: absolute;
-            width: 300px;
-            height: 300px;
-            pointer-events: none;
-        }
-
-        .particle {
-            position: absolute;
-            background-color: var(--primary-color);
-            border-radius: 50%;
-            opacity: 0;
-            filter: blur(2px);
-        }
-
-        /* Background Elements */
-        .hexagon-bg {
+        
+        /* Background */
+        #multigames-loader .bg {
             position: absolute;
             top: 0;
             left: 0;
@@ -257,31 +230,24 @@ body {
                 radial-gradient(circle at 80% 80%, rgba(0, 142, 69, 0.07) 0%, transparent 50%);
             opacity: 0.8;
         }
-
-        /* Keyframes */
-        @keyframes cube-spin {
+        
+        /* Animations */
+        @keyframes loader-cube-spin {
             0% { transform: rotateX(0) rotateY(0) rotateZ(0); }
             100% { transform: rotateX(360deg) rotateY(360deg) rotateZ(360deg); }
         }
-
-        @keyframes pulse {
+        
+        @keyframes loader-pulse {
             0%, 100% { transform: scale(1); opacity: 0.3; }
             50% { transform: scale(1.1); opacity: 0.5; }
         }
-
-        @keyframes spinner {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        
+        @keyframes loader-progress {
+            0% { left: -30%; }
+            100% { left: 100%; }
         }
 
-        @keyframes particle-animation {
-            0% { transform: translate(0, 0); opacity: 0; }
-            20% { opacity: 0.8; }
-            80% { opacity: 0.8; }
-            100% { transform: translate(var(--tx), var(--ty)); opacity: 0; }
-        }
-
-
+       
 /* Featured Game Styles */
 .featured {
   position: relative;
