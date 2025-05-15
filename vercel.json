@@ -46,7 +46,15 @@
     {
       "source": "/:filename",
       "destination": "/:filename.html"
-    }
+    },
+    {
+      "source": "/feed.xml",
+      "destination": "/feed.xml"
+    },
+    {
+      "source": "/sitemap.xml",
+      "destination": "/sitemap.xml"
+    }  
   ],
   "redirects": [
     {
