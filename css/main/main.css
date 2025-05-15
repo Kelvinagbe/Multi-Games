@@ -205,16 +205,16 @@ body {
         /* Slogan */
         #loader .slogan-container {
             position: absolute;
-            bottom: -90px;
+            bottom: -140px;
             text-align: center;
             width: 100%;
         }
         
         #loader .slogan {
-            font-size: 16px;
+            font-size: 7px;
             color: #008f45;
             font-weight: 500;
-            letter-spacing: 1.5px;
+            letter-spacing: 1.7px;
             text-transform: uppercase;
         }
         
