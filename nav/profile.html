@@ -371,17 +371,15 @@ header {
 /* Enhanced Wallet Section */
 .wallet-section {
     background: var(--primary-dark);
-    border-radius: 0 0 var(--border-radius) var(--border-radius);
+    border-radius: var(--border-radius);
     padding: 24px;
-    margin: 0;
-    margin-bottom: 28px;
+    margin: 28px 16px;
     box-shadow: var(--shadow-lg), 0 6px 16px rgba(0, 0, 0, 0.15);
     color: var(--text-light);
     position: relative;
     overflow: hidden;
-    width: 100%;
+    max-width: calc(100% - 32px);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    border-top: none;
 }
 
 .wallet-section::before {
@@ -468,6 +466,7 @@ header {
 /* Responsive adjustments for wallet section */
 @media (max-width: 480px) {
     .wallet-section {
+        margin: 20px 12px;
         padding: 20px;
     }
     
