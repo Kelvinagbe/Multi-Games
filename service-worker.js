@@ -63,7 +63,7 @@ const assetsToCache = [
   './games/ticneon.html',
   './games/truth.html',
   './games/whack.html',
-  './nav/Airtime-earn.html',
+  './nav/earn.html',
   './nav/profile.html',
   './nav/script.js',
   './nav/styles.css',
@@ -82,6 +82,7 @@ const assetsToCache = [
   './nav/withdraw/withdraw.html',
   './assets/image/subway.jpg',
   './assets/image/pixe-shooter.jpg',
+  './css/main/main.css',
 
 ];
 
