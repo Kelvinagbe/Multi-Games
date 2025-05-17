@@ -77,9 +77,10 @@ body::before {
 }
 
 .container {
-    max-width: 0px;
+    width: 100%;
+    max-width: 100%;
     margin: 0;
-    padding: 1px;
+    padding: 0;
     transition: transform 0.3s ease-in-out, filter 0.3s ease;
     position: relative;
     z-index: 1;
@@ -93,29 +94,32 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 0px;
-    padding:  3px;
+    padding: 12px 20px;
+    background-color: var(--primary-dark);
+    color: var(--text-light);
 }
 
 .logo {
     font-weight: 700;
     font-size: 24px;
-    color: var(--primary);
+    color: var(--text-light);
     text-shadow: 0 1px 1px rgba(0,0,0,0.1);
 }
 
 /* Enhanced Profile Card with animation */
 .profile-card {
-    background-color: var(--bg-lightest);
+    background-color: var(--primary-dark);
+    border-radius: 0;
     margin-bottom: 28px;
-    box-shadow: var(--shadow-md), 0 0 0 0px rgba(13, 110, 55, 0.1);
+    box-shadow: var(--shadow-md);
     position: relative;
     overflow: hidden;
     border: none;
+    width: 100%;
 }
 
 .profile-header {
-    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    background: var(--primary-dark);
     padding: 25px;
     color: var(--text-light);
     display: flex;
@@ -125,6 +129,7 @@ header {
     box-shadow: 0 5px 15px rgba(5, 74, 41, 0.2);
     z-index: 1;
     overflow: hidden;
+    border-radius: 0;
 }
 
 /* Scanning Line Animation */
@@ -246,7 +251,8 @@ header {
     display: flex;
     justify-content: space-between;
     padding: 16px;
-    background-color: var(--bg-lightest);
+    background-color: var(--primary-dark);
+    color: var(--text-light);
 }
 
 .stat-item {
@@ -258,20 +264,20 @@ header {
     display: flex;
     flex-direction: column;
     align-items: center;
-    background: rgba(39, 174, 96, 0.05);
-    border: 1px solid rgba(39, 174, 96, 0.1);
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .stat-value {
     font-size: 22px;
     font-weight: 700;
-    color: var(--primary);
+    color: var(--text-light);
     margin-bottom: 4px;
 }
 
 .stat-label {
     font-size: 12px;
-    color: var(--text-secondary);
+    color: rgba(255, 255, 255, 0.7);
     text-transform: uppercase;
     letter-spacing: 0.5px;
 }
@@ -348,7 +354,7 @@ header {
 /* Progress bar styling */
 .progress-container {
     height: 8px;
-    background-color: var(--bg-medium);
+    background-color: rgba(255, 255, 255, 0.2);
     border-radius: 4px;
     margin: 16px;
     overflow: hidden;
@@ -356,22 +362,22 @@ header {
 
 .progress-bar {
     height: 100%;
-    background: var(--primary);
+    background: var(--primary-light);
     border-radius: 4px;
     transition: width 0.3s ease;
 }
 
 /* Wallet Section - Matching profile card style */
 .wallet-section {
-    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-    border-radius: var(--border-radius);
+    background: var(--primary-dark);
+    border-radius: 0;
     padding: 24px;
     margin-bottom: 28px;
-    box-shadow: var(--shadow-md), 0 8px 16px rgba(5, 74, 41, 0.15);
+    box-shadow: var(--shadow-md);
     color: var(--text-light);
-    border: 1px solid rgba(255, 255, 255, 0.1);
     position: relative;
     overflow: hidden;
+    width: 100%;
 }
 
 .wallet-section::before {
@@ -773,10 +779,6 @@ header {
 
 /* Responsive adjustments */
 @media (max-width: 480px) {
-    .container {
-        padding: 16px;
-    }
-    
     .profile-header {
         padding: 20px;
         flex-direction: column;
@@ -814,15 +816,16 @@ header {
 
 @media (min-width: 481px) and (max-width: 768px) {
     .container {
-        max-width: 600px;
+        width: 100%;
     }
 }
 
 @media (min-width: 769px) {
     .container {
-        max-width: 800px;
+        width: 100%;
     }
 }
+```
     </style>
 </head>
 <body>
