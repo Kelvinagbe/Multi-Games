@@ -6,15 +6,14 @@
     <title>Gaming Wallet</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <style>
-/* Enhanced CSS with Green & Blue Theme - Preserving existing structure */
-/* Pure Green Theme - Complete rewrite with consistent styling */
+/* Green Theme Profile CSS - Mobile & PC Optimized */
+
 :root {
-   /* Green Color Palette */
+   /* Primary Green Color Palette */
    --primary: #054A29;         /* Deep Brand Green */
-   --primary-light: #3D9A6A;   /* Light Green */
+   --primary-light: #27AE60;   /* Light Green */
    --primary-dark: #033118;    /* Darker Green */
    --accent: #1A7B48;          /* Mid-tone Green */
-   --secondary: #27AE60;       /* Success Green */
 
    /* Text Colors */
    --text-primary: #2C3E50;    /* Almost-black with subtle color */
@@ -32,12 +31,15 @@
    --success: #27AE60;         /* Success Green */
    --warning: #F39C12;         /* Warning Orange */
    --error: #E74C3C;           /* Error Red */
-   --info: #2E8B57;            /* Info Green */
+   --info: #3498DB;            /* Info Blue */
 
    /* Shadows */
    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.08);
    --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.1);
+   
+   /* Border Radius */
+   --border-radius: 16px;
 }
 
 * {
@@ -55,6 +57,23 @@ body {
     overflow-x: hidden;
     line-height: 1.5;
     font-size: 16px;
+    position: relative;
+}
+
+/* Subtle Grid Background */
+body::before { 
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        radial-gradient(rgba(39, 174, 96, 0.05) 1px, transparent 1px),
+        radial-gradient(rgba(39, 174, 96, 0.03) 1px, transparent 1px);
+    background-size: 20px 20px, 30px 30px;
+    background-position: 0 0, 10px 10px;
+    z-index: -1;
 }
 
 .container {
@@ -62,6 +81,8 @@ body {
     margin: 0 auto;
     padding: 20px;
     transition: transform 0.3s ease-in-out, filter 0.3s ease;
+    position: relative;
+    z-index: 1;
 }
 
 .container.blurred {
@@ -83,11 +104,10 @@ header {
     text-shadow: 0 1px 1px rgba(0,0,0,0.1);
 }
 
-/* Enhanced Profile Card with green accent */
+/* Enhanced Profile Card with animation */
 .profile-card {
     background-color: var(--bg-lightest);
-    border-radius: 16px;
-    padding: 28px;
+    border-radius: var(--border-radius);
     margin-bottom: 28px;
     box-shadow: var(--shadow-md), 0 0 0 1px rgba(13, 110, 55, 0.1);
     position: relative;
@@ -95,42 +115,61 @@ header {
     border: none;
 }
 
-.profile-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 4px;
-    background: linear-gradient(90deg, var(--primary-dark), var(--primary));
-}
-
 .profile-header {
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    padding: 25px;
+    color: var(--text-light);
     display: flex;
     align-items: center;
-    margin-bottom: 24px;
+    gap: 20px;
+    position: relative;
+    box-shadow: 0 5px 15px rgba(5, 74, 41, 0.2);
+    z-index: 1;
+    overflow: hidden;
+}
+
+/* Scanning Line Animation */
+.profile-header::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(90deg, 
+        transparent, 
+        rgba(255, 255, 255, 0.1), 
+        transparent);
+    animation: scan 3s infinite;
+}
+
+@keyframes scan {
+    0% { left: -100%; }
+    100% { left: 200%; }
 }
 
 .avatar-container {
     position: relative;
-    margin-right: 16px;
+    margin-right: 8px;
 }
 
 #user-avatar {
-    width: 70px;
-    height: 70px;
+    width: 90px;
+    height: 90px;
     border-radius: 50%;
     object-fit: cover;
-    border: 3px solid transparent;
-    background-image: linear-gradient(#fff, #fff), 
-                      linear-gradient(120deg, var(--primary-dark), var(--primary-light));
-    background-origin: border-box;
-    background-clip: content-box, border-box;
+    border: 4px solid rgba(255, 255, 255, 0.8);
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1), 0 0 0 4px rgba(39, 174, 96, 0.3);
     background-color: var(--bg-medium);
     display: flex;
     justify-content: center;
     align-items: center;
-    box-shadow: var(--shadow-sm);
+}
+
+#user-avatar:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15), 0 0 0 4px rgba(39, 174, 96, 0.5);
 }
 
 #user-avatar i {
@@ -142,7 +181,7 @@ header {
     position: absolute;
     bottom: 0;
     right: 0;
-    background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+    background: var(--primary-light);
     width: 24px;
     height: 24px;
     border-radius: 50%;
@@ -153,6 +192,7 @@ header {
     color: var(--text-light);
     box-shadow: var(--shadow-sm);
     border: 1px solid rgba(255, 255, 255, 0.5);
+    z-index: 2;
 }
 
 .user-info {
@@ -160,25 +200,39 @@ header {
 }
 
 #username {
-    font-size: 20px;
+    font-size: 1.5rem;
     font-weight: 700;
     margin-bottom: 6px;
-    color: var(--text-primary);
+    color: var(--text-light);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
     position: relative;
 }
 
 #username::after {
     content: '';
-    display: block;
-    width: 20px;
-    height: 2px;
-    background: linear-gradient(90deg, var(--primary-dark), var(--primary));
-    margin-top: 6px;
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 40px;
+    height: 3px;
+    background: #fff;
 }
 
 #user-email {
-    color: var(--text-secondary);
+    color: rgba(255, 255, 255, 0.8);
     font-size: 14px;
+}
+
+/* Player Level Badge */
+.player-level {
+    display: inline-block;
+    font-size: 0.8rem;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 3px 8px;
+    border-radius: 12px;
+    margin-left: 10px;
+    vertical-align: middle;
+    border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 .profile-actions {
@@ -188,42 +242,77 @@ header {
     margin-top: 18px;
 }
 
-/* Enhanced buttons with green gradients */
+/* Game stats section */
+.game-stats {
+    display: flex;
+    justify-content: space-between;
+    padding: 16px;
+    background-color: var(--bg-lightest);
+}
+
+.stat-item {
+    text-align: center;
+    padding: 12px;
+    border-radius: 12px;
+    flex: 1;
+    margin: 0 4px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: rgba(39, 174, 96, 0.05);
+    border: 1px solid rgba(39, 174, 96, 0.1);
+}
+
+.stat-value {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 4px;
+}
+
+.stat-label {
+    font-size: 12px;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Enhanced buttons with hover effects */
 .btn {
-    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    background: var(--primary);
     color: var(--text-light);
     border: none;
     padding: 10px 20px;
     border-radius: 24px;
     cursor: pointer;
     font-weight: 600;
-    transition: all 0.2s ease;
+    transition: all 0.3s ease;
     box-shadow: var(--shadow-sm), 0 2px 6px rgba(5, 74, 41, 0.2);
-    letter-spacing: 0.3px;
+    letter-spacing: 0.5px;
     font-size: 14px;
     position: relative;
     overflow: hidden;
 }
 
-.btn::after {
-    content: '';
+.btn::before {
+    content: "";
     position: absolute;
     top: 0;
-    left: 0;
+    left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(rgba(255,255,255,0.2), rgba(255,255,255,0));
-    opacity: 0;
-    transition: opacity 0.2s;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: 0.5s;
 }
 
 .btn:hover {
-    transform: translateY(-1px);
+    transform: translateY(-2px);
     box-shadow: var(--shadow-md), 0 4px 8px rgba(5, 74, 41, 0.25);
+    background: var(--accent);
 }
 
-.btn:hover::after {
-    opacity: 1;
+.btn:hover::before {
+    left: 100%;
 }
 
 .btn:active {
@@ -238,9 +327,9 @@ header {
 }
 
 .settings-btn {
-    background: var(--bg-medium);
-    border: 1px solid rgba(0, 0, 0, 0.05);
-    color: var(--text-secondary);
+    background: rgba(255, 255, 255, 0.2); 
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: var(--text-light);
     font-size: 18px;
     cursor: pointer;
     transition: all 0.3s;
@@ -253,9 +342,101 @@ header {
 }
 
 .settings-btn:hover {
-    color: var(--primary);
-    background: var(--bg-dark);
+    background: rgba(255, 255, 255, 0.3);
     transform: translateY(-1px);
+}
+
+/* Progress bar styling */
+.progress-container {
+    height: 8px;
+    background-color: var(--bg-medium);
+    border-radius: 4px;
+    margin: 16px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    height: 100%;
+    background: var(--primary);
+    border-radius: 4px;
+    transition: width 0.3s ease;
+}
+
+/* Wallet Section - Matching profile card style */
+.wallet-section {
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    border-radius: var(--border-radius);
+    padding: 24px;
+    margin-bottom: 28px;
+    box-shadow: var(--shadow-md), 0 8px 16px rgba(5, 74, 41, 0.15);
+    color: var(--text-light);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.wallet-section::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(90deg, 
+        transparent, 
+        rgba(255, 255, 255, 0.1), 
+        transparent);
+    animation: scan 3s infinite;
+}
+
+.wallet-label {
+    font-size: 14px;
+    opacity: 0.9;
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+#wallet-balance {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    letter-spacing: 0.5px;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+.wallet-actions {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 16px;
+}
+
+.action-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: var(--text-light);
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    padding: 8px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.action-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+}
+
+.action-btn i {
+    font-size: 24px;
+    margin-bottom: 8px;
+}
+
+.action-btn span {
+    font-size: 13px;
+    font-weight: 500;
 }
 
 /* Side Navigation */
@@ -278,12 +459,12 @@ header {
 }
 
 .nav-header {
-    background-image: linear-gradient(45deg, var(--primary-dark), var(--primary));
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
     padding: 28px 24px;
     text-align: center;
     color: var(--text-light);
     position: relative;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .nav-header h3 {
@@ -327,7 +508,7 @@ header {
 }
 
 .nav-list li:hover {
-    background-color: var(--bg-medium);
+    background-color: rgba(39, 174, 96, 0.05);
 }
 
 .nav-list a {
@@ -347,122 +528,11 @@ header {
     font-size: 18px;
 }
 
-/* Wallet section with same styling as profile */
-.wallet-section {
-    background-color: var(--bg-lightest);
-    border-radius: 16px;
-    padding: 28px;
-    margin-bottom: 28px;
-    box-shadow: var(--shadow-md), 0 0 0 1px rgba(13, 110, 55, 0.1);
-    position: relative;
-    overflow: hidden;
-    border: none;
-}
-
-.wallet-section::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 4px;
-    background: linear-gradient(90deg, var(--primary-dark), var(--primary));
-}
-
-.wallet-header {
-    display: flex;
-    align-items: center;
-    margin-bottom: 20px;
-}
-
-.wallet-icon {
-    width: 50px;
-    height: 50px;
-    border-radius: 12px;
-    background: linear-gradient(135deg, var(--primary-dark), var(--primary));
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-right: 16px;
-    color: var(--text-light);
-    font-size: 22px;
-    box-shadow: var(--shadow-sm);
-}
-
-.wallet-title {
-    font-size: 18px;
-    font-weight: 600;
-    color: var(--text-primary);
-    margin-bottom: 4px;
-}
-
-.wallet-label {
-    font-size: 14px;
-    color: var(--text-secondary);
-}
-
-#wallet-balance {
-    font-size: 28px;
-    font-weight: 700;
-    margin: 16px 0;
-    color: var(--primary);
-    letter-spacing: 0.5px;
-}
-
-#wallet-balance::after {
-    content: '';
-    display: block;
-    width: 30px;
-    height: 2px;
-    background: linear-gradient(90deg, var(--primary-dark), var(--primary));
-    margin-top: 6px;
-}
-
-.wallet-actions {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 20px;
-}
-
-.wallet-btn {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background-color: var(--bg-light);
-    border: 1px solid rgba(5, 74, 41, 0.1);
-    color: var(--primary);
-    padding: 12px;
-    border-radius: 12px;
-    cursor: pointer;
-    flex: 1;
-    margin: 0 6px;
-    transition: all 0.2s;
-}
-
-.wallet-btn:hover {
-    background-color: var(--bg-medium);
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-sm);
-}
-
-.wallet-btn:active {
-    transform: translateY(0);
-}
-
-.wallet-btn i {
-    font-size: 24px;
-    margin-bottom: 8px;
-}
-
-.wallet-btn span {
-    font-size: 13px;
-    font-weight: 500;
-}
-
 /* File Input (hidden) */
 #avatar-upload {
     display: none;
 }
+
 /* Content iFrame */
 .content-frame {
     width: 100%;
@@ -519,7 +589,7 @@ header {
     left: 0;
     width: 30px;
     height: 2px;
-    background: linear-gradient(90deg, var(--primary), var(--blue-accent));
+    background: var(--primary);
 }
 
 .close-modal {
@@ -566,7 +636,6 @@ header {
     background: var(--bg-darkest);
 }
 
-
 /* Dark overlay */
 .dark-overlay {
     position: fixed;
@@ -585,6 +654,20 @@ header {
 .dark-overlay.active {
     opacity: 1;
     visibility: visible;
+}
+
+/* Achievement styling */
+.achievement-icon {
+    width: 40px;
+    height: 40px;
+    background: var(--primary);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-light);
+    font-size: 18px;
+    margin-right: 12px;
 }
 
 /* Form elements */
@@ -614,14 +697,14 @@ header {
 .form-input:focus {
     outline: none;
     border-color: var(--primary);
-    box-shadow: 0 0 0 3px rgba(13, 110, 55, 0.1);
+    box-shadow: 0 0 0 3px rgba(5, 74, 41, 0.1);
 }
 
 .form-input::placeholder {
     color: rgba(0, 0, 0, 0.3);
 }
 
-/* Cards */
+/* Cards and Lists */
 .card {
     background-color: var(--bg-lightest);
     border-radius: 12px;
@@ -640,7 +723,7 @@ header {
     left: 0;
     width: 4px;
     height: 100%;
-    background: linear-gradient(to bottom, var(--primary-dark), var(--primary));
+    background: var(--primary);
 }
 
 .card-title {
@@ -689,139 +772,56 @@ header {
     color: var(--text-light);
 }
 
-/* Game Profile Specific Enhancements */
-.game-stats {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 16px;
-    margin-bottom: 20px;
-}
-
-.stat-item {
-    text-align: center;
-    background: rgba(13, 110, 55, 0.05);
-    padding: 12px;
-    border-radius: 12px;
-    flex: 1;
-    margin: 0 4px;
-    border: 1px solid rgba(13, 110, 55, 0.1);
-}
-
-.stat-value {
-    font-size: 22px;
-    font-weight: 700;
-    color: var(--primary);
-    margin-bottom: 4px;
-}
-
-.stat-label {
-    font-size: 12px;
-    color: var(--text-secondary);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.progress-container {
-    height: 8px;
-    background-color: var(--bg-medium);
-    border-radius: 4px;
-    margin: 16px 0;
-    overflow: hidden;
-}
-
-.progress-bar {
-    height: 100%;
-    background: linear-gradient(90deg, var(--primary-dark), var(--primary));
-    border-radius: 4px;
-    transition: width 0.3s ease;
-}
-
-.achievement-icon {
-    width: 40px;
-    height: 40px;
-    background: linear-gradient(135deg, var(--primary-dark), var(--primary-light));
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--text-light);
-    font-size: 18px;
-    margin-right: 12px;
-}
-
 /* Responsive adjustments */
-@media (max-width: 768px) {
+@media (max-width: 480px) {
     .container {
         padding: 16px;
     }
     
-    .profile-card, .wallet-section {
+    .profile-header {
         padding: 20px;
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    #username::after {
+        left: 50%;
+        transform: translateX(-50%);
     }
     
     #user-avatar {
-        width: 60px;
-        height: 60px;
+        width: 80px;
+        height: 80px;
+        margin-bottom: 12px;
     }
     
-    .wallet-icon {
-        width: 45px;
-        height: 45px;
-        font-size: 20px;
-    }
-    
-    #wallet-balance {
-        font-size: 24px;
-    }
-    
-    .wallet-actions {
+    .game-stats {
         flex-wrap: wrap;
     }
     
-    .wallet-btn {
-        min-width: calc(50% - 12px);
+    .stat-item {
+        min-width: 45%;
         margin-bottom: 10px;
+    }
+    
+    .wallet-section {
+        padding: 20px;
+    }
+    
+    .avatar-container {
+        margin-right: 0;
     }
 }
 
-@media (max-width: 480px) {
+@media (min-width: 481px) and (max-width: 768px) {
     .container {
-        padding: 12px;
+        max-width: 600px;
     }
-    
-    .profile-card, .wallet-section {
-        padding: 16px;
-    }
-    
-    #user-avatar {
-        width: 50px;
-        height: 50px;
-    }
-    
-    .profile-header, .wallet-header {
-        margin-bottom: 16px;
-    }
-    
-    #username {
-        font-size: 18px;
-    }
-    
-    #wallet-balance {
-        font-size: 22px;
-        margin: 12px 0;
-    }
-    
-    .wallet-btn {
-        padding: 8px;
-    }
-    
-    .wallet-btn i {
-        font-size: 20px;
-        margin-bottom: 6px;
-    }
-    
-    .wallet-btn span {
-        font-size: 12px;
+}
+
+@media (min-width: 769px) {
+    .container {
+        max-width: 800px;
     }
 }
     </style>
