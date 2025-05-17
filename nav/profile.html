@@ -368,16 +368,18 @@ header {
 }
 
 /* Wallet Section - Matching profile card style */
+/* Enhanced Wallet Section */
 .wallet-section {
     background: var(--primary-dark);
-    border-radius: 0;
+    border-radius: var(--border-radius);
     padding: 24px;
-    margin-bottom: 28px;
-    box-shadow: var(--shadow-md);
+    margin: 28px 16px;
+    box-shadow: var(--shadow-lg), 0 6px 16px rgba(0, 0, 0, 0.15);
     color: var(--text-light);
     position: relative;
     overflow: hidden;
-    width: 100%;
+    max-width: calc(100% - 32px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .wallet-section::before {
@@ -399,6 +401,8 @@ header {
     opacity: 0.9;
     margin-bottom: 8px;
     font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 #wallet-balance {
@@ -407,12 +411,21 @@ header {
     margin-bottom: 12px;
     letter-spacing: 0.5px;
     text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    display: flex;
+    align-items: center;
+}
+
+#wallet-balance::before {
+    content: '💰';
+    margin-right: 8px;
+    font-size: 24px;
 }
 
 .wallet-actions {
     display: flex;
     justify-content: space-around;
     margin-top: 16px;
+    gap: 12px;
 }
 
 .action-btn {
@@ -422,16 +435,22 @@ header {
     color: var(--text-light);
     text-decoration: none;
     cursor: pointer;
-    transition: all 0.2s;
-    padding: 8px;
+    transition: all 0.3s;
+    padding: 12px;
     border-radius: 12px;
     background: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.2);
+    flex: 1;
 }
 
 .action-btn:hover {
     background: rgba(255, 255, 255, 0.2);
-    transform: translateY(-2px);
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.action-btn:active {
+    transform: translateY(-1px);
 }
 
 .action-btn i {
@@ -442,6 +461,23 @@ header {
 .action-btn span {
     font-size: 13px;
     font-weight: 500;
+}
+
+/* Responsive adjustments for wallet section */
+@media (max-width: 480px) {
+    .wallet-section {
+        margin: 20px 12px;
+        padding: 20px;
+    }
+    
+    .wallet-actions {
+        flex-wrap: wrap;
+    }
+    
+    .action-btn {
+        min-width: calc(50% - 8px);
+        margin-bottom: 8px;
+    }
 }
 
 /* Side Navigation */
