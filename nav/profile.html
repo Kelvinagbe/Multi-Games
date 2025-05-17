@@ -7,40 +7,37 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <style>
 /* Enhanced CSS with Green & Blue Theme - Preserving existing structure */
+/* Pure Green Theme - Complete rewrite with consistent styling */
 :root {
+   /* Green Color Palette */
    --primary: #054A29;         /* Deep Brand Green */
---primary-light: #3D9A6A;   /* Light Green */
---primary-dark: #033118;    /* Darker Green */
---accent: #1A7B48;          /* Mid-tone Green */
---blue-accent: #0F4C81;     /* Rich Navy Blue */
---blue-light: #2D7CC2;      /* Mid-tone Blue */
+   --primary-light: #3D9A6A;   /* Light Green */
+   --primary-dark: #033118;    /* Darker Green */
+   --accent: #1A7B48;          /* Mid-tone Green */
+   --secondary: #27AE60;       /* Success Green */
 
-/* Secondary & UI Colors */
---secondary: #27AE60;       /* Success Green - Unchanged */
---tertiary: #5096D9;        /* Blue Complement */
+   /* Text Colors */
+   --text-primary: #2C3E50;    /* Almost-black with subtle color */
+   --text-secondary: #516370;  /* Muted Dark */
+   --text-light: #FFFFFF;      /* White (for dark backgrounds) */
 
-/* Text Colors */
---text-primary: #2C3E50;    /* Almost-black with subtle color */
---text-secondary: #516370;  /* Muted Dark */
---text-light: #FFFFFF;      /* White (for dark backgrounds) */
+   /* Background Colors */
+   --bg-lightest: #FFFFFF;     /* Pure White */
+   --bg-light: #F8F9FA;        /* Off White */
+   --bg-medium: #EAEDF0;       /* Light Gray */
+   --bg-dark: #D8DDE2;         /* Medium Gray */
+   --bg-darkest: #BDC3C7;      /* Darker Gray */
 
-/* Background Colors */
---bg-lightest: #FFFFFF;     /* Pure White */
---bg-light: #F8F9FA;        /* Off White */
---bg-medium: #EAEDF0;       /* Light Gray */
---bg-dark: #D8DDE2;         /* Medium Gray */
---bg-darkest: #BDC3C7;      /* Darker Gray */
+   /* Status Colors */
+   --success: #27AE60;         /* Success Green */
+   --warning: #F39C12;         /* Warning Orange */
+   --error: #E74C3C;           /* Error Red */
+   --info: #2E8B57;            /* Info Green */
 
-/* Status Colors */
---success: #27AE60;         /* Success Green */
---warning: #F39C12;         /* Warning Orange */
---error: #E74C3C;           /* Error Red */
---info: #3498DB;            /* Info Blue */
-
-/* Shadows */
---shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
---shadow-md: 0 4px 6px rgba(0, 0, 0, 0.08);
---shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.1);
+   /* Shadows */
+   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+   --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.08);
+   --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.1);
 }
 
 * {
@@ -86,7 +83,7 @@ header {
     text-shadow: 0 1px 1px rgba(0,0,0,0.1);
 }
 
-/* Enhanced Profile Card with subtle gradient border */
+/* Enhanced Profile Card with green accent */
 .profile-card {
     background-color: var(--bg-lightest);
     border-radius: 16px;
@@ -105,7 +102,7 @@ header {
     left: 0;
     right: 0;
     height: 4px;
-    background: linear-gradient(90deg, var(--primary), var(--blue-accent));
+    background: linear-gradient(90deg, var(--primary-dark), var(--primary));
 }
 
 .profile-header {
@@ -126,7 +123,7 @@ header {
     object-fit: cover;
     border: 3px solid transparent;
     background-image: linear-gradient(#fff, #fff), 
-                      linear-gradient(120deg, var(--primary), var(--blue-accent));
+                      linear-gradient(120deg, var(--primary-dark), var(--primary-light));
     background-origin: border-box;
     background-clip: content-box, border-box;
     background-color: var(--bg-medium);
@@ -145,7 +142,7 @@ header {
     position: absolute;
     bottom: 0;
     right: 0;
-    background: linear-gradient(135deg, var(--primary), var(--blue-accent));
+    background: linear-gradient(135deg, var(--primary-dark), var(--primary));
     width: 24px;
     height: 24px;
     border-radius: 50%;
@@ -175,7 +172,7 @@ header {
     display: block;
     width: 20px;
     height: 2px;
-    background: linear-gradient(90deg, var(--primary), var(--blue-accent));
+    background: linear-gradient(90deg, var(--primary-dark), var(--primary));
     margin-top: 6px;
 }
 
@@ -191,9 +188,9 @@ header {
     margin-top: 18px;
 }
 
-/* Enhanced buttons with gradients */
+/* Enhanced buttons with green gradients */
 .btn {
-    background: linear-gradient(135deg, var(--primary), var(--blue-accent));
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
     color: var(--text-light);
     border: none;
     padding: 10px 20px;
@@ -201,7 +198,7 @@ header {
     cursor: pointer;
     font-weight: 600;
     transition: all 0.2s ease;
-    box-shadow: var(--shadow-sm), 0 2px 6px rgba(25, 118, 210, 0.2);
+    box-shadow: var(--shadow-sm), 0 2px 6px rgba(5, 74, 41, 0.2);
     letter-spacing: 0.3px;
     font-size: 14px;
     position: relative;
@@ -222,7 +219,7 @@ header {
 
 .btn:hover {
     transform: translateY(-1px);
-    box-shadow: var(--shadow-md), 0 4px 8px rgba(25, 118, 210, 0.25);
+    box-shadow: var(--shadow-md), 0 4px 8px rgba(5, 74, 41, 0.25);
 }
 
 .btn:hover::after {
@@ -281,7 +278,7 @@ header {
 }
 
 .nav-header {
-    background-image: linear-gradient(45deg, var(--primary), var(--blue-accent));
+    background-image: linear-gradient(45deg, var(--primary-dark), var(--primary));
     padding: 28px 24px;
     text-align: center;
     color: var(--text-light);
@@ -350,74 +347,114 @@ header {
     font-size: 18px;
 }
 
-/* Enhanced wallet section with gradient and light effect */
+/* Wallet section with same styling as profile */
 .wallet-section {
-    background-image: linear-gradient(45deg, var(--primary), var(--blue-accent));
+    background-color: var(--bg-lightest);
     border-radius: 16px;
-    padding: 24px;
-    margin: 20px;
-    box-shadow: var(--shadow-md), 0 8px 16px rgba(13, 110, 55, 0.15);
-    color: var(--text-light);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 28px;
+    margin-bottom: 28px;
+    box-shadow: var(--shadow-md), 0 0 0 1px rgba(13, 110, 55, 0.1);
     position: relative;
     overflow: hidden;
+    border: none;
 }
 
 .wallet-section::before {
     content: '';
     position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 60%);
-    opacity: 0.5;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--primary-dark), var(--primary));
+}
+
+.wallet-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.wallet-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 16px;
+    color: var(--text-light);
+    font-size: 22px;
+    box-shadow: var(--shadow-sm);
+}
+
+.wallet-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 4px;
 }
 
 .wallet-label {
     font-size: 14px;
-    opacity: 0.9;
-    margin-bottom: 8px;
-    font-weight: 500;
+    color: var(--text-secondary);
 }
 
 #wallet-balance {
     font-size: 28px;
     font-weight: 700;
-    margin-bottom: 12px;
+    margin: 16px 0;
+    color: var(--primary);
     letter-spacing: 0.5px;
-    text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+#wallet-balance::after {
+    content: '';
+    display: block;
+    width: 30px;
+    height: 2px;
+    background: linear-gradient(90deg, var(--primary-dark), var(--primary));
+    margin-top: 6px;
 }
 
 .wallet-actions {
     display: flex;
-    justify-content: space-around;
-    margin-top: 16px;
+    justify-content: space-between;
+    margin-top: 20px;
 }
 
-.action-btn {
+.wallet-btn {
     display: flex;
     flex-direction: column;
     align-items: center;
-    color: var(--text-light);
-    text-decoration: none;
-    cursor: pointer;
-    transition: all 0.2s;
-    padding: 8px;
+    background-color: var(--bg-light);
+    border: 1px solid rgba(5, 74, 41, 0.1);
+    color: var(--primary);
+    padding: 12px;
     border-radius: 12px;
+    cursor: pointer;
+    flex: 1;
+    margin: 0 6px;
+    transition: all 0.2s;
 }
 
-.action-btn:hover {
-    background: rgba(255, 255, 255, 0.2);
+.wallet-btn:hover {
+    background-color: var(--bg-medium);
     transform: translateY(-2px);
+    box-shadow: var(--shadow-sm);
 }
 
-.action-btn i {
+.wallet-btn:active {
+    transform: translateY(0);
+}
+
+.wallet-btn i {
     font-size: 24px;
     margin-bottom: 8px;
 }
 
-.action-btn span {
+.wallet-btn span {
     font-size: 13px;
     font-weight: 500;
 }
@@ -425,17 +462,6 @@ header {
 /* File Input (hidden) */
 #avatar-upload {
     display: none;
-}
-
-/* Content iFrame */
-.content-frame {
-    width: 100%;
-    height: 450px;
-    border: none;
-    border-radius: 16px;
-    box-shadow: var(--shadow-md);
-    background-color: var(--bg-lightest);
-    overflow: hidden;
 }
 
 /* Universal Modal */
@@ -483,7 +509,7 @@ header {
     left: 0;
     width: 30px;
     height: 2px;
-    background: linear-gradient(90deg, var(--primary), var(--blue-accent));
+    background: linear-gradient(90deg, var(--primary-dark), var(--primary));
 }
 
 .close-modal {
@@ -550,22 +576,6 @@ header {
     visibility: visible;
 }
 
-/* Modal iframe container */
-.modal-iframe-container {
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    border-radius: 12px;
-    background-color: var(--bg-light);
-    border: 1px solid rgba(0, 0, 0, 0.05);
-}
-
-.modal-iframe {
-    width: 100%;
-    height: 100%;
-    border: none;
-}
-
 /* Form elements */
 .form-group {
     margin-bottom: 20px;
@@ -600,7 +610,7 @@ header {
     color: rgba(0, 0, 0, 0.3);
 }
 
-/* Cards and Lists */
+/* Cards */
 .card {
     background-color: var(--bg-lightest);
     border-radius: 12px;
@@ -619,7 +629,7 @@ header {
     left: 0;
     width: 4px;
     height: 100%;
-    background: linear-gradient(to bottom, var(--primary), var(--blue-accent));
+    background: linear-gradient(to bottom, var(--primary-dark), var(--primary));
 }
 
 .card-title {
@@ -678,7 +688,7 @@ header {
 
 .stat-item {
     text-align: center;
-    background: linear-gradient(135deg, rgba(13, 110, 55, 0.05), rgba(25, 118, 210, 0.05));
+    background: rgba(13, 110, 55, 0.05);
     padding: 12px;
     border-radius: 12px;
     flex: 1;
@@ -710,7 +720,7 @@ header {
 
 .progress-bar {
     height: 100%;
-    background: linear-gradient(90deg, var(--primary), var(--blue-accent));
+    background: linear-gradient(90deg, var(--primary-dark), var(--primary));
     border-radius: 4px;
     transition: width 0.3s ease;
 }
@@ -718,7 +728,7 @@ header {
 .achievement-icon {
     width: 40px;
     height: 40px;
-    background: linear-gradient(135deg, var(--primary-light), var(--blue-light));
+    background: linear-gradient(135deg, var(--primary-dark), var(--primary-light));
     border-radius: 8px;
     display: flex;
     align-items: center;
@@ -729,18 +739,78 @@ header {
 }
 
 /* Responsive adjustments */
-@media (max-width: 480px) {
+@media (max-width: 768px) {
     .container {
         padding: 16px;
     }
-
-    .profile-card {
+    
+    .profile-card, .wallet-section {
         padding: 20px;
     }
-
+    
     #user-avatar {
         width: 60px;
         height: 60px;
+    }
+    
+    .wallet-icon {
+        width: 45px;
+        height: 45px;
+        font-size: 20px;
+    }
+    
+    #wallet-balance {
+        font-size: 24px;
+    }
+    
+    .wallet-actions {
+        flex-wrap: wrap;
+    }
+    
+    .wallet-btn {
+        min-width: calc(50% - 12px);
+        margin-bottom: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        padding: 12px;
+    }
+    
+    .profile-card, .wallet-section {
+        padding: 16px;
+    }
+    
+    #user-avatar {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .profile-header, .wallet-header {
+        margin-bottom: 16px;
+    }
+    
+    #username {
+        font-size: 18px;
+    }
+    
+    #wallet-balance {
+        font-size: 22px;
+        margin: 12px 0;
+    }
+    
+    .wallet-btn {
+        padding: 8px;
+    }
+    
+    .wallet-btn i {
+        font-size: 20px;
+        margin-bottom: 6px;
+    }
+    
+    .wallet-btn span {
+        font-size: 12px;
     }
 }
     </style>
