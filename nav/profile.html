@@ -106,14 +106,14 @@ header {
     text-shadow: 0 1px 1px rgba(0,0,0,0.1);
 }
 
-/* Enhanced Profile Card with animation */
+/* Profile Card - REMOVED BOTTOM MARGIN to eliminate gap */
 .profile-card {
     background-color: var(--primary-dark);
     border-radius: 0;
-    margin-bottom: 60px; /* Increased to make room for half-overlapping wallet */
+    margin-bottom: 0; /* Changed from 60px to eliminate gap */
     box-shadow: var(--shadow-md);
     position: relative;
-    overflow: visible; /* Changed from hidden to allow wallet to overlap */
+    overflow: visible;
     border: none;
     width: 100%;
 }
@@ -130,6 +130,7 @@ header {
     z-index: 1;
     overflow: hidden;
     border-radius: 0;
+    padding-bottom: 45px; /* Added extra padding at bottom for wallet overlap */
 }
 
 /* Scanning Line Animation */
@@ -367,12 +368,12 @@ header {
     transition: width 0.3s ease;
 }
 
-/* Updated Wallet Section - Half in profile, half in background */
+/* Updated Wallet Section - Overlapping with profile section */
 .wallet-section {
-    background: var(--primary-dark);
+    background-color: var(--primary-dark); /* Kept the same dark color but could change to var(--primary-light) for contrast */
     border-radius: var(--border-radius);
     padding: 24px;
-    margin: -40px 16px 28px;  /* Negative top margin to pull it up */
+    margin: -30px 16px 28px;  /* Negative top margin to create overlap with profile */
     box-shadow: var(--shadow-lg), 0 6px 16px rgba(0, 0, 0, 0.15);
     color: var(--text-light);
     position: relative;
@@ -380,6 +381,18 @@ header {
     max-width: calc(100% - 32px);
     border: 1px solid rgba(255, 255, 255, 0.1);
     z-index: 5;  /* Ensure it appears above other elements */
+}
+
+/* Add a subtle separator line at top of wallet */
+.wallet-section::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--primary-light), var(--accent), var(--primary-light));
+    opacity: 0.7;
 }
 
 .wallet-section::before {
@@ -802,6 +815,7 @@ header {
         padding: 20px;
         flex-direction: column;
         text-align: center;
+        padding-bottom: 40px; /* Adjusted padding for mobile */
     }
 
     #username::after {
@@ -825,7 +839,7 @@ header {
     }
 
     .wallet-section {
-        margin: -30px 12px 20px; /* Slightly less negative margin on mobile */
+        margin: -25px 12px 20px; /* Less negative margin on mobile */
         padding: 20px;
     }
 
@@ -849,7 +863,7 @@ header {
     }
     
     .wallet-section {
-        margin: -35px 16px 28px; /* Adjusted for tablets */
+        margin: -30px 16px 28px; /* Adjusted for tablets */
     }
 }
 
