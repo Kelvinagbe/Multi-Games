@@ -649,12 +649,15 @@ header {
     color: var(--text-primary);
 }
 
+/* Modal Content with Enhanced iFrame Support */
 .modal-content {
     height: calc(100% - 60px);
     overflow-y: auto;
     padding-right: 4px;
+    position: relative;
 }
 
+/* Scrollbar Styling */
 .modal-content::-webkit-scrollbar {
     width: 6px;
 }
@@ -671,6 +674,65 @@ header {
 
 .modal-content::-webkit-scrollbar-thumb:hover {
     background: var(--bg-darkest);
+}
+
+/* Container for iframe to maintain proper sizing */
+.modal-iframe-container {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border-radius: 12px;
+    background: var(--bg-light);
+}
+
+/* The iframe itself - fixed sizing and positioning */
+.modal-iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: block;
+    background-color: var(--bg-lightest);
+    position: relative;
+    z-index: 1;
+}
+
+/* Responsive adjustments for different screen sizes */
+@media (max-width: 480px), (max-height: 600px) {
+    .modal-iframe-container {
+        height: 100%;
+        border-radius: 8px;
+    }
+    
+    .modal-iframe {
+        min-height: 300px; /* Minimum height on small screens */
+    }
+    
+    .modal-content {
+        padding-right: 0; /* Remove padding when iframe present */
+    }
+}
+
+/* Special handling for very tall screens */
+@media (min-height: 800px) {
+    .modal-iframe {
+        max-height: 650px; /* Cap height on very tall screens */
+    }
+}
+
+/* Fix iOS iframe rendering issues */
+@supports (-webkit-overflow-scrolling: touch) {
+    .modal-iframe-container {
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    .modal-iframe {
+        height: 1px;
+        min-height: 100%;
+    }
 }
 
 /* Dark overlay */
