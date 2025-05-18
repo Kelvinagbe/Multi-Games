@@ -6,7 +6,7 @@
     <title>Gaming Wallet</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <style>
-/* Green Theme Profile CSS - Mobile & PC Optimized */
+       /* Green Theme Profile CSS - Mobile & PC Optimized */
 
 :root {
    /* Primary Green Color Palette */
@@ -37,7 +37,7 @@
    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.08);
    --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.1);
-   
+
    /* Border Radius */
    --border-radius: 16px;
 }
@@ -110,10 +110,10 @@ header {
 .profile-card {
     background-color: var(--primary-dark);
     border-radius: 0;
-    margin-bottom: 28px;
+    margin-bottom: 60px; /* Increased to make room for half-overlapping wallet */
     box-shadow: var(--shadow-md);
     position: relative;
-    overflow: hidden;
+    overflow: visible; /* Changed from hidden to allow wallet to overlap */
     border: none;
     width: 100%;
 }
@@ -367,19 +367,19 @@ header {
     transition: width 0.3s ease;
 }
 
-/* Wallet Section - Matching profile card style */
-/* Enhanced Wallet Section */
+/* Updated Wallet Section - Half in profile, half in background */
 .wallet-section {
     background: var(--primary-dark);
     border-radius: var(--border-radius);
     padding: 24px;
-    margin: 28px 16px;
+    margin: -40px 16px 28px;  /* Negative top margin to pull it up */
     box-shadow: var(--shadow-lg), 0 6px 16px rgba(0, 0, 0, 0.15);
     color: var(--text-light);
     position: relative;
     overflow: hidden;
     max-width: calc(100% - 32px);
     border: 1px solid rgba(255, 255, 255, 0.1);
+    z-index: 5;  /* Ensure it appears above other elements */
 }
 
 .wallet-section::before {
@@ -461,23 +461,6 @@ header {
 .action-btn span {
     font-size: 13px;
     font-weight: 500;
-}
-
-/* Responsive adjustments for wallet section */
-@media (max-width: 480px) {
-    .wallet-section {
-        margin: 20px 12px;
-        padding: 20px;
-    }
-    
-    .wallet-actions {
-        flex-wrap: wrap;
-    }
-    
-    .action-btn {
-        min-width: calc(50% - 8px);
-        margin-bottom: 8px;
-    }
 }
 
 /* Side Navigation */
@@ -820,31 +803,41 @@ header {
         flex-direction: column;
         text-align: center;
     }
-    
+
     #username::after {
         left: 50%;
         transform: translateX(-50%);
     }
-    
+
     #user-avatar {
         width: 80px;
         height: 80px;
         margin-bottom: 12px;
     }
-    
+
     .game-stats {
         flex-wrap: wrap;
     }
-    
+
     .stat-item {
         min-width: 45%;
         margin-bottom: 10px;
     }
-    
+
     .wallet-section {
+        margin: -30px 12px 20px; /* Slightly less negative margin on mobile */
         padding: 20px;
     }
-    
+
+    .wallet-actions {
+        flex-wrap: wrap;
+    }
+
+    .action-btn {
+        min-width: calc(50% - 8px);
+        margin-bottom: 8px;
+    }
+
     .avatar-container {
         margin-right: 0;
     }
@@ -853,6 +846,10 @@ header {
 @media (min-width: 481px) and (max-width: 768px) {
     .container {
         width: 100%;
+    }
+    
+    .wallet-section {
+        margin: -35px 16px 28px; /* Adjusted for tablets */
     }
 }
 
