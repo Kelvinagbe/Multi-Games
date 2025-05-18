@@ -1,6 +1,6 @@
 /**
- * iFrame Loading System with HTML Skeletons
- * Provides content skeleton screens for specific pages
+ * iFrame Loading System with Modern HTML Skeletons
+ * Provides content skeleton screens for specific pages with enhanced profile view
  */
 
 // Store references to active loaders
@@ -26,7 +26,7 @@ function showIframePlaceholder(contentElement, iframe, type) {
                 placeholderContent = createEarnPlaceholder();
                 break;
             case 'profile':
-                placeholderContent = createProfilePlaceholder();
+                placeholderContent = createModernProfilePlaceholder();
                 break;
             default:
                 placeholderContent = createDefaultPlaceholder();
@@ -115,24 +115,92 @@ function createEarnPlaceholder() {
     `;
 }
 
-function createProfilePlaceholder() {
+function createModernProfilePlaceholder() {
     return `
-        <div class="placeholder-content">
-            <div class="placeholder-profile-header">
-                <div class="placeholder-avatar"></div>
-                <div class="placeholder-profile-info">
+        <div class="placeholder-content profile-placeholder">
+            <!-- Cover photo area -->
+            <div class="placeholder-cover-photo"></div>
+            
+            <!-- Profile header with avatar overlay -->
+            <div class="placeholder-profile-modern">
+                <div class="placeholder-avatar-container">
+                    <div class="placeholder-avatar-modern"></div>
+                </div>
+                <div class="placeholder-profile-info-modern">
+                    <div class="placeholder-text large"></div>
                     <div class="placeholder-text medium"></div>
-                    <div class="placeholder-text short"></div>
+                    <div class="placeholder-stats">
+                        <div class="placeholder-stat-item">
+                            <div class="placeholder-stat-value"></div>
+                            <div class="placeholder-stat-label"></div>
+                        </div>
+                        <div class="placeholder-stat-item">
+                            <div class="placeholder-stat-value"></div>
+                            <div class="placeholder-stat-label"></div>
+                        </div>
+                        <div class="placeholder-stat-item">
+                            <div class="placeholder-stat-value"></div>
+                            <div class="placeholder-stat-label"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="placeholder-profile-actions">
+                    <div class="placeholder-button primary"></div>
+                    <div class="placeholder-button"></div>
                 </div>
             </div>
-            <div class="placeholder-divider"></div>
-            <div class="placeholder-list">
-                ${Array(5).fill().map(() => `
-                    <div class="placeholder-list-item">
-                        <div class="placeholder-icon"></div>
-                        <div class="placeholder-text medium"></div>
+            
+            <!-- Profile tabs navigation -->
+            <div class="placeholder-tabs">
+                <div class="placeholder-tab active"></div>
+                <div class="placeholder-tab"></div>
+                <div class="placeholder-tab"></div>
+                <div class="placeholder-tab"></div>
+            </div>
+            
+            <!-- Content section -->
+            <div class="placeholder-section">
+                <div class="placeholder-section-header"></div>
+                <div class="placeholder-cards">
+                    ${Array(3).fill().map(() => `
+                        <div class="placeholder-content-card">
+                            <div class="placeholder-card-image"></div>
+                            <div class="placeholder-card-body">
+                                <div class="placeholder-text medium"></div>
+                                <div class="placeholder-text short"></div>
+                                <div class="placeholder-card-meta">
+                                    <div class="placeholder-meta-item"></div>
+                                    <div class="placeholder-meta-item"></div>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+            
+            <!-- Sidebar widgets -->
+            <div class="placeholder-sidebar">
+                <div class="placeholder-widget">
+                    <div class="placeholder-widget-header"></div>
+                    <div class="placeholder-list">
+                        ${Array(3).fill().map(() => `
+                            <div class="placeholder-list-item modern">
+                                <div class="placeholder-item-icon"></div>
+                                <div class="placeholder-item-content">
+                                    <div class="placeholder-text short"></div>
+                                    <div class="placeholder-text mini"></div>
+                                </div>
+                            </div>
+                        `).join('')}
                     </div>
-                `).join('')}
+                </div>
+                
+                <div class="placeholder-widget">
+                    <div class="placeholder-widget-header"></div>
+                    <div class="placeholder-text medium"></div>
+                    <div class="placeholder-progress"></div>
+                    <div class="placeholder-text short"></div>
+                </div>
             </div>
         </div>
     `;
@@ -165,7 +233,7 @@ function addPlaceholderStyles() {
             background-color: #f8f9fa;
             z-index: 1;
             transition: opacity 0.3s ease;
-            padding: 20px;
+            padding: 0;
             box-sizing: border-box;
             overflow-y: auto;
         }
@@ -175,14 +243,15 @@ function addPlaceholderStyles() {
         }
         
         .placeholder-content {
-            max-width: 800px;
+            max-width: 1200px;
             margin: 0 auto;
+            padding: 20px;
         }
         
         .placeholder-header {
             height: 30px;
             background-color: #e0e0e0;
-            border-radius: 4px;
+            border-radius: 8px;
             margin-bottom: 20px;
             animation: pulse 1.5s infinite;
         }
@@ -204,6 +273,7 @@ function addPlaceholderStyles() {
         .placeholder-card {
             border-radius: 8px;
             overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
         }
         
         .placeholder-image {
@@ -246,41 +316,271 @@ function addPlaceholderStyles() {
             width: 90%;
         }
         
-        .placeholder-profile-header {
-            display: flex;
-            align-items: center;
-            margin-bottom: 30px;
+        .placeholder-text.mini {
+            height: 10px;
+            width: 40%;
         }
         
-        .placeholder-avatar {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
+        .placeholder-text.large {
+            height: 24px;
+            width: 70%;
+            margin-bottom: 15px;
+        }
+        
+        /* Profile modern styling */
+        .profile-placeholder {
+            padding: 0;
+        }
+        
+        .placeholder-cover-photo {
+            height: 200px;
             background-color: #e0e0e0;
-            margin-right: 20px;
             animation: pulse 1.5s infinite;
+            width: 100%;
+            margin-bottom: 0;
         }
         
-        .dark-mode .placeholder-avatar {
+        .dark-mode .placeholder-cover-photo {
             background-color: #2a2a2a;
         }
         
-        .placeholder-profile-info {
-            flex: 1;
+        .placeholder-profile-modern {
+            position: relative;
+            padding: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #e0e0e0;
         }
         
-        .placeholder-divider {
-            height: 1px;
+        .dark-mode .placeholder-profile-modern {
+            border-bottom-color: #2a2a2a;
+        }
+        
+        .placeholder-avatar-container {
+            margin-top: -50px;
+            margin-right: 20px;
+        }
+        
+        .placeholder-avatar-modern {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
             background-color: #e0e0e0;
-            margin: 20px 0;
+            border: 4px solid #fff;
+            animation: pulse 1.5s infinite;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
         
-        .dark-mode .placeholder-divider {
+        .dark-mode .placeholder-avatar-modern {
+            background-color: #2a2a2a;
+            border-color: #121212;
+        }
+        
+        .placeholder-profile-info-modern {
+            flex: 1;
+            padding-top: 10px;
+        }
+        
+        .placeholder-stats {
+            display: flex;
+            gap: 20px;
+            margin-top: 15px;
+        }
+        
+        .placeholder-stat-item {
+            flex: 1;
+            max-width: 80px;
+        }
+        
+        .placeholder-stat-value {
+            height: 20px;
+            width: 40px;
+            background-color: #e0e0e0;
+            border-radius: 4px;
+            margin-bottom: 5px;
+            animation: pulse 1.5s infinite;
+        }
+        
+        .dark-mode .placeholder-stat-value {
+            background-color: #2a2a2a;
+        }
+        
+        .placeholder-stat-label {
+            height: 10px;
+            width: 100%;
+            background-color: #e0e0e0;
+            border-radius: 4px;
+            animation: pulse 1.5s infinite;
+        }
+        
+        .dark-mode .placeholder-stat-label {
+            background-color: #2a2a2a;
+        }
+        
+        .placeholder-profile-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            align-self: flex-end;
+        }
+        
+        .placeholder-button {
+            height: 36px;
+            width: 100px;
+            border-radius: 18px;
+            background-color: #e0e0e0;
+            animation: pulse 1.5s infinite;
+        }
+        
+        .dark-mode .placeholder-button {
+            background-color: #2a2a2a;
+        }
+        
+        .placeholder-button.primary {
+            background-color: #d0d0d0;
+        }
+        
+        .dark-mode .placeholder-button.primary {
+            background-color: #3a3a3a;
+        }
+        
+        .placeholder-tabs {
+            display: flex;
+            border-bottom: 1px solid #e0e0e0;
+            padding: 0 20px;
+            margin-bottom: 20px;
+        }
+        
+        .dark-mode .placeholder-tabs {
+            border-bottom-color: #2a2a2a;
+        }
+        
+        .placeholder-tab {
+            height: 15px;
+            width: 80px;
+            margin-right: 20px;
+            margin-bottom: 15px;
+            background-color: #e0e0e0;
+            border-radius: 4px;
+            animation: pulse 1.5s infinite;
+        }
+        
+        .dark-mode .placeholder-tab {
+            background-color: #2a2a2a;
+        }
+        
+        .placeholder-tab.active {
+            background-color: #d0d0d0;
+        }
+        
+        .dark-mode .placeholder-tab.active {
+            background-color: #3a3a3a;
+        }
+        
+        .placeholder-section {
+            padding: 0 20px;
+            margin-bottom: 30px;
+        }
+        
+        .placeholder-section-header {
+            height: 20px;
+            width: 150px;
+            background-color: #e0e0e0;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            animation: pulse 1.5s infinite;
+        }
+        
+        .dark-mode .placeholder-section-header {
+            background-color: #2a2a2a;
+        }
+        
+        .placeholder-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+        
+        .placeholder-content-card {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            background-color: #fff;
+        }
+        
+        .dark-mode .placeholder-content-card {
+            background-color: #1e1e1e;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.16);
+        }
+        
+        .placeholder-card-image {
+            height: 160px;
+            background-color: #e0e0e0;
+            animation: pulse 1.5s infinite;
+        }
+        
+        .dark-mode .placeholder-card-image {
+            background-color: #2a2a2a;
+        }
+        
+        .placeholder-card-body {
+            padding: 15px;
+        }
+        
+        .placeholder-card-meta {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+        }
+        
+        .placeholder-meta-item {
+            height: 12px;
+            width: 60px;
+            background-color: #e0e0e0;
+            border-radius: 6px;
+            animation: pulse 1.5s infinite;
+        }
+        
+        .dark-mode .placeholder-meta-item {
+            background-color: #2a2a2a;
+        }
+        
+        .placeholder-sidebar {
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .placeholder-widget {
+            background-color: #fff;
+            border-radius: 12px;
+            padding: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            margin-bottom: 20px;
+        }
+        
+        .dark-mode .placeholder-widget {
+            background-color: #1e1e1e;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.16);
+        }
+        
+        .placeholder-widget-header {
+            height: 18px;
+            width: 120px;
+            background-color: #e0e0e0;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            animation: pulse 1.5s infinite;
+        }
+        
+        .dark-mode .placeholder-widget-header {
             background-color: #2a2a2a;
         }
         
         .placeholder-list {
-            margin-top: 20px;
+            margin-top: 15px;
         }
         
         .placeholder-list-item {
@@ -294,6 +594,32 @@ function addPlaceholderStyles() {
             border-bottom-color: #2a2a2a;
         }
         
+        .placeholder-list-item.modern {
+            border-bottom: 1px solid #f0f0f0;
+            padding: 10px 0;
+        }
+        
+        .dark-mode .placeholder-list-item.modern {
+            border-bottom-color: #252525;
+        }
+        
+        .placeholder-item-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background-color: #e0e0e0;
+            margin-right: 15px;
+            animation: pulse 1.5s infinite;
+        }
+        
+        .dark-mode .placeholder-item-icon {
+            background-color: #2a2a2a;
+        }
+        
+        .placeholder-item-content {
+            flex: 1;
+        }
+        
         .placeholder-icon {
             width: 24px;
             height: 24px;
@@ -304,6 +630,36 @@ function addPlaceholderStyles() {
         }
         
         .dark-mode .placeholder-icon {
+            background-color: #2a2a2a;
+        }
+        
+        .placeholder-progress {
+            height: 8px;
+            width: 100%;
+            background-color: #f0f0f0;
+            border-radius: 4px;
+            margin: 15px 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .dark-mode .placeholder-progress {
+            background-color: #252525;
+        }
+        
+        .placeholder-progress:before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 60%;
+            background-color: #e0e0e0;
+            border-radius: 4px;
+            animation: pulse 1.5s infinite;
+        }
+        
+        .dark-mode .placeholder-progress:before {
             background-color: #2a2a2a;
         }
         
@@ -475,4 +831,4 @@ if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initSkeletonSystem);
 } else {
     initSkeletonSystem();
-}
+} 
