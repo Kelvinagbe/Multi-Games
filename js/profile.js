@@ -144,7 +144,7 @@ function checkAuthState() {
         } else {
             // User is not signed in, open login in modal instead of redirecting
             console.log("User not authenticated, opening login in modal");
-            openModal('Login', 'login.html');
+            openModal('Login', '../auth/login.html');
         }
     });
 }
@@ -430,7 +430,7 @@ function handleLogout() {
         .then(() => {
             // Open login modal instead of redirecting
             console.log("User signed out successfully");
-            openModal('Login', 'login.html');
+            openModal('Login', '../auth/login.html');
         })
         .catch((error) => {
             console.error("Error signing out:", error);
