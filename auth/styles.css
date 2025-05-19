@@ -2,10 +2,10 @@
     --primary: #0d1f14;
     --primary-dark: #154024;
     --secondary: #4444444;
-    --text: #333333;
+    --text: #fffff;
     --bg: #154024;
-    --card-bg: #154024;
-    --accent: #154024;
+    --card-bg: #0d1f14;
+    --accent: #0d1f14;
 }
 
 * {
