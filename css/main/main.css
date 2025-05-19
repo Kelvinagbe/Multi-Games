@@ -55,285 +55,68 @@ body {
 }
 
  
-        .loader-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: #ffffff;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-            overflow: hidden;
-        }
-        
-        .loader-bg {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle at center, #f5f5f5 0%, #ffffff 70%);
-            z-index: -1;
-        }
-        
-        .loader-content {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            z-index: 2;
-            height: 100%;
-            width: 100%;
+     .loader-container {
             position: relative;
-        }
-        
-        .logo-container {
-            position: relative;
-            width: 150px;
-            height: 150px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .logo {
             width: 100px;
             height: 100px;
-            object-fit: contain;
-            filter: drop-shadow(0 0 15px rgba(0, 128, 128, 0.7));
-            position: relative;
-            z-index: 3;
         }
         
-        .hexagon-container {
-            position: absolute;
-            width: 200px;
-            height: 200px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .hexagon {
+        .loader-container:before {
+            content: '';
             position: absolute;
             width: 100%;
             height: 100%;
-            animation: rotate 4s linear infinite;
-        }
-        
-        .hex1 {
-            animation-duration: 10s;
-        }
-        
-        .hex2 {
-            animation-duration: 7s;
-            animation-direction: reverse;
-        }
-        
-        .bottom-container {
-            position: absolute;
-            bottom: 40px;
-            left: 0;
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .progress-bar {
-            width: 200px;
-            height: 4px;
-            background-color: rgba(0, 0, 0, 0.1);
-            border-radius: 2px;
-            overflow: hidden;
-            position: relative;
-        }
-        
-        .progress-fill {
-            position: absolute;
-            top: 0;
-            left: 0;
-            height: 100%;
-            width: 0;
-            background: linear-gradient(to right, #008080, #4db6ac);
-            box-shadow: 0 0 10px rgba(0, 128, 128, 0.7);
-            animation: fill 2s ease-in-out infinite;
-        }
-        
-        .loading-text {
-            margin-top: 15px;
-            color: #008080;
-            font-size: 14px;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            font-weight: 600;
-            text-shadow: 0 0 10px rgba(0, 128, 128, 0.3);
-        }
-        
-        .particles {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            z-index: 1;
-        }
-        
-        .particle {
-            position: absolute;
-            width: 2px;
-            height: 2px;
-            background-color: rgba(0, 128, 128, 0.5);
             border-radius: 50%;
-            box-shadow: 0 0 10px rgba(0, 128, 128, 0.5);
-            animation: float 20s linear infinite;
+            border: 4px solid transparent;
+            border-top-color: #2ecc71;
+            border-bottom-color: #2ecc71;
+            animation: spin 1.5s linear infinite;
         }
         
-        @keyframes float {
+        .loader-container:after {
+            content: '';
+            position: absolute;
+            width: 70%;
+            height: 70%;
+            top: 15%;
+            left: 15%;
+            border-radius: 50%;
+            border: 4px solid transparent;
+            border-left-color: #27ae60;
+            border-right-color: #27ae60;
+            animation: spin 1s linear infinite reverse;
+        }
+        
+        .loader-container .brand {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 32px;
+            font-weight: bold;
+            color: #145a32;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
             0% {
-                transform: translateY(100vh) translateX(0) scale(0);
-                opacity: 0;
-            }
-            10% {
-                opacity: 1;
-            }
-            90% {
-                opacity: 1;
-            }
-            100% {
-                transform: translateY(-100vh) translateX(20vw) scale(1);
-                opacity: 0;
-            }
-        }
-        
-        @keyframes rotate {
-            from {
                 transform: rotate(0deg);
             }
-            to {
+            100% {
                 transform: rotate(360deg);
             }
         }
         
-        @keyframes fill {
-            0% {
-                width: 0%;
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 0.6;
+                transform: translate(-50%, -50%) scale(0.9);
             }
             50% {
-                width: 100%;
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
             }
-            50.1% {
-                width: 0%;
-                left: 100%;
-            }
-            50.2% {
-                left: 0%;
-            }
-            100% {
-                width: 100%;
-                left: 0%;
-            }
-        }
-        
-        /* Media queries for different screen sizes */
-        @media (max-width: 768px) {
-            .logo-container {
-                width: 130px;
-                height: 130px;
-            }
-            
-            .logo {
-                width: 80px;
-                height: 80px;
-            }
-            
-            .hexagon-container {
-                width: 180px;
-                height: 180px;
-            }
-            
-            .progress-bar {
-                width: 180px;
-            }
-            
-            .bottom-container {
-                bottom: 30px;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            .logo-container {
-                width: 110px;
-                height: 110px;
-            }
-            
-            .logo {
-                width: 70px;
-                height: 70px;
-            }
-            
-            .hexagon-container {
-                width: 150px;
-                height: 150px;
-            }
-            
-            .progress-bar {
-                width: 150px;
-            }
-            
-            .loading-text {
-                font-size: 12px;
-            }
-            
-            .bottom-container {
-                bottom: 25px;
-            }
-        }
-        
-        /* Portrait orientation on small devices */
-        @media (orientation: portrait) and (max-height: 600px) {
-            .bottom-container {
-                bottom: 20px;
-            }
-        }
-        
-        /* Landscape orientation on small devices */
-        @media (orientation: landscape) and (max-height: 500px) {
-            .logo-container {
-                width: 90px;
-                height: 90px;
-            }
-            
-            .logo {
-                width: 60px;
-                height: 60px;
-            }
-            
-            .hexagon-container {
-                width: 120px;
-                height: 120px;
-            }
-            
-            .bottom-container {
-                bottom: 15px;
-            }
-            
-            .progress-bar {
-                width: 140px;
-                height: 3px;
-            }
-            
-            .loading-text {
-                font-size: 10px;
-                margin-top: 10px;
-            }
-        
+          
      
 /* Featured Game Styles */
 .featured {
