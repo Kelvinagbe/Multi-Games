@@ -3,1599 +3,484 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gaming Wallet</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <title>User Profile - Aha Games</title>
     <style>
-       /* Green Theme Profile CSS - Mobile & PC Optimized */
-
-:root {
-   /* Primary Green Color Palette */
-   --primary: #054A29;         /* Deep Brand Green */
-   --primary-light: #27AE60;   /* Light Green */
-   --primary-dark: #033118;    /* Darker Green */
-   --accent: #1A7B48;          /* Mid-tone Green */
-
-   /* Text Colors */
-   --text-primary: #2C3E50;    /* Almost-black with subtle color */
-   --text-secondary: #516370;  /* Muted Dark */
-   --text-light: #FFFFFF;      /* White (for dark backgrounds) */
-
-   /* Background Colors */
-   --bg-lightest: #FFFFFF;     /* Pure White */
-   --bg-light: #F8F9FA;        /* Off White */
-   --bg-medium: #EAEDF0;       /* Light Gray */
-   --bg-dark: #D8DDE2;         /* Medium Gray */
-   --bg-darkest: #BDC3C7;      /* Darker Gray */
-
-   /* Status Colors */
-   --success: #27AE60;         /* Success Green */
-   --warning: #F39C12;         /* Warning Orange */
-   --error: #E74C3C;           /* Error Red */
-   --info: #3498DB;            /* Info Blue */
-
-   /* Shadows */
-   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
-   --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.08);
-   --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.1);
-
-   /* Border Radius */
-   --border-radius: 16px;
-}
-
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-}
-
-body {
-    background-color: var(--bg-light);
-    color: var(--text-primary);
-    min-height: 100vh;
-    position: relative;
-    overflow-x: hidden;
-    line-height: 1.5;
-    font-size: 16px;
-    position: relative;
-}
-
-/* Subtle Grid Background */
-body::before { 
-    content: "";
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-image: 
-        radial-gradient(rgba(39, 174, 96, 0.05) 1px, transparent 1px),
-        radial-gradient(rgba(39, 174, 96, 0.03) 1px, transparent 1px);
-    background-size: 20px 20px, 30px 30px;
-    background-position: 0 0, 10px 10px;
-    z-index: -1;
-}
-
-.container {
-    width: 100%;
-    max-width: 100%;
-    margin: 0;
-    padding: 0;
-    transition: transform 0.3s ease-in-out, filter 0.3s ease;
-    position: relative;
-    z-index: 1;
-}
-
-.container.blurred {
-    filter: blur(5px);
-}
-
-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 12px 20px;
-    background-color: var(--primary-dark);
-    color: var(--text-light);
-}
-
-.logo {
-    font-weight: 700;
-    font-size: 24px;
-    color: var(--text-light);
-    text-shadow: 0 1px 1px rgba(0,0,0,0.1);
-}
-
-/* Profile Card - REMOVED BOTTOM MARGIN to eliminate gap */
-.profile-card {
-    background-color: var(--primary-dark);
-    border-radius: 0;
-    margin-bottom: 0; /* Changed from 60px to eliminate gap */
-    box-shadow: var(--shadow-md);
-    position: relative;
-    overflow: visible;
-    border: none;
-    width: 100%;
-}
-
-.profile-header {
-    background: var(--primary-dark);
-    padding: 25px;
-    color: var(--text-light);
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    position: relative;
-    box-shadow: 0 5px 15px rgba(5, 74, 41, 0.2);
-    z-index: 1;
-    overflow: hidden;
-    border-radius: 0;
-    padding-bottom: 45px; /* Added extra padding at bottom for wallet overlap */
-}
-
-/* Scanning Line Animation */
-.profile-header::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 50%;
-    height: 100%;
-    background: linear-gradient(90deg, 
-        transparent, 
-        rgba(255, 255, 255, 0.1), 
-        transparent);
-    animation: scan 3s infinite;
-}
-
-@keyframes scan {
-    0% { left: -100%; }
-    100% { left: 200%; }
-}
-
-.avatar-container {
-    position: relative;
-    margin-right: 8px;
-}
-
-#user-avatar {
-    width: 90px;
-    height: 90px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 4px solid rgba(255, 255, 255, 0.8);
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1), 0 0 0 4px rgba(39, 174, 96, 0.3);
-    background-color: var(--bg-medium);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-#user-avatar:hover {
-    transform: scale(1.05);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15), 0 0 0 4px rgba(39, 174, 96, 0.5);
-}
-
-#user-avatar i {
-    font-size: 28px;
-    color: var(--primary);
-}
-
-.avatar-upload-icon {
-    position: absolute;
-    bottom: 16px;
-    right: 0;
-    background: var(--primary-light);
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    color: var(--text-light);
-    box-shadow: var(--shadow-sm);
-    border: 1px solid rgba(255, 255, 255, 0.5);
-    z-index: 2;
-}
-
-.user-info {
-    flex: 1;
-}
-
-#username {
-    font-size: 1.5rem;
-    font-weight: 700;
-    margin-bottom: 6px;
-    color: var(--text-light);
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-    position: relative;
-}
-
-#username::after {
-    content: '';
-    position: absolute;
-    bottom: -4px;
-    left: 0;
-    width: 40px;
-    height: 3px;
-    background: #fff;
-}
-
-#user-email {
-    color: rgba(255, 255, 255, 0.8);
-    font-size: 14px;
-}
-
-/* Player Level Badge */
-.player-level {
-    display: inline-block;
-    font-size: 0.8rem;
-    background: rgba(255, 255, 255, 0.2);
-    padding: 3px 8px;
-    border-radius: 12px;
-    margin-left: 10px;
-    vertical-align: middle;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-}
-
-.profile-actions {
-    display: flex;
-    gap: 12px;
-    align-items: center;
-    margin-top: 18px;
-}
-
-/* Game stats section */
-.game-stats {
-    display: flex;
-    justify-content: space-between;
-    padding: 16px;
-    background-color: var(--primary-dark);
-    color: var(--text-light);
-}
-
-.stat-item {
-    text-align: center;
-    padding: 12px;
-    border-radius: 12px;
-    flex: 1;
-    margin: 0 4px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.stat-value {
-    font-size: 22px;
-    font-weight: 700;
-    color: var(--text-light);
-    margin-bottom: 4px;
-}
-
-.stat-label {
-    font-size: 12px;
-    color: rgba(255, 255, 255, 0.7);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-/* Enhanced buttons with hover effects */
-.btn {
-    background: var(--primary);
-    color: var(--text-light);
-    border: none;
-    padding: 10px 20px;
-    border-radius: 24px;
-    cursor: pointer;
-    font-weight: 600;
-    transition: all 0.3s ease;
-    box-shadow: var(--shadow-sm), 0 2px 6px rgba(5, 74, 41, 0.2);
-    letter-spacing: 0.5px;
-    font-size: 14px;
-    position: relative;
-    overflow: hidden;
-}
-
-.btn::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-    transition: 0.5s;
-}
-
-.btn:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-md), 0 4px 8px rgba(5, 74, 41, 0.25);
-    background: var(--accent);
-}
-
-.btn:hover::before {
-    left: 100%;
-}
-
-.btn:active {
-    transform: translateY(1px);
-    box-shadow: var(--shadow-sm);
-}
-
-.login-btn {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.settings-btn {
-    background: rgba(255, 255, 255, 0.2); 
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    color: var(--text-light);
-    font-size: 18px;
-    cursor: pointer;
-    transition: all 0.3s;
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 12px;
-}
-
-.settings-btn:hover {
-    background: rgba(255, 255, 255, 0.3);
-    transform: translateY(-1px);
-}
-
-/* Progress bar styling */
-.progress-container {
-    height: 8px;
-    background-color: rgba(255, 255, 255, 0.2);
-    border-radius: 4px;
-    margin: 16px;
-    overflow: hidden;
-}
-
-.progress-bar {
-    height: 100%;
-    background: var(--primary-light);
-    border-radius: 4px;
-    transition: width 0.3s ease;
-}
-
-/* Updated Wallet Section - Overlapping with profile section */
-.wallet-section {
-    background-color: var(--primary-dark); /* Kept the same dark color but could change to var(--primary-light) for contrast */
-    border-radius: var(--border-radius);
-    padding: 24px;
-    margin: -30px 16px 28px;  /* Negative top margin to create overlap with profile */
-    box-shadow: var(--shadow-lg), 0 6px 16px rgba(0, 0, 0, 0.15);
-    color: var(--text-light);
-    position: relative;
-    overflow: hidden;
-    max-width: calc(100% - 32px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    z-index: 5;  /* Ensure it appears above other elements */
-}
-
-/* Add a subtle separator line at top of wallet */
-.wallet-section::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 3px;
-    background: linear-gradient(90deg, var(--primary-light), var(--accent), var(--primary-light));
-    opacity: 0.7;
-}
-
-.wallet-section::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 50%;
-    height: 100%;
-    background: linear-gradient(90deg, 
-        transparent, 
-        rgba(255, 255, 255, 0.1), 
-        transparent);
-    animation: scan 3s infinite;
-}
-
-.wallet-label {
-    font-size: 14px;
-    opacity: 0.9;
-    margin-bottom: 8px;
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-#wallet-balance {
-    font-size: 28px;
-    font-weight: 700;
-    margin-bottom: 12px;
-    letter-spacing: 0.5px;
-    text-shadow: 0 1px 2px rgba(0,0,0,0.1);
-    display: flex;
-    align-items: center;
-}
-
-#wallet-balance::before {
-    content: '💰';
-    margin-right: 8px;
-    font-size: 24px;
-}
-
-.wallet-actions {
-    display: flex;
-    justify-content: space-around;
-    margin-top: 16px;
-    gap: 12px;
-}
-
-.action-btn {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    color: var(--text-light);
-    text-decoration: none;
-    cursor: pointer;
-    transition: all 0.3s;
-    padding: 12px;
-    border-radius: 12px;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    flex: 1;
-}
-
-.action-btn:hover {
-    background: rgba(255, 255, 255, 0.2);
-    transform: translateY(-3px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-.action-btn:active {
-    transform: translateY(-1px);
-}
-
-.action-btn i {
-    font-size: 24px;
-    margin-bottom: 8px;
-}
-
-.action-btn span {
-    font-size: 13px;
-    font-weight: 500;
-}
-
-/* Side Navigation */
-.side-nav {
-    position: fixed;
-    top: 0;
-    right: -300px;
-    width: 300px;
-    height: 100vh;
-    background-color: var(--bg-lightest);
-    transition: right 0.3s ease-in-out;
-    z-index: 9999;
-    box-shadow: -2px 0 20px rgba(0, 0, 0, 0.1);
-    overflow-y: auto;
-    border-left: 1px solid rgba(0, 0, 0, 0.05);
-}
-
-.side-nav.open {
-    right: 0;
-}
-
-.nav-header {
-    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-    padding: 28px 24px;
-    text-align: center;
-    color: var(--text-light);
-    position: relative;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.nav-header h3 {
-    margin-bottom: 8px;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-}
-
-.close-nav {
-    position: absolute;
-    top: 16px;
-    right: 16px;
-    background: rgba(255, 255, 255, 0.2);
-    border: none;
-    color: var(--text-light);
-    font-size: 18px;
-    cursor: pointer;
-    height: 32px;
-    width: 32px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 8px;
-    transition: all 0.2s;
-    backdrop-filter: blur(3px);
-}
-
-.close-nav:hover {
-    background: rgba(255, 255, 255, 0.3);
-}
-
-.nav-list {
-    list-style: none;
-    padding: 12px 0;
-}
-
-.nav-list li {
-    padding: 12px 24px;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-    transition: all 0.3s;
-}
-
-.nav-list li:hover {
-    background-color: rgba(39, 174, 96, 0.05);
-}
-
-.nav-list a {
-    color: var(--text-primary);
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    cursor: pointer;
-    font-size: 15px;
-}
-
-.nav-list i {
-    width: 20px;
-    text-align: center;
-    color: var(--primary);
-    font-size: 18px;
-}
-
-/* File Input (hidden) */
-#avatar-upload {
-    display: none;
-}
-
-/* Content iFrame */
-.content-frame {
-    width: 100%;
-    height: 450px;
-    border: none;
-    border-radius: 16px;
-    box-shadow: var(--shadow-md);
-    background-color: var(--bg-lightest);
-    overflow: hidden;
-}
-
-/* Universal Modal */
-.universal-modal {
-    position: fixed;
-    bottom: -100%;
-    left: 0;
-    width: 100%;
-    background-color: var(--bg-lightest);
-    border-top-left-radius: 20px;
-    border-top-right-radius: 20px;
-    box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.1);
-    z-index: 9990;
-    transition: bottom 0.3s ease-in-out;
-    padding: 24px;
-    height: 80vh;
-    max-height: 600px;
-    border-top: 1px solid rgba(0, 0, 0, 0.05);
-}
-
-.universal-modal.active {
-    bottom: 0;
-}
-
-.modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 24px;
-    padding-bottom: 12px;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-}
-
-.modal-header h3 {
-    color: var(--primary);
-    font-size: 20px;
-    font-weight: 600;
-    position: relative;
-}
-
-.modal-header h3::after {
-    content: '';
-    position: absolute;
-    bottom: -12px;
-    left: 0;
-    width: 30px;
-    height: 2px;
-    background: var(--primary);
-}
-
-.close-modal {
-    background: var(--bg-medium);
-    border: 1px solid rgba(0, 0, 0, 0.05);
-    color: var(--text-secondary);
-    font-size: 18px;
-    cursor: pointer;
-    height: 36px;
-    width: 36px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 8px;
-    transition: all 0.2s;
-}
-
-.close-modal:hover {
-    background: var(--bg-dark);
-    color: var(--text-primary);
-}
-
-/* Modal Content with Enhanced iFrame Support */
-.modal-content {
-    height: calc(100% - 60px);
-    overflow-y: auto;
-    padding-right: 4px;
-    position: relative;
-}
-
-/* Scrollbar Styling */
-.modal-content::-webkit-scrollbar {
-    width: 6px;
-}
-
-.modal-content::-webkit-scrollbar-track {
-    background: var(--bg-medium);
-    border-radius: 3px;
-}
-
-.modal-content::-webkit-scrollbar-thumb {
-    background: var(--bg-dark);
-    border-radius: 3px;
-}
-
-.modal-content::-webkit-scrollbar-thumb:hover {
-    background: var(--bg-darkest);
-}
-
-/* Container for iframe to maintain proper sizing */
-.modal-iframe-container {
-    width: 100%;
-    height: 100%;
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    border-radius: 12px;
-    background: var(--bg-light);
-}
-
-/* The iframe itself - fixed sizing and positioning */
-.modal-iframe {
-    width: 100%;
-    height: 100%;
-    border: none;
-    display: block;
-    background-color: var(--bg-lightest);
-    position: relative;
-    z-index: 1;
-}
-
-/* Responsive adjustments for different screen sizes */
-@media (max-width: 480px), (max-height: 600px) {
-    .modal-iframe-container {
-        height: 100%;
-        border-radius: 8px;
-    }
-    
-    .modal-iframe {
-        min-height: 300px; /* Minimum height on small screens */
-    }
-    
-    .modal-content {
-        padding-right: 0; /* Remove padding when iframe present */
-    }
-}
-
-/* Special handling for very tall screens */
-@media (min-height: 800px) {
-    .modal-iframe {
-        max-height: 650px; /* Cap height on very tall screens */
-    }
-}
-
-/* Fix iOS iframe rendering issues */
-@supports (-webkit-overflow-scrolling: touch) {
-    .modal-iframe-container {
-        -webkit-overflow-scrolling: touch;
-    }
-    
-    .modal-iframe {
-        height: 1px;
-        min-height: 100%;
-    }
-}
-
-/* Dark overlay */
-.dark-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.3);
-    backdrop-filter: blur(2px);
-    z-index: 999;
-    opacity: 0;
-    visibility: hidden;
-    transition: all 0.3s;
-}
-
-.dark-overlay.active {
-    opacity: 1;
-    visibility: visible;
-}
-
-/* Achievement styling */
-.achievement-icon {
-    width: 40px;
-    height: 40px;
-    background: var(--primary);
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--text-light);
-    font-size: 18px;
-    margin-right: 12px;
-}
-
-/* Form elements */
-.form-group {
-    margin-bottom: 20px;
-}
-
-.form-label {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: 500;
-    color: var(--text-secondary);
-    font-size: 14px;
-}
-
-.form-input {
-    width: 100%;
-    padding: 12px 16px;
-    background-color: var(--bg-light);
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-    font-size: 16px;
-    color: var(--text-primary);
-    transition: all 0.2s;
-}
-
-.form-input:focus {
-    outline: none;
-    border-color: var(--primary);
-    box-shadow: 0 0 0 3px rgba(5, 74, 41, 0.1);
-}
-
-.form-input::placeholder {
-    color: rgba(0, 0, 0, 0.3);
-}
-
-/* Cards and Lists */
-.card {
-    background-color: var(--bg-lightest);
-    border-radius: 12px;
-    padding: 20px;
-    margin-bottom: 20px;
-    box-shadow: var(--shadow-sm);
-    border: 1px solid rgba(0, 0, 0, 0.05);
-    position: relative;
-    overflow: hidden;
-}
-
-.card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 4px;
-    height: 100%;
-    background: var(--primary);
-}
-
-.card-title {
-    font-size: 18px;
-    font-weight: 600;
-    margin-bottom: 16px;
-    color: var(--text-primary);
-    padding-left: 8px;
-}
-
-.list-item {
-    padding: 12px 0;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.list-item:last-child {
-    border-bottom: none;
-}
-
-/* Badges */
-.badge {
-    display: inline-block;
-    padding: 4px 12px;
-    border-radius: 16px;
-    font-size: 12px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.badge-success {
-    background-color: var(--success);
-    color: var(--text-light);
-}
-
-.badge-warning {
-    background-color: var(--warning);
-    color: var(--text-primary);
-}
-
-.badge-error {
-    background-color: var(--error);
-    color: var(--text-light);
-}
-
-/* Responsive adjustments */
-@media (max-width: 480px) {
-    .profile-header {
-        padding: 20px;
-        flex-direction: column;
-        text-align: center;
-        padding-bottom: 40px; /* Adjusted padding for mobile */
-    }
-
-    #username::after {
-        left: 50%;
-        transform: translateX(-50%);
-    }
-
-    #user-avatar {
-        width: 80px;
-        height: 80px;
-        margin-bottom: 12px;
-    }
-
-    .game-stats {
-        flex-wrap: wrap;
-    }
-
-    .stat-item {
-        min-width: 45%;
-        margin-bottom: 10px;
-    }
-
-    .wallet-section {
-        margin: -25px 12px 20px; /* Less negative margin on mobile */
-        padding: 20px;
-    }
-
-    .wallet-actions {
-        flex-wrap: wrap;
-    }
-
-    .action-btn {
-        min-width: calc(50% - 8px);
-        margin-bottom: 8px;
-    }
-
-    .avatar-container {
-        margin-right: 0;
-    }
-}
-
-@media (min-width: 481px) and (max-width: 768px) {
-    .container {
-        width: 100%;
-    }
-    
-    .wallet-section {
-        margin: -30px 16px 28px; /* Adjusted for tablets */
-    }
-}
-
-@media (min-width: 769px) {
-    .container {
-        width: 100%;
-    }
-}
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        body {
+            background-color: #051a11;
+            color: #ffffff;
+        }
+        
+        .container {
+            max-width: 480px;
+            margin: 0 auto;
+            background-color: #0a2418;
+            min-height: 100vh;
+            position: relative;
+            padding-bottom: 20px;
+        }
+        
+        .header {
+            background-color: #0d3121;
+            padding: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        
+        .header-title {
+            font-size: 20px;
+            font-weight: 600;
+        }
+        
+        .header-actions {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .icon-button {
+            background: none;
+            border: none;
+            color: #ffffff;
+            cursor: pointer;
+            font-size: 18px;
+        }
+        
+        .profile-section {
+            padding: 24px 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border-bottom: 1px solid #144a33;
+        }
+        
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background-color: #14a56e;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 36px;
+            font-weight: bold;
+            margin-bottom: 16px;
+            border: 3px solid #ffffff;
+        }
+        
+        .profile-name {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .profile-username {
+            font-size: 16px;
+            color: #a0a0a0;
+            margin-bottom: 16px;
+        }
+        
+        .profile-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 8px;
+        }
+        
+        .button {
+            padding: 10px 20px;
+            border-radius: 24px;
+            font-weight: 500;
+            font-size: 14px;
+            cursor: pointer;
+            border: none;
+            outline: none;
+        }
+        
+        .primary-button {
+            background-color: #14a56e;
+            color: white;
+        }
+        
+        .secondary-button {
+            background-color: transparent;
+            border: 1px solid #14a56e;
+            color: #14a56e;
+        }
+        
+        .section-header {
+            padding: 16px;
+            font-size: 18px;
+            font-weight: 600;
+            border-bottom: 1px solid #144a33;
+        }
+        
+        .game-list {
+            padding: 16px;
+        }
+        
+        .game-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 12px 0;
+            border-bottom: 1px solid #144a33;
+        }
+        
+        .game-image {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            background-color: #0d3121;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: #a0a0a0;
+        }
+        
+        .game-info {
+            flex: 1;
+        }
+        
+        .game-title {
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+        
+        .game-stats {
+            display: flex;
+            gap: 12px;
+            font-size: 12px;
+            color: #a0a0a0;
+        }
+        
+        .wallet-section {
+            margin: 24px 16px;
+            background-color: #0d3121;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .wallet-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .wallet-title {
+            font-size: 20px;
+            font-weight: 600;
+        }
+        
+        .wallet-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: rgba(20, 165, 110, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #14a56e;
+            font-size: 20px;
+        }
+        
+        .balance-cards {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        
+        .balance-card {
+            flex: 1;
+            background-color: #082015;
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .balance-label {
+            font-size: 14px;
+            color: #a0a0a0;
+            margin-bottom: 8px;
+        }
+        
+        .balance-amount {
+            font-size: 24px;
+            font-weight: 700;
+            color: #14a56e;
+        }
+        
+        .wallet-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 16px;
+        }
+        
+        .wallet-button {
+            flex: 1;
+            padding: 12px 0;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 500;
+            cursor: pointer;
+        }
+        
+        .withdraw-button {
+            background-color: #14a56e;
+            color: white;
+        }
+        
+        .history-button {
+            background-color: transparent;
+            border: 1px solid #14a56e;
+            color: #14a56e;
+        }
+        
+        .referral-section {
+            margin: 24px 16px;
+            background-color: #0d3121;
+            border-radius: 16px;
+            padding: 20px;
+        }
+        
+        .referral-header {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .referral-code {
+            background-color: #082015;
+            padding: 12px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 18px;
+            font-weight: 600;
+            text-align: center;
+            margin: 16px 0;
+            letter-spacing: 1px;
+            color: #14a56e;
+        }
+        
+        .referral-info {
+            font-size: 14px;
+            color: #a0a0a0;
+            margin-bottom: 16px;
+        }
+        
+        .referral-count {
+            font-weight: 600;
+            color: #ffffff;
+        }
+        
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .modal-container {
+            width: 90%;
+            max-width: 480px;
+            background-color: #0a2418;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+        }
+        
+        .modal-overlay.active .modal-container {
+            transform: translateY(0);
+        }
+        
+        .modal-header {
+            background-color: #0d3121;
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            color: #a0a0a0;
+            font-size: 20px;
+            cursor: pointer;
+        }
+        
+        .modal-content {
+            padding: 20px;
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+        
+        .modal-iframe {
+            width: 100%;
+            height: 70vh;
+            border: none;
+        }
+        
+        /* Loading Indicator */
+        .loading-spinner {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            border: 3px solid rgba(20, 165, 110, 0.3);
+            border-radius: 50%;
+            border-top-color: #14a56e;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        
+        .loader-container {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+        }
     </style>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
-    <!-- Main Container -->
-    <div class="container" id="main-container">
-        <!-- Profile Card with Login/Settings -->
-        <div class="profile-card">
-            <div class="profile-header">
-                <div class="avatar-container">
-                    <div id="user-avatar">
-                        <i class="fas fa-user"></i>
-                    </div>
-                    <div class="avatar-upload-icon">
-                        <i class="fas fa-camera"></i>
-                    </div>
-                    <input type="file" id="avatar-upload" accept="image/*">
-                </div>
-                <div class="user-info">
-                    <div id="username">UserName</div>
-                    <div id="user-email">user@example.com</div>
-                    <div class="profile-actions">
-                        <button class="btn login-btn" id="login-btn" data-modal-title="Login to Your Account" data-modal-type="page" data-modal-page="../auth/login.html">
-                            <i class="fas fa-user"></i> Login
-                        </button>
-                        <button class="settings-btn" id="settings-btn">
-                            <i class="fas fa-cog"></i>
-                        </button>
-                    </div>
-                </div>
+    <div class="container">
+        <div class="header">
+            <div class="header-title">Profile</div>
+            <div class="header-actions">
+                <button class="icon-button" id="logout-btn"><i class="fas fa-sign-out-alt"></i></button>
+                <button class="icon-button" id="settings-btn"><i class="fas fa-cog"></i></button>
             </div>
         </div>
-
-        <!-- Wallet Section -->
+        
+        <div class="profile-section">
+            <div class="profile-avatar">
+                <span id="user-initials">JD</span>
+            </div>
+            <h1 class="profile-name" id="full-name">Loading...</h1>
+            <div class="profile-username" id="username">@loading</div>
+            
+            <div class="profile-actions">
+                <button class="button primary-button" id="edit-profile-btn">Edit Profile</button>
+                <button class="button secondary-button" id="share-btn">Share</button>
+            </div>
+        </div>
+        
         <div class="wallet-section">
-            <div class="wallet-label">Available Balance</div>
-            <div id="wallet-balance">$0.00</div>
-            <div class="wallet-actions">
-                <div class="action-btn" id="withdraw-btn" data-modal-title="Withdraw Funds" data-modal-type="page" data-modal-page="withdraw.html">
-                    <i class="fas fa-arrow-circle-down"></i>
-                    <span>Withdraw</span>
+            <div class="wallet-header">
+                <div class="wallet-title">My Wallet</div>
+                <div class="wallet-icon">
+                    <i class="fas fa-wallet"></i>
                 </div>
             </div>
+            
+            <div class="balance-cards">
+                <div class="balance-card">
+                    <div class="balance-label">Wallet Balance</div>
+                    <div class="balance-amount" id="wallet-balance">$0.00</div>
+                </div>
+                <div class="balance-card">
+                    <div class="balance-label">Airtime Balance</div>
+                    <div class="balance-amount" id="airtime-balance">$0.00</div>
+                </div>
+            </div>
+            
+            <div class="wallet-actions">
+                <button class="wallet-button withdraw-button" id="withdraw-btn">Withdraw</button>
+                <button class="wallet-button history-button" id="history-btn">History</button>
+            </div>
+        </div>
+        
+        <div class="section-header">
+            Recently Played
+        </div>
+        
+        <div class="game-list" id="games-container">
+            <!-- Games will be loaded here -->
+            <div class="loader-container">
+                <div class="loading-spinner"></div>
+            </div>
+        </div>
+        
+        <div class="referral-section">
+            <div class="referral-header">
+                <i class="fas fa-user-plus" style="color: #14a56e;"></i>
+                <span>Refer Friends</span>
+            </div>
+            <div class="referral-info">Share your code and earn bonuses when friends join!</div>
+            <div class="referral-code" id="referral-code">LOADING</div>
+            <div class="referral-info">You have referred <span class="referral-count" id="referral-count">0</span> friends so far.</div>
+            <button class="button primary-button" style="width: 100%;" id="share-referral-btn">Share Referral Code</button>
         </div>
     </div>
 
     <!-- Universal Modal -->
-    <div class="universal-modal" id="universal-modal">
-        <div class="modal-header">
-            <h3 id="modal-title">Modal Title</h3>
-            <button class="close-modal" id="close-universal-modal">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
-        <div class="modal-content" id="modal-content">
-            <!-- Content will be loaded here dynamically -->
+    <div class="modal-overlay" id="universal-modal">
+        <div class="modal-container">
+            <div class="modal-header">
+                <div class="modal-title" id="modal-title">Modal Title</div>
+                <button class="modal-close" id="modal-close"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-content" id="modal-content">
+                <!-- Content will be loaded dynamically -->
+                <iframe id="modal-iframe" class="modal-iframe" style="display: none;"></iframe>
+                <div id="modal-loader" class="loader-container">
+                    <div class="loading-spinner"></div>
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- Dark overlay -->
-    <div class="dark-overlay" id="dark-overlay"></div>
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
     
-    <!-- Side Navigation -->
-    <nav class="side-nav" id="side-nav">
-        <div class="nav-header">
-            <h3>Settings</h3>
-            <p>Customize your experience</p>
-            <button class="close-nav" id="close-nav">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
-        <ul class="nav-list">
-            <li>
-                <a class="nav-link" data-modal-title="Profile" data-modal-type="page" data-modal-page="profile.html">
-                    <i class="fas fa-user"></i>
-                    <span>Profile</span>
-                </a>
-            </li>
-            <li>
-                <a class="nav-link" data-modal-title="Account Settings" data-modal-type="page" data-modal-page="account.html">
-                    <i class="fas fa-cog"></i>
-                    <span>Account Settings</span>
-                </a>
-            </li>
-            <li>
-                <a class="nav-link" data-modal-title="Wallet" data-modal-type="page" data-modal-page="wallet.html">
-                    <i class="fas fa-wallet"></i>
-                    <span>Wallet</span>
-                </a>
-            </li>
-            <li>
-                <a class="nav-link" data-modal-title="Security" data-modal-type="page" data-modal-page="security.html">
-                    <i class="fas fa-lock"></i>
-                    <span>Security</span>
-                </a>
-            </li>
-            <li>
-                <a class="nav-link" data-modal-title="Help & Support" data-modal-type="page" data-modal-page="help.html">
-                    <i class="fas fa-question-circle"></i>
-                    <span>Help & Support</span>
-                </a>
-            </li>
-            <li>
-                <a class="nav-link" data-modal-title="Login" data-modal-type="page" data-modal-page="../auth/login.html">
-                    <i class="fas fa-sign-in-alt"></i>
-                    <span>Login</span>
-                </a>
-            </li>
-            <li>
-                <a href="#logout" class="logout-link">
-                    <i class="fas fa-sign-out-alt"></i>
-                    <span>Logout</span>
-                </a>
-            </li>
-        </ul>
-    </nav>
-
-          <!-- Include Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
- 
-    <script>
-    // Elements
-const mainContainer = document.getElementById('main-container');
-const settingsBtn = document.getElementById('settings-btn');
-const sideNav = document.getElementById('side-nav');
-const closeNav = document.getElementById('close-nav');
-const loginBtn = document.getElementById('login-btn');
-const withdrawBtn = document.getElementById('withdraw-btn');
-const universalModal = document.getElementById('universal-modal');
-const closeUniversalModal = document.getElementById('close-universal-modal');
-const modalTitle = document.getElementById('modal-title');
-const modalContent = document.getElementById('modal-content');
-const darkOverlay = document.getElementById('dark-overlay');
-const userNameElement = document.getElementById('username');
-const userEmailElement = document.getElementById('user-email');
-const userAvatar = document.getElementById('user-avatar');
-const walletBalanceElement = document.getElementById('wallet-balance');
-
-// Firebase configuration
-const firebaseConfig = {
-    apiKey: "AIzaSyBw1uA-kNKOZEufWKZ9AMBxvRGHNGF1lkA",
-    authDomain: "multi-games-a2561.firebaseapp.com",
-    projectId: "multi-games-a2561",
-    databaseURL: "https://multi-games-a2561-default-rtdb.firebaseio.com"
-};
-
-// Initialize Firebase using the loaded SDK
-firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-const database = firebase.database();
-
-// User state management
-let currentUser = null;
-let userData = null;
-
-// Listen for authentication state changes
-auth.onAuthStateChanged((user) => {
-    if (user) {
-        // User is signed in
-        currentUser = user;
-        fetchUserData(user.uid);
-        updateUIForLoggedInUser();
-    } else {
-        // User is signed out
-        currentUser = null;
-        userData = null;
-        updateUIForLoggedOutUser();
-    }
-});
-
-// Fetch user data from Firebase
-function fetchUserData(userId) {
-    const userRef = database.ref(`users/${userId}`);
-    userRef.on('value', (snapshot) => {
-        userData = snapshot.val();
-        if (userData) {
-            updateUIWithUserData();
-        }
-    });
-}
-
-// Update UI for logged-in user
-function updateUIForLoggedInUser() {
-    loginBtn.innerHTML = '<i class="fas fa-user-check"></i> Profile';
-    loginBtn.setAttribute('data-modal-title', 'Your Profile');
-    loginBtn.setAttribute('data-modal-page', 'profile.html');
-}
-
-// Update UI for logged-out user
-function updateUIForLoggedOutUser() {
-    userNameElement.textContent = 'Guest User';
-    userEmailElement.textContent = 'Login to access your account';
-    walletBalanceElement.textContent = '$0.00';
-    userAvatar.innerHTML = '<i class="fas fa-user"></i>';
-    
-    loginBtn.innerHTML = '<i class="fas fa-user"></i> Login';
-    loginBtn.setAttribute('data-modal-title', 'Login to Your Account');
-    loginBtn.setAttribute('data-modal-page', '../auth/login.html');
-}
-
-// Update UI with user data
-function updateUIWithUserData() {
-    if (!userData) return;
-    
-    userNameElement.textContent = userData.fullName || userData.username || 'User';
-    userEmailElement.textContent = userData.email || '';
-    walletBalanceElement.textContent = `$${userData.airtimeBalance?.toFixed(2) || '0.00'}`;
-    
-    // Update avatar if user has a photoURL
-    if (userData.photoURL) {
-        userAvatar.innerHTML = '';
-        const img = document.createElement('img');
-        img.src = userData.photoURL;
-        img.alt = 'User Avatar';
-        img.style.width = '100%';
-        img.style.height = '100%';
-        img.style.objectFit = 'cover';
-        img.style.borderRadius = '50%';
-        userAvatar.appendChild(img);
-    }
-}
-
-// Update user profile data directly in Firebase
-async function updateUserProfile(updatedData) {
-    if (!currentUser) {
-        showNotification('Please login first', 'error');
-        return;
-    }
-    
-    try {
-        // Get the user reference
-        const userRef = database.ref(`users/${currentUser.uid}`);
-        
-        // Update only the fields that are provided
-        await userRef.update(updatedData);
-        
-        showNotification('Profile updated successfully', 'success');
-        
-        // Update local userData object
-        userData = { ...userData, ...updatedData };
-        
-        // Update UI
-        updateUIWithUserData();
-    } catch (error) {
-        showNotification('Error updating profile', 'error');
-        console.error('Update profile error:', error);
-    }
-}
-
-// Show notification
-function showNotification(message, type = 'info') {
-    // Create notification element
-    const notification = document.createElement('div');
-    notification.className = `notification notification-${type}`;
-    notification.textContent = message;
-    
-    // Add to DOM
-    document.body.appendChild(notification);
-    
-    // Show animation
-    setTimeout(() => {
-        notification.classList.add('show');
-    }, 10);
-    
-    // Auto hide after 3 seconds
-    setTimeout(() => {
-        notification.classList.remove('show');
-        setTimeout(() => {
-            notification.remove();
-        }, 300);
-    }, 3000);
-}
-
-// Universal Modal Functions
-async function openModal(title, type, page = null) {
-    // Set modal title
-    modalTitle.textContent = title;
-    modalContent.innerHTML = ''; // Clear old content
-
-    if (type === 'page') {
-        try {
-            const iframeContainer = document.createElement('div');
-            iframeContainer.className = 'modal-iframe-container';
-
-            const iframe = document.createElement('iframe');
-            iframe.className = 'modal-iframe';
-            iframe.src = page;
-            iframe.allow = "fullscreen"; // optional
-
-            // Remove sandbox for testing — it can block scripts/styles
-            // iframe.sandbox = 'allow-same-origin allow-scripts allow-forms';
-
-            iframeContainer.appendChild(iframe);
-            modalContent.appendChild(iframeContainer);
-
-            // If your iframe sends messages back to parent
-            window.addEventListener('message', handleIframeMessage);
-        } catch (err) {
-            console.error("Error loading modal page:", err);
-            modalContent.innerHTML = `<div style="padding: 20px;">Failed to load page.</div>`;
-        }
-    }
-
-    // Show modal
-    universalModal.classList.add('active');
-    darkOverlay.classList.add('active');
-    mainContainer.classList.add('blurred');
-}
-
-// Handle messages from iframe
-function handleIframeMessage(event) {
-    // Security check to make sure message is from our domain
-    if (event.origin !== window.location.origin) return;
-    
-    const { action, data } = event.data;
-    
-    switch (action) {
-        case 'updateProfile':
-            updateUserProfile(data);
-            break;
-        case 'closeModal':
-            closeModal();
-            break;
-        case 'userRegistered':
-            // When a user registers, create the full user data structure
-            if (data && data.user) {
-                createUserData(data.user, data.fullName, data.username, data.photoURL, data.referredBy);
-            }
-            break;
-        default:
-            break;
-    }
-}
-
-// Create full user data structure in Firebase
-function createUserData(user, fullName, username, photoURL, referredBy) {
-    if (!user || !user.uid) return;
-    
-    // Generate a random referral code
-    const referralCode = generateReferralCode(8);
-    
-    // Full user data structure
-    const userData = {
-        email: user.email,
-        fullName: fullName,
-        username: username,
-        photoURL: photoURL,
-        walletBalance: 0,
-        createdAt: new Date().toISOString(),
-        dateJoined: new Date().toISOString().split('T')[0],
-        lastLogin: new Date().toISOString(),
-        referralCode: referralCode,
-        referredBy: referredBy,
-        referrals: 0,
-        airtimeBalance: 0,
-        airtimeScore: 0
-    };
-    
-    // Save to Firebase
-    const userRef = database.ref(`users/${user.uid}`);
-    userRef.set(userData)
-        .then(() => {
-            console.log('User data created successfully');
-            fetchUserData(user.uid);
-        })
-        .catch(error => {
-            console.error('Error creating user data:', error);
-        });
-    
-    // If there's a referrer, increment their referral count
-    if (referredBy) {
-        incrementReferralCount(referredBy);
-    }
-}
-
-// Generate random referral code
-function generateReferralCode(length) {
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-    let result = '';
-    for (let i = 0; i < length; i++) {
-        result += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
-    return result;
-}
-
-// Increment referral count for a referrer
-function incrementReferralCount(referralCode) {
-    // First find the user with this referral code
-    const usersRef = database.ref('users');
-    usersRef.once('value', (snapshot) => {
-        const users = snapshot.val();
-        if (!users) return;
-        
-        // Find the user with matching referral code
-        let referrerId = null;
-        Object.keys(users).forEach(userId => {
-            if (users[userId].referralCode === referralCode) {
-                referrerId = userId;
-            }
-        });
-        
-        // If found, increment their referral count
-        if (referrerId) {
-            const referrerRef = database.ref(`users/${referrerId}`);
-            referrerRef.update({
-                referrals: (users[referrerId].referrals || 0) + 1
-            });
-        }
-    });
-}
-
-function closeModal() {
-    universalModal.classList.remove('active');
-    darkOverlay.classList.remove('active');
-    mainContainer.classList.remove('blurred');
-    window.removeEventListener('message', handleIframeMessage);
-}
-
-// Event Listeners
-settingsBtn.addEventListener('click', () => {
-    sideNav.classList.add('open');
-    darkOverlay.classList.add('active');
-    mainContainer.classList.add('blurred');
-});
-
-closeNav.addEventListener('click', () => {
-    sideNav.classList.remove('open');
-    darkOverlay.classList.remove('active');
-    mainContainer.classList.remove('blurred');
-});
-
-// Login button
-loginBtn.addEventListener('click', () => {
-    const title = loginBtn.getAttribute('data-modal-title');
-    const type = loginBtn.getAttribute('data-modal-type');
-    const page = loginBtn.getAttribute('data-modal-page');
-    openModal(title, type, page);
-});
-
-// Withdraw button
-withdrawBtn.addEventListener('click', () => {
-    const title = withdrawBtn.getAttribute('data-modal-title');
-    const type = withdrawBtn.getAttribute('data-modal-type');
-    const page = withdrawBtn.getAttribute('data-modal-page');
-    openModal(title, type, page);
-});
-
-// Close universal modal
-closeUniversalModal.addEventListener('click', closeModal);
-
-// Close when clicking on overlay
-darkOverlay.addEventListener('click', () => {
-    if (sideNav.classList.contains('open')) {
-        sideNav.classList.remove('open');
-    } else {
-        closeModal();
-    }
-    darkOverlay.classList.remove('active');
-    mainContainer.classList.remove('blurred');
-});
-
-// Navigation links
-const navLinks = document.querySelectorAll('.nav-link');
-navLinks.forEach(link => {
-    link.addEventListener('click', () => {
-        const title = link.getAttribute('data-modal-title');
-        const type = link.getAttribute('data-modal-type');
-        const page = link.getAttribute('data-modal-page');
-        
-        openModal(title, type, page);
-        sideNav.classList.remove('open');
-    });
-});
-
-// Avatar upload
-const avatarUploadIcon = document.querySelector('.avatar-upload-icon');
-const avatarUpload = document.getElementById('avatar-upload');
-
-avatarUploadIcon.addEventListener('click', () => {
-    if (!currentUser) {
-        showNotification('Please login to upload avatar', 'warning');
-        return;
-    }
-    avatarUpload.click();
-});
-
-avatarUpload.addEventListener('change', async function() {
-    if (this.files && this.files[0]) {
-        const file = this.files[0];
-        
-        // Show loading indicator
-        userAvatar.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
-        
-        try {
-            // Read the file
-            const reader = new FileReader();
-            
-            reader.onload = async function(e) {
-                const photoURL = e.target.result;
-                
-                // Update the user's photoURL in Firebase
-                const userRef = database.ref(`users/${currentUser.uid}`);
-                await userRef.update({ photoURL });
-                
-                // Update avatar immediately
-                userAvatar.innerHTML = '';
-                const img = document.createElement('img');
-                img.src = photoURL;
-                img.alt = 'User Avatar';
-                img.style.width = '100%';
-                img.style.height = '100%';
-                img.style.objectFit = 'cover';
-                img.style.borderRadius = '50%';
-                userAvatar.appendChild(img);
-                
-                // Update user data
-                if (userData) {
-                    userData.photoURL = photoURL;
-                }
-                
-                showNotification('Avatar updated successfully', 'success');
-            };
-            
-            reader.readAsDataURL(file);
-        } catch (error) {
-            console.error('Avatar upload error:', error);
-            showNotification('Error uploading avatar', 'error');
-            userAvatar.innerHTML = '<i class="fas fa-user"></i>';
-        }
-    }
-});
-
-// Add CSS for notifications
-const notificationStyles = document.createElement('style');
-notificationStyles.innerHTML = `
-.notification {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    padding: 12px 20px;
-    border-radius: 8px;
-    color: white;
-    font-weight: 500;
-    opacity: 0;
-    transform: translateY(-20px);
-    transition: all 0.3s ease;
-    z-index: 2000;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    max-width: 90%;
-}
-
-.notification.show {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-.notification-success {
-    background-color: var(--success);
-}
-
-.notification-error {
-    background-color: var(--error);
-}
-
-.notification-warning {
-    background-color: var(--warning);
-    color: var(--text-primary);
-}
-
-.notification-info {
-    background-color: var(--info);
-}
-`;
-document.head.appendChild(notificationStyles);
-
-// Initialize the app
-function initApp() {
-    // Check if user is already logged in (from session)
-    const currentUser = auth.currentUser;
-    if (currentUser) {
-        fetchUserData(currentUser.uid);
-        updateUIForLoggedInUser();
-    } else {
-        updateUIForLoggedOutUser();
-    }
-}
-
-// Run initialization
-initApp();
-    <!-- Diagnostic and Fixed Implementation for profile.html -->
-<script>
-// Self-executing function
-(function() {
-  console.log("Profile page login handler loaded");
-  
-  // Check if we might be in an iframe
-  const isInIframe = window !== window.top;
-  console.log("Is page loaded in iframe:", isInIframe);
-  
-  // Function to open login modal
-  function openLoginModal() {
-    console.log("Attempting to open login modal");
-    
-    // OPTION 1: If you have a specific login modal element
-    // Find login modal using multiple possible selectors
-    const loginModal = document.querySelector(
-      '#loginModal, .login-modal, [data-modal="login"], .login-form, form[action*="login"]'
-    );
-    
-    console.log("Login modal element found:", loginModal);
-    
-    if (loginModal) {
-      // Try multiple approaches to show the modal
-      loginModal.style.display = 'block';
-      loginModal.style.visibility = 'visible';
-      loginModal.style.opacity = '1';
-      
-      // Add classes that might be used to show the modal
-      loginModal.classList.add('show', 'active', 'visible', 'open');
-      
-      console.log("Login modal should now be visible");
-    } else {
-      console.error("Could not find login modal element");
-    }
-    
-    // OPTION 2: If you have a login button, we can click it
-    const loginButton = document.querySelector(
-      'button[type="login"], .login-button, #loginButton, [data-action="login"]'
-    );
-    
-    console.log("Login button found:", loginButton);
-    
-    if (loginButton) {
-      console.log("Clicking login button");
-      loginButton.click();
-    }
-  }
-
-  // Listen for messages from parent window
-  window.addEventListener('message', function(event) {
-    console.log("Message received from parent:", event.data);
-    
-    // Check if this is a request to open login modal
-    if (event.data && event.data.action === 'openLoginModal') {
-      console.log("Login modal request received");
-      openLoginModal();
-    }
-  });
-  
-  // Log that we're ready to receive messages
-  if (isInIframe) {
-    console.log("Profile page ready to receive messages");
-    
-    // Let the parent know we're loaded (optional)
-    try {
-      window.parent.postMessage({ status: "profileLoaded" }, "*");
-    } catch (e) {
-      console.error("Error posting message to parent:", e);
-    }
-  }
-})();
-</script>
+    <script src="../js/profile"></script>
 </body>
 </html>
