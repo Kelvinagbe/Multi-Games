@@ -25,10 +25,14 @@ import {
 // The API key is still needed for client SDK, but we'll use it only for authentication
 // Other sensitive operations will go through our API
 const firebaseConfig = {
-    apiKey: "AIzaSyBw1uA-kNKOZEufWKZ9AMBxvRGHNGF1lkA",
-    authDomain: "multi-games-a2561.firebaseapp.com",
-    projectId: "multi-games-a2561",
-    databaseURL: "https://multi-games-a2561-default-rtdb.firebaseio.com"
+  apiKey: "AIzaSyBw1uA-kNKOZEufWKZ9AMBxvRGHNGF1lkA",
+  authDomain: "multi-games-a2561.firebaseapp.com",
+  databaseURL: "https://multi-games-a2561-default-rtdb.firebaseio.com",
+  projectId: "multi-games-a2561",
+  storageBucket: "multi-games-a2561.firebasestorage.app",
+  messagingSenderId: "150551898066",
+  appId: "1:150551898066:web:4e8fb185f2321ba4140a0b",
+  measurementId: "G-PB8Y87E6XV"
 };
 
 // Initialize Firebase
