@@ -55,68 +55,50 @@ body {
 }
 
  
-     .loader-container {
-            position: relative;
-            width: 100px;
-            height: 100px;
-        }
-        
-        .loader-container:before {
-            content: '';
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            border: 4px solid transparent;
-            border-top-color: #2ecc71;
-            border-bottom-color: #2ecc71;
-            animation: spin 1.5s linear infinite;
-        }
-        
-        .loader-container:after {
-            content: '';
-            position: absolute;
-            width: 70%;
-            height: 70%;
-            top: 15%;
-            left: 15%;
-            border-radius: 50%;
-            border: 4px solid transparent;
-            border-left-color: #27ae60;
-            border-right-color: #27ae60;
-            animation: spin 1s linear infinite reverse;
-        }
-        
-        .loader-container .brand {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 32px;
-            font-weight: bold;
-            color: #145a32;
-            animation: pulse 1.5s ease-in-out infinite;
-        }
-        
-        @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
-            100% {
-                transform: rotate(360deg);
-            }
-        }
-        
-        @keyframes pulse {
-            0%, 100% {
-                opacity: 0.6;
-                transform: translate(-50%, -50%) scale(0.9);
-            }
-            50% {
-                opacity: 1;
-                transform: translate(-50%, -50%) scale(1);
-            }
-          
+     /* Loader Styles */
+.loader-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--background-color);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  transition: var(--transition);
+  backdrop-filter: blur(5px); /* Modern blur effect */
+}
+
+.m-loader {
+  width: 60px;
+  height: 60px;
+  background-color: var(--primary-color);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-size: 30px;
+  font-weight: bold;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
      
 /* Featured Game Styles */
 .featured {
