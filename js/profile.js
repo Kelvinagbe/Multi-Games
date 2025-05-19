@@ -47,6 +47,7 @@ const shareReferralBtn = document.getElementById('share-referral-btn');
 // Global variables
 let currentUser = null;
 let userProfile = null;
+let isAuthCheckComplete = false;
 
 // Check authentication state when the page loads
 document.addEventListener('DOMContentLoaded', function() {
@@ -55,6 +56,17 @@ document.addEventListener('DOMContentLoaded', function() {
     // Add event listeners to buttons
     setupEventListeners();
 });
+
+// Helper function to prevent default and open a modal
+function preventDefaultAndOpenModal(element, title, contentUrl) {
+    if (!element) return; // Safety check
+    
+    element.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        openModal(title, contentUrl);
+    });
+}
 
 // Setup event listeners for all interactive elements
 function setupEventListeners() {
@@ -65,43 +77,56 @@ function setupEventListeners() {
     preventDefaultAndOpenModal(historyBtn, 'Transaction History', 'history.html');
     
     // Special case buttons
-    logoutBtn.addEventListener('click', function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        handleLogout();
-    });
-    
-    shareBtn.addEventListener('click', function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        shareProfile();
-    });
-    
-    shareReferralBtn.addEventListener('click', function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        shareReferralCode();
-    });
-    
-    // Modal close button
-    modalClose.addEventListener('click', closeModal);
-    
-    // Close modal when clicking outside of it
-    universalModal.addEventListener('click', function(event) {
-        if (event.target === universalModal) {
-            closeModal();
-        }
-    });
-    
-    // Prevent any clicks on the document from causing redirects
-    document.addEventListener('click', function(e) {
-        const target = e.target;
-        // Check if the target is a link or has a parent that is a link
-        const closestLink = target.closest('a[href]');
-        if (closestLink && !closestLink.hasAttribute('data-safe')) {
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', function(e) {
             e.preventDefault();
             e.stopPropagation();
-            console.log('Prevented navigation from:', closestLink.href);
+            handleLogout();
+        });
+    }
+    
+    if (shareBtn) {
+        shareBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            shareProfile();
+        });
+    }
+    
+    if (shareReferralBtn) {
+        shareReferralBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            shareReferralCode();
+        });
+    }
+    
+    // Modal close button
+    if (modalClose) {
+        modalClose.addEventListener('click', closeModal);
+    }
+    
+    // Close modal when clicking outside of it
+    if (universalModal) {
+        universalModal.addEventListener('click', function(event) {
+            if (event.target === universalModal) {
+                closeModal();
+            }
+        });
+    }
+    
+    // Only prevent clicks on game items and specific buttons, not all links
+    document.addEventListener('click', function(e) {
+        // Only prevent default if we're logged in and the auth check is complete
+        if (!isAuthCheckComplete || !currentUser) return;
+        
+        const target = e.target;
+        // Check if the target is a game item or has a parent that is a game item
+        const gameItem = target.closest('.game-item');
+        if (gameItem) {
+            e.preventDefault();
+            e.stopPropagation();
+            // Game item click is handled in addGameToUI
         }
     }, true); // Use capture phase
 }
@@ -109,14 +134,17 @@ function setupEventListeners() {
 // Check if user is logged in
 function checkAuthState() {
     auth.onAuthStateChanged(user => {
+        isAuthCheckComplete = true;
+        
         if (user) {
             // User is signed in
             currentUser = user;
             fetchUserProfile(user.uid);
             fetchRecentGames(user.uid);
         } else {
-            // User is not signed in, redirect to login
-            window.location.href = 'login.html';
+            // User is not signed in, open login in modal instead of redirecting
+            console.log("User not authenticated, opening login in modal");
+            openModal('Login', 'login.html');
         }
     });
 }
@@ -144,7 +172,7 @@ function createBasicProfile(userId) {
     const user = auth.currentUser;
     const basicProfile = {
         fullName: user.displayName || 'User',
-        username: user.email.split('@')[0] || 'user',
+        username: user.email ? user.email.split('@')[0] : 'user',
         walletBalance: 0,
         airtimeBalance: 0,
         referralCode: generateReferralCode(),
@@ -175,6 +203,13 @@ function generateReferralCode() {
 
 // Update UI with user profile data
 function updateProfileUI(profile) {
+    // Safety checks for DOM elements
+    if (!fullName || !username || !userInitials || !walletBalance || 
+        !airtimeBalance || !referralCode || !referralCount) {
+        console.warn("Some UI elements are missing");
+        return;
+    }
+
     // Update profile info
     fullName.textContent = profile.fullName || 'User';
     username.textContent = '@' + (profile.username || 'user');
@@ -202,6 +237,11 @@ function updateProfileUI(profile) {
 
 // Fetch recent games
 function fetchRecentGames(userId) {
+    if (!gamesContainer) {
+        console.warn("Games container element not found");
+        return;
+    }
+
     const gamesRef = db.collection('user_games').doc(userId).collection('games')
         .orderBy('lastPlayed', 'desc')
         .limit(3);
@@ -218,6 +258,7 @@ function fetchRecentGames(userId) {
             
             snapshot.forEach((doc) => {
                 const game = doc.data();
+                game.id = doc.id; // Make sure game id is set
                 addGameToUI(game);
             });
         })
@@ -242,12 +283,11 @@ function addGameToUI(game) {
         </div>
     `;
     
-    // Add click handler with redirect prevention
+    // Add click handler to open game in modal
     gameElement.addEventListener('click', function(e) {
         e.preventDefault();
         e.stopPropagation();
         openModal(game.name, `game.html?id=${game.id}`);
-        return false;
     });
     
     gamesContainer.appendChild(gameElement);
@@ -255,6 +295,11 @@ function addGameToUI(game) {
 
 // Modal Management
 function openModal(title, contentUrl) {
+    if (!universalModal || !modalTitle || !modalLoader || !modalIframe) {
+        console.error("Modal elements not found");
+        return;
+    }
+
     modalTitle.textContent = title;
     
     // Show loader
@@ -270,7 +315,6 @@ function openModal(title, contentUrl) {
         url.searchParams.append('userId', currentUser.uid);
     }
     
-    // Setup iframe communication and prevention of redirects
     try {
         // Load content in iframe
         modalIframe.src = url.toString();
@@ -280,24 +324,44 @@ function openModal(title, contentUrl) {
             modalLoader.style.display = 'none';
             modalIframe.style.display = 'block';
             
-            // Try to communicate with the iframe to prevent redirects
-            try {
-                const frameWindow = modalIframe.contentWindow;
-                if (frameWindow) {
-                    // Handle navigation attempts inside the iframe
-                    frameWindow.addEventListener('beforeunload', function(event) {
-                        event.preventDefault();
-                        return false;
+            // For login page, set up message listener to handle successful login
+            if (contentUrl.includes('login.html')) {
+                try {
+                    const frameWindow = modalIframe.contentWindow;
+                    
+                    // Create a message event listener for login success
+                    window.addEventListener('message', function loginSuccessHandler(event) {
+                        // Verify origin for security
+                        if (event.origin !== window.location.origin) return;
+                        
+                        // Check if this is a login success message
+                        if (event.data && event.data.type === 'loginSuccess') {
+                            console.log("Login successful, refreshing page");
+                            
+                            // Remove the event listener to avoid duplicates
+                            window.removeEventListener('message', loginSuccessHandler);
+                            
+                            // Close the modal
+                            closeModal();
+                            
+                            // Refresh the page to update the UI with the logged-in user
+                            setTimeout(() => {
+                                window.location.reload();
+                            }, 500);
+                        }
                     });
+                    
+                } catch (e) {
+                    console.warn("Could not set up login communication:", e);
                 }
-            } catch (e) {
-                console.warn("Could not access iframe content - this is normal for cross-origin frames:", e);
             }
         };
     } catch (error) {
         console.error("Error loading modal content:", error);
         modalLoader.style.display = 'none';
-        modalContent.innerHTML = `<p>Error loading content. Please try again.</p>`;
+        if (modalContent) {
+            modalContent.innerHTML = `<p>Error loading content. Please try again.</p>`;
+        }
     }
     
     // Prevent body scrolling
@@ -305,6 +369,10 @@ function openModal(title, contentUrl) {
 }
 
 function closeModal() {
+    if (!universalModal || !modalIframe || !modalLoader) {
+        return;
+    }
+
     universalModal.classList.remove('active');
     
     // Re-enable body scrolling
@@ -320,6 +388,11 @@ function closeModal() {
 
 // Share profile via navigator.share if available
 function shareProfile() {
+    if (!userProfile) {
+        console.warn("User profile not available");
+        return;
+    }
+
     if (navigator.share) {
         navigator.share({
             title: 'Check out my gaming profile',
@@ -334,6 +407,11 @@ function shareProfile() {
 
 // Share referral code
 function shareReferralCode() {
+    if (!userProfile) {
+        console.warn("User profile not available");
+        return;
+    }
+
     if (navigator.share) {
         navigator.share({
             title: 'Join me on Aha Games',
@@ -350,8 +428,9 @@ function shareReferralCode() {
 function handleLogout() {
     auth.signOut()
         .then(() => {
-            // Redirect to login page
-            window.location.href = 'login.html';
+            // Open login modal instead of redirecting
+            console.log("User signed out successfully");
+            openModal('Login', 'login.html');
         })
         .catch((error) => {
             console.error("Error signing out:", error);
