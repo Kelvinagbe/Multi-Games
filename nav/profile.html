@@ -1525,5 +1525,43 @@ function initApp() {
 // Run initialization
 initApp();
     </script>
+<!-- Add this script to your profile.html -->
+<script>
+// Self-executing function to avoid global scope pollution
+(function() {
+  // This function will open your login modal
+  function openLoginFromUrl() {
+    // Replace 'loginModal' with your actual login modal element ID
+    const loginModal = document.getElementById('loginModal');
+    
+    if (loginModal) {
+      // Show login modal - use the approach that matches your current code
+      // Option 1: Using style.display
+      loginModal.style.display = 'block';
+      // Option 2: Using classList
+      // loginModal.classList.add('show');
+      // Option 3: Using a custom class
+      // loginModal.classList.add('your-active-modal-class');
+      
+      // Option 4: If you have an existing function that opens the login modal, call it instead
+      // yourExistingLoginFunction();
+    }
+  }
+
+  // Listen for messages from parent window
+  window.addEventListener('message', function(event) {
+    // For security, verify the origin matches your domain
+    // Using origin check to ensure message comes from your site
+    if (event.origin !== window.location.origin) {
+      return;
+    }
+    
+    // Check if this is a request to open login modal
+    if (event.data && event.data.action === 'openLoginModal') {
+      openLoginFromUrl();
+    }
+  });
+})(); // Execute immediately
+</script>
 </body>
 </html>
