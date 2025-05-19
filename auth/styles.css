@@ -5,7 +5,7 @@
     --text: #fffff;
     --bg: white;
     --card-bg: #0d1f14;
-    --accent: #0d1f14;
+    --accent: #ffffff;
 }
 
 * {
@@ -45,7 +45,7 @@ body {
 }
 
 .login-header p {
-    color: white;
+    color: #7777777;
     font-size: 14px;
 }
 
