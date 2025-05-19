@@ -64,8 +64,8 @@ label {
 input {
     width: 100%;
     padding: 12px 15px;
-    background-color: white;
-    border: 1px solid rgba(0, 0, 0, 0.1);
+    background-color: green;
+    border: 2px solid rgba(0, 0, 0, 0.1);
     border-radius: 8px;
     color: var(--text);
     font-size: 16px;
