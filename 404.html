@@ -3,95 +3,213 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>404 - Page Not Found</title>
     <style>
         :root {
-            --primary: #3a86ff;
-            --secondary: #ff006e;
-            --background: #fafafa;
-            --text: #232323;
+            --dark-green: #0d1f14;
+            --medium-green: #154024;
+            --neon-green: #0eff75;
+            --accent-green: #0ba053;
+            --light-green: #99ffcc;
+            --dark-gray: #151515;
         }
         
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-            background-color: var(--background);
-            color: var(--text);
-            text-align: center;
             margin: 0;
             padding: 0;
-            height: 100vh;
+            background-color: var(--dark-green);
+            background-image: radial-gradient(circle at 50% 50%, var(--medium-green) 0%, var(--dark-green) 70%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: white;
+            min-height: 100vh;
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
-            line-height: 1.6;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .pixel-grid {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 255, 117, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 117, 0.03) 1px, transparent 1px);
+            background-size: 20px 20px;
+            z-index: 1;
         }
         
-        .error-container {
-            padding: 2rem;
-            max-width: 90%;
+        .container {
+            text-align: center;
+            padding: 2.5rem;
+            max-width: 800px;
+            position: relative;
+            z-index: 2;
+            background-color: rgba(10, 30, 20, 0.7);
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(14, 255, 117, 0.1);
+            backdrop-filter: blur(4px);
         }
         
         h1 {
-            font-size: 10rem;
-            font-weight: 900;
+            font-size: 2.8rem;
             margin: 0;
-            background: linear-gradient(to right, var(--primary), var(--secondary));
+            line-height: 1.2;
+            color: var(--neon-green);
+            text-shadow: 0 0 10px rgba(14, 255, 117, 0.3);
+            font-weight: 700;
+            letter-spacing: -1px;
+        }
+        
+        .error-code {
+            font-size: 8rem;
+            font-weight: bold;
+            margin: 0 0 1.5rem;
+            background: linear-gradient(to bottom, var(--light-green), var(--accent-green));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 5px rgba(14, 255, 117, 0.2);
+            font-family: monospace;
+            letter-spacing: -3px;
             line-height: 1;
         }
         
         p {
-            font-size: 1.5rem;
-            margin: 1rem 0;
-            color: var(--text);
+            font-size: 1.25rem;
+            margin-bottom: 2rem;
+            color: #d9ffe9;
             max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.6;
         }
         
-        .subtitle {
-            font-size: 2rem;
-            font-weight: 700;
-            margin-bottom: 1.5rem;
+        .console-text {
+            background: var(--dark-gray);
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-left: 4px solid var(--accent-green);
+            text-align: left;
+            font-family: monospace;
+            margin: 2rem auto;
+            color: #ddd;
+            font-size: 1.1rem;
+            max-width: 500px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
         }
         
-        .home-link {
+        .cursor {
             display: inline-block;
-            margin-top: 2rem;
-            color: var(--primary);
-            text-decoration: none;
-            font-size: 1.2rem;
-            font-weight: 600;
-            border-bottom: 2px solid transparent;
-            transition: border-color 0.3s ease;
+            width: 10px;
+            height: 18px;
+            background: var(--neon-green);
+            vertical-align: middle;
+            margin-left: 5px;
         }
         
-        .home-link:hover {
-            border-color: var(--primary);
+        .btn {
+            display: inline-block;
+            background: var(--accent-green);
+            color: white;
+            padding: 0.9rem 2.5rem;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin: 0.5rem;
+            transition: all 0.2s ease;
+            border: none;
+            box-shadow: 0 4px 12px rgba(11, 160, 83, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.3);
+        }
+        
+        .btn:hover {
+            background: var(--neon-green);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 14px rgba(11, 160, 83, 0.4);
+        }
+        
+        .buttons {
+            margin-top: 2rem;
+        }
+        
+        .icon-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .icon-joystick {
+            font-size: 2.5rem;
+            color: var(--neon-green);
+            opacity: 0.9;
+            margin: 0 0.5rem;
+        }
+        
+        .divider {
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(to right, transparent, var(--accent-green), transparent);
+            margin: 1.5rem 0;
+        }
+        
+        .card {
+            position: relative;
+            padding: 2rem;
+            border-radius: 12px;
+            background-color: rgba(13, 31, 20, 0.6);
+            border: 1px solid rgba(11, 160, 83, 0.1);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
         }
         
         @media (max-width: 768px) {
+            .error-code {
+                font-size: 5rem;
+            }
             h1 {
-                font-size: 8rem;
+                font-size: 2rem;
             }
-            
-            .subtitle {
-                font-size: 1.5rem;
+            .console-text {
+                font-size: 0.9rem;
+                padding: 1rem;
             }
-            
-            p {
-                font-size: 1.2rem;
+            .container {
+                padding: 1.5rem;
+                margin: 1rem;
             }
         }
     </style>
 </head>
 <body>
-    <div class="error-container">
-        <h1>404</h1>
-        <p class="subtitle">Page Not Found</p>
-        <p>The page you are looking for doesn't exist or has been moved.</p>
-        <a href="/" class="home-link">Return to Homepage</a>
+    <div class="pixel-grid"></div>
+    
+    <div class="container">
+        <div class="icon-container">
+            <span class="icon-joystick">🚧</span>
+            <span class="icon-joystick">☣️</span>
+            <span class="icon-joystick">🚧</span>
+        </div>
+        
+        <div class="error-code">404</div>
+        
+        <h1>PAGE NOT FOUND</h1>
+        
+        <div class="divider"></div>
+        
+        <p>The page you're looking for doesn't exist or may have been moved.</p>
+        
+        <div class="console-text">
+            > ERROR: PAGE_NOT_FOUND<br>
+            > Please check the URL and try again<span class="cursor"></span>
+        </div>
+        
+        <div class="buttons">
+            <a href="/" class="btn">Return to Home</a>
+        </div>
     </div>
 </body>
 </html>
