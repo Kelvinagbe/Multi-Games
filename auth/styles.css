@@ -3,7 +3,7 @@
     --primary-dark: #154024;
     --secondary: #4444444;
     --text: #fffff;
-    --bg: white;
+    --bg: 0d1f14;
     --card-bg: #0d1f14;
     --accent: #ffffff;
 }
@@ -57,6 +57,7 @@ label {
     display: block;
     margin-bottom: 8px;
     font-weight: 500;
+     color: white;
 }
 
 input {
