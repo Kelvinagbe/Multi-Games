@@ -1,4 +1,4 @@
-l/* Reset and Base Styles */
+/* Reset and Base Styles */
 * {
   margin: 0;
   padding: 0;
@@ -7,24 +7,24 @@ l/* Reset and Base Styles */
 }
 
 :root {
-  --primary-color: #0f5132;
-  --primary-dark: #073f24;
-  --primary-light: #157347;
-  --secondary-color: #052e16;
+  --primary-color: #0f5132; /* Darker green */
+  --primary-dark: #073f24; /* Even darker green */
+  --primary-light: #157347; /* Slightly lighter dark green */
+  --secondary-color: #052e16; /* Dark forest green */
   --text-color: #333;
   --text-light: #666;
-  --background-color: #f8f9fa;
+  --background-color: #f8f9fa; /* Slightly lighter background */
   --card-color: #fff;
-  --shadow-color: rgba(0, 0, 0, 0.08);
-  --border-color: #e9ecef;
-  --border-radius-sm: 8px;
+  --shadow-color: rgba(0, 0, 0, 0.08); /* Softer shadow */
+  --border-color: #e9ecef; /* Softer border */
+  --border-radius-sm: 8px; /* New border radius values */
   --border-radius-md: 12px;
   --border-radius-lg: 16px;
-  --transition: all 0.25s ease;
+  --transition: all 0.25s ease; /* Smoother transitions */
 }
 
 .dark-mode {
-  --primary-color: #0f5132;
+  --primary-color: #0f5132; /* Adjusted for dark mode */
   --primary-dark: #1a1c21;
   --primary-light: #20803c;
   --secondary-color: #052e16;
@@ -34,7 +34,7 @@ l/* Reset and Base Styles */
   --card-color: #25272e;
   --shadow-color: rgba(0, 0, 0, 0.3);
   --border-color: #2c2c2c;
-  --back-button-color: white;
+ --back-button-color: white;
 }
 
 body {
@@ -44,7 +44,7 @@ body {
   min-height: 100vh;
   overflow-x: hidden;
   padding-bottom: 60px;
-  line-height: 1.5;
+  line-height: 1.5; /* Improved readability */
 }
 
 .container {
@@ -67,7 +67,7 @@ body {
   align-items: center;
   z-index: 1000;
   transition: var(--transition);
-  backdrop-filter: blur(5px);
+  backdrop-filter: blur(5px); /* Modern blur effect */
 }
 
 .m-loader {
@@ -86,12 +86,19 @@ body {
 }
 
 @keyframes pulse {
-  0% { transform: scale(1); opacity: 1; }
-  50% { transform: scale(1.1); opacity: 0.7; }
-  100% { transform: scale(1); opacity: 1; }
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
-
-/* Fixed syntax issue: added missing closing brace */
 
 /* Featured Game Styles */
 .featured {
