@@ -58,35 +58,28 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Setup event listeners for all interactive elements
 function setupEventListeners() {
-    // Button event listeners
-    logoutBtn.addEventListener('click', handleLogout);
-    settingsBtn.addEventListener('click', function(e) {
-        e.preventDefault(); // Prevent default action
-        openModal('Settings', 'settings.html');
-    });
+    // Use utility function for all modal buttons
+    preventDefaultAndOpenModal(settingsBtn, 'Settings', 'settings.html');
+    preventDefaultAndOpenModal(editProfileBtn, 'Edit Profile', 'edit-profile.html');
+    preventDefaultAndOpenModal(withdrawBtn, 'Withdraw Funds', 'withdrawal.html');
+    preventDefaultAndOpenModal(historyBtn, 'Transaction History', 'history.html');
     
-    editProfileBtn.addEventListener('click', function(e) {
-        e.preventDefault(); // Prevent default action
-        openModal('Edit Profile', 'edit-profile.html');
+    // Special case buttons
+    logoutBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        handleLogout();
     });
     
     shareBtn.addEventListener('click', function(e) {
-        e.preventDefault(); // Prevent default action
+        e.preventDefault();
+        e.stopPropagation();
         shareProfile();
     });
     
-    withdrawBtn.addEventListener('click', function(e) {
-        e.preventDefault(); // Prevent default action
-        openModal('Withdraw Funds', 'withdrawal.html');
-    });
-    
-    historyBtn.addEventListener('click', function(e) {
-        e.preventDefault(); // Prevent default action
-        openModal('Transaction History', 'history.html');
-    });
-    
     shareReferralBtn.addEventListener('click', function(e) {
-        e.preventDefault(); // Prevent default action
+        e.preventDefault();
+        e.stopPropagation();
         shareReferralCode();
     });
     
@@ -99,6 +92,18 @@ function setupEventListeners() {
             closeModal();
         }
     });
+    
+    // Prevent any clicks on the document from causing redirects
+    document.addEventListener('click', function(e) {
+        const target = e.target;
+        // Check if the target is a link or has a parent that is a link
+        const closestLink = target.closest('a[href]');
+        if (closestLink && !closestLink.hasAttribute('data-safe')) {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('Prevented navigation from:', closestLink.href);
+        }
+    }, true); // Use capture phase
 }
 
 // Check if user is logged in
@@ -236,10 +241,15 @@ function addGameToUI(game) {
             </div>
         </div>
     `;
+    
+    // Add click handler with redirect prevention
     gameElement.addEventListener('click', function(e) {
-        e.preventDefault(); // Prevent default action
+        e.preventDefault();
+        e.stopPropagation();
         openModal(game.name, `game.html?id=${game.id}`);
+        return false;
     });
+    
     gamesContainer.appendChild(gameElement);
 }
 
@@ -251,23 +261,44 @@ function openModal(title, contentUrl) {
     modalLoader.style.display = 'flex';
     modalIframe.style.display = 'none';
     
+    // Show modal immediately to prevent flashing
+    universalModal.classList.add('active');
+    
     // Add userId to URL if it exists
     const url = new URL(contentUrl, window.location.href);
     if (currentUser) {
         url.searchParams.append('userId', currentUser.uid);
     }
     
-    // Load content in iframe
-    modalIframe.src = url.toString();
-    modalIframe.onload = function() {
+    // Setup iframe communication and prevention of redirects
+    try {
+        // Load content in iframe
+        modalIframe.src = url.toString();
+        
+        // Set up onload handler
+        modalIframe.onload = function() {
+            modalLoader.style.display = 'none';
+            modalIframe.style.display = 'block';
+            
+            // Try to communicate with the iframe to prevent redirects
+            try {
+                const frameWindow = modalIframe.contentWindow;
+                if (frameWindow) {
+                    // Handle navigation attempts inside the iframe
+                    frameWindow.addEventListener('beforeunload', function(event) {
+                        event.preventDefault();
+                        return false;
+                    });
+                }
+            } catch (e) {
+                console.warn("Could not access iframe content - this is normal for cross-origin frames:", e);
+            }
+        };
+    } catch (error) {
+        console.error("Error loading modal content:", error);
         modalLoader.style.display = 'none';
-        modalIframe.style.display = 'block';
-    };
-    
-    // Show modal with a slight delay to ensure CSS transitions work properly
-    setTimeout(() => {
-        universalModal.classList.add('active');
-    }, 10);
+        modalContent.innerHTML = `<p>Error loading content. Please try again.</p>`;
+    }
     
     // Prevent body scrolling
     document.body.style.overflow = 'hidden';
