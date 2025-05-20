@@ -15,17 +15,18 @@
 }
 
 body {
-    background-color: #ffffff;
+    background-color: #f5f5f5;
     color: #333333;
 }
 
 .container {
-    width: 100%;
-    margin: 0;
+    max-width: 480px;
+    margin: 0 auto;
     background-color: #ffffff;
     min-height: 100vh;
     position: relative;
-    padding-bottom: 0;
+    padding-bottom: 20px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
 }
 
 .header {
@@ -78,14 +79,15 @@ body {
     font-size: 36px;
     font-weight: bold;
     margin-bottom: 16px;
-    border: 3px solid #0d3121;
+    border: 3px solid #ffffff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .profile-name {
     font-size: 24px;
     font-weight: 600;
     margin-bottom: 8px;
-    color: #0d3121;
+    color: #333333;
 }
 
 .profile-username {
@@ -108,6 +110,7 @@ body {
     cursor: pointer;
     border: none;
     outline: none;
+    transition: all 0.3s ease;
 }
 
 .primary-button {
@@ -115,10 +118,18 @@ body {
     color: white;
 }
 
+.primary-button:hover {
+    background-color: #0d8057;
+}
+
 .secondary-button {
     background-color: transparent;
     border: 1px solid #14a56e;
     color: #14a56e;
+}
+
+.secondary-button:hover {
+    background-color: rgba(20, 165, 110, 0.05);
 }
 
 .section-header {
@@ -151,6 +162,7 @@ body {
     justify-content: center;
     font-size: 12px;
     color: #777777;
+    border: 1px solid #e0e0e0;
 }
 
 .game-info {
@@ -161,7 +173,7 @@ body {
     font-size: 16px;
     font-weight: 500;
     margin-bottom: 4px;
-    color: #0d3121;
+    color: #333333;
 }
 
 .game-stats {
@@ -173,7 +185,7 @@ body {
 
 .wallet-section {
     margin: 24px 16px;
-    background-color: #f5f5f5;
+    background-color: #ffffff;
     border-radius: 16px;
     padding: 20px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
@@ -197,7 +209,7 @@ body {
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background-color: rgba(20, 165, 110, 0.2);
+    background-color: rgba(20, 165, 110, 0.1);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -213,7 +225,7 @@ body {
 
 .balance-card {
     flex: 1;
-    background-color: #ffffff;
+    background-color: #f9f9f9;
     border-radius: 12px;
     padding: 16px;
     display: flex;
@@ -246,11 +258,16 @@ body {
     text-align: center;
     font-weight: 500;
     cursor: pointer;
+    transition: all 0.3s ease;
 }
 
 .withdraw-button {
     background-color: #14a56e;
     color: white;
+}
+
+.withdraw-button:hover {
+    background-color: #0d8057;
 }
 
 .history-button {
@@ -259,12 +276,17 @@ body {
     color: #14a56e;
 }
 
+.history-button:hover {
+    background-color: rgba(20, 165, 110, 0.05);
+}
+
 .referral-section {
     margin: 24px 16px;
-    background-color: #f5f5f5;
+    background-color: #ffffff;
     border-radius: 16px;
     padding: 20px;
     border: 1px solid #e0e0e0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
 .referral-header {
@@ -278,7 +300,7 @@ body {
 }
 
 .referral-code {
-    background-color: #ffffff;
+    background-color: #f9f9f9;
     padding: 12px;
     border-radius: 8px;
     font-family: monospace;
@@ -299,17 +321,17 @@ body {
 
 .referral-count {
     font-weight: 600;
-    color: #0d3121;
+    color: #333333;
 }
 
-/* Modal Styles */
+/* Modal Styles - Improved */
 .modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.7);
+    background-color: rgba(0, 0, 0, 0.5);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -317,6 +339,7 @@ body {
     opacity: 0;
     visibility: hidden;
     transition: all 0.3s ease;
+    backdrop-filter: blur(3px);
 }
 
 .modal-overlay.active {
@@ -325,12 +348,12 @@ body {
 }
 
 .modal-container {
-    width: 100%;
-    max-width: 100%;
+    width: 90%;
+    max-width: 480px;
     background-color: #ffffff;
     border-radius: 16px;
     overflow: hidden;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
     transform: translateY(20px);
     transition: all 0.3s ease;
 }
@@ -359,6 +382,12 @@ body {
     color: #ffffff;
     font-size: 20px;
     cursor: pointer;
+    opacity: 0.8;
+    transition: opacity 0.2s ease;
+}
+
+.modal-close:hover {
+    opacity: 1;
 }
 
 .modal-content {
@@ -369,18 +398,59 @@ body {
 
 .modal-iframe {
     width: 100%;
-    height: 100vh;
+    height: 70vh;
     border: none;
-    margin: 0;
-    padding: 0;
 }
 
-/* Loading Indicator */
+/* Form elements for modals */
+.form-group {
+    margin-bottom: 16px;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #333333;
+}
+
+.form-input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+    font-size: 14px;
+    background-color: #f9f9f9;
+    transition: border-color 0.3s ease;
+}
+
+.form-input:focus {
+    border-color: #14a56e;
+    outline: none;
+}
+
+.form-button {
+    width: 100%;
+    padding: 12px;
+    background-color: #14a56e;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.form-button:hover {
+    background-color: #0d8057;
+}
+
+/* Loading Indicator - Improved */
 .loading-spinner {
     display: inline-block;
     width: 30px;
     height: 30px;
-    border: 3px solid rgba(20, 165, 110, 0.3);
+    border: 3px solid rgba(20, 165, 110, 0.2);
     border-radius: 50%;
     border-top-color: #14a56e;
     animation: spin 1s linear infinite;
@@ -397,6 +467,7 @@ body {
     display: flex;
     justify-content: center;
     width: 100%;
+    padding: 30px 0;
 }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
