@@ -30,7 +30,7 @@ body {
 }
 
 .header {
-    background-color: #0d3121;
+    background-color: #ffffff;
     padding: 16px;
     display: flex;
     justify-content: space-between;
@@ -38,7 +38,8 @@ body {
     position: sticky;
     top: 0;
     z-index: 10;
-    color: #ffffff;
+    color: #333333;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
 .header-title {
@@ -54,7 +55,7 @@ body {
 .icon-button {
     background: none;
     border: none;
-    color: #ffffff;
+    color: #333333;
     cursor: pointer;
     font-size: 18px;
 }
@@ -324,7 +325,7 @@ body {
     color: #333333;
 }
 
-/* Modal Styles - Improved */
+/* Modal Styles - Updated with bottom slide-in animation */
 .modal-overlay {
     position: fixed;
     top: 0;
@@ -333,7 +334,7 @@ body {
     height: 100%;
     background-color: rgba(0, 0, 0, 0.5);
     display: flex;
-    align-items: center;
+    align-items: flex-end; /* Align to bottom */
     justify-content: center;
     z-index: 100;
     opacity: 0;
@@ -348,27 +349,28 @@ body {
 }
 
 .modal-container {
-    width: 90%;
+    width: 100%;
     max-width: 480px;
     background-color: #ffffff;
-    border-radius: 16px;
+    border-radius: 20px 20px 0 0; /* Rounded corners only on top */
     overflow: hidden;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-    transform: translateY(20px);
-    transition: all 0.3s ease;
+    box-shadow: 0 -4px 32px rgba(0, 0, 0, 0.2);
+    transform: translateY(100%); /* Start from below the screen */
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); /* Smooth animation curve */
 }
 
 .modal-overlay.active .modal-container {
-    transform: translateY(0);
+    transform: translateY(0); /* Slide up to visible position */
 }
 
 .modal-header {
-    background-color: #0d3121;
+    background-color: #ffffff;
     padding: 16px 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    color: #ffffff;
+    color: #333333;
+    border-bottom: 1px solid #f0f0f0;
 }
 
 .modal-title {
@@ -379,7 +381,7 @@ body {
 .modal-close {
     background: none;
     border: none;
-    color: #ffffff;
+    color: #333333;
     font-size: 20px;
     cursor: pointer;
     opacity: 0.8;
@@ -392,7 +394,7 @@ body {
 
 .modal-content {
     padding: 20px;
-    max-height: 70vh;
+    max-height: 80vh; /* Limit height so it doesn't take full screen */
     overflow-y: auto;
 }
 
@@ -400,6 +402,15 @@ body {
     width: 100%;
     height: 70vh;
     border: none;
+}
+
+/* Modal drag indicator */
+.modal-drag-indicator {
+    width: 40px;
+    height: 4px;
+    background-color: #e0e0e0;
+    border-radius: 2px;
+    margin: 12px auto 4px;
 }
 
 /* Form elements for modals */
@@ -445,7 +456,7 @@ body {
     background-color: #0d8057;
 }
 
-/* Loading Indicator - Improved */
+/* Loading Indicator */
 .loading-spinner {
     display: inline-block;
     width: 30px;
