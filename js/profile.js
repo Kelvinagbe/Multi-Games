@@ -625,7 +625,7 @@ function shareProfile() {
     if (navigator.share) {
         navigator.share({
             title: 'Check out my gaming profile',
-            text: `Check out ${userProfile.fullName}'s gaming profile on Aha Games!`,
+            text: `Check out ${userProfile.fullName}'s gaming profile on Multi Games!`,
             url: window.location.href
         })
         .catch((error) => console.log('Error sharing profile:', error));
@@ -643,8 +643,8 @@ function shareReferralCode() {
 
     if (navigator.share) {
         navigator.share({
-            title: 'Join me on Aha Games',
-            text: `Use my referral code ${userProfile.referralCode} to join Aha Games and get a bonus!`,
+            title: 'Join me on Multi Games',
+            text: `Use my referral code ${userProfile.referralCode} to join Multi Games and get a bonus!`,
             url: window.location.origin + '/signup.html?ref=' + userProfile.referralCode
         })
         .catch((error) => console.log('Error sharing referral code:', error));
