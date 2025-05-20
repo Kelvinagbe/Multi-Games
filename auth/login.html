@@ -3,96 +3,558 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Multi Games - Login</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="styles.css">
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-    // Function to apply dark mode based on localStorage
-    function applyDarkModeSetting() {
-        const isDarkMode = localStorage.getItem('darkMode') === 'enabled';
-        document.body.classList.toggle('dark-mode', isDarkMode);
-    }
+    <title>Multi Games - Authentication</title>
+    <style>
+        :root {
+            --primary-color: #6366f1;
+            --secondary-color: #4f46e5;
+            --background-color: #1f2937;
+            --card-color: #111827;
+            --text-color: #f3f4f6;
+            --text-secondary: #9ca3af;
+            --error-color: #ef4444;
+            --success-color: #10b981;
+        }
 
-    // Apply dark mode on page load
-    applyDarkModeSetting();
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
 
-    // Optional: re-check every 3 seconds in case another tab changes it
-    setInterval(applyDarkModeSetting, 300);
-});
-</script>
+        body {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 1rem;
+        }
 
-<!-- Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-PB8Y87E6XV"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-PB8Y87E6XV');
-</script>
+        .container {
+            width: 100%;
+            max-width: 420px;
+        }
+
+        .auth-card {
+            background-color: var(--card-color);
+            border-radius: 0.75rem;
+            padding: 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            width: 100%;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .logo img {
+            height: 60px;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            text-align: center;
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+        }
+
+        .tabs {
+            display: flex;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .tab {
+            flex: 1;
+            text-align: center;
+            padding: 0.75rem;
+            cursor: pointer;
+            font-weight: 500;
+            color: var(--text-secondary);
+            position: relative;
+        }
+
+        .tab.active {
+            color: var(--text-color);
+        }
+
+        .tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background-color: var(--primary-color);
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        input {
+            width: 100%;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            background-color: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-color);
+            font-size: 1rem;
+            transition: border-color 0.2s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 1px var(--primary-color);
+        }
+
+        button {
+            width: 100%;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.2s;
+            margin-top: 1rem;
+        }
+
+        button:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .forgot-password {
+            text-align: right;
+            margin-top: 0.5rem;
+        }
+
+        .forgot-password a {
+            color: var(--primary-color);
+            font-size: 0.875rem;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .forgot-password a:hover {
+            text-decoration: underline;
+        }
+
+        .form-section {
+            display: none;
+        }
+
+        .form-section.active {
+            display: block;
+        }
+
+        .referral-container {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .error-message {
+            color: var(--error-color);
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+            display: none;
+        }
+
+        .success-message {
+            color: var(--success-color);
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+            display: none;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s linear infinite;
+            margin-right: 8px;
+            display: none;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .btn-with-loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
 </head>
 <body>
-    <div class="login-card">
-        <div class="login-header">
-        </div>
-        
-        <form id="login-form">
-            <div class="form-group">
-                <label for="email">Email</label>
-                <input type="email" id="email" placeholder="Enter your email" required>
-                <div class="error-message" id="email-error"></div>
+    <div class="container">
+        <div class="auth-card">
+            <div class="logo">
+                <!-- You can add your logo here -->
+                <h2>Multi Games</h2>
             </div>
             
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" id="password" placeholder="Enter your password" required>
-                <div class="error-message" id="password-error"></div>
-                <a href="passreset/passreset.html" class="forgot-password" id="forgot-password">Forgot Password?</a>
+            <div class="tabs">
+                <div class="tab active" id="tab-login">Login</div>
+                <div class="tab" id="tab-signup">Sign Up</div>
+                <div class="tab" id="tab-forgot">Forgot Password</div>
             </div>
             
-            <div class="verification-container" id="verification-container">
-                <div class="verification-text">
-                    <div>Verifying device...</div>
-                    <div class="verification-progress">
-                        <div class="verification-bar" id="verification-bar"></div>
-                    </div>
+            <!-- Login Form -->
+            <div class="form-section active" id="login-form">
+                <div class="form-group">
+                    <label for="login-email">Email</label>
+                    <input type="email" id="login-email" placeholder="Enter your email">
                 </div>
-                <div class="verified-badge" id="verified-badge">
-                    <i class="fas fa-check-circle"></i> Verified
+                <div class="form-group">
+                    <label for="login-password">Password</label>
+                    <input type="password" id="login-password" placeholder="Enter your password">
                 </div>
+                <div class="error-message" id="login-error"></div>
+                <button id="login-button" class="btn-with-loading">
+                    <span class="loading" id="login-loading"></span>
+                    <span>Login</span>
+                </button>
             </div>
             
-            <button type="submit" class="btn" id="login-btn" disabled>Sign In</button>
-        </form>
-        
-        <div class="signup-link">
-            Don't have an account? <a href="login/signup/signup.html" id="signup-link">Sign Up</a>
+            <!-- Sign Up Form -->
+            <div class="form-section" id="signup-form">
+                <div class="form-group">
+                    <label for="signup-fullname">Full Name</label>
+                    <input type="text" id="signup-fullname" placeholder="Enter your full name">
+                </div>
+                <div class="form-group">
+                    <label for="signup-username">Username</label>
+                    <input type="text" id="signup-username" placeholder="Choose a username">
+                </div>
+                <div class="form-group">
+                    <label for="signup-email">Email</label>
+                    <input type="email" id="signup-email" placeholder="Enter your email">
+                </div>
+                <div class="form-group">
+                    <label for="signup-password">Password</label>
+                    <input type="password" id="signup-password" placeholder="Create a password">
+                </div>
+                <div class="form-group">
+                    <label for="signup-confirm-password">Confirm Password</label>
+                    <input type="password" id="signup-confirm-password" placeholder="Confirm your password">
+                </div>
+                <div class="form-group referral-container">
+                    <label for="signup-referral">Referral Code (Optional)</label>
+                    <input type="text" id="signup-referral" placeholder="Enter referral code if you have one">
+                </div>
+                <div class="error-message" id="signup-error"></div>
+                <div class="success-message" id="signup-success"></div>
+                <button id="signup-button" class="btn-with-loading">
+                    <span class="loading" id="signup-loading"></span>
+                    <span>Create Account</span>
+                </button>
+            </div>
+            
+            <!-- Forgot Password Form -->
+            <div class="form-section" id="forgot-form">
+                <div class="form-group">
+                    <label for="forgot-email">Email</label>
+                    <input type="email" id="forgot-email" placeholder="Enter your email">
+                </div>
+                <div class="error-message" id="forgot-error"></div>
+                <div class="success-message" id="forgot-success"></div>
+                <button id="forgot-button" class="btn-with-loading">
+                    <span class="loading" id="forgot-loading"></span>
+                    <span>Reset Password</span>
+                </button>
+            </div>
         </div>
-    </div>
-    
-    <div class="loading-overlay" id="loading-overlay">
-        <div class="spinner"></div>
-    </div>
-    
-    <div class="notification" id="notification">
-        <div class="notification-title" id="notification-title">Success</div>
-        <div class="notification-message" id="notification-message">Operation completed successfully.</div>
     </div>
 
-    <script type="module" src="script.js"></script>
-    <!-- Add this script at the bottom of login.html -->
-<script>
-    // Notify parent window that this page has loaded
-    window.addEventListener('DOMContentLoaded', () => {
-        // Short delay to ensure all assets are loaded
-        setTimeout(() => {
-            if (window.parent) {
-                // Dispatch a custom event that the iframe in the parent window can listen for
-                const event = new CustomEvent('loginPageLoaded');
-                window.dispatchEvent(event);
+    <!-- Firebase SDK -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.22.2/firebase-app-compat.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.22.2/firebase-auth-compat.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.22.2/firebase-database-compat.min.js"></script>
+
+    <script>
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBw1uA-kNKOZEufWKZ9AMBxvRGHNGF1lkA",
+            authDomain: "multi-games-a2561.firebaseapp.com",
+            projectId: "multi-games-a2561",
+            storageBucket: "multi-games-a2561.appspot.com",
+            messagingSenderId: "150551898066",
+            appId: "1:150551898066:web:4e8fb185f2321ba4140a0b",
+            measurementId: "G-PB8Y87E6XV",
+            databaseURL: "https://multi-games-a2561-default-rtdb.firebaseio.com"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const database = firebase.database();
+
+        // Tab switching functionality
+        const tabs = document.querySelectorAll('.tab');
+        const formSections = document.querySelectorAll('.form-section');
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                // Remove active class from all tabs and forms
+                tabs.forEach(t => t.classList.remove('active'));
+                formSections.forEach(f => f.classList.remove('active'));
+                
+                // Add active class to clicked tab
+                tab.classList.add('active');
+                
+                // Show corresponding form
+                const formId = tab.id.replace('tab-', '') + '-form';
+                document.getElementById(formId).classList.add('active');
+                
+                // Clear error messages
+                document.querySelectorAll('.error-message').forEach(el => {
+                    el.style.display = 'none';
+                });
+                
+                // Clear success messages
+                document.querySelectorAll('.success-message').forEach(el => {
+                    el.style.display = 'none';
+                });
+            });
+        });
+
+        // Generate a random referral code
+        function generateReferralCode(length = 6) {
+            const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let result = '';
+            for (let i = 0; i < length; i++) {
+                result += characters.charAt(Math.floor(Math.random() * characters.length));
             }
-        }, 300);
-    });
-</script>
+            return result;
+        }
+
+        // Show loading state
+        function showLoading(buttonId, loadingId) {
+            document.getElementById(buttonId).disabled = true;
+            document.getElementById(loadingId).style.display = 'inline-block';
+        }
+
+        // Hide loading state
+        function hideLoading(buttonId, loadingId) {
+            document.getElementById(buttonId).disabled = false;
+            document.getElementById(loadingId).style.display = 'none';
+        }
+
+        // Show error message
+        function showError(elementId, message) {
+            const errorElement = document.getElementById(elementId);
+            errorElement.textContent = message;
+            errorElement.style.display = 'block';
+        }
+
+        // Show success message
+        function showSuccess(elementId, message) {
+            const successElement = document.getElementById(elementId);
+            successElement.textContent = message;
+            successElement.style.display = 'block';
+        }
+
+        // Login functionality
+        document.getElementById('login-button').addEventListener('click', () => {
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            
+            if (!email || !password) {
+                showError('login-error', 'Please enter both email and password');
+                return;
+            }
+            
+            showLoading('login-button', 'login-loading');
+            
+            auth.signInWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    // Update last login timestamp
+                    const userId = userCredential.user.uid;
+                    const lastLoginUpdate = {
+                        lastLogin: new Date().toISOString()
+                    };
+                    
+                    database.ref(`users/${userId}`).update(lastLoginUpdate)
+                        .then(() => {
+                            // Redirect or handle successful login
+                            window.location.href = '/dashboard';
+                        })
+                        .catch((error) => {
+                            console.error("Error updating last login:", error);
+                            // Still redirect even if updating timestamp fails
+                            window.location.href = '/dashboard';
+                        });
+                })
+                .catch((error) => {
+                    hideLoading('login-button', 'login-loading');
+                    let errorMessage = 'Login failed. Please check your credentials.';
+                    
+                    if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
+                        errorMessage = 'Invalid email or password';
+                    } else if (error.code === 'auth/too-many-requests') {
+                        errorMessage = 'Too many attempts. Please try again later';
+                    }
+                    
+                    showError('login-error', errorMessage);
+                });
+        });
+
+        // Sign up functionality
+        document.getElementById('signup-button').addEventListener('click', () => {
+            const email = document.getElementById('signup-email').value;
+            const password = document.getElementById('signup-password').value;
+            const confirmPassword = document.getElementById('signup-confirm-password').value;
+            const fullName = document.getElementById('signup-fullname').value;
+            const username = document.getElementById('signup-username').value;
+            const referredBy = document.getElementById('signup-referral').value;
+            
+            // Validation
+            if (!email || !password || !confirmPassword || !fullName || !username) {
+                showError('signup-error', 'Please fill in all required fields');
+                return;
+            }
+            
+            if (password !== confirmPassword) {
+                showError('signup-error', 'Passwords do not match');
+                return;
+            }
+            
+            if (password.length < 6) {
+                showError('signup-error', 'Password must be at least 6 characters');
+                return;
+            }
+            
+            showLoading('signup-button', 'signup-loading');
+            
+            // Create user account
+            auth.createUserWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    const user = userCredential.user;
+                    const userId = user.uid;
+                    const referralCode = generateReferralCode();
+                    const photoURL = ''; // Default empty photo URL
+                    
+                    // Create user profile in database
+                    const userData = {
+                        email: user.email,
+                        fullName: fullName,
+                        username: username,
+                        photoURL: photoURL,
+                        walletBalance: 0,
+                        createdAt: new Date().toISOString(),
+                        dateJoined: new Date().toISOString().split('T')[0],
+                        lastLogin: new Date().toISOString(),
+                        referralCode: referralCode,
+                        referredBy: referredBy || '',
+                        referrals: 0,
+                        airtimeBalance: 0
+                    };
+                    
+                    // Save user data to Firebase
+                    return database.ref(`users/${userId}`).set(userData)
+                        .then(() => {
+                            // If user was referred, increment referral count for referrer
+                            if (referredBy) {
+                                // Find the user with this referral code
+                                return database.ref('users').orderByChild('referralCode').equalTo(referredBy).once('value')
+                                    .then((snapshot) => {
+                                        if (snapshot.exists()) {
+                                            // Get the first match (should be only one)
+                                            const referrerKey = Object.keys(snapshot.val())[0];
+                                            // Increment referrals count
+                                            return database.ref(`users/${referrerKey}`).child('referrals').transaction(count => {
+                                                return (count || 0) + 1;
+                                            });
+                                        }
+                                    });
+                            }
+                        })
+                        .then(() => {
+                            hideLoading('signup-button', 'signup-loading');
+                            showSuccess('signup-success', 'Account created successfully! Redirecting to login...');
+                            
+                            // Redirect to login after 2 seconds
+                            setTimeout(() => {
+                                document.getElementById('tab-login').click();
+                            }, 2000);
+                        });
+                })
+                .catch((error) => {
+                    hideLoading('signup-button', 'signup-loading');
+                    let errorMessage = 'Sign up failed. Please try again.';
+                    
+                    if (error.code === 'auth/email-already-in-use') {
+                        errorMessage = 'This email is already in use';
+                    } else if (error.code === 'auth/invalid-email') {
+                        errorMessage = 'Invalid email address';
+                    } else if (error.code === 'auth/weak-password') {
+                        errorMessage = 'Password is too weak';
+                    }
+                    
+                    showError('signup-error', errorMessage);
+                });
+        });
+
+             // Forgot password functionality
+        document.getElementById('forgot-button').addEventListener('click', () => {
+            const email = document.getElementById('forgot-email').value;
+            
+            if (!email) {
+                showError('forgot-error', 'Please enter your email');
+                return;
+            }
+            
+            showLoading('forgot-button', 'forgot-loading');
+            
+            auth.sendPasswordResetEmail(email)
+                .then(() => {
+                    hideLoading('forgot-button', 'forgot-loading');
+                    showSuccess('forgot-success', 'Password reset email sent! Check your inbox');
+                    document.getElementById('forgot-email').value = '';
+                })
+                .catch((error) => {
+                    hideLoading('forgot-button', 'forgot-loading');
+                    let errorMessage = 'Failed to send reset email. Please try again.';
+                    
+                    if (error.code === 'auth/user-not-found') {
+                        errorMessage = 'No account found with this email';
+                    } else if (error.code === 'auth/invalid-email') {
+                        errorMessage = 'Invalid email address';
+                    }
+                    
+                    showError('forgot-error', errorMessage);
+                });
+        });
+
+        // Check if user is already logged in
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                // User is signed in, redirect to dashboard
+                window.location.href = '/dashboard';
+            }
+        });
+    </script>
 </body>
 </html>
