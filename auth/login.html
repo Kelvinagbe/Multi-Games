@@ -6,328 +6,326 @@
     <title>Multi Games - Authentication</title>
     <style>
         :root {
-            --primary-color: #6366f1;
-            --secondary-color: #4f46e5;
-            --background-color: #1f2937;
-            --card-color: #111827;
-            --text-color: #f3f4f6;
-            --text-secondary: #9ca3af;
-            --error-color: #ef4444;
-            --success-color: #10b981;
-        }
+    --primary-color: #10b981; /* Changed from blue to green */
+    --secondary-color: #059669; /* Changed from blue to darker green */
+    --background-color: #ffffff; /* Changed to white */
+    --card-color: #ffffff; /* Changed to white */
+    --text-color: #111827; /* Changed to dark for contrast on white */
+    --text-secondary: #4b5563; /* Adjusted for contrast */
+    --error-color: #ef4444;
+    --success-color: #10b981;
+}
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-        }
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+}
 
-        body {
-            background-color: var(--background-color);
-            color: var(--text-color);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 1rem;
-        }
+body {
+    background-color: var(--background-color);
+    color: var(--text-color);
+    min-height: 100vh;
+    width: 100%;
+    padding: 1rem;
+}
 
-        .container {
-            width: 100%;
-            max-width: 420px;
-        }
+/* Removed container width limits and centering for iframe display */
+.container {
+    width: 100%;
+}
 
-        .auth-card {
-            background-color: var(--card-color);
-            border-radius: 0.75rem;
-            padding: 2rem;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            width: 100%;
-        }
+.auth-card {
+    background-color: var(--card-color);
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    width: 100%;
+    /* Removed shadows for cleaner iframe display */
+}
 
-        .logo {
-            text-align: center;
-            margin-bottom: 1.5rem;
-        }
+.logo {
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
 
-        .logo img {
-            height: 60px;
-        }
+.logo img {
+    height: 60px;
+}
 
-        h1 {
-            font-size: 1.5rem;
-            text-align: center;
-            margin-bottom: 1.5rem;
-            font-weight: 600;
-        }
+h1 {
+    font-size: 1.5rem;
+    text-align: center;
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+}
 
-        .tabs {
-            display: flex;
-            margin-bottom: 1.5rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
+.tabs {
+    display: flex;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
 
-        .tab {
-            flex: 1;
-            text-align: center;
-            padding: 0.75rem;
-            cursor: pointer;
-            font-weight: 500;
-            color: var(--text-secondary);
-            position: relative;
-        }
+.tab {
+    flex: 1;
+    text-align: center;
+    padding: 0.75rem;
+    cursor: pointer;
+    font-weight: 500;
+    color: var(--text-secondary);
+    position: relative;
+}
 
-        .tab.active {
-            color: var(--text-color);
-        }
+.tab.active {
+    color: var(--text-color);
+}
 
-        .tab.active::after {
-            content: '';
-            position: absolute;
-            bottom: -1px;
-            left: 0;
-            right: 0;
-            height: 2px;
-            background-color: var(--primary-color);
-        }
+.tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background-color: var(--primary-color);
+}
 
-        .form-group {
-            margin-bottom: 1rem;
-        }
+.form-group {
+    margin-bottom: 1rem;
+}
 
-        label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-size: 0.875rem;
-            font-weight: 500;
-        }
+label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
 
-        input {
-            width: 100%;
-            padding: 0.75rem;
-            border-radius: 0.5rem;
-            background-color: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: var(--text-color);
-            font-size: 1rem;
-            transition: border-color 0.2s;
-        }
+input {
+    width: 100%;
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    background-color: rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    color: var(--text-color);
+    font-size: 1rem;
+    transition: border-color 0.2s;
+}
 
-        input:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 1px var(--primary-color);
-        }
+input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 1px var(--primary-color);
+}
 
-        button {
-            width: 100%;
-            padding: 0.75rem;
-            border-radius: 0.5rem;
-            background-color: var(--primary-color);
-            color: white;
-            font-weight: 500;
-            border: none;
-            cursor: pointer;
-            font-size: 1rem;
-            transition: background-color 0.2s;
-            margin-top: 1rem;
-        }
+button {
+    width: 100%;
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    background-color: var(--primary-color);
+    color: white;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.2s;
+    margin-top: 1rem;
+}
 
-        button:hover {
-            background-color: var(--secondary-color);
-        }
+button:hover {
+    background-color: var(--secondary-color);
+}
 
-        button:disabled {
-            background-color: #4b5563;
-            cursor: not-allowed;
-        }
+button:disabled {
+    background-color: #9ca3af;
+    cursor: not-allowed;
+}
 
-        .forgot-password {
-            text-align: right;
-            margin-top: 0.5rem;
-        }
+.forgot-password {
+    text-align: right;
+    margin-top: 0.5rem;
+}
 
-        .forgot-password a {
-            color: var(--primary-color);
-            font-size: 0.875rem;
-            text-decoration: none;
-            cursor: pointer;
-        }
+.forgot-password a {
+    color: var(--primary-color);
+    font-size: 0.875rem;
+    text-decoration: none;
+    cursor: pointer;
+}
 
-        .forgot-password a:hover {
-            text-decoration: underline;
-        }
+.forgot-password a:hover {
+    text-decoration: underline;
+}
 
-        .form-section {
-            display: none;
-        }
+.form-section {
+    display: none;
+}
 
-        .form-section.active {
-            display: block;
-        }
+.form-section.active {
+    display: block;
+}
 
-        .referral-container {
-            margin-top: 1rem;
-            padding-top: 1rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-        }
+.referral-container {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
 
-        .error-message {
-            color: var(--error-color);
-            font-size: 0.875rem;
-            margin-top: 0.5rem;
-            display: none;
-        }
+.error-message {
+    color: var(--error-color);
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+    display: none;
+}
 
-        .success-message {
-            color: var(--success-color);
-            font-size: 0.875rem;
-            margin-top: 0.5rem;
-            display: none;
-        }
+.success-message {
+    color: var(--success-color);
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+    display: none;
+}
 
-        .loading {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            border-top-color: white;
-            animation: spin 1s linear infinite;
-            margin-right: 8px;
-            display: none;
-        }
+.loading {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: white;
+    animation: spin 1s linear infinite;
+    margin-right: 8px;
+    display: none;
+}
 
-        @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
-        }
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
 
-        .btn-with-loading {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+.btn-with-loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 
-        /* Verification Challenge Styles */
-        .verification-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: rgba(0, 0, 0, 0.8);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s ease;
-        }
+/* Verification Challenge Styles */
+.verification-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
 
-        .verification-overlay.active {
-            opacity: 1;
-            pointer-events: all;
-        }
+.verification-overlay.active {
+    opacity: 1;
+    pointer-events: all;
+}
 
-        .verification-container {
-            background-color: var(--card-color);
-            padding: 2rem;
-            border-radius: 0.75rem;
-            width: 90%;
-            max-width: 400px;
-        }
+.verification-container {
+    background-color: var(--background-color);
+    padding: 2rem;
+    border-radius: 0.75rem;
+    width: 90%;
+    max-width: 400px;
+}
 
-        .verification-header {
-            text-align: center;
-            margin-bottom: 1.5rem;
-        }
+.verification-header {
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
 
-        .verification-header h3 {
-            font-size: 1.25rem;
-            margin-bottom: 0.5rem;
-        }
+.verification-header h3 {
+    font-size: 1.25rem;
+    margin-bottom: 0.5rem;
+}
 
-        .verification-header p {
-            color: var(--text-secondary);
-            font-size: 0.875rem;
-        }
+.verification-header p {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+}
 
-        .challenge-container {
-            margin-bottom: 1.5rem;
-        }
+.challenge-container {
+    margin-bottom: 1.5rem;
+}
 
-        .challenge-container p {
-            font-size: 1.125rem;
-            margin-bottom: 1rem;
-            text-align: center;
-        }
+.challenge-container p {
+    font-size: 1.125rem;
+    margin-bottom: 1rem;
+    text-align: center;
+}
 
-        .answer-input {
-            width: 100%;
-            padding: 0.75rem;
-            border-radius: 0.5rem;
-            text-align: center;
-            font-size: 1.25rem;
-            letter-spacing: 2px;
-        }
+.answer-input {
+    width: 100%;
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    text-align: center;
+    font-size: 1.25rem;
+    letter-spacing: 2px;
+}
 
-        .answer-input:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 1px var(--primary-color);
-        }
+.answer-input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 1px var(--primary-color);
+}
 
-        .timer-container {
-            text-align: center;
-            margin-bottom: 1rem;
-        }
+.timer-container {
+    text-align: center;
+    margin-bottom: 1rem;
+}
 
-        .timer {
-            font-size: 1rem;
-            color: var(--text-secondary);
-        }
+.timer {
+    font-size: 1rem;
+    color: var(--text-secondary);
+}
 
-        .progress-bar {
-            height: 6px;
-            background-color: rgba(255, 255, 255, 0.1);
-            border-radius: 3px;
-            overflow: hidden;
-            margin-top: 0.5rem;
-        }
+.progress-bar {
+    height: 6px;
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-top: 0.5rem;
+}
 
-        .progress-fill {
-            height: 100%;
-            background-color: var(--primary-color);
-            width: 100%;
-            transition: width 1s linear;
-        }
+.progress-fill {
+    height: 100%;
+    background-color: var(--primary-color);
+    width: 100%;
+    transition: width 1s linear;
+}
 
-        .challenge-image {
-            display: block;
-            margin: 0 auto 1rem;
-            max-width: 100%;
-            height: auto;
-        }
+.challenge-image {
+    display: block;
+    margin: 0 auto 1rem;
+    max-width: 100%;
+    height: auto;
+}
 
-        .verify-button {
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 0.75rem;
-            border-radius: 0.5rem;
-            width: 100%;
-            font-size: 1rem;
-            font-weight: 500;
-            cursor: pointer;
-        }
+.verify-button {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    width: 100%;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+}
 
-        .verify-button:hover {
-            background-color: var(--secondary-color);
-        }
+.verify-button:hover {
+    background-color: var(--secondary-color);
+}
     </style>
 </head>
 <body>
@@ -524,8 +522,6 @@ function notifyParentOfLogin(user) {
     window.parent.postMessage({
         type: 'loginSuccess',
         userData: {
-            uid: user.uid,
-            email: user.email,
             displayName: user.displayName || ''
         }
     }, window.location.origin);
