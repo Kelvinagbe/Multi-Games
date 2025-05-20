@@ -5,13 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Multi Games - Authentication</title>
     <style>
-        :root {
-    --primary-color: #10b981; /* Changed from blue to green */
-    --secondary-color: #059669; /* Changed from blue to darker green */
-    --background-color: #ffffff; /* Changed to white */
-    --card-color: #ffffff; /* Changed to white */
-    --text-color: #111827; /* Changed to dark for contrast on white */
-    --text-secondary: #4b5563; /* Adjusted for contrast */
+    :root {
+    --primary-color: #10b981;
+    --secondary-color: #059669;
+    --background-color: #ffffff;
+    --card-color: #ffffff;
+    --text-color: #111827;
+    --text-secondary: #4b5563;
     --error-color: #ef4444;
     --success-color: #10b981;
 }
@@ -28,52 +28,46 @@ body {
     color: var(--text-color);
     min-height: 100vh;
     width: 100%;
-    padding: 1rem;
+    padding: 0.5rem;
 }
 
-/* Removed container width limits and centering for iframe display */
+/* Removed container width limits for iframe display */
 .container {
     width: 100%;
 }
 
 .auth-card {
     background-color: var(--card-color);
-    border-radius: 0.75rem;
-    padding: 1.5rem;
+    border-radius: 0.5rem;
+    padding: 1rem;
     width: 100%;
-    /* Removed shadows for cleaner iframe display */
 }
 
-.logo {
-    text-align: center;
-    margin-bottom: 1.5rem;
-}
-
-.logo img {
-    height: 60px;
-}
+/* Logo has been removed */
 
 h1 {
-    font-size: 1.5rem;
+    font-size: 1.25rem;
     text-align: center;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
     font-weight: 600;
+    margin-top: 0; /* Removed top margin */
 }
 
 .tabs {
     display: flex;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
     border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 .tab {
     flex: 1;
     text-align: center;
-    padding: 0.75rem;
+    padding: 0.5rem;
     cursor: pointer;
     font-weight: 500;
     color: var(--text-secondary);
     position: relative;
+    font-size: 0.875rem; /* Reduced font size */
 }
 
 .tab.active {
@@ -91,24 +85,24 @@ h1 {
 }
 
 .form-group {
-    margin-bottom: 1rem;
+    margin-bottom: 0.75rem; /* Reduced margin */
 }
 
 label {
     display: block;
-    margin-bottom: 0.5rem;
-    font-size: 0.875rem;
+    margin-bottom: 0.25rem; /* Reduced margin */
+    font-size: 0.8rem; /* Reduced font size */
     font-weight: 500;
 }
 
 input {
     width: 100%;
-    padding: 0.75rem;
+    padding: 0.5rem; /* Reduced padding */
     border-radius: 0.5rem;
     background-color: rgba(0, 0, 0, 0.05);
     border: 1px solid rgba(0, 0, 0, 0.1);
     color: var(--text-color);
-    font-size: 1rem;
+    font-size: 0.9rem; /* Reduced font size */
     transition: border-color 0.2s;
 }
 
@@ -120,16 +114,16 @@ input:focus {
 
 button {
     width: 100%;
-    padding: 0.75rem;
+    padding: 0.6rem; /* Reduced padding */
     border-radius: 0.5rem;
     background-color: var(--primary-color);
     color: white;
     font-weight: 500;
     border: none;
     cursor: pointer;
-    font-size: 1rem;
+    font-size: 0.9rem; /* Reduced font size */
     transition: background-color 0.2s;
-    margin-top: 1rem;
+    margin-top: 0.75rem; /* Reduced margin */
 }
 
 button:hover {
@@ -143,12 +137,12 @@ button:disabled {
 
 .forgot-password {
     text-align: right;
-    margin-top: 0.5rem;
+    margin-top: 0.25rem; /* Reduced margin */
 }
 
 .forgot-password a {
     color: var(--primary-color);
-    font-size: 0.875rem;
+    font-size: 0.8rem; /* Reduced font size */
     text-decoration: none;
     cursor: pointer;
 }
@@ -166,34 +160,34 @@ button:disabled {
 }
 
 .referral-container {
-    margin-top: 1rem;
-    padding-top: 1rem;
+    margin-top: 0.75rem; /* Reduced margin */
+    padding-top: 0.75rem; /* Reduced padding */
     border-top: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 .error-message {
     color: var(--error-color);
-    font-size: 0.875rem;
-    margin-top: 0.5rem;
+    font-size: 0.8rem; /* Reduced font size */
+    margin-top: 0.25rem; /* Reduced margin */
     display: none;
 }
 
 .success-message {
     color: var(--success-color);
-    font-size: 0.875rem;
-    margin-top: 0.5rem;
+    font-size: 0.8rem; /* Reduced font size */
+    margin-top: 0.25rem; /* Reduced margin */
     display: none;
 }
 
 .loading {
     display: inline-block;
-    width: 20px;
-    height: 20px;
-    border: 3px solid rgba(255, 255, 255, 0.3);
+    width: 16px; /* Reduced size */
+    height: 16px; /* Reduced size */
+    border: 2px solid rgba(255, 255, 255, 0.3); /* Reduced border */
     border-radius: 50%;
     border-top-color: white;
     animation: spin 1s linear infinite;
-    margin-right: 8px;
+    margin-right: 6px; /* Reduced margin */
     display: none;
 }
 
@@ -233,43 +227,43 @@ button:disabled {
 
 .verification-container {
     background-color: var(--background-color);
-    padding: 2rem;
+    padding: 1.5rem; /* Reduced padding */
     border-radius: 0.75rem;
-    width: 90%;
+    width: 95%; /* Increased width for iframe */
     max-width: 400px;
 }
 
 .verification-header {
     text-align: center;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem; /* Reduced margin */
 }
 
 .verification-header h3 {
-    font-size: 1.25rem;
-    margin-bottom: 0.5rem;
+    font-size: 1.1rem; /* Reduced font size */
+    margin-bottom: 0.25rem; /* Reduced margin */
 }
 
 .verification-header p {
     color: var(--text-secondary);
-    font-size: 0.875rem;
+    font-size: 0.8rem; /* Reduced font size */
 }
 
 .challenge-container {
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem; /* Reduced margin */
 }
 
 .challenge-container p {
-    font-size: 1.125rem;
-    margin-bottom: 1rem;
+    font-size: 1rem; /* Reduced font size */
+    margin-bottom: 0.75rem; /* Reduced margin */
     text-align: center;
 }
 
 .answer-input {
     width: 100%;
-    padding: 0.75rem;
+    padding: 0.6rem; /* Reduced padding */
     border-radius: 0.5rem;
     text-align: center;
-    font-size: 1.25rem;
+    font-size: 1.1rem; /* Reduced font size */
     letter-spacing: 2px;
 }
 
@@ -281,20 +275,20 @@ button:disabled {
 
 .timer-container {
     text-align: center;
-    margin-bottom: 1rem;
+    margin-bottom: 0.75rem; /* Reduced margin */
 }
 
 .timer {
-    font-size: 1rem;
+    font-size: 0.9rem; /* Reduced font size */
     color: var(--text-secondary);
 }
 
 .progress-bar {
-    height: 6px;
+    height: 4px; /* Reduced height */
     background-color: rgba(0, 0, 0, 0.1);
-    border-radius: 3px;
+    border-radius: 2px;
     overflow: hidden;
-    margin-top: 0.5rem;
+    margin-top: 0.25rem; /* Reduced margin */
 }
 
 .progress-fill {
@@ -306,7 +300,7 @@ button:disabled {
 
 .challenge-image {
     display: block;
-    margin: 0 auto 1rem;
+    margin: 0 auto 0.75rem; /* Reduced margin */
     max-width: 100%;
     height: auto;
 }
@@ -315,10 +309,10 @@ button:disabled {
     background-color: var(--primary-color);
     color: white;
     border: none;
-    padding: 0.75rem;
+    padding: 0.6rem; /* Reduced padding */
     border-radius: 0.5rem;
     width: 100%;
-    font-size: 1rem;
+    font-size: 0.9rem; /* Reduced font size */
     font-weight: 500;
     cursor: pointer;
 }
