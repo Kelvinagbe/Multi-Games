@@ -341,7 +341,7 @@ function updateAirtimeUI(balance) {
 function saveUserDataToLocalStorage(profile) {
     // Don't store sensitive data in localStorage
     const essentialData = {
-        uid: profile.uid || auth.currentUser.uid,
+       
         fullName: profile.fullName,
         username: profile.username,
         referralCode: profile.referralCode,
