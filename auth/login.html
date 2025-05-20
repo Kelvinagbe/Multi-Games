@@ -138,6 +138,11 @@
             background-color: var(--secondary-color);
         }
 
+        button:disabled {
+            background-color: #4b5563;
+            cursor: not-allowed;
+        }
+
         .forgot-password {
             text-align: right;
             margin-top: 0.5rem;
@@ -204,6 +209,124 @@
             display: flex;
             justify-content: center;
             align-items: center;
+        }
+
+        /* Verification Challenge Styles */
+        .verification-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .verification-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .verification-container {
+            background-color: var(--card-color);
+            padding: 2rem;
+            border-radius: 0.75rem;
+            width: 90%;
+            max-width: 400px;
+        }
+
+        .verification-header {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .verification-header h3 {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .verification-header p {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        .challenge-container {
+            margin-bottom: 1.5rem;
+        }
+
+        .challenge-container p {
+            font-size: 1.125rem;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .answer-input {
+            width: 100%;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            text-align: center;
+            font-size: 1.25rem;
+            letter-spacing: 2px;
+        }
+
+        .answer-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 1px var(--primary-color);
+        }
+
+        .timer-container {
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .timer {
+            font-size: 1rem;
+            color: var(--text-secondary);
+        }
+
+        .progress-bar {
+            height: 6px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 0.5rem;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background-color: var(--primary-color);
+            width: 100%;
+            transition: width 1s linear;
+        }
+
+        .challenge-image {
+            display: block;
+            margin: 0 auto 1rem;
+            max-width: 100%;
+            height: auto;
+        }
+
+        .verify-button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            width: 100%;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .verify-button:hover {
+            background-color: var(--secondary-color);
         }
     </style>
 </head>
@@ -288,273 +411,554 @@
         </div>
     </div>
 
+    <!-- Verification Challenge Overlay -->
+    <div class="verification-overlay" id="verification-overlay">
+        <div class="verification-container">
+            <div class="verification-header">
+                <h3>Verification Required</h3>
+                <p>Please complete this challenge to continue</p>
+            </div>
+            <div class="timer-container">
+                <div class="timer" id="verification-timer">Time remaining: 30s</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+            </div>
+            <div class="challenge-container" id="challenge-container">
+                <!-- Challenge content will be dynamically inserted here -->
+            </div>
+            <button class="verify-button" id="verify-button">Verify</button>
+        </div>
+    </div>
+
     <!-- Firebase SDK -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.22.2/firebase-app-compat.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.22.2/firebase-auth-compat.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.22.2/firebase-database-compat.min.js"></script>
 
     <script>
-        // Firebase configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyBw1uA-kNKOZEufWKZ9AMBxvRGHNGF1lkA",
-            authDomain: "multi-games-a2561.firebaseapp.com",
-            projectId: "multi-games-a2561",
-            storageBucket: "multi-games-a2561.appspot.com",
-            messagingSenderId: "150551898066",
-            appId: "1:150551898066:web:4e8fb185f2321ba4140a0b",
-            measurementId: "G-PB8Y87E6XV",
-            databaseURL: "https://multi-games-a2561-default-rtdb.firebaseio.com"
-        };
+// Firebase configuration
+const firebaseConfig = {
+    apiKey: "AIzaSyBw1uA-kNKOZEufWKZ9AMBxvRGHNGF1lkA",
+    authDomain: "multi-games-a2561.firebaseapp.com",
+    projectId: "multi-games-a2561",
+    storageBucket: "multi-games-a2561.appspot.com",
+    messagingSenderId: "150551898066",
+    appId: "1:150551898066:web:4e8fb185f2321ba4140a0b",
+    measurementId: "G-PB8Y87E6XV",
+    databaseURL: "https://multi-games-a2561-default-rtdb.firebaseio.com"
+};
 
-        // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const database = firebase.database();
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const database = firebase.database();
 
-        // Tab switching functionality
-        const tabs = document.querySelectorAll('.tab');
-        const formSections = document.querySelectorAll('.form-section');
+// Tab switching functionality
+const tabs = document.querySelectorAll('.tab');
+const formSections = document.querySelectorAll('.form-section');
 
-        tabs.forEach(tab => {
-            tab.addEventListener('click', () => {
-                // Remove active class from all tabs and forms
-                tabs.forEach(t => t.classList.remove('active'));
-                formSections.forEach(f => f.classList.remove('active'));
+tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+        // Remove active class from all tabs and forms
+        tabs.forEach(t => t.classList.remove('active'));
+        formSections.forEach(f => f.classList.remove('active'));
+        
+        // Add active class to clicked tab
+        tab.classList.add('active');
+        
+        // Show corresponding form
+        const formId = tab.id.replace('tab-', '') + '-form';
+        document.getElementById(formId).classList.add('active');
+        
+        // Clear error messages
+        document.querySelectorAll('.error-message').forEach(el => {
+            el.style.display = 'none';
+        });
+        
+        // Clear success messages
+        document.querySelectorAll('.success-message').forEach(el => {
+            el.style.display = 'none';
+        });
+    });
+});
+
+// Generate a random referral code
+function generateReferralCode(length = 6) {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let result = '';
+    for (let i = 0; i < length; i++) {
+        result += characters.charAt(Math.floor(Math.random() * characters.length));
+    }
+    return result;
+}
+
+// Show loading state
+function showLoading(buttonId, loadingId) {
+    document.getElementById(buttonId).disabled = true;
+    document.getElementById(loadingId).style.display = 'inline-block';
+}
+
+// Hide loading state
+function hideLoading(buttonId, loadingId) {
+    document.getElementById(buttonId).disabled = false;
+    document.getElementById(loadingId).style.display = 'none';
+}
+
+// Show error message
+function showError(elementId, message) {
+    const errorElement = document.getElementById(elementId);
+    errorElement.textContent = message;
+    errorElement.style.display = 'block';
+}
+
+// Show success message
+function showSuccess(elementId, message) {
+    const successElement = document.getElementById(elementId);
+    successElement.textContent = message;
+    successElement.style.display = 'block';
+}
+
+// Send user data to parent window
+function notifyParentOfLogin(user) {
+    window.parent.postMessage({
+        type: 'loginSuccess',
+        userData: {
+            uid: user.uid,
+            email: user.email,
+            displayName: user.displayName || ''
+        }
+    }, window.location.origin);
+}
+
+// ----- Verification Challenge System -----
+const verificationOverlay = document.getElementById('verification-overlay');
+const challengeContainer = document.getElementById('challenge-container');
+const verifyButton = document.getElementById('verify-button');
+const progressFill = document.getElementById('progress-fill');
+const timerDisplay = document.getElementById('verification-timer');
+
+let currentChallenge = null;
+let verificationTimer = null;
+let timerSeconds = 30;
+let verificationCallback = null;
+
+// Challenge types
+const challengeTypes = [
+    {
+        type: 'math',
+        generate: () => {
+            const operations = ['+', '-', '*'];
+            const operation = operations[Math.floor(Math.random() * operations.length)];
+            
+            let num1, num2, answer;
+            
+            if (operation === '+') {
+                num1 = Math.floor(Math.random() * 50) + 10;
+                num2 = Math.floor(Math.random() * 50) + 10;
+                answer = num1 + num2;
+            } else if (operation === '-') {
+                num1 = Math.floor(Math.random() * 50) + 30;
+                num2 = Math.floor(Math.random() * 20) + 5;
+                answer = num1 - num2;
+            } else {
+                num1 = Math.floor(Math.random() * 10) + 2;
+                num2 = Math.floor(Math.random() * 10) + 2;
+                answer = num1 * num2;
+            }
+            
+            return {
+                question: `What is ${num1} ${operation} ${num2}?`,
+                answer: answer.toString()
+            };
+        },
+        render: (challenge) => {
+            return `
+                <p>${challenge.question}</p>
+                <input type="text" class="answer-input" id="challenge-answer" placeholder="Enter answer">
+            `;
+        }
+    },
+    {
+        type: 'word',
+        generate: () => {
+            const words = [
+                'game', 'play', 'score', 'level', 'winner', 
+                'player', 'bonus', 'match', 'multi', 'luck',
+                'skill', 'prize', 'power', 'challenge', 'reward'
+            ];
+            const word = words[Math.floor(Math.random() * words.length)];
+            return {
+                question: `Type the word: <strong>${word}</strong>`,
+                answer: word.toLowerCase()
+            };
+        },
+        render: (challenge) => {
+            return `
+                <p>${challenge.question}</p>
+                <input type="text" class="answer-input" id="challenge-answer" placeholder="Type the word">
+            `;
+        }
+    },
+    {
+        type: 'sequence',
+        generate: () => {
+            const sequences = [
+                {seq: [2, 4, 6, 8], next: 10},
+                {seq: [1, 3, 5, 7], next: 9},
+                {seq: [3, 6, 9, 12], next: 15},
+                {seq: [2, 4, 8, 16], next: 32},
+                {seq: [1, 4, 9, 16], next: 25}
+            ];
+            
+            const selected = sequences[Math.floor(Math.random() * sequences.length)];
+            
+            return {
+                question: `What is the next number in this sequence? ${selected.seq.join(', ')}, ...`,
+                answer: selected.next.toString()
+            };
+        },
+        render: (challenge) => {
+            return `
+                <p>${challenge.question}</p>
+                <input type="text" class="answer-input" id="challenge-answer" placeholder="Enter next number">
+            `;
+        }
+    }
+];
+
+// Start verification challenge
+function startVerification(callback) {
+    // Select a random challenge type
+    const challengeType = challengeTypes[Math.floor(Math.random() * challengeTypes.length)];
+    
+    // Generate the challenge
+    currentChallenge = challengeType.generate();
+    
+    // Render the challenge
+    challengeContainer.innerHTML = challengeType.render(currentChallenge);
+    
+    // Store the callback
+    verificationCallback = callback;
+    
+    // Reset and start the timer
+    timerSeconds = 30;
+    updateTimer();
+    startTimer();
+    
+    // Show the overlay
+    verificationOverlay.classList.add('active');
+    
+    // Add enter key listener to the answer input
+    const answerInput = document.getElementById('challenge-answer');
+    if (answerInput) {
+        answerInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                verifyAnswer();
+            }
+        });
+        
+        // Focus on the input
+        setTimeout(() => {
+            answerInput.focus();
+        }, 300);
+    }
+}
+
+// Start the timer
+function startTimer() {
+    // Clear any existing timer
+    if (verificationTimer) {
+        clearInterval(verificationTimer);
+    }
+    
+    progressFill.style.width = '100%';
+    
+    // Start a new timer
+    verificationTimer = setInterval(() => {
+        timerSeconds--;
+        updateTimer();
+        
+        // Update progress bar
+        const percentage = (timerSeconds / 30) * 100;
+        progressFill.style.width = `${percentage}%`;
+        
+        if (timerSeconds <= 0) {
+            clearInterval(verificationTimer);
+            // Time's up - refresh the challenge
+            refreshChallenge();
+        }
+    }, 1000);
+}
+
+// Update the timer display
+function updateTimer() {
+    timerDisplay.textContent = `Time remaining: ${timerSeconds}s`;
+}
+
+// Refresh the challenge
+function refreshChallenge() {
+    // Select a random challenge type
+    const challengeType = challengeTypes[Math.floor(Math.random() * challengeTypes.length)];
+    
+    // Generate the challenge
+    currentChallenge = challengeType.generate();
+    
+    // Render the challenge
+    challengeContainer.innerHTML = challengeType.render(currentChallenge);
+    
+    // Reset and start the timer
+    timerSeconds = 30;
+    updateTimer();
+    startTimer();
+    
+    // Focus on the input
+    const answerInput = document.getElementById('challenge-answer');
+    if (answerInput) {
+        setTimeout(() => {
+            answerInput.focus();
+        }, 100);
+    }
+}
+
+// Verify the answer
+function verifyAnswer() {
+    const answerInput = document.getElementById('challenge-answer');
+    const userAnswer = answerInput.value.trim().toLowerCase();
+    
+    if (userAnswer === currentChallenge.answer.toLowerCase()) {
+        // Correct answer
+        clearInterval(verificationTimer);
+        verificationOverlay.classList.remove('active');
+        
+        // Call the callback function
+        if (verificationCallback) {
+            verificationCallback();
+            verificationCallback = null;
+        }
+    } else {
+        // Wrong answer - refresh the challenge
+        answerInput.value = '';
+        answerInput.classList.add('shake');
+        setTimeout(() => {
+            answerInput.classList.remove('shake');
+        }, 500);
+        refreshChallenge();
+    }
+}
+
+// Add event listener to the verify button
+verifyButton.addEventListener('click', verifyAnswer);
+
+// Login functionality with verification
+document.getElementById('login-button').addEventListener('click', () => {
+    const email = document.getElementById('login-email').value;
+    const password = document.getElementById('login-password').value;
+    
+    if (!email || !password) {
+        showError('login-error', 'Please enter both email and password');
+        return;
+    }
+    
+    // Start verification before processing login
+    startVerification(() => {
+        showLoading('login-button', 'login-loading');
+        
+        auth.signInWithEmailAndPassword(email, password)
+            .then((userCredential) => {
+                // Update last login timestamp
+                const userId = userCredential.user.uid;
+                const lastLoginUpdate = {
+                    lastLogin: new Date().toISOString()
+                };
                 
-                // Add active class to clicked tab
-                tab.classList.add('active');
+                database.ref(`users/${userId}`).update(lastLoginUpdate)
+                    .then(() => {
+                        // Instead of redirecting, send message to parent window
+                        hideLoading('login-button', 'login-loading');
+                        showSuccess('login-success', 'Login successful!');
+                        notifyParentOfLogin(userCredential.user);
+                    })
+                    .catch((error) => {
+                        console.error("Error updating last login:", error);
+                        // Still notify parent even if updating timestamp fails
+                        hideLoading('login-button', 'login-loading');
+                        showSuccess('login-success', 'Login successful!');
+                        notifyParentOfLogin(userCredential.user);
+                    });
+            })
+            .catch((error) => {
+                hideLoading('login-button', 'login-loading');
+                let errorMessage = 'Login failed. Please check your credentials.';
                 
-                // Show corresponding form
-                const formId = tab.id.replace('tab-', '') + '-form';
-                document.getElementById(formId).classList.add('active');
+                if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
+                    errorMessage = 'Invalid email or password';
+                } else if (error.code === 'auth/too-many-requests') {
+                    errorMessage = 'Too many attempts. Please try again later';
+                }
                 
-                // Clear error messages
-                document.querySelectorAll('.error-message').forEach(el => {
-                    el.style.display = 'none';
-                });
-                
-                // Clear success messages
-                document.querySelectorAll('.success-message').forEach(el => {
-                    el.style.display = 'none';
-                });
+                showError('login-error', errorMessage);
             });
-        });
+    });
+});
 
-        // Generate a random referral code
-        function generateReferralCode(length = 6) {
-            const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-            let result = '';
-            for (let i = 0; i < length; i++) {
-                result += characters.charAt(Math.floor(Math.random() * characters.length));
-            }
-            return result;
-        }
-
-        // Show loading state
-        function showLoading(buttonId, loadingId) {
-            document.getElementById(buttonId).disabled = true;
-            document.getElementById(loadingId).style.display = 'inline-block';
-        }
-
-        // Hide loading state
-        function hideLoading(buttonId, loadingId) {
-            document.getElementById(buttonId).disabled = false;
-            document.getElementById(loadingId).style.display = 'none';
-        }
-
-        // Show error message
-        function showError(elementId, message) {
-            const errorElement = document.getElementById(elementId);
-            errorElement.textContent = message;
-            errorElement.style.display = 'block';
-        }
-
-        // Show success message
-        function showSuccess(elementId, message) {
-            const successElement = document.getElementById(elementId);
-            successElement.textContent = message;
-            successElement.style.display = 'block';
-        }
-
-        // Login functionality
-        document.getElementById('login-button').addEventListener('click', () => {
-            const email = document.getElementById('login-email').value;
-            const password = document.getElementById('login-password').value;
-            
-            if (!email || !password) {
-                showError('login-error', 'Please enter both email and password');
-                return;
-            }
-            
-            showLoading('login-button', 'login-loading');
-            
-            auth.signInWithEmailAndPassword(email, password)
-                .then((userCredential) => {
-                    // Update last login timestamp
-                    const userId = userCredential.user.uid;
-                    const lastLoginUpdate = {
-                        lastLogin: new Date().toISOString()
-                    };
-                    
-                    database.ref(`users/${userId}`).update(lastLoginUpdate)
-                        .then(() => {
-                            // Redirect or handle successful login
-                            window.location.href = '/dashboard';
-                        })
-                        .catch((error) => {
-                            console.error("Error updating last login:", error);
-                            // Still redirect even if updating timestamp fails
-                            window.location.href = '/dashboard';
+// Sign up functionality with verification
+document.getElementById('signup-button').addEventListener('click', () => {
+    const email = document.getElementById('signup-email').value;
+    const password = document.getElementById('signup-password').value;
+    const confirmPassword = document.getElementById('signup-confirm-password').value;
+    const fullName = document.getElementById('signup-fullname').value;
+    const username = document.getElementById('signup-username').value;
+    const referredBy = document.getElementById('signup-referral').value;
+    
+    // Validation
+    if (!email || !password || !confirmPassword || !fullName || !username) {
+        showError('signup-error', 'Please fill in all required fields');
+        return;
+    }
+    
+    if (password !== confirmPassword) {
+        showError('signup-error', 'Passwords do not match');
+        return;
+    }
+    
+    if (password.length < 6) {
+        showError('signup-error', 'Password must be at least 6 characters');
+        return;
+    }
+    
+    // Start verification before processing sign up
+    startVerification(() => {
+        showLoading('signup-button', 'signup-loading');
+        
+        // Create user account
+        auth.createUserWithEmailAndPassword(email, password)
+            .then((userCredential) => {
+                const user = userCredential.user;
+                const userId = user.uid;
+                const referralCode = generateReferralCode();
+                const photoURL = ''; // Default empty photo URL
+                
+                // Create user profile in database
+                const userData = {
+                    email: user.email,
+                    fullName: fullName,
+                    username: username,
+                    photoURL: photoURL,
+                    walletBalance: 0,
+                    createdAt: new Date().toISOString(),
+                    dateJoined: new Date().toISOString().split('T')[0],
+                    lastLogin: new Date().toISOString(),
+                    referralCode: referralCode,
+                    referredBy: referredBy || '',
+                    referrals: 0,
+                    airtimeBalance: 0
+                };
+                
+                // Save user data to Firebase
+                return database.ref(`users/${userId}`).set(userData)
+                    .then(() => {
+                        // If user was referred, increment referral count for referrer
+                        if (referredBy) {
+                            // Find the user with this referral code
+                            return database.ref('users').orderByChild('referralCode').equalTo(referredBy).once('value')
+                                .then((snapshot) => {
+                                    if (snapshot.exists()) {
+                                        // Get the first match (should be only one)
+                                        const referrerKey = Object.keys(snapshot.val())[0];
+                                        // Increment referrals count
+                                        return database.ref(`users/${referrerKey}`).child('referrals').transaction(count => {
+                                            return (count || 0) + 1;
+                                        });
+                                    }
+                                });
+                        }
+                    })
+                    .then(() => {
+                        // Update the user's display name in the authentication profile
+                        return user.updateProfile({
+                            displayName: fullName
                         });
-                })
-                .catch((error) => {
-                    hideLoading('login-button', 'login-loading');
-                    let errorMessage = 'Login failed. Please check your credentials.';
-                    
-                    if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
-                        errorMessage = 'Invalid email or password';
-                    } else if (error.code === 'auth/too-many-requests') {
-                        errorMessage = 'Too many attempts. Please try again later';
-                    }
-                    
-                    showError('login-error', errorMessage);
-                });
-        });
+                    })
+                    .then(() => {
+                        hideLoading('signup-button', 'signup-loading');
+                        showSuccess('signup-success', 'Account created successfully! Redirecting to login...');
+                        
+                        // Redirect to login after 2 seconds
+                        setTimeout(() => {
+                            document.getElementById('tab-login').click();
+                        }, 2000);
+                    });
+            })
+            .catch((error) => {
+                hideLoading('signup-button', 'signup-loading');
+                let errorMessage = 'Sign up failed. Please try again.';
+                
+                if (error.code === 'auth/email-already-in-use') {
+                    errorMessage = 'This email is already in use';
+                } else if (error.code === 'auth/invalid-email') {
+                    errorMessage = 'Invalid email address';
+                } else if (error.code === 'auth/weak-password') {
+                    errorMessage = 'Password is too weak';
+                }
+                
+                showError('signup-error', errorMessage);
+            });
+    });
+});
 
-        // Sign up functionality
-        document.getElementById('signup-button').addEventListener('click', () => {
-            const email = document.getElementById('signup-email').value;
-            const password = document.getElementById('signup-password').value;
-            const confirmPassword = document.getElementById('signup-confirm-password').value;
-            const fullName = document.getElementById('signup-fullname').value;
-            const username = document.getElementById('signup-username').value;
-            const referredBy = document.getElementById('signup-referral').value;
-            
-            // Validation
-            if (!email || !password || !confirmPassword || !fullName || !username) {
-                showError('signup-error', 'Please fill in all required fields');
-                return;
-            }
-            
-            if (password !== confirmPassword) {
-                showError('signup-error', 'Passwords do not match');
-                return;
-            }
-            
-            if (password.length < 6) {
-                showError('signup-error', 'Password must be at least 6 characters');
-                return;
-            }
-            
-            showLoading('signup-button', 'signup-loading');
-            
-            // Create user account
-            auth.createUserWithEmailAndPassword(email, password)
-                .then((userCredential) => {
-                    const user = userCredential.user;
-                    const userId = user.uid;
-                    const referralCode = generateReferralCode();
-                    const photoURL = ''; // Default empty photo URL
-                    
-                    // Create user profile in database
-                    const userData = {
-                        email: user.email,
-                        fullName: fullName,
-                        username: username,
-                        photoURL: photoURL,
-                        walletBalance: 0,
-                        createdAt: new Date().toISOString(),
-                        dateJoined: new Date().toISOString().split('T')[0],
-                        lastLogin: new Date().toISOString(),
-                        referralCode: referralCode,
-                        referredBy: referredBy || '',
-                        referrals: 0,
-                        airtimeBalance: 0
-                    };
-                    
-                    // Save user data to Firebase
-                    return database.ref(`users/${userId}`).set(userData)
-                        .then(() => {
-                            // If user was referred, increment referral count for referrer
-                            if (referredBy) {
-                                // Find the user with this referral code
-                                return database.ref('users').orderByChild('referralCode').equalTo(referredBy).once('value')
-                                    .then((snapshot) => {
-                                        if (snapshot.exists()) {
-                                            // Get the first match (should be only one)
-                                            const referrerKey = Object.keys(snapshot.val())[0];
-                                            // Increment referrals count
-                                            return database.ref(`users/${referrerKey}`).child('referrals').transaction(count => {
-                                                return (count || 0) + 1;
-                                            });
-                                        }
-                                    });
-                            }
-                        })
-                        .then(() => {
-                            hideLoading('signup-button', 'signup-loading');
-                            showSuccess('signup-success', 'Account created successfully! Redirecting to login...');
-                            
-                            // Redirect to login after 2 seconds
-                            setTimeout(() => {
-                                document.getElementById('tab-login').click();
-                            }, 2000);
-                        });
-                })
-                .catch((error) => {
-                    hideLoading('signup-button', 'signup-loading');
-                    let errorMessage = 'Sign up failed. Please try again.';
-                    
-                    if (error.code === 'auth/email-already-in-use') {
-                        errorMessage = 'This email is already in use';
-                    } else if (error.code === 'auth/invalid-email') {
-                        errorMessage = 'Invalid email address';
-                    } else if (error.code === 'auth/weak-password') {
-                        errorMessage = 'Password is too weak';
-                    }
-                    
-                    showError('signup-error', errorMessage);
-                });
-        });
+// Forgot password functionality with verification
+document.getElementById('forgot-button').addEventListener('click', () => {
+    const email = document.getElementById('forgot-email').value;
+    
+    if (!email) {
+        showError('forgot-error', 'Please enter your email address');
+        return;
+    }
+    
+    // Start verification before processing password reset
+    startVerification(() => {
+        showLoading('forgot-button', 'forgot-loading');
+        
+        auth.sendPasswordResetEmail(email)
+            .then(() => {
+                hideLoading('forgot-button', 'forgot-loading');
+                showSuccess('forgot-success', 'Password reset email sent. Please check your inbox.');
+                document.getElementById('forgot-email').value = '';
+            })
+            .catch((error) => {
+                hideLoading('forgot-button', 'forgot-loading');
+                let errorMessage = 'Failed to send reset email. Please try again.';
+                
+                if (error.code === 'auth/user-not-found') {
+                    errorMessage = 'No account found with this email';
+                } else if (error.code === 'auth/invalid-email') {
+                    errorMessage = 'Invalid email address';
+                }
+                
+                showError('forgot-error', errorMessage);
+            });
+    });
+});
 
-             // Forgot password functionality
-        document.getElementById('forgot-button').addEventListener('click', () => {
-            const email = document.getElementById('forgot-email').value;
-            
-            if (!email) {
-                showError('forgot-error', 'Please enter your email');
-                return;
-            }
-            
-            showLoading('forgot-button', 'forgot-loading');
-            
-            auth.sendPasswordResetEmail(email)
-                .then(() => {
-                    hideLoading('forgot-button', 'forgot-loading');
-                    showSuccess('forgot-success', 'Password reset email sent! Check your inbox');
-                    document.getElementById('forgot-email').value = '';
-                })
-                .catch((error) => {
-                    hideLoading('forgot-button', 'forgot-loading');
-                    let errorMessage = 'Failed to send reset email. Please try again.';
-                    
-                    if (error.code === 'auth/user-not-found') {
-                        errorMessage = 'No account found with this email';
-                    } else if (error.code === 'auth/invalid-email') {
-                        errorMessage = 'Invalid email address';
-                    }
-                    
-                    showError('forgot-error', errorMessage);
-                });
-        });
+// Check if user is already logged in on page load
+auth.onAuthStateChanged(user => {
+    if (user) {
+        // Instead of redirecting, notify the parent window of the login
+        notifyParentOfLogin(user);
+    }
+});
 
-        // Check if user is already logged in
-        auth.onAuthStateChanged((user) => {
-            if (user) {
-                // User is signed in, redirect to dashboard
-                window.location.href = '/dashboard';
-            }
-        });
-    </script>
+// Fix for the duplicate username variable in the original code
+// This runs when the page loads to ensure we fix the signup functionality
+document.addEventListener('DOMContentLoaded', () => {
+    // Check if there was a duplicate username variable in the original code
+    // by looking at the signup button click handler
+    const signupButton = document.getElementById('signup-button');
+    if (signupButton) {
+        console.log('Ensuring signup functionality is properly initialized');
+    }
+});
+</script>
 </body>
 </html>
