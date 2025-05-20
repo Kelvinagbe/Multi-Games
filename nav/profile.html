@@ -8,383 +8,396 @@
     <title>User Profile - Multi Games</title>
     <style>
         * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
-        }
-        
-        body {
-            background-color: #051a11;
-            color: #ffffff;
-        }
-        
-        .container {
-            max-width: 480px;
-            margin: 0 auto;
-            background-color: #0a2418;
-            min-height: 100vh;
-            position: relative;
-            padding-bottom: 20px;
-        }
-        
-        .header {
-            background-color: #0d3121;
-            padding: 16px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 10;
-        }
-        
-        .header-title {
-            font-size: 20px;
-            font-weight: 600;
-        }
-        
-        .header-actions {
-            display: flex;
-            gap: 15px;
-        }
-        
-        .icon-button {
-            background: none;
-            border: none;
-            color: #ffffff;
-            cursor: pointer;
-            font-size: 18px;
-        }
-        
-        .profile-section {
-            padding: 24px 16px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            border-bottom: 1px solid #144a33;
-        }
-        
-        .profile-avatar {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            background-color: #14a56e;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 36px;
-            font-weight: bold;
-            margin-bottom: 16px;
-            border: 3px solid #ffffff;
-        }
-        
-        .profile-name {
-            font-size: 24px;
-            font-weight: 600;
-            margin-bottom: 8px;
-        }
-        
-        .profile-username {
-            font-size: 16px;
-            color: #a0a0a0;
-            margin-bottom: 16px;
-        }
-        
-        .profile-actions {
-            display: flex;
-            gap: 12px;
-            margin-top: 8px;
-        }
-        
-        .button {
-            padding: 10px 20px;
-            border-radius: 24px;
-            font-weight: 500;
-            font-size: 14px;
-            cursor: pointer;
-            border: none;
-            outline: none;
-        }
-        
-        .primary-button {
-            background-color: #14a56e;
-            color: white;
-        }
-        
-        .secondary-button {
-            background-color: transparent;
-            border: 1px solid #14a56e;
-            color: #14a56e;
-        }
-        
-        .section-header {
-            padding: 16px;
-            font-size: 18px;
-            font-weight: 600;
-            border-bottom: 1px solid #144a33;
-        }
-        
-        .game-list {
-            padding: 16px;
-        }
-        
-        .game-item {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            padding: 12px 0;
-            border-bottom: 1px solid #144a33;
-        }
-        
-        .game-image {
-            width: 60px;
-            height: 60px;
-            border-radius: 12px;
-            background-color: #0d3121;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-            color: #a0a0a0;
-        }
-        
-        .game-info {
-            flex: 1;
-        }
-        
-        .game-title {
-            font-size: 16px;
-            font-weight: 500;
-            margin-bottom: 4px;
-        }
-        
-        .game-stats {
-            display: flex;
-            gap: 12px;
-            font-size: 12px;
-            color: #a0a0a0;
-        }
-        
-        .wallet-section {
-            margin: 24px 16px;
-            background-color: #0d3121;
-            border-radius: 16px;
-            padding: 20px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-        }
-        
-        .wallet-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-        
-        .wallet-title {
-            font-size: 20px;
-            font-weight: 600;
-        }
-        
-        .wallet-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background-color: rgba(20, 165, 110, 0.2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #14a56e;
-            font-size: 20px;
-        }
-        
-        .balance-cards {
-            display: flex;
-            gap: 16px;
-            margin-bottom: 24px;
-        }
-        
-        .balance-card {
-            flex: 1;
-            background-color: #082015;
-            border-radius: 12px;
-            padding: 16px;
-            display: flex;
-            flex-direction: column;
-        }
-        
-        .balance-label {
-            font-size: 14px;
-            color: #a0a0a0;
-            margin-bottom: 8px;
-        }
-        
-        .balance-amount {
-            font-size: 24px;
-            font-weight: 700;
-            color: #14a56e;
-        }
-        
-        .wallet-actions {
-            display: flex;
-            gap: 12px;
-            margin-top: 16px;
-        }
-        
-        .wallet-button {
-            flex: 1;
-            padding: 12px 0;
-            border-radius: 8px;
-            text-align: center;
-            font-weight: 500;
-            cursor: pointer;
-        }
-        
-        .withdraw-button {
-            background-color: #14a56e;
-            color: white;
-        }
-        
-        .history-button {
-            background-color: transparent;
-            border: 1px solid #14a56e;
-            color: #14a56e;
-        }
-        
-        .referral-section {
-            margin: 24px 16px;
-            background-color: #0d3121;
-            border-radius: 16px;
-            padding: 20px;
-        }
-        
-        .referral-header {
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .referral-code {
-            background-color: #082015;
-            padding: 12px;
-            border-radius: 8px;
-            font-family: monospace;
-            font-size: 18px;
-            font-weight: 600;
-            text-align: center;
-            margin: 16px 0;
-            letter-spacing: 1px;
-            color: #14a56e;
-        }
-        
-        .referral-info {
-            font-size: 14px;
-            color: #a0a0a0;
-            margin-bottom: 16px;
-        }
-        
-        .referral-count {
-            font-weight: 600;
-            color: #ffffff;
-        }
-        
-        /* Modal Styles */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 100;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-        }
-        
-        .modal-overlay.active {
-            opacity: 1;
-            visibility: visible;
-        }
-        
-        .modal-container {
-            width: 90%;
-            max-width: 480px;
-            background-color: #0a2418;
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-            transform: translateY(20px);
-            transition: all 0.3s ease;
-        }
-        
-        .modal-overlay.active .modal-container {
-            transform: translateY(0);
-        }
-        
-        .modal-header {
-            background-color: #0d3121;
-            padding: 16px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .modal-title {
-            font-size: 18px;
-            font-weight: 600;
-        }
-        
-        .modal-close {
-            background: none;
-            border: none;
-            color: #a0a0a0;
-            font-size: 20px;
-            cursor: pointer;
-        }
-        
-        .modal-content {
-            padding: 20px;
-            max-height: 70vh;
-            overflow-y: auto;
-        }
-        
-        .modal-iframe {
-            width: 100%;
-            height: 70vh;
-            border: none;
-        }
-        
-        /* Loading Indicator */
-        .loading-spinner {
-            display: inline-block;
-            width: 30px;
-            height: 30px;
-            border: 3px solid rgba(20, 165, 110, 0.3);
-            border-radius: 50%;
-            border-top-color: #14a56e;
-            animation: spin 1s linear infinite;
-            margin: 20px auto;
-        }
-        
-        @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
-        }
-        
-        .loader-container {
-            display: flex;
-            justify-content: center;
-            width: 100%;
-        }
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    background-color: #ffffff;
+    color: #333333;
+}
+
+.container {
+    width: 100%;
+    margin: 0;
+    background-color: #ffffff;
+    min-height: 100vh;
+    position: relative;
+    padding-bottom: 0;
+}
+
+.header {
+    background-color: #0d3121;
+    padding: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    color: #ffffff;
+}
+
+.header-title {
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.header-actions {
+    display: flex;
+    gap: 15px;
+}
+
+.icon-button {
+    background: none;
+    border: none;
+    color: #ffffff;
+    cursor: pointer;
+    font-size: 18px;
+}
+
+.profile-section {
+    padding: 24px 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.profile-avatar {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background-color: #14a56e;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 36px;
+    font-weight: bold;
+    margin-bottom: 16px;
+    border: 3px solid #0d3121;
+}
+
+.profile-name {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #0d3121;
+}
+
+.profile-username {
+    font-size: 16px;
+    color: #777777;
+    margin-bottom: 16px;
+}
+
+.profile-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 8px;
+}
+
+.button {
+    padding: 10px 20px;
+    border-radius: 24px;
+    font-weight: 500;
+    font-size: 14px;
+    cursor: pointer;
+    border: none;
+    outline: none;
+}
+
+.primary-button {
+    background-color: #14a56e;
+    color: white;
+}
+
+.secondary-button {
+    background-color: transparent;
+    border: 1px solid #14a56e;
+    color: #14a56e;
+}
+
+.section-header {
+    padding: 16px;
+    font-size: 18px;
+    font-weight: 600;
+    border-bottom: 1px solid #e0e0e0;
+    color: #0d3121;
+}
+
+.game-list {
+    padding: 16px;
+}
+
+.game-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 12px 0;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.game-image {
+    width: 60px;
+    height: 60px;
+    border-radius: 12px;
+    background-color: #f0f0f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    color: #777777;
+}
+
+.game-info {
+    flex: 1;
+}
+
+.game-title {
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 4px;
+    color: #0d3121;
+}
+
+.game-stats {
+    display: flex;
+    gap: 12px;
+    font-size: 12px;
+    color: #777777;
+}
+
+.wallet-section {
+    margin: 24px 16px;
+    background-color: #f5f5f5;
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    border: 1px solid #e0e0e0;
+}
+
+.wallet-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.wallet-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: #0d3121;
+}
+
+.wallet-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: rgba(20, 165, 110, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #14a56e;
+    font-size: 20px;
+}
+
+.balance-cards {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.balance-card {
+    flex: 1;
+    background-color: #ffffff;
+    border-radius: 12px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #e0e0e0;
+}
+
+.balance-label {
+    font-size: 14px;
+    color: #777777;
+    margin-bottom: 8px;
+}
+
+.balance-amount {
+    font-size: 24px;
+    font-weight: 700;
+    color: #14a56e;
+}
+
+.wallet-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 16px;
+}
+
+.wallet-button {
+    flex: 1;
+    padding: 12px 0;
+    border-radius: 8px;
+    text-align: center;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.withdraw-button {
+    background-color: #14a56e;
+    color: white;
+}
+
+.history-button {
+    background-color: transparent;
+    border: 1px solid #14a56e;
+    color: #14a56e;
+}
+
+.referral-section {
+    margin: 24px 16px;
+    background-color: #f5f5f5;
+    border-radius: 16px;
+    padding: 20px;
+    border: 1px solid #e0e0e0;
+}
+
+.referral-header {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #0d3121;
+}
+
+.referral-code {
+    background-color: #ffffff;
+    padding: 12px;
+    border-radius: 8px;
+    font-family: monospace;
+    font-size: 18px;
+    font-weight: 600;
+    text-align: center;
+    margin: 16px 0;
+    letter-spacing: 1px;
+    color: #14a56e;
+    border: 1px solid #e0e0e0;
+}
+
+.referral-info {
+    font-size: 14px;
+    color: #777777;
+    margin-bottom: 16px;
+}
+
+.referral-count {
+    font-weight: 600;
+    color: #0d3121;
+}
+
+/* Modal Styles */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.modal-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal-container {
+    width: 100%;
+    max-width: 100%;
+    background-color: #ffffff;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    transform: translateY(20px);
+    transition: all 0.3s ease;
+}
+
+.modal-overlay.active .modal-container {
+    transform: translateY(0);
+}
+
+.modal-header {
+    background-color: #0d3121;
+    padding: 16px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #ffffff;
+}
+
+.modal-title {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    color: #ffffff;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.modal-content {
+    padding: 20px;
+    max-height: 70vh;
+    overflow-y: auto;
+}
+
+.modal-iframe {
+    width: 100%;
+    height: 100vh;
+    border: none;
+    margin: 0;
+    padding: 0;
+}
+
+/* Loading Indicator */
+.loading-spinner {
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    border: 3px solid rgba(20, 165, 110, 0.3);
+    border-radius: 50%;
+    border-top-color: #14a56e;
+    animation: spin 1s linear infinite;
+    margin: 20px auto;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.loader-container {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
