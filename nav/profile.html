@@ -17,6 +17,16 @@
 body {
     background-color: #ffffff;
     color: #333333;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+}
+
+html {
+    height: 100%;
+    margin: 0;
+    padding: 0;
 }
 
 .container {
@@ -25,7 +35,7 @@ body {
     background-color: #ffffff;
     min-height: 100vh;
     position: relative;
-    padding-bottom: 0;
+    padding: 0;
 }
 
 .header {
@@ -362,9 +372,11 @@ body {
 }
 
 .modal-content {
-    padding: 20px;
-    max-height: 70vh;
-    overflow-y: auto;
+    padding: 0;
+    height: calc(100% - 56px); /* Subtracting header height */
+    width: 100%;
+    overflow: hidden;
+    position: relative;
 }
 
 .modal-iframe {
@@ -373,6 +385,12 @@ body {
     border: none;
     margin: 0;
     padding: 0;
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
 }
 
 /* Loading Indicator */
