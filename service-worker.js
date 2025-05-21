@@ -1,3 +1,32 @@
+// Import Firebase scripts
+importScripts('https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js');
+importScripts('https://www.gstatic.com/firebasejs/8.10.1/firebase-messaging.js');
+
+// Initialize Firebase with the minimal config needed for FCM
+firebase.initializeApp({
+  apiKey: "AIzaSyBw1uA-kNKOZEufWKZ9AMBxvRGHNGF1lkA",
+  projectId: "multi-games-a2561",
+  messagingSenderId: "150551898066",
+  appId: "1:150551898066:web:4e8fb185f2321ba4140a0b"
+});
+
+// Get messaging instance
+const messaging = firebase.messaging();
+
+// Handle background messages
+messaging.onBackgroundMessage((payload) => {
+  console.log('Received background message:', payload);
+  
+  // Customize notification here
+  const notificationTitle = payload.notification.title || 'Multi-Games Notification';
+  const notificationOptions = {
+    body: payload.notification.body || '',
+    icon: './assets/favicon.ico'
+  };
+
+  self.registration.showNotification(notificationTitle, notificationOptions);
+});
+
 // Simple service worker for a static HTML/CSS site
 const CACHE_NAME = 'multi-games-cache-v1';
 const assetsToCache = [
@@ -83,7 +112,9 @@ const assetsToCache = [
   './assets/image/subway.jpg',
   './assets/image/pixe-shooter.jpg',
   './css/main/main.css',
-
+  // Add Firebase messaging files to cache
+  'https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js',
+  'https://www.gstatic.com/firebasejs/8.10.1/firebase-messaging.js'
 ];
 
 // Install event - cache assets
@@ -112,10 +143,10 @@ self.addEventListener('fetch', event => {
         if (response) {
           return response;
         }
-        
+
         // Clone the request
         const fetchRequest = event.request.clone();
-        
+
         // Try network and cache the result
         return fetch(fetchRequest)
           .then(response => {
@@ -123,16 +154,16 @@ self.addEventListener('fetch', event => {
             if (!response || response.status !== 200 || response.type !== 'basic') {
               return response;
             }
-            
+
             // Clone the response
             const responseToCache = response.clone();
-            
+
             // Cache the response
             caches.open(CACHE_NAME)
               .then(cache => {
                 cache.put(event.request, responseToCache);
               });
-              
+
             return response;
           })
           .catch(() => {
