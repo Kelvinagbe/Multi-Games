@@ -21,7 +21,7 @@ messaging.onBackgroundMessage((payload) => {
   const notificationTitle = payload.notification.title || 'Multi-Games Notification';
   const notificationOptions = {
     body: payload.notification.body || '',
-    icon: './assets/favicon.ico'
+    icon: './assets/icon-192.png'
   };
 
   self.registration.showNotification(notificationTitle, notificationOptions);
