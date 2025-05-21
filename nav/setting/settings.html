@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Settings</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #ffffff;
+            color: #333333;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        
+        .settings-container {
+            width: 100%;
+            padding: 5px 15px 15px;
+        }
+        
+        .setting-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            padding: 10px 15px;
+            background-color: #f8f8f8;
+            border-radius: 8px;
+            transition: background-color 0.3s;
+        }
+        
+        .setting-label {
+            font-size: 15px;
+            font-weight: 500;
+        }
+
+        .setting-description {
+            font-size: 13px;
+            color: #666;
+            margin-top: 3px;
+            transition: color 0.3s;
+        }
+        
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 46px;
+            height: 24px;
+        }
+        
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .3s;
+            border-radius: 24px;
+        }
+        
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .slider {
+            background-color: #2196F3;
+        }
+        
+        input:checked + .slider:before {
+            transform: translateX(22px);
+        }
+        
+        .notification-options {
+            margin-top: 12px;
+            padding-left: 10px;
+            display: none;
+        }
+        
+        #notifications:checked ~ .notification-options {
+            display: block;
+        }
+        
+        .notification-option {
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .notification-option input {
+            margin-right: 8px;
+        }
+        
+        .save-container {
+            text-align: center;
+            margin-top: 15px;
+        }
+        
+        .btn-save {
+            padding: 8px 20px;
+            background-color: #2196F3;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 500;
+            transition: background-color 0.3s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .btn-save:hover {
+            background-color: #0d8aed;
+        }
+        
+        /* Dark Mode Styles */
+        body.dark-mode {
+            background-color: #222222;
+            color: #f0f0f0;
+        }
+
+        body.dark-mode .setting-item {
+            background-color: #333333;
+        }
+        
+        body.dark-mode .setting-description {
+            color: #b0b0b0;
+        }
+        
+        #status-message {
+            text-align: center;
+            color: #4caf50;
+            font-size: 14px;
+            height: 20px;
+            margin-bottom: 5px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        #status-message.show {
+            opacity: 1;
+        }
+        
+        /* Permission Modal Styles */
+        .permission-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            max-width: 90%;
+            width: 320px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        
+        body.dark-mode .modal-content {
+            background-color: #333;
+            color: #f0f0f0;
+        }
+        
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        
+        .modal-text {
+            font-size: 14px;
+            margin-bottom: 20px;
+            line-height: 1.4;
+        }
+        
+        .modal-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+        }
+        
+        .modal-btn {
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+        }
+        
+        .modal-btn-primary {
+            background-color: #2196F3;
+            color: white;
+        }
+        
+        .modal-btn-secondary {
+            background-color: #f1f1f1;
+            color: #333;
+        }
+        
+        body.dark-mode .modal-btn-secondary {
+            background-color: #555;
+            color: #f0f0f0;
+        }
+    </style>
+</head>
+<body id="body">
+    <div class="settings-container">
+        <!-- Status Message -->
+        <div id="status-message"></div>
+        
+        <!-- Dark Mode Toggle -->
+        <div class="setting-item">
+            <div>
+                <div class="setting-label">Dark Mode</div>
+                <div class="setting-description">Switch between light and dark themes</div>
+            </div>
+            <label class="toggle-switch">
+                <input type="checkbox" id="darkMode">
+                <span class="slider"></span>
+            </label>
+        </div>
+        
+        <!-- Notifications Toggle -->
+        <div class="setting-item">
+            <div>
+                <div class="setting-label">Notifications</div>
+                <div class="setting-description">Enable or disable game notifications</div>
+            </div>
+            <label class="toggle-switch">
+                <input type="checkbox" id="notifications">
+                <span class="slider"></span>
+            </label>
+            
+            <div class="notification-options">
+                <!-- Notification options removed as requested -->
+            </div>
+        </div>
+        
+        <div class="save-container">
+            <button class="btn-save" id="saveBtn">Save Settings</button>
+        </div>
+    </div>
+    
+    <!-- Permission Modal -->
+    <div class="permission-modal" id="permissionModal">
+        <div class="modal-content">
+            <div class="modal-title">Enable Notifications</div>
+            <div class="modal-text">
+                To receive game updates and alerts, please allow notifications for Multi-Games.
+            </div>
+            <div class="modal-buttons">
+                <button class="modal-btn modal-btn-secondary" id="cancelPermissionBtn">Cancel</button>
+                <button class="modal-btn modal-btn-primary" id="allowPermissionBtn">Allow</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-messaging.js"></script>
+
+    <script>
+        // Firebase configuration - Updated with real credentials
+        const firebaseConfig = {
+            apiKey: "AIzaSyBw1uA-kNKOZEufWKZ9AMBxvRGHNGF1lkA",
+            projectId: "multi-games-a2561",
+            messagingSenderId: "150551898066",
+            appId: "1:150551898066:web:4e8fb185f2321ba4140a0b"
+        };
+        
+        // Initialize Firebase
+        let messaging = null;
+        try {
+            firebase.initializeApp(firebaseConfig);
+            messaging = firebase.messaging();
+        } catch (error) {
+            console.error("Firebase initialization error:", error);
+        }
+        
+        // DOM Elements
+        const darkModeToggle = document.getElementById('darkMode');
+        const notificationsToggle = document.getElementById('notifications');
+        const body = document.getElementById('body');
+        const saveBtn = document.getElementById('saveBtn');
+        const statusMessage = document.getElementById('status-message');
+        const permissionModal = document.getElementById('permissionModal');
+        const allowPermissionBtn = document.getElementById('allowPermissionBtn');
+        const cancelPermissionBtn = document.getElementById('cancelPermissionBtn');
+        
+        // Check for saved settings
+        const savedSettings = JSON.parse(localStorage.getItem('gameSettings') || '{}');
+        
+        // Initialize settings from saved values
+        darkModeToggle.checked = savedSettings.darkMode || false;
+        notificationsToggle.checked = savedSettings.notifications !== false;
+        
+        // Apply dark mode if saved
+        if (savedSettings.darkMode) {
+            body.classList.add('dark-mode');
+        }
+        
+        // Dark mode toggle event
+        darkModeToggle.addEventListener('change', function() {
+            if (this.checked) {
+                body.classList.add('dark-mode');
+            } else {
+                body.classList.remove('dark-mode');
+            }
+        });
+        
+        // Show permission modal
+        function showPermissionModal() {
+            permissionModal.style.display = 'flex';
+        }
+        
+        // Hide permission modal
+        function hidePermissionModal() {
+            permissionModal.style.display = 'none';
+        }
+        
+        // Request notification permission and register for Firebase Cloud Messaging
+        async function setupNotifications(enable) {
+            if (!messaging) return false;
+            
+            if (enable) {
+                try {
+                    // Try to get the current permission state
+                    const currentPermission = window.Notification ? window.Notification.permission : 'default';
+                    
+                    if (currentPermission === 'granted') {
+                        // Permission already granted, register FCM
+                        return registerFCM();
+                    } else if (currentPermission === 'denied') {
+                        // Permission previously denied, show message
+                        showStatus('Notification permission was denied', 'error');
+                        return false;
+                    } else {
+                        // Need to request permission
+                        return new Promise(resolve => {
+                            showPermissionModal();
+                            
+                            // Setup event listeners for modal buttons
+                            allowPermissionBtn.onclick = async () => {
+                                hidePermissionModal();
+                                
+                                try {
+                                    // Request browser permission
+                                    const result = await requestBrowserPermission();
+                                    resolve(result);
+                                } catch (error) {
+                                    console.error('Error requesting permission:', error);
+                                    resolve(false);
+                                }
+                            };
+                            
+                            cancelPermissionBtn.onclick = () => {
+                                hidePermissionModal();
+                                resolve(false);
+                            };
+                        });
+                    }
+                } catch (error) {
+                    console.error('Error setting up notifications:', error);
+                    return false;
+                }
+            } else {
+                // Unsubscribe from notifications
+                try {
+                    const token = localStorage.getItem('fcmToken');
+                    if (token) {
+                        await messaging.deleteToken();
+                        localStorage.removeItem('fcmToken');
+                    }
+                    console.log('Unsubscribed from notifications');
+                    return true;
+                } catch (error) {
+                    console.error('Error unsubscribing from notifications:', error);
+                    return false;
+                }
+            }
+        }
+        
+        // Request browser notification permission
+        async function requestBrowserPermission() {
+            if (!window.Notification) {
+                console.error('Notifications not supported in this browser');
+                return false;
+            }
+            
+            try {
+                const permission = await window.Notification.requestPermission();
+                if (permission === 'granted') {
+                    return registerFCM();
+                } else {
+                    console.log('Notification permission denied by user');
+                    return false;
+                }
+            } catch (error) {
+                console.error('Error requesting notification permission:', error);
+                return false;
+            }
+        }
+        
+        // Register with Firebase Cloud Messaging
+        async function registerFCM() {
+            try {
+                // Wait for the service worker to be ready
+                const registration = await navigator.serviceWorker.ready;
+                
+                // Get registration token using the existing service worker
+                const token = await messaging.getToken({
+                    serviceWorkerRegistration: registration
+                });
+                
+                // Store token
+                localStorage.setItem('fcmToken', token);
+                
+                // Setup message handler
+                messaging.onMessage((payload) => {
+                    console.log('Message received:', payload);
+                    // Handle foreground messages
+                    if (payload.notification) {
+                        const { title, body } = payload.notification;
+                        
+                        if (window.Notification && window.Notification.permission === 'granted') {
+                            const options = {
+                                body,
+                                icon: '/assets/favicon.ico'
+                            };
+                            
+                            new window.Notification(title, options);
+                        }
+                    }
+                });
+                
+                console.log('Notifications enabled with token:', token);
+                return true;
+            } catch (error) {
+                console.error('Error registering with FCM:', error);
+                return false;
+            }
+        }
+        
+        // Handle notification toggle
+        notificationsToggle.addEventListener('change', async function() {
+            if (this.checked) {
+                const success = await setupNotifications(true);
+                if (!success) {
+                    this.checked = false;
+                    showStatus('Notification setup failed', 'error');
+                }
+            } else {
+                await setupNotifications(false);
+            }
+            
+            const notificationOptions = document.querySelector('.notification-options');
+            notificationOptions.style.display = this.checked ? 'block' : 'none';
+        });
+        
+        // Save settings
+        saveBtn.addEventListener('click', async function() {
+            // If notifications are enabled but not set up, try to set up
+            if (notificationsToggle.checked && !localStorage.getItem('fcmToken')) {
+                const success = await setupNotifications(true);
+                if (!success) {
+                    notificationsToggle.checked = false;
+                }
+            }
+            
+            const settings = {
+                darkMode: darkModeToggle.checked,
+                notifications: notificationsToggle.checked
+            };
+            
+            localStorage.setItem('gameSettings', JSON.stringify(settings));
+            
+            // Send message to parent if in iframe
+            window.parent.postMessage({
+                type: 'settingsUpdated',
+                settings: settings
+            }, '*');
+            
+            // Visual feedback
+            showStatus('Settings saved!');
+        });
+        
+        // Show status message
+        function showStatus(message, type = 'success') {
+            statusMessage.textContent = message;
+            statusMessage.className = 'show';
+            statusMessage.style.color = type === 'error' ? '#f44336' : '#4caf50';
+            
+            setTimeout(() => {
+                statusMessage.className = '';
+            }, 3000);
+        }
+        
+        // Initialize notification options display
+        document.querySelector('.notification-options').style.display = 
+            notificationsToggle.checked ? 'block' : 'none';
+            
+        // Initial setup of notifications if enabled
+        if (notificationsToggle.checked && localStorage.getItem('fcmToken')) {
+            registerFCM().catch(error => {
+                console.error('Error re-initializing FCM:', error);
+            });
+        }
+    </script>
+</body>
+</html>
