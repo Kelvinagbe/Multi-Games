@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi Games - User Feedback</title>
+    <style>
+        :root {
+            --primary-color: #1e8e3e; /* Play Store green */
+            --secondary-color: #34a853; /* Lighter green */
+            --accent-color: #3cba54; /* Another Google-like green */
+            --dark-bg: #0d5522;
+            --light-bg: #f1f8e9; /* Light green background */
+            --text-light: #ffffff;
+            --text-dark: #333333;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--light-bg);
+            color: var(--text-dark);
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .feedback-header {
+            background-color: var(--primary-color);
+            color: var(--text-light);
+            padding: 20px;
+            border-radius: 10px 10px 0 0;
+            text-align: center;
+        }
+        
+        .feedback-form {
+            background-color: white;
+            padding: 30px;
+            border-radius: 0 0 10px 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        
+        input[type="text"],
+        input[type="email"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        .rating-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 10px 0;
+        }
+        
+        .rating-item {
+            display: flex;
+            align-items: center;
+            margin-right: 15px;
+        }
+        
+        .btn-submit {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        
+        .btn-submit:hover {
+            background-color: var(--dark-bg);
+        }
+        
+        /* Star Rating Styles */
+        .star-rating {
+            display: flex;
+            flex-direction: row-reverse;
+            justify-content: flex-end;
+        }
+
+        .star-rating input {
+            display: none;
+        }
+
+        .star-rating label {
+            display: inline-block;
+            cursor: pointer;
+            width: 30px;
+            font-size: 30px;
+            color: #ddd;
+            margin-bottom: 0;
+        }
+
+        .star-rating label:before {
+            content: "★";
+        }
+
+        .star-rating input:checked ~ label {
+            color: #ffcc00;
+        }
+
+        .star-rating label:hover,
+        .star-rating label:hover ~ label {
+            color: #ffcc00;
+        }
+        
+        .emoji-rating {
+            display: flex;
+            justify-content: space-between;
+            max-width: 400px;
+            margin: 10px 0;
+        }
+        
+        .emoji-option {
+            text-align: center;
+            cursor: pointer;
+        }
+        
+        .emoji {
+            font-size: 30px;
+            margin-bottom: 5px;
+            transition: transform 0.2s ease;
+        }
+        
+        .emoji-option:hover .emoji {
+            transform: scale(1.2);
+        }
+        
+        .emoji-label {
+            font-size: 12px;
+        }
+        
+        .selected {
+            position: relative;
+        }
+        
+        .selected .emoji {
+            transform: scale(1.2);
+        }
+        
+        .selected::after {
+            content: "";
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 5px;
+            height: 5px;
+            background-color: var(--accent-color);
+            border-radius: 50%;
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .feedback-form {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="feedback-header">
+            <h1>Multi Games Feedback</h1>
+            <p>Help us improve your gaming experience!</p>
+        </div>
+        
+        <form class="feedback-form" id="gamesFeedbackForm" action="https://formsubmit.co/multigames0000@gmail.com" method="POST">
+            <input type="hidden" name="_subject" value="New Multi Games Feedback">
+            <input type="hidden" name="_captcha" value="false">
+            <input type="hidden" name="_next" value="https://multi-games-fawn.vercel.app/thank-you.html">
+            
+            <div class="form-group">
+                <label for="name">Name (Optional)</label>
+                <input type="text" id="name" name="name" placeholder="Your name">
+            </div>
+            
+            <div class="form-group">
+                <label for="email">Email (Optional)</label>
+                <input type="email" id="email" name="email" placeholder="Your email address">
+            </div>
+            
+            <div class="form-group">
+                <label>How would you rate your overall experience?</label>
+                <div class="star-rating">
+                    <input type="radio" id="star5" name="overallRating" value="5" />
+                    <label for="star5" title="5 stars"></label>
+                    <input type="radio" id="star4" name="overallRating" value="4" />
+                    <label for="star4" title="4 stars"></label>
+                    <input type="radio" id="star3" name="overallRating" value="3" />
+                    <label for="star3" title="3 stars"></label>
+                    <input type="radio" id="star2" name="overallRating" value="2" />
+                    <label for="star2" title="2 stars"></label>
+                    <input type="radio" id="star1" name="overallRating" value="1" />
+                    <label for="star1" title="1 star"></label>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="gameCategory">Which game category do you enjoy the most?</label>
+                <select id="gameCategory" name="gameCategory">
+                    <option value="">Select a category</option>
+                    <option value="arcade">Arcade</option>
+                    <option value="puzzle">Puzzle</option>
+                    <option value="action">Action</option>
+                    <option value="strategy">Strategy</option>
+                    <option value="adventure">Adventure</option>
+                    <option value="sports">Sports</option>
+                    <option value="racing">Racing</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="favoriteGame">What is your favorite game on our platform?</label>
+                <input type="text" id="favoriteGame" name="favoriteGame" placeholder="Name of your favorite game">
+            </div>
+            
+            <div class="form-group">
+                <label for="improvements">What could we improve?</label>
+                <textarea id="improvements" name="improvements" placeholder="Please share your suggestions for improvement..."></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="newGames">What games would you like to see added?</label>
+                <textarea id="newGames" name="newGames" placeholder="Suggest games you'd like to play on our platform..."></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="additionalFeedback">Any additional feedback?</label>
+                <textarea id="additionalFeedback" name="additionalFeedback" placeholder="Share any other thoughts or feedback..."></textarea>
+            </div>
+            
+            <button type="submit" class="btn-submit">Submit Feedback</button>
+        </form>
+    </div>
+    
+    <!-- No JavaScript needed for form submission as FormSubmit handles it -->
+</body>
+</html>
