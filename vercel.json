@@ -4,29 +4,64 @@
     {
       "source": "/(.*)",
       "headers": [
+        { "key": "Access-Control-Allow-Credentials", "value": "true" },
+        { "key": "Access-Control-Allow-Origin", "value": "*" },
+        { "key": "Access-Control-Allow-Methods", "value": "GET,OPTIONS,PATCH,POST,PUT" },
+        { "key": "Access-Control-Allow-Headers", "value": "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version" },
         { "key": "X-Content-Type-Options", "value": "nosniff" },
-        { "key": "X-Frame-Options", "value": "SAMEORIGIN" },
+        { "key": "X-Frame-Options", "value": "ALLOWALL" },
         { "key": "X-XSS-Protection", "value": "1; mode=block" },
         { "key": "Strict-Transport-Security", "value": "max-age=63072000; includeSubDomains; preload" },
         { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
         { "key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=()" },
-        { "key": "Content-Security-Policy", "value": "default-src 'self'; script-src 'self'; style-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'self';" }
+        { "key": "Content-Security-Policy", "value": "frame-ancestors * https://multi-games-fawn.vercel.app;" }
       ]
     }
   ],
   "rewrites": [
-    { "source": "/", "destination": "/index.html" },
-    { "source": "/js/:filename", "destination": "/js/:filename.js" },
-    { "source": "/scripts/:filename", "destination": "/scripts/:filename.js" },
-    { "source": "/css/style", "destination": "/css/style.css" },
-    { "source": "/:folder/:page", "destination": "/:folder/:page.html" },
-    { "source": "/:path*/:filename", "destination": "/:path*/:filename.html" },
-    { "source": "/:filename", "destination": "/:filename.html" },
-    { "source": "/feed.xml", "destination": "/feed.xml" },
-    { "source": "/sitemap.xml", "destination": "/sitemap.xml" }
+    {
+      "source": "/",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/js/:filename",
+      "destination": "/js/:filename.js"
+    },
+    {
+      "source": "/scripts/:filename",
+      "destination": "/scripts/:filename.js"
+    },
+    {
+      "source": "/css/style",
+      "destination": "/css/style.css"
+    },
+    {
+      "source": "/:folder/:page",
+      "destination": "/:folder/:page.html"
+    },
+    {
+      "source": "/:path*/:filename",
+      "destination": "/:path*/:filename.html"
+    },
+    {
+      "source": "/:filename",
+      "destination": "/:filename.html"
+    },
+    {
+      "source": "/feed.xml",
+      "destination": "/feed.xml"
+    },
+    {
+      "source": "/sitemap.xml",
+      "destination": "/sitemap.xml"
+    }  
   ],
   "redirects": [
-    { "source": "/404", "destination": "/404.html", "statusCode": 404 }
+    {
+      "source": "/404",
+      "destination": "/404.html",
+      "statusCode": 404
+    }
   ],
   "regions": ["dub1"]
 }
