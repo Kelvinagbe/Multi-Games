@@ -5,16 +5,22 @@
       "source": "/(.*)",
       "headers": [
         { "key": "Access-Control-Allow-Credentials", "value": "true" },
-        { "key": "Access-Control-Allow-Origin", "value": "*" },
+        { "key": "Access-Control-Allow-Origin", "value": "https://multi-games-fawn.vercel.app" },
         { "key": "Access-Control-Allow-Methods", "value": "GET,OPTIONS,PATCH,POST,PUT" },
-        { "key": "Access-Control-Allow-Headers", "value": "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version" },
+        {
+          "key": "Access-Control-Allow-Headers",
+          "value": "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version"
+        },
         { "key": "X-Content-Type-Options", "value": "nosniff" },
-        { "key": "X-Frame-Options", "value": "ALLOWALL" },
+        { "key": "X-Frame-Options", "value": "SAMEORIGIN" },
         { "key": "X-XSS-Protection", "value": "1; mode=block" },
         { "key": "Strict-Transport-Security", "value": "max-age=63072000; includeSubDomains; preload" },
         { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
         { "key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=()" },
-        { "key": "Content-Security-Policy", "value": "frame-ancestors * https://multi-games-fawn.vercel.app;" }
+        {
+          "key": "Content-Security-Policy",
+          "value": "default-src 'self'; script-src 'self'; style-src 'self'; object-src 'none'; base-uri 'none'; frame-src 'self' https://example-game1.com https://cdn.example2.net; frame-ancestors 'self';"
+        }
       ]
     }
   ],
@@ -54,7 +60,7 @@
     {
       "source": "/sitemap.xml",
       "destination": "/sitemap.xml"
-    }  
+    }
   ],
   "redirects": [
     {
@@ -62,8 +68,6 @@
       "destination": "/404.html",
       "statusCode": 404
     }
-
-    
   ],
   "regions": ["dub1"]
 }
