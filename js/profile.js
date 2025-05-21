@@ -143,7 +143,7 @@ function preventDefaultAndOpenModal(element, title, contentUrl) {
 // Setup event listeners for all interactive elements
 function setupEventListeners() {
     // Use utility function for all modal buttons
-    preventDefaultAndOpenModal(settingsBtn, 'Settings', 'settings.html');
+    preventDefaultAndOpenModal(settingsBtn, 'Settings', 'setting/settings.html');
     preventDefaultAndOpenModal(editProfileBtn, 'Edit Profile', 'edit-profile.html');
     preventDefaultAndOpenModal(withdrawBtn, 'Withdraw Funds', 'withdrawal.html');
     preventDefaultAndOpenModal(historyBtn, 'Transaction History', 'history.html');
@@ -554,7 +554,7 @@ function openModal(title, contentUrl) {
 
             
 // For login page, set up message listener to handle successful login
-            if (contentUrl.includes('login.html')) {
+            if (contentUrl.includes('../auth/login.html')) {
                 try {
                     const frameWindow = modalIframe.contentWindow;
 
