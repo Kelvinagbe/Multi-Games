@@ -496,7 +496,7 @@ body {
 }
 
 /* Desktop restriction - hide content on larger screens */
-@media (min-width: 481px) {
+@media (min-width: 570px) {
   body::before {
     content: "This site is optimized for mobile devices only. Please view on a mobile device or resize your browser window.";
     position: fixed;
