@@ -1,4 +1,3 @@
-
 /* Reset and Base Styles */
 * {
   margin: 0;
@@ -35,7 +34,7 @@
   --card-color: #25272e;
   --shadow-color: rgba(0, 0, 0, 0.3);
   --border-color: #2c2c2c;
- --back-button-color: white;
+  --back-button-color: white;
 }
 
 body {
@@ -55,283 +54,295 @@ body {
   padding-bottom: 70px;
 }
 
-    /* ISOLATED SPLASH SCREEN - Won't affect existing site styles */
-        .multigames-splash-wrapper {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0f0f0f 100%);
-            font-family: 'Arial', sans-serif;
-            height: 100vh;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            z-index: 9999;
-        }
+/* FIXED SPLASH SCREEN - Now with proper hide functionality */
+.multigames-splash-wrapper {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0f0f0f 100%);
+  font-family: 'Arial', sans-serif;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  z-index: 9999;
+  opacity: 1;
+  transition: opacity 0.5s ease-out;
+}
 
-        .multigames-splash-wrapper * {
-            box-sizing: border-box;
-        }
+/* Classes for JavaScript to control splash screen */
+.multigames-splash-wrapper.hide {
+  opacity: 0;
+  pointer-events: none;
+}
 
-        /* Pure CSS animated background particles */
-        .multigames-particles {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 1;
-        }
+.multigames-splash-wrapper.remove {
+  display: none;
+}
 
-        .multigames-particles::before,
-        .multigames-particles::after {
-            content: '';
-            position: absolute;
-            width: 2px;
-            height: 2px;
-            background: rgba(0, 255, 100, 0.3);
-            border-radius: 50%;
-            animation: multigames-float1 6s linear infinite;
-        }
+.multigames-splash-wrapper * {
+  box-sizing: border-box;
+}
 
-        .multigames-particles::before {
-            left: 20%;
-            animation-delay: 0s;
-        }
+/* Pure CSS animated background particles */
+.multigames-particles {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
 
-        .multigames-particles::after {
-            left: 70%;
-            animation-delay: 3s;
-        }
+.multigames-particles::before,
+.multigames-particles::after {
+  content: '';
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  background: rgba(0, 255, 100, 0.3);
+  border-radius: 50%;
+  animation: multigames-float1 6s linear infinite;
+}
 
-        /* Additional particles using box-shadow */
-        .multigames-particle {
-            position: absolute;
-            width: 1px;
-            height: 1px;
-            left: 50%;
-            top: 100%;
-            box-shadow: 
-                -200px 0 rgba(0, 255, 100, 0.2),
-                -100px -50px rgba(0, 255, 100, 0.3),
-                100px -20px rgba(0, 255, 100, 0.1),
-                200px -80px rgba(0, 255, 100, 0.4),
-                -150px -100px rgba(0, 255, 100, 0.2),
-                150px -60px rgba(0, 255, 100, 0.3),
-                -50px -120px rgba(0, 255, 100, 0.1),
-                50px -40px rgba(0, 255, 100, 0.2),
-                -300px -30px rgba(0, 255, 100, 0.3);
-            animation: multigames-floatParticles 8s linear infinite;
-        }
+.multigames-particles::before {
+  left: 20%;
+  animation-delay: 0s;
+}
 
-        @keyframes multigames-float1 {
-            0% {
-                transform: translateY(100vh) rotate(0deg);
-                opacity: 0;
-            }
-            10% {
-                opacity: 1;
-            }
-            90% {
-                opacity: 1;
-            }
-            100% {
-                transform: translateY(-100px) rotate(360deg);
-                opacity: 0;
-            }
-        }
+.multigames-particles::after {
+  left: 70%;
+  animation-delay: 3s;
+}
 
-        @keyframes multigames-floatParticles {
-            0% {
-                transform: translateY(0) rotate(0deg);
-                opacity: 0;
-            }
-            10% {
-                opacity: 1;
-            }
-            90% {
-                opacity: 1;
-            }
-            100% {
-                transform: translateY(-100vh) rotate(360deg);
-                opacity: 0;
-            }
-        }
+/* Additional particles using box-shadow */
+.multigames-particle {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  left: 50%;
+  top: 100%;
+  box-shadow: 
+    -200px 0 rgba(0, 255, 100, 0.2),
+    -100px -50px rgba(0, 255, 100, 0.3),
+    100px -20px rgba(0, 255, 100, 0.1),
+    200px -80px rgba(0, 255, 100, 0.4),
+    -150px -100px rgba(0, 255, 100, 0.2),
+    150px -60px rgba(0, 255, 100, 0.3),
+    -50px -120px rgba(0, 255, 100, 0.1),
+    50px -40px rgba(0, 255, 100, 0.2),
+    -300px -30px rgba(0, 255, 100, 0.3);
+  animation: multigames-floatParticles 8s linear infinite;
+}
 
-        /* Main content container */
-        .multigames-splash-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            z-index: 2;
-            position: relative;
-        }
+@keyframes multigames-float1 {
+  0% {
+    transform: translateY(100vh) rotate(0deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-100px) rotate(360deg);
+    opacity: 0;
+  }
+}
 
-        /* Logo/Brand section */
-        .multigames-brand-section {
-            text-align: center;
-            margin-bottom: auto;
-            margin-top: auto;
-            animation: multigames-brandFadeIn 2s ease-out;
-        }
+@keyframes multigames-floatParticles {
+  0% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-100vh) rotate(360deg);
+    opacity: 0;
+  }
+}
 
-        .multigames-brand-name {
-            font-size: 4rem;
-            font-weight: 900;
-            letter-spacing: 0.1em;
-            margin-bottom: 1rem;
-            text-transform: uppercase;
-            background: linear-gradient(45deg, #00ff64, #ffffff, #32cd32);
-            background-size: 200% 200%;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            animation: multigames-shimmer 3s ease-in-out infinite;
-        }
+/* Main content container */
+.multigames-splash-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  z-index: 2;
+  position: relative;
+}
 
-        .multigames-brand-tagline {
-            font-size: 1.2rem;
-            color: #888;
-            font-weight: 300;
-            letter-spacing: 0.05em;
-            opacity: 0;
-            animation: multigames-taglineAppear 1s ease-out 1s forwards;
-        }
+/* Logo/Brand section */
+.multigames-brand-section {
+  text-align: center;
+  margin-bottom: auto;
+  margin-top: auto;
+  animation: multigames-brandFadeIn 2s ease-out;
+}
 
-        @keyframes multigames-brandFadeIn {
-            0% {
-                opacity: 0;
-                transform: translateY(-30px);
-            }
-            100% {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
+.multigames-brand-name {
+  font-size: 4rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+  background: linear-gradient(45deg, #00ff64, #ffffff, #32cd32);
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: multigames-shimmer 3s ease-in-out infinite;
+}
 
-        @keyframes multigames-shimmer {
-            0%, 100% {
-                background-position: 0% 50%;
-            }
-            50% {
-                background-position: 100% 50%;
-            }
-        }
+.multigames-brand-tagline {
+  font-size: 1.2rem;
+  color: #888;
+  font-weight: 300;
+  letter-spacing: 0.05em;
+  opacity: 0;
+  animation: multigames-taglineAppear 1s ease-out 1s forwards;
+}
 
-        @keyframes multigames-taglineAppear {
-            0% {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            100% {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
+@keyframes multigames-brandFadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 
-        /* Loading section at bottom */
-        .multigames-loading-section {
-            position: absolute;
-            bottom: 60px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 20px;
-            animation: multigames-loadingFadeIn 1s ease-out 1.5s both;
-        }
+@keyframes multigames-shimmer {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
 
-        .multigames-loading-text {
-            color: #00ff64;
-            font-size: 1rem;
-            font-weight: 500;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-        }
+@keyframes multigames-taglineAppear {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 
-        /* Modern loading bar */
-        .multigames-loading-bar-container {
-            width: 300px;
-            height: 4px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 2px;
-            overflow: hidden;
-            position: relative;
-        }
+/* Loading section at bottom */
+.multigames-loading-section {
+  position: absolute;
+  bottom: 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  animation: multigames-loadingFadeIn 1s ease-out 1.5s both;
+}
 
-        .multigames-loading-bar {
-            height: 100%;
-            width: 30%;
-            background: linear-gradient(90deg, #00ff64, #32cd32);
-            border-radius: 2px;
-            animation: multigames-loadingSlide 2s linear infinite;
-            position: relative;
-        }
+.multigames-loading-text {
+  color: #00ff64;
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
 
-        .multigames-loading-bar::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
-            animation: multigames-loadingShine 2s ease-in-out infinite;
-        }
+/* Modern loading bar */
+.multigames-loading-bar-container {
+  width: 300px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+  overflow: hidden;
+  position: relative;
+}
 
-        @keyframes multigames-loadingSlide {
-            0% { transform: translateX(-100%); }
-            100% { transform: translateX(400%); }
-        }
+.multigames-loading-bar {
+  height: 100%;
+  width: 30%;
+  background: linear-gradient(90deg, #00ff64, #32cd32);
+  border-radius: 2px;
+  animation: multigames-loadingSlide 2s linear infinite;
+  position: relative;
+}
 
-        @keyframes multigames-loadingShine {
-            0% { left: -100%; }
-            100% { left: 100%; }
-        }
+.multigames-loading-bar::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+  animation: multigames-loadingShine 2s ease-in-out infinite;
+}
 
-        @keyframes multigames-loadingFadeIn {
-            0% {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            100% {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
+@keyframes multigames-loadingSlide {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(400%); }
+}
 
-        /* Responsive design */
-        @media (max-width: 768px) {
-            .multigames-brand-name {
-                font-size: 2.5rem;
-            }
-            
-            .multigames-loading-bar-container {
-                width: 250px;
-            }
-        }
+@keyframes multigames-loadingShine {
+  0% { left: -100%; }
+  100% { left: 100%; }
+}
 
-        @media (max-width: 480px) {
-            .multigames-brand-name {
-                font-size: 2rem;
-            }
-            
-            .multigames-brand-tagline {
-                font-size: 1rem;
-            }
-            
-            .multigames-loading-bar-container {
-                width: 200px;
-            }
-        }
+@keyframes multigames-loadingFadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive design for splash */
+@media (max-width: 768px) {
+  .multigames-brand-name {
+    font-size: 2.5rem;
+  }
+
+  .multigames-loading-bar-container {
+    width: 250px;
+  }
+}
+
+@media (max-width: 480px) {
+  .multigames-brand-name {
+    font-size: 2rem;
+  }
+
+  .multigames-brand-tagline {
+    font-size: 1rem;
+  }
+
+  .multigames-loading-bar-container {
+    width: 200px;
+  }
+}
 
 /* Featured Game Styles */
 .featured {
@@ -430,9 +441,6 @@ body {
   color: var(--primary-dark);
 }
 
-/* Additional styling changes were made to animations, spacing, loader fix, and chat component */
-
-
 /* Categories Styles */
 .categories {
   display: flex;
@@ -441,7 +449,7 @@ body {
   scrollbar-width: none;
   -ms-overflow-style: none;
   scroll-snap-type: x mandatory;
-  gap: 15px; /* Added gap */
+  gap: 15px;
 }
 
 .categories::-webkit-scrollbar {
@@ -449,7 +457,7 @@ body {
 }
 
 .category {
-  min-width: 85px; /* Slightly wider */
+  min-width: 85px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -491,12 +499,11 @@ body {
 .game-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  gap: 18px; /* Larger gap */
+  gap: 18px;
   margin-bottom: 30px;
-padding: 10px;
+  padding: 10px;
   max-width: 100%;
   margin: 0 auto;
-
 }
 
 .game-card {
@@ -506,7 +513,7 @@ padding: 10px;
   position: relative;
   box-shadow: 0 5px 15px var(--shadow-color);
   transition: var(--transition);
-   max-width: 100%;
+  max-width: 100%;
 }
 
 .game-card:hover {
@@ -539,13 +546,13 @@ padding: 10px;
 }
 
 .game-info {
-  padding: 14px; /* More padding */
+  padding: 14px;
 }
 
 .game-info p {
   font-weight: 600;
   margin-bottom: 8px;
-  font-size: 15px; /* Slightly larger */
+  font-size: 15px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -631,7 +638,6 @@ padding: 10px;
   width: 25px;
 }
 
-
 /* Adblock Message */
 .adblock-message {
   position: fixed;
@@ -684,9 +690,6 @@ padding: 10px;
 .close-button:hover {
   color: var(--primary-color);
 }
-
-
-
 
 /* Media Queries */
 @media (min-width: 768px) {
@@ -782,46 +785,46 @@ padding: 10px;
   }
 }
 
+/* Chat Toggle */
+.chat-toggle {
+  position: fixed;
+  bottom: 80px;
+  right: 30px;
+  width: 60px;
+  height: 60px;
+  background-color: var(--primary-color);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  cursor: pointer;
+  box-shadow: var(--shadow);
+  z-index: 90;
+  font-size: 1.5rem;
+  transition: all 0.3s;
+}
 
-        .chat-toggle {
-            position: fixed;
-            bottom: 80px;
-            right: 30px;
-            width: 60px;
-            height: 60px;
-            background-color: var(--primary-color);
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: white;
-            cursor: pointer;
-            box-shadow: var(--shadow);
-            z-index: 90;
-            font-size: 1.5rem;
-            transition: all 0.3s;
-        }
+.chat-toggle:hover {
+  transform: scale(1.05);
+  background-color: var(--secondary-color);
+}
 
-        .chat-toggle:hover {
-            transform: scale(1.05);
-            background-color: var(--secondary-color);
-        }
+.chat-container.hidden {
+  display: none;
+}
 
-        .chat-container.hidden {
-            display: none;
-        }
+.chat-container.visible {
+  animation: slideIn 0.3s ease forwards;
+}
 
-        .chat-container.visible {
-            animation: slideIn 0.3s ease forwards;
-        }
-
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
