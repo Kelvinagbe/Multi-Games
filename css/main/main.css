@@ -55,23 +55,32 @@ body {
   padding-bottom: 70px;
 }
 
-/* Loader Styles */
-.loader-container {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: var(--background-color);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-  transition: var(--transition);
-  backdrop-filter: blur(5px); /* Modern blur effect */
-}
+    /* ISOLATED SPLASH SCREEN - Won't affect existing site styles */
+        .multigames-splash-wrapper {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0f0f0f 100%);
+            font-family: 'Arial', sans-serif;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            z-index: 9999;
+        }
 
-  .particles {
+        .multigames-splash-wrapper * {
+            box-sizing: border-box;
+        }
+
+        /* Pure CSS animated background particles */
+        .multigames-particles {
             position: absolute;
             top: 0;
             left: 0;
@@ -81,29 +90,29 @@ body {
             z-index: 1;
         }
 
-        .particles::before,
-        .particles::after {
+        .multigames-particles::before,
+        .multigames-particles::after {
             content: '';
             position: absolute;
             width: 2px;
             height: 2px;
             background: rgba(0, 255, 100, 0.3);
             border-radius: 50%;
-            animation: float1 6s linear infinite;
+            animation: multigames-float1 6s linear infinite;
         }
 
-        .particles::before {
+        .multigames-particles::before {
             left: 20%;
             animation-delay: 0s;
         }
 
-        .particles::after {
+        .multigames-particles::after {
             left: 70%;
             animation-delay: 3s;
         }
 
         /* Additional particles using box-shadow */
-        .particle {
+        .multigames-particle {
             position: absolute;
             width: 1px;
             height: 1px;
@@ -119,10 +128,10 @@ body {
                 -50px -120px rgba(0, 255, 100, 0.1),
                 50px -40px rgba(0, 255, 100, 0.2),
                 -300px -30px rgba(0, 255, 100, 0.3);
-            animation: floatParticles 8s linear infinite;
+            animation: multigames-floatParticles 8s linear infinite;
         }
 
-        @keyframes float1 {
+        @keyframes multigames-float1 {
             0% {
                 transform: translateY(100vh) rotate(0deg);
                 opacity: 0;
@@ -139,7 +148,7 @@ body {
             }
         }
 
-        @keyframes floatParticles {
+        @keyframes multigames-floatParticles {
             0% {
                 transform: translateY(0) rotate(0deg);
                 opacity: 0;
@@ -157,7 +166,7 @@ body {
         }
 
         /* Main content container */
-        .splash-container {
+        .multigames-splash-container {
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -168,14 +177,14 @@ body {
         }
 
         /* Logo/Brand section */
-        .brand-section {
+        .multigames-brand-section {
             text-align: center;
             margin-bottom: auto;
             margin-top: auto;
-            animation: brandFadeIn 2s ease-out;
+            animation: multigames-brandFadeIn 2s ease-out;
         }
 
-        .brand-name {
+        .multigames-brand-name {
             font-size: 4rem;
             font-weight: 900;
             letter-spacing: 0.1em;
@@ -186,19 +195,19 @@ body {
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            animation: shimmer 3s ease-in-out infinite;
+            animation: multigames-shimmer 3s ease-in-out infinite;
         }
 
-        .brand-tagline {
+        .multigames-brand-tagline {
             font-size: 1.2rem;
             color: #888;
             font-weight: 300;
             letter-spacing: 0.05em;
             opacity: 0;
-            animation: taglineAppear 1s ease-out 1s forwards;
+            animation: multigames-taglineAppear 1s ease-out 1s forwards;
         }
 
-        @keyframes brandFadeIn {
+        @keyframes multigames-brandFadeIn {
             0% {
                 opacity: 0;
                 transform: translateY(-30px);
@@ -209,7 +218,7 @@ body {
             }
         }
 
-        @keyframes shimmer {
+        @keyframes multigames-shimmer {
             0%, 100% {
                 background-position: 0% 50%;
             }
@@ -218,7 +227,7 @@ body {
             }
         }
 
-        @keyframes taglineAppear {
+        @keyframes multigames-taglineAppear {
             0% {
                 opacity: 0;
                 transform: translateY(20px);
@@ -230,17 +239,17 @@ body {
         }
 
         /* Loading section at bottom */
-        .splash-loading-section {
+        .multigames-loading-section {
             position: absolute;
             bottom: 60px;
             display: flex;
             flex-direction: column;
             align-items: center;
             gap: 20px;
-            animation: loadingFadeIn 1s ease-out 1.5s both;
+            animation: multigames-loadingFadeIn 1s ease-out 1.5s both;
         }
 
-        .splash-loading-text {
+        .multigames-loading-text {
             color: #00ff64;
             font-size: 1rem;
             font-weight: 500;
@@ -249,7 +258,7 @@ body {
         }
 
         /* Modern loading bar */
-        .splash-loading-bar-container {
+        .multigames-loading-bar-container {
             width: 300px;
             height: 4px;
             background: rgba(255, 255, 255, 0.1);
@@ -258,16 +267,16 @@ body {
             position: relative;
         }
 
-        .splash-loading-bar {
+        .multigames-loading-bar {
             height: 100%;
             width: 30%;
             background: linear-gradient(90deg, #00ff64, #32cd32);
             border-radius: 2px;
-            animation: loadingSlide 2s linear infinite;
+            animation: multigames-loadingSlide 2s linear infinite;
             position: relative;
         }
 
-        .splash-loading-bar::after {
+        .multigames-loading-bar::after {
             content: '';
             position: absolute;
             top: 0;
@@ -275,26 +284,20 @@ body {
             width: 100%;
             height: 100%;
             background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
-            animation: loadingShine 2s ease-in-out infinite;
+            animation: multigames-loadingShine 2s ease-in-out infinite;
         }
 
-        @keyframes loadingProgress {
-            0% { width: 0%; }
-            50% { width: 75%; }
-            100% { width: 100%; }
-        }
-
-        @keyframes loadingSlide {
+        @keyframes multigames-loadingSlide {
             0% { transform: translateX(-100%); }
             100% { transform: translateX(400%); }
         }
 
-        @keyframes loadingShine {
+        @keyframes multigames-loadingShine {
             0% { left: -100%; }
             100% { left: 100%; }
         }
 
-        @keyframes loadingFadeIn {
+        @keyframes multigames-loadingFadeIn {
             0% {
                 opacity: 0;
                 transform: translateY(20px);
@@ -307,25 +310,25 @@ body {
 
         /* Responsive design */
         @media (max-width: 768px) {
-            .brand-name {
+            .multigames-brand-name {
                 font-size: 2.5rem;
             }
             
-            .loading-bar-container {
+            .multigames-loading-bar-container {
                 width: 250px;
             }
         }
 
         @media (max-width: 480px) {
-            .brand-name {
+            .multigames-brand-name {
                 font-size: 2rem;
             }
             
-            .brand-tagline {
+            .multigames-brand-tagline {
                 font-size: 1rem;
             }
             
-            .loading-bar-container {
+            .multigames-loading-bar-container {
                 width: 200px;
             }
         }
