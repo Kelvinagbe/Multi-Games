@@ -21,6 +21,9 @@
   --border-radius-md: 12px;
   --border-radius-lg: 16px;
   --transition: all 0.25s ease; /* Smoother transitions */
+   --primary-green: #00cc33;
+            --white: #ffffff;
+            --dark-bg: #1a1a1a;
 }
 
 .dark-mode {
@@ -35,9 +38,7 @@
   --shadow-color: rgba(0, 0, 0, 0.3);
   --border-color: #2c2c2c;
   --back-button-color: white;
-            --primary-green: #00cc33;
-            --white: #ffffff;
-            --dark-bg: #1a1a1a;
+         
 }
 
 body {
@@ -171,21 +172,6 @@ body {
                 bottom: 80px;
             }
         }
-
-@keyframes pulse {
-  0% {
-    transform: scale(1);
-    opacity: 1;
-  }
-  50% {
-    transform: scale(1.1);
-    opacity: 0.7;
-  }
-  100% {
-    transform: scale(1);
-    opacity: 1;
-  }
-}
 
 /* Featured Game Styles */
 .featured {
