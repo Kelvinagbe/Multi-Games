@@ -35,6 +35,9 @@
   --shadow-color: rgba(0, 0, 0, 0.3);
   --border-color: #2c2c2c;
   --back-button-color: white;
+            --primary-green: #00cc33;
+            --white: #ffffff;
+            --dark-bg: #1a1a1a;
 }
 
 body {
