@@ -71,8 +71,7 @@ body {
   backdrop-filter: blur(5px); /* Modern blur effect */
 }
 
-    /* Pure CSS animated background particles */
-        .particles {
+  .particles {
             position: absolute;
             top: 0;
             left: 0;
@@ -231,7 +230,7 @@ body {
         }
 
         /* Loading section at bottom */
-        .loading-section {
+        .splash-loading-section {
             position: absolute;
             bottom: 60px;
             display: flex;
@@ -241,7 +240,7 @@ body {
             animation: loadingFadeIn 1s ease-out 1.5s both;
         }
 
-        .loading-text {
+        .splash-loading-text {
             color: #00ff64;
             font-size: 1rem;
             font-weight: 500;
@@ -250,7 +249,7 @@ body {
         }
 
         /* Modern loading bar */
-        .loading-bar-container {
+        .splash-loading-bar-container {
             width: 300px;
             height: 4px;
             background: rgba(255, 255, 255, 0.1);
@@ -259,7 +258,7 @@ body {
             position: relative;
         }
 
-        .loading-bar {
+        .splash-loading-bar {
             height: 100%;
             width: 30%;
             background: linear-gradient(90deg, #00ff64, #32cd32);
@@ -268,7 +267,7 @@ body {
             position: relative;
         }
 
-        .loading-bar::after {
+        .splash-loading-bar::after {
             content: '';
             position: absolute;
             top: 0;
