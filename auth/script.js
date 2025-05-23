@@ -15,103 +15,16 @@ firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const database = firebase.database();
 
-// Notification System
+// Simplified Notification System - Only sends to parent if in iframe
 class NotificationManager {
     constructor() {
-        this.createNotificationContainer();
-    }
-
-    createNotificationContainer() {
-        // Create notification container if it doesn't exist
-        let container = document.getElementById('notification-container');
-        if (!container) {
-            container = document.createElement('div');
-            container.id = 'notification-container';
-            container.style.cssText = `
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                z-index: 10000;
-                max-width: 400px;
-                pointer-events: none;
-            `;
-            document.body.appendChild(container);
-        }
-        this.container = container;
+        // Don't create any UI elements if in iframe
     }
 
     show(message, type = 'info', duration = 5000) {
-        const notification = document.createElement('div');
-        notification.style.cssText = `
-            background: ${this.getBackgroundColor(type)};
-            color: white;
-            padding: 16px 20px;
-            margin-bottom: 10px;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            transform: translateX(100%);
-            transition: all 0.3s ease;
-            pointer-events: auto;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            font-size: 14px;
-            line-height: 1.4;
-            position: relative;
-            border-left: 4px solid ${this.getBorderColor(type)};
-        `;
-
-        notification.innerHTML = `
-            <div style="display: flex; align-items: flex-start; gap: 10px;">
-                <div style="flex: 1;">${message}</div>
-                <button onclick="this.parentElement.parentElement.remove()" 
-                        style="background: none; border: none; color: white; font-size: 18px; cursor: pointer; padding: 0; line-height: 1;">×</button>
-            </div>
-        `;
-
-        this.container.appendChild(notification);
-
-        // Animate in
-        requestAnimationFrame(() => {
-            notification.style.transform = 'translateX(0)';
-        });
-
-        // Auto remove
-        if (duration > 0) {
-            setTimeout(() => {
-                if (notification.parentElement) {
-                    notification.style.transform = 'translateX(100%)';
-                    setTimeout(() => {
-                        if (notification.parentElement) {
-                            notification.remove();
-                        }
-                    }, 300);
-                }
-            }, duration);
-        }
-
-        // Send to parent window if in iframe
+        // Only send to parent window - no local notifications
         this.notifyParent(message, type);
-
-        return notification;
-    }
-
-    getBackgroundColor(type) {
-        const colors = {
-            success: '#10b981',
-            error: '#ef4444',
-            warning: '#f59e0b',
-            info: '#3b82f6'
-        };
-        return colors[type] || colors.info;
-    }
-
-    getBorderColor(type) {
-        const colors = {
-            success: '#059669',
-            error: '#dc2626',
-            warning: '#d97706',
-            info: '#2563eb'
-        };
-        return colors[type] || colors.info;
+        return null;
     }
 
     notifyParent(message, type) {
