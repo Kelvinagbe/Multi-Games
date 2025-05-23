@@ -746,7 +746,7 @@ class ParentNotificationManager {
         });
     }
 
-    show(message, type = 'info', duration = 5000) {
+    show(message, type = 'info', duration = 1000) {
         const notification = this.createNotification(message, type);
         this.container.appendChild(notification);
 
