@@ -1,465 +1,610 @@
-
-// Firebase Configuration and Authentication Script
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
-import { 
-    getAuth, 
-    onAuthStateChanged, 
-    signOut, 
-    signInWithEmailAndPassword,
-    GoogleAuthProvider,
-    FacebookAuthProvider,
-    signInWithPopup,
-    sendPasswordResetEmail
-} from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
-import { 
-    getDatabase, 
-    ref, 
-    set, 
-    get, 
-    child,
-    update,
-    serverTimestamp 
-} from "https://www.gstatic.com/firebasejs/11.4.0/firebase-database.js";
-
-// Initialize Firebase with minimal client config
-// The API key is still needed for client SDK, but we'll use it only for authentication
-// Other sensitive operations will go through our API
+// Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyBw1uA-kNKOZEufWKZ9AMBxvRGHNGF1lkA",
-  authDomain: "multi-games-a2561.firebaseapp.com",
-  databaseURL: "https://multi-games-a2561-default-rtdb.firebaseio.com",
-  projectId: "multi-games-a2561",
-  storageBucket: "multi-games-a2561.firebasestorage.app",
-  messagingSenderId: "150551898066",
-  appId: "1:150551898066:web:4e8fb185f2321ba4140a0b",
-  measurementId: "G-PB8Y87E6XV"
+    apiKey: "AIzaSyBw1uA-kNKOZEufWKZ9AMBxvRGHNGF1lkA",
+    authDomain: "multi-games-a2561.firebaseapp.com",
+    projectId: "multi-games-a2561",
+    storageBucket: "multi-games-a2561.appspot.com",
+    messagingSenderId: "150551898066",
+    appId: "1:150551898066:web:4e8fb185f2321ba4140a0b",
+    measurementId: "G-PB8Y87E6XV",
+    databaseURL: "https://multi-games-a2561-default-rtdb.firebaseio.com"
 };
 
 // Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const database = getDatabase(app);
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const database = firebase.database();
 
-// API endpoint for secure operations
-const API_ENDPOINT = "/api/auth";
+// Tab switching functionality
+const tabs = document.querySelectorAll('.tab');
+const formSections = document.querySelectorAll('.form-section');
 
-// DOM Elements - same as your original script
-const loginForm = document.getElementById('login-form');
-const emailInput = document.getElementById('email');
-const passwordInput = document.getElementById('password');
-const loginBtn = document.getElementById('login-btn');
-const googleLoginBtn = document.getElementById('google-login');
-const facebookLoginBtn = document.getElementById('facebook-login');
-const forgotPasswordLink = document.getElementById('forgot-password');
-const loadingOverlay = document.getElementById('loading-overlay');
-const notification = document.getElementById('notification');
-const notificationTitle = document.getElementById('notification-title');
-const notificationMessage = document.getElementById('notification-message');
-const emailError = document.getElementById('email-error');
-const passwordError = document.getElementById('password-error');
-const verificationBar = document.getElementById('verification-bar');
-const verifiedBadge = document.getElementById('verified-badge');
-const fullNameInput = document.getElementById('full-name');
-const usernameInput = document.getElementById('username');
-const referralCodeInput = document.getElementById('referral-code');
-const form = document.getElementById('login-form');
-const successMessage = document.getElementById('success-message');
+tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+        // Remove active class from all tabs and forms
+        tabs.forEach(t => t.classList.remove('active'));
+        formSections.forEach(f => f.classList.remove('active'));
 
-// Anti-spam verification setup - same as your original script
-const verificationTime = 17; // seconds
-let verificationProgress = 0;
-let verificationInterval;
-let isVerified = false;
+        // Add active class to clicked tab
+        tab.classList.add('active');
 
-// Verification functions - same as your original script
-function startVerification() {
-    verificationProgress = 0;
-    verificationBar.style.width = '0%';
-    verifiedBadge.style.display = 'none';
-    loginBtn.disabled = true;
+        // Show corresponding form
+        const formId = tab.id.replace('tab-', '') + '-form';
+        document.getElementById(formId).classList.add('active');
+
+        // Clear error messages
+        document.querySelectorAll('.error-message').forEach(el => {
+            el.style.display = 'none';
+        });
+
+        // Clear success messages
+        document.querySelectorAll('.success-message').forEach(el => {
+            el.style.display = 'none';
+        });
+    });
+});
+
+// Generate a random referral code
+function generateReferralCode(length = 8) {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let result = '';
+    for (let i = 0; i < length; i++) {
+        result += characters.charAt(Math.floor(Math.random() * characters.length));
+    }
+    return result;
+}
+
+// Check if referral code exists
+async function checkReferralCodeExists(code) {
+    try {
+        const snapshot = await database.ref('users').orderByChild('referralCode').equalTo(code).once('value');
+        return snapshot.exists();
+    } catch (error) {
+        console.error('Error checking referral code:', error);
+        return false;
+    }
+}
+
+// Generate unique referral code
+async function generateUniqueReferralCode() {
+    let code;
+    let exists = true;
     
-    const intervalTime = 100; // update every 100ms
-    const increment = 100 / (verificationTime * 10); // 100% spread over 17 seconds with 10 updates per second
+    while (exists) {
+        code = generateReferralCode();
+        exists = await checkReferralCodeExists(code);
+    }
     
-    verificationInterval = setInterval(() => {
-        verificationProgress += increment;
-        verificationBar.style.width = Math.min(verificationProgress, 100) + '%';
-        
-        if (verificationProgress >= 100) {
-            completeVerification();
+    return code;
+}
+
+// Show loading state
+function showLoading(buttonId, loadingId) {
+    document.getElementById(buttonId).disabled = true;
+    document.getElementById(loadingId).style.display = 'inline-block';
+}
+
+// Hide loading state
+function hideLoading(buttonId, loadingId) {
+    document.getElementById(buttonId).disabled = false;
+    document.getElementById(loadingId).style.display = 'none';
+}
+
+// Show error message
+function showError(elementId, message) {
+    const errorElement = document.getElementById(elementId);
+    errorElement.textContent = message;
+    errorElement.style.display = 'block';
+}
+
+// Show success message
+function showSuccess(elementId, message) {
+    const successElement = document.getElementById(elementId);
+    successElement.textContent = message;
+    successElement.style.display = 'block';
+}
+
+// Send user data to parent window (only for login, not signup)
+function notifyParentOfLogin(user) {
+    window.parent.postMessage({
+        type: 'loginSuccess',
+        userData: {
+            displayName: user.displayName || '',
+            email: user.email || '',
+            uid: user.uid || ''
         }
-    }, intervalTime);
+    }, window.location.origin);
 }
 
-function completeVerification() {
-    clearInterval(verificationInterval);
-    verificationBar.style.width = '100%';
-    document.querySelector('.verification-text').style.display = 'none';
-    verifiedBadge.style.display = 'flex';
-    loginBtn.disabled = false;
-    isVerified = true;
+// ----- Verification Challenge System -----
+const verificationOverlay = document.getElementById('verification-overlay');
+const challengeContainer = document.getElementById('challenge-container');
+const verifyButton = document.getElementById('verify-button');
+const progressFill = document.getElementById('progress-fill');
+const timerDisplay = document.getElementById('verification-timer');
+
+let currentChallenge = null;
+let verificationTimer = null;
+let timerSeconds = 30;
+let verificationCallback = null;
+
+// Challenge types
+const challengeTypes = [
+    {
+        type: 'math',
+        generate: () => {
+            const operations = ['+', '-', '*'];
+            const operation = operations[Math.floor(Math.random() * operations.length)];
+
+            let num1, num2, answer;
+
+            if (operation === '+') {
+                num1 = Math.floor(Math.random() * 50) + 10;
+                num2 = Math.floor(Math.random() * 50) + 10;
+                answer = num1 + num2;
+            } else if (operation === '-') {
+                num1 = Math.floor(Math.random() * 50) + 30;
+                num2 = Math.floor(Math.random() * 20) + 5;
+                answer = num1 - num2;
+            } else {
+                num1 = Math.floor(Math.random() * 10) + 2;
+                num2 = Math.floor(Math.random() * 10) + 2;
+                answer = num1 * num2;
+            }
+
+            return {
+                question: `What is ${num1} ${operation} ${num2}?`,
+                answer: answer.toString()
+            };
+        },
+        render: (challenge) => {
+            return `
+                <p>${challenge.question}</p>
+                <input type="text" class="answer-input" id="challenge-answer" placeholder="Enter answer">
+            `;
+        }
+    },
+    {
+        type: 'word',
+        generate: () => {
+            const words = [
+                'game', 'play', 'score', 'level', 'winner', 
+                'player', 'bonus', 'match', 'multi', 'luck',
+                'skill', 'prize', 'power', 'challenge', 'reward'
+            ];
+            const word = words[Math.floor(Math.random() * words.length)];
+            return {
+                question: `Type the word: <strong>${word}</strong>`,
+                answer: word.toLowerCase()
+            };
+        },
+        render: (challenge) => {
+            return `
+                <p>${challenge.question}</p>
+                <input type="text" class="answer-input" id="challenge-answer" placeholder="Type the word">
+            `;
+        }
+    },
+    {
+        type: 'sequence',
+        generate: () => {
+            const sequences = [
+                {seq: [2, 4, 6, 8], next: 10},
+                {seq: [1, 3, 5, 7], next: 9},
+                {seq: [3, 6, 9, 12], next: 15},
+                {seq: [2, 4, 8, 16], next: 32},
+                {seq: [1, 4, 9, 16], next: 25}
+            ];
+
+            const selected = sequences[Math.floor(Math.random() * sequences.length)];
+
+            return {
+                question: `What is the next number in this sequence? ${selected.seq.join(', ')}, ...`,
+                answer: selected.next.toString()
+            };
+        },
+        render: (challenge) => {
+            return `
+                <p>${challenge.question}</p>
+                <input type="text" class="answer-input" id="challenge-answer" placeholder="Enter next number">
+            `;
+        }
+    }
+];
+
+// Start verification challenge
+function startVerification(callback) {
+    // Select a random challenge type
+    const challengeType = challengeTypes[Math.floor(Math.random() * challengeTypes.length)];
+
+    // Generate the challenge
+    currentChallenge = challengeType.generate();
+
+    // Render the challenge
+    challengeContainer.innerHTML = challengeType.render(currentChallenge);
+
+    // Store the callback
+    verificationCallback = callback;
+
+    // Reset and start the timer
+    timerSeconds = 30;
+    updateTimer();
+    startTimer();
+
+    // Show the overlay
+    verificationOverlay.classList.add('active');
+
+    // Add enter key listener to the answer input
+    const answerInput = document.getElementById('challenge-answer');
+    if (answerInput) {
+        answerInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                verifyAnswer();
+            }
+        });
+
+        // Focus on the input
+        setTimeout(() => {
+            answerInput.focus();
+        }, 300);
+    }
 }
 
-// Reset verification on page load
-startVerification();
+// Start the timer
+function startTimer() {
+    // Clear any existing timer
+    if (verificationTimer) {
+        clearInterval(verificationTimer);
+    }
 
-// Field validation - same as your original script
-emailInput.addEventListener('input', () => {
-    validateEmail();
+    progressFill.style.width = '100%';
+
+    // Start a new timer
+    verificationTimer = setInterval(() => {
+        timerSeconds--;
+        updateTimer();
+
+        // Update progress bar
+        const percentage = (timerSeconds / 30) * 100;
+        progressFill.style.width = `${percentage}%`;
+
+        if (timerSeconds <= 0) {
+            clearInterval(verificationTimer);
+            // Time's up - refresh the challenge
+            refreshChallenge();
+        }
+    }, 1000);
+}
+
+// Update the timer display
+function updateTimer() {
+    timerDisplay.textContent = `Time remaining: ${timerSeconds}s`;
+}
+
+// Refresh the challenge
+function refreshChallenge() {
+    // Select a random challenge type
+    const challengeType = challengeTypes[Math.floor(Math.random() * challengeTypes.length)];
+
+    // Generate the challenge
+    currentChallenge = challengeType.generate();
+
+    // Render the challenge
+    challengeContainer.innerHTML = challengeType.render(currentChallenge);
+
+    // Reset and start the timer
+    timerSeconds = 30;
+    updateTimer();
+    startTimer();
+
+    // Focus on the input
+    const answerInput = document.getElementById('challenge-answer');
+    if (answerInput) {
+        setTimeout(() => {
+            answerInput.focus();
+        }, 100);
+    }
+}
+
+// Verify the answer
+function verifyAnswer() {
+    const answerInput = document.getElementById('challenge-answer');
+    const userAnswer = answerInput.value.trim().toLowerCase();
+
+    if (userAnswer === currentChallenge.answer.toLowerCase()) {
+        // Correct answer
+        clearInterval(verificationTimer);
+        verificationOverlay.classList.remove('active');
+
+        // Call the callback function
+        if (verificationCallback) {
+            verificationCallback();
+            verificationCallback = null;
+        }
+    } else {
+        // Wrong answer - refresh the challenge
+        answerInput.value = '';
+        answerInput.classList.add('shake');
+        setTimeout(() => {
+            answerInput.classList.remove('shake');
+        }, 500);
+        refreshChallenge();
+    }
+}
+
+// Add event listener to the verify button
+verifyButton.addEventListener('click', verifyAnswer);
+
+// Login functionality with verification
+document.getElementById('login-button').addEventListener('click', () => {
+    const email = document.getElementById('login-email').value;
+    const password = document.getElementById('login-password').value;
+
+    if (!email || !password) {
+        showError('login-error', 'Please enter both email and password');
+        return;
+    }
+
+    // Start verification before processing login
+    startVerification(() => {
+        showLoading('login-button', 'login-loading');
+
+        auth.signInWithEmailAndPassword(email, password)
+            .then((userCredential) => {
+                const user = userCredential.user;
+                const userId = user.uid;
+                
+                // Update last login timestamp
+                const lastLoginUpdate = {
+                    lastLogin: new Date().toISOString()
+                };
+
+                return database.ref(`users/${userId}`).update(lastLoginUpdate)
+                    .then(() => {
+                        hideLoading('login-button', 'login-loading');
+                        showSuccess('login-success', 'Login successful!');
+                        
+                        // Wait a moment then notify parent
+                        setTimeout(() => {
+                            notifyParentOfLogin(user);
+                        }, 1000);
+                    });
+            })
+            .catch((error) => {
+                hideLoading('login-button', 'login-loading');
+                let errorMessage = 'Login failed. Please check your credentials.';
+
+                if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
+                    errorMessage = 'Invalid email or password';
+                } else if (error.code === 'auth/too-many-requests') {
+                    errorMessage = 'Too many attempts. Please try again later';
+                } else if (error.code === 'auth/invalid-email') {
+                    errorMessage = 'Invalid email format';
+                }
+
+                showError('login-error', errorMessage);
+                console.error('Login error:', error);
+            });
+    });
 });
 
-passwordInput.addEventListener('input', () => {
-    validatePassword();
-});
+// Sign up functionality with verification - FIXED
+document.getElementById('signup-button').addEventListener('click', async () => {
+    const email = document.getElementById('signup-email').value.trim();
+    const password = document.getElementById('signup-password').value;
+    const confirmPassword = document.getElementById('signup-confirm-password').value;
+    const fullName = document.getElementById('signup-fullname').value.trim();
+    const username = document.getElementById('signup-username').value.trim();
+    const referredBy = document.getElementById('signup-referral').value.trim();
 
-function validateEmail() {
-    const email = emailInput.value.trim();
+    // Clear previous messages
+    document.querySelectorAll('.error-message, .success-message').forEach(el => {
+        el.style.display = 'none';
+    });
+
+    // Validation
+    if (!email || !password || !confirmPassword || !fullName || !username) {
+        showError('signup-error', 'Please fill in all required fields');
+        return;
+    }
+
+    if (password !== confirmPassword) {
+        showError('signup-error', 'Passwords do not match');
+        return;
+    }
+
+    if (password.length < 6) {
+        showError('signup-error', 'Password must be at least 6 characters');
+        return;
+    }
+
+    // Email format validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    
-    if (!email) {
-        emailError.textContent = "Email is required";
-        emailError.style.display = 'block';
-        return false;
-    } else if (!emailRegex.test(email)) {
-        emailError.textContent = "Please enter a valid email address";
-        emailError.style.display = 'block';
-        return false;
-    } else {
-        emailError.style.display = 'none';
-        return true;
+    if (!emailRegex.test(email)) {
+        showError('signup-error', 'Please enter a valid email address');
+        return;
     }
-}
 
-function validatePassword() {
-    const password = passwordInput.value;
-    
-    if (!password) {
-        passwordError.textContent = "Password is required";
-        passwordError.style.display = 'block';
-        return false;
-    } else if (password.length < 6) {
-        passwordError.textContent = "Password must be at least 6 characters";
-        passwordError.style.display = 'block';
-        return false;
-    } else {
-        passwordError.style.display = 'none';
-        return true;
+    // Username validation
+    if (username.length < 3) {
+        showError('signup-error', 'Username must be at least 3 characters');
+        return;
     }
-}
 
-// Generate unique referral code for new users - same as your original script
-function generateReferralCode(email, userId) {
-    const emailPrefix = email.split('@')[0].substring(0, 4).toUpperCase();
-    const randomChars = Math.random().toString(36).substring(2, 5).toUpperCase();
-    const userIdPortion = userId.substring(0, 3).toUpperCase();
-    
-    return `${emailPrefix}${randomChars}${userIdPortion}`;
-}
+    // Start verification before processing sign up
+    startVerification(async () => {
+        showLoading('signup-button', 'signup-loading');
 
-// Secure user profile update via API
-async function updateUserProfile(userId, userData) {
-    try {
-        // Get current user's ID token
-        const idToken = await auth.currentUser.getIdToken();
-        
-        // Call our secure API to update user profile
-        const response = await fetch(`${API_ENDPOINT}/profile`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${idToken}`
-            },
-            body: JSON.stringify({
-                action: 'updateProfile',
-                payload: {
-                    userId: userId,
-                    userData: userData
-                }
-            })
-        });
-        
-        if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.error || 'Failed to update profile');
-        }
-        
-        return await response.json();
-    } catch (error) {
-        console.error("Error updating user profile:", error);
-        throw error;
-    }
-}
-
-// Check if user is already logged in
-onAuthStateChanged(auth, async (user) => {
-    if (user) {
         try {
-            // Update last login via API instead of direct database access
-            await updateUserProfile(user.uid, {
-                lastLogin: new Date().toISOString()
-            });
+            // Generate unique referral code
+            const referralCode = await generateUniqueReferralCode();
             
-            // Show success message and notify parent to close modal
-            if (form) form.style.display = 'none';
-            if (successMessage) successMessage.style.display = 'block';
-            
-            // Send message to parent to close login modal
-            window.parent.postMessage({ action: 'close-login-modal' }, '*');
-        } catch (error) {
-            console.error("Error updating login timestamp:", error);
-            // Still close modal even if update fails
-            window.parent.postMessage({ action: 'close-login-modal' }, '*');
-        }
-    }
-});
-
-// Login with Email and Password
-loginForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    
-    if (!isVerified) {
-        showNotification("Error", "Please wait for device verification to complete", true);
-        return;
-    }
-    
-    if (!validateEmail() || !validatePassword()) {
-        return; // Don't proceed if validation fails
-    }
-    
-    const email = emailInput.value.trim();
-    const password = passwordInput.value;
-    
-    // Show loading
-    showLoading();
-    
-    try {
-        // Sign in with email and password - this is still direct to Firebase Auth
-        // This is acceptable because we're only using Firebase Auth service here
-        const userCredential = await signInWithEmailAndPassword(auth, email, password);
-        const user = userCredential.user;
-        
-        // Update last login timestamp via our secure API
-        await updateUserProfile(user.uid, {
-            lastLogin: new Date().toISOString()
-        });
-        
-        hideLoading();
-        
-        // Show success message and notify parent to close modal
-        if (form) form.style.display = 'none';
-        if (successMessage) successMessage.style.display = 'block';
-        
-        // Send message to parent to close login modal
-        window.parent.postMessage({ action: 'close-login-modal' }, '*');
-    } catch (error) {
-        hideLoading();
-        
-        // Handle errors
-        let errorMessage = "Failed to sign in. Please check your credentials.";
-        if (error.code === 'auth/user-not-found') {
-            errorMessage = "No account found with this email. Please sign up.";
-        } else if (error.code === 'auth/wrong-password') {
-            errorMessage = "Incorrect password. Please try again.";
-        } else if (error.code === 'auth/invalid-email') {
-            errorMessage = "Invalid email format. Please enter a valid email.";
-        } else if (error.code === 'auth/too-many-requests') {
-            errorMessage = "Too many unsuccessful login attempts. Please try again later.";
-        }
-        
-        // Show error notification
-        showNotification("Error", errorMessage, true);
-    }
-});
-
-// Google Sign In
-googleLoginBtn.addEventListener('click', () => {
-    if (!isVerified) {
-        showNotification("Error", "Please wait for device verification to complete", true);
-        return;
-    }
-    
-    const provider = new GoogleAuthProvider();
-    signInWithSocialProvider(provider, 'Google');
-});
-
-// Facebook Sign In
-facebookLoginBtn.addEventListener('click', () => {
-    if (!isVerified) {
-        showNotification("Error", "Please wait for device verification to complete", true);
-        return;
-    }
-    
-    const provider = new FacebookAuthProvider();
-    signInWithSocialProvider(provider, 'Facebook');
-});
-
-// Social Sign In Function
-async function signInWithSocialProvider(provider, providerName) {
-    showLoading();
-    
-    try {
-        const result = await signInWithPopup(auth, provider);
-        const user = result.user;
-        
-        // Check if this is a new user
-        const isNewUser = result._tokenResponse.isNewUser;
-        
-        if (isNewUser) {
-            // Create user profile via our secure API
-            await createUserProfile(user);
-        } else {
-            // Update last login for existing user via our secure API
-            await updateUserProfile(user.uid, {
-                lastLogin: new Date().toISOString()
-            });
-        }
-        
-        hideLoading();
-        
-        // Show success message and notify parent to close modal
-        if (form) form.style.display = 'none';
-        if (successMessage) successMessage.style.display = 'block';
-        
-        // Send message to parent to close login modal
-        window.parent.postMessage({ action: 'close-login-modal' }, '*');
-    } catch (error) {
-        hideLoading();
-        
-        // Handle errors
-        let errorMessage = `Failed to sign in with ${providerName}. Please try again.`;
-        if (error.code === 'auth/popup-closed-by-user') {
-            errorMessage = `${providerName} sign-in was cancelled. Please try again.`;
-        } else if (error.code === 'auth/account-exists-with-different-credential') {
-            errorMessage = `An account already exists with the same email address but different sign-in credentials.`;
-        }
-        
-        // Show error notification
-        showNotification("Error", errorMessage, true);
-    }
-}
-
-// Create user profile via API instead of direct database access
-async function createUserProfile(user) {
-    try {
-        // Generate a unique referral code for the user
-        const referralCode = generateReferralCode(user.email, user.uid);
-        
-        // Get full name and username if available
-        const fullName = (fullNameInput && fullNameInput.value.trim()) || user.displayName || '';
-        const username = (usernameInput && usernameInput.value.trim()) || user.email.split('@')[0];
-        const referredBy = (referralCodeInput && referralCodeInput.value.trim()) || null;
-        
-        // Get photo URL or use default avatar
-        const photoURL = user.photoURL || 'assets/default-avatar.png';
-        
-        // Set comprehensive user data
-        const userData = {
-            email: user.email,
-            fullName: fullName,
-            username: username,
-            photoURL: photoURL,
-            walletBalance: 0,
-            createdAt: new Date().toISOString(),
-            dateJoined: new Date().toISOString().split('T')[0],
-            lastLogin: new Date().toISOString(),
-            referralCode: referralCode,
-            referredBy: referredBy,
-            referrals: 0,
-            airtimeBalance: 0,
-            airtimeScore: 0
-        };
-        
-        // Get ID token for authorization
-        const idToken = await user.getIdToken();
-        
-        // Call our secure API to create the user profile
-        const response = await fetch(`${API_ENDPOINT}/profile`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${idToken}`
-            },
-            body: JSON.stringify({
-                action: 'createProfile',
-                payload: {
-                    userId: user.uid,
-                    userData: userData
+            // Validate referral code if provided
+            let referrerData = null;
+            if (referredBy) {
+                const referrerSnapshot = await database.ref('users').orderByChild('referralCode').equalTo(referredBy).once('value');
+                if (!referrerSnapshot.exists()) {
+                    hideLoading('signup-button', 'signup-loading');
+                    showError('signup-error', 'Invalid referral code');
+                    return;
                 }
-            })
-        });
-        
-        if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.error || 'Failed to create profile');
-        }
-        
-        return await response.json();
-    } catch (error) {
-        console.error("Error creating user profile:", error);
-        throw error;
-    }
-}
+                referrerData = Object.entries(referrerSnapshot.val())[0];
+            }
 
-// Forgot Password
-forgotPasswordLink.addEventListener('click', async (e) => {
-    e.preventDefault();
-    
-    const email = emailInput.value.trim();
-    
+            // Create user account
+            const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+            const user = userCredential.user;
+            const userId = user.uid;
+
+            // Create user profile data
+            const userData = {
+                email: user.email,
+                fullName: fullName,
+                username: username,
+                photoURL: '',
+                walletBalance: 0,
+                createdAt: new Date().toISOString(),
+                dateJoined: new Date().toISOString().split('T')[0],
+                lastLogin: new Date().toISOString(),
+                referralCode: referralCode,
+                referredBy: referredBy || '',
+                referrals: 0,
+                airtimeBalance: 0,
+                isActive: true
+            };
+
+            console.log('Creating user data:', userData);
+
+            // Save user data to Firebase Realtime Database
+            await database.ref(`users/${userId}`).set(userData);
+            console.log('User data saved successfully');
+
+            // Update Firebase Auth profile
+            await user.updateProfile({
+                displayName: fullName
+            });
+
+            // If user was referred, increment referral count for referrer
+            if (referredBy && referrerData) {
+                const [referrerKey] = referrerData;
+                await database.ref(`users/${referrerKey}/referrals`).transaction(count => {
+                    return (count || 0) + 1;
+                });
+                console.log('Referral count updated');
+            }
+
+            hideLoading('signup-button', 'signup-loading');
+            showSuccess('signup-success', 'Account created successfully! Switching to login...');
+
+            // Clear form fields
+            document.getElementById('signup-email').value = '';
+            document.getElementById('signup-password').value = '';
+            document.getElementById('signup-confirm-password').value = '';
+            document.getElementById('signup-fullname').value = '';
+            document.getElementById('signup-username').value = '';
+            document.getElementById('signup-referral').value = '';
+
+            // Switch to login tab after 2 seconds
+            setTimeout(() => {
+                document.getElementById('tab-login').click();
+                // Pre-fill email in login form
+                document.getElementById('login-email').value = email;
+            }, 2000);
+
+        } catch (error) {
+            hideLoading('signup-button', 'signup-loading');
+            console.error('Signup error:', error);
+            
+            let errorMessage = 'Sign up failed. Please try again.';
+
+            if (error.code === 'auth/email-already-in-use') {
+                errorMessage = 'This email is already in use';
+            } else if (error.code === 'auth/invalid-email') {
+                errorMessage = 'Invalid email address';
+            } else if (error.code === 'auth/weak-password') {
+                errorMessage = 'Password is too weak';
+            } else if (error.code === 'auth/operation-not-allowed') {
+                errorMessage = 'Email/password accounts are not enabled';
+            }
+
+            showError('signup-error', errorMessage);
+        }
+    });
+});
+
+// Forgot password functionality with verification
+document.getElementById('forgot-button').addEventListener('click', () => {
+    const email = document.getElementById('forgot-email').value.trim();
+
     if (!email) {
-        showNotification("Error", "Please enter your email address in the email field.", true);
-        emailInput.focus();
+        showError('forgot-error', 'Please enter your email address');
         return;
     }
-    
-    showLoading();
-    
-    try {
-        // This operation can stay with Firebase Auth client
-        await sendPasswordResetEmail(auth, email);
-        hideLoading();
-        showNotification("Success", "Password reset email sent. Please check your inbox.", false);
-    } catch (error) {
-        hideLoading();
-        
-        let errorMessage = "Failed to send password reset email. Please try again.";
-        if (error.code === 'auth/user-not-found') {
-            errorMessage = "No account found with this email address.";
-        } else if (error.code === 'auth/invalid-email') {
-            errorMessage = "Invalid email format. Please enter a valid email.";
-        }
-        
-        showNotification("Error", errorMessage, true);
+
+    // Email format validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+        showError('forgot-error', 'Please enter a valid email address');
+        return;
+    }
+
+    // Start verification before processing password reset
+    startVerification(() => {
+        showLoading('forgot-button', 'forgot-loading');
+
+        auth.sendPasswordResetEmail(email)
+            .then(() => {
+                hideLoading('forgot-button', 'forgot-loading');
+                showSuccess('forgot-success', 'Password reset email sent. Please check your inbox.');
+                document.getElementById('forgot-email').value = '';
+            })
+            .catch((error) => {
+                hideLoading('forgot-button', 'forgot-loading');
+                let errorMessage = 'Failed to send reset email. Please try again.';
+
+                if (error.code === 'auth/user-not-found') {
+                    errorMessage = 'No account found with this email';
+                } else if (error.code === 'auth/invalid-email') {
+                    errorMessage = 'Invalid email address';
+                } else if (error.code === 'auth/too-many-requests') {
+                    errorMessage = 'Too many requests. Please try again later';
+                }
+
+                showError('forgot-error', errorMessage);
+                console.error('Password reset error:',
+});
+    });
+});
+
+// Check if user is already logged in on page load
+auth.onAuthStateChanged(user => {
+    if (user) {
+        // Check if user data exists in database
+        database.ref(`users/${user.uid}`).once('value').then(snapshot => {
+            if (snapshot.exists()) {
+                console.log('User already logged in:', user.email);
+                // Only notify parent for existing users with complete profiles
+                setTimeout(() => {
+                    notifyParentOfLogin(user);
+                }, 500);
+            } else {
+                console.log('User authenticated but no profile data found');
+                // Sign out user if no profile data exists
+                auth.signOut();
+            }
+        }).catch(error => {
+            console.error('Error checking user data:', error);
+        });
     }
 });
 
-// Helper functions
-function showLoading() {
-    loadingOverlay.style.display = 'flex';
-}
-
-function hideLoading() {
-    loadingOverlay.style.display = 'none';
-}
-
-function showNotification(title, message, isError = false) {
-    notificationTitle.textContent = title;
-    notificationMessage.textContent = message;
+// Initialize page
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('Firebase Auth page initialized');
     
-    // Add or remove error class
-    if (isError) {
-        notification.classList.add('error');
-    } else {
-        notification.classList.remove('error');
+    // Set default tab to login
+    const loginTab = document.getElementById('tab-login');
+    if (loginTab) {
+        loginTab.click();
     }
-    
-    // Show notification
-    notification.style.display = 'block';
-    
-    // Hide after 5 seconds
-    setTimeout(() => {
-        notification.style.display = 'none';
-    }, 5000);
-}
-
-console.log("Enhanced script loaded with secure API integration!");
+});
